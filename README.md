@@ -1,6 +1,6 @@
 # TabReborn
  
 ### Todo:
-- Charge the purchaser for the items haha.
+- Allow selecting quantities for items.
 - Add an orders page to list all orders etc
 - ???

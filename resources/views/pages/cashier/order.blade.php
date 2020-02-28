@@ -8,6 +8,11 @@ use App\Products;
 <div class="row">
     <div class="col-md-2"></div>
     <div class="panel-body col-md-6">
+        @if (\Session::has('error'))
+        <div class="alert alert-danger">
+            <p>{!! \Session::get('error') !!}</p>
+        </div>
+        @endif
         <form method="post" action="/cashier/order/{{ request()->route('id') }}/submit">
             {{ csrf_field() }}
             <input type="hidden" name="purchaser_id" value="{{ request()->route('id') }}">
