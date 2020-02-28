@@ -31,6 +31,9 @@
                             <a class="dropdown-item" href="/products/new">Create</a>
                         </div>
                     </li>
+                    <li class="nav-item">
+                    <a href="orders" class="nav-link">Orders</a>
+                </li>
                 <?php
                 }
                 ?>

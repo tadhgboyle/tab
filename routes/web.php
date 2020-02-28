@@ -27,13 +27,16 @@ Route::middleware('auth')->group(function () {
         return View::make('pages.index');
     });
     // cashier
-    Route::get('/cashier/order/{id}', function () {
-        return View::make('pages.cashier.order');
-    })->where('id', '[0-9]+');
-    Route::post('/cashier/order/{id}/submit', 'CashierController@submit');
-    Route::get('/cashier/orders', function () {
-        return View::make('pages.cashier.orders');
+    Route::get('/orders', function () {
+        return View::make('pages.orders.list');
     });
+    Route::get('/orders/{id}/view', function () {
+        return View::make('pages.orders.view');
+    });
+    Route::get('/orders/{id}', function () {
+        return View::make('pages.orders.order');
+    })->where('id', '[0-9]+');
+    Route::post('/orders/{id}/submit', 'OrderController@submit');
     // users
     Route::get('/users', function () {
         return View::make('pages.users.list');

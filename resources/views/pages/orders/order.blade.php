@@ -13,7 +13,7 @@ use App\Products;
             <p>{!! \Session::get('error') !!}</p>
         </div>
         @endif
-        <form method="post" action="/cashier/order/{{ request()->route('id') }}/submit">
+        <form method="post" action="/orders/{{ request()->route('id') }}/submit">
             {{ csrf_field() }}
             <input type="hidden" name="purchaser_id" value="{{ request()->route('id') }}">
             <input type="hidden" name="cashier_id" value="{{ Auth::user()->id }}">

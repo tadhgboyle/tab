@@ -8,7 +8,7 @@ use App\Transactions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class CashierController extends Controller
+class OrderController extends Controller
 {
     public function submit(Request $request)
     {
