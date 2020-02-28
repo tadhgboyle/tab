@@ -27,6 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/', function () {
         return View::make('pages.index');
     });
+    Route::get('/logout', 'LoginController@logout')->name('logout');
     // cashier
     Route::get('/orders', function () {
         return View::make('pages.orders.list');
@@ -60,5 +61,4 @@ Route::middleware('auth')->group(function () {
     })->where('id', '[0-9]+');
     Route::post('/products/edit/{id}/commit', 'ProductsController@edit');
     Route::get('/products/delete/{id}', 'ProductsController@delete')->where('id', '[0-9]+');
-    Route::get('/logout', 'LoginController@logout')->name('logout');
 });

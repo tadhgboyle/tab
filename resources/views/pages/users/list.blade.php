@@ -12,6 +12,7 @@ use App\User;
         <th>Balance</th>
         <th>Role</th>
         <th></th>
+        <th></th>
     </thead>
     <tbody>
         @foreach (User::all() as $user)
@@ -27,6 +28,9 @@ use App\User;
             </td>
             <td class="table-text">
                 <div>{{ ucfirst($user->role) }}</div>
+            </td>
+            <td>
+                <div><a href="orders/history/{{ $user->id }}">History</a></div>
             </td>
             <td>
                 <div><a href="users/edit/{{ $user->id }}">Edit</a></div>
