@@ -13,11 +13,11 @@ class ProductsController extends Controller
     public function new(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|min:4',
+            'name' => 'required|min:3',
             'price' => 'required|numeric',
         ]);
         if ($validator->fails()) {
-            return redirect('/products/new')
+            return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors($validator);
         }
@@ -43,7 +43,7 @@ class ProductsController extends Controller
         DB::table('products')
             ->where('id', $request->id)
             ->update(['name' => $request->name, 'price' => $request->price, 'editor_id' => $request->id]);
-            return redirect('/products');
+        return redirect('/products');
     }
 
     public function delete($id)
@@ -52,4 +52,3 @@ class ProductsController extends Controller
         return redirect('/products');
     }
 }
-

@@ -17,13 +17,14 @@ Route::get('/login', function () {
     return View::make('pages.login');
 })->name('login');
 Route::post('/login/auth', 'LoginController@auth');
+// these are up here till migrations are done 
 Route::get('/users/new', function () {
     return View::make('pages.users.new');
 });
 Route::post('/users/new/commit', 'UsersController@new');
 // middleware('auth') requires the user to be signed in to view the page
 Route::middleware('auth')->group(function () {
-    Route::match(['post', 'get'], '/', function () {
+    Route::get('/', function () {
         return View::make('pages.index');
     });
     // cashier

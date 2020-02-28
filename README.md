@@ -2,6 +2,7 @@
  
 ### Todo:
 *High to Low sort*
+- Edit routes to only allow cashiers to the cashier page.
 - Allow selecting quantities for items.
 - Add sidebar in order page to display all selected items and the total cost + the purchasers remaining balance.
 - Allow converting a camper to a staff role.
