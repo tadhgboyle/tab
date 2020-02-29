@@ -4,7 +4,6 @@
 
 ### Todo:
 *High to Low sort*
-- Add sidebar in order page to display all selected items and the total cost + the purchasers remaining balance.
 - Allow returning items (negative quantity?)
 - Allow converting a camper to a staff role.
 - Add tax. Make configurable + PST on a per item basis.
