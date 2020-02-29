@@ -16,7 +16,7 @@ class CheckRole
     public function handle($request, Closure $next)
     {
         if ($request->user()->role != "administrator") {
-            return redirect('/');
+            return redirect('/')->with('error', 'You do not have permission to view this page.');
         } else {
             return $next($request);
         }
