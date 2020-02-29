@@ -19,13 +19,16 @@ class OrderController extends Controller
             $quantity = 1;
             $product_quantity = 1;
             foreach ($request->product as $product) {
+                $product_info = Products::select('name', 'price')->where('id', '=', $product)->get();
                 if (array_key_exists($product, $request->quantity)) {
                     $quantity = $request->quantity[$product];
+                    if ($quantity < 1) {
+                        return redirect()->back()->withInput()->with('error', 'Quantity must be above 0 for item ' . $product_info['0']['name']);
+                    }
                     $product_quantity = $product . "*" . $quantity;
                 }
                 array_push($products, $product_quantity);
-                $product_price = Products::select('price')->where('id', '=', $product)->get();
-                $total_price += ($product_price['0']['price'] * $quantity);
+                $total_price += ($product_info['0']['price'] * $quantity);
             }
             $purchaser_info = User::select('full_name', 'balance')->where('id', '=', $request->purchaser_id)->get();
             $remaining_balance = $purchaser_info['0']['balance'] - $total_price;

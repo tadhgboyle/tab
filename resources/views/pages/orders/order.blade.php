@@ -57,9 +57,5 @@ use App\Products;
             paging: false
         });
     });
-
-    function updateItems(itemName, itemPrice) {
-        document.getElementById("items").innerHTML += "" + itemName + " - $" + itemPrice + "<br>";
-    }
 </script>
 @stop
