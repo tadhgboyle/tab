@@ -32,7 +32,9 @@ use App\Products;
         $('#product_list').DataTable();
     });
     $('#product_list').DataTable({
-        paging: false
+        paging: false,
+        "scrollY": "350px",
+        "scrollCollapse": true,
     });
 </script>
 @endsection

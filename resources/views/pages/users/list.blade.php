@@ -44,7 +44,9 @@ use App\User;
         $('#user_list').DataTable();
     });
     $('#user_list').DataTable({
-        paging: false
+        paging: false,
+        "scrollY": "350px",
+        "scrollCollapse": true,
     });
 </script>
 @endsection

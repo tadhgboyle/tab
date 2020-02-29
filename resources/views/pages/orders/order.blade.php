@@ -8,7 +8,7 @@ use App\Products;
 <p>Purchaser: {{ DB::table('users')->where('id', request()->route('id'))->pluck('full_name')->first() }}</p>
 <div class="row">
     <div class="col-md-2"></div>
-    <div class="panel-body col-md-6">
+    <div class="col-md-6">
         @if (\Session::has('error'))
         <div class="alert alert-danger">
             <p>{!! \Session::get('error') !!}</p>
@@ -54,8 +54,9 @@ use App\Products;
 </div>
 <script>
     $(document).ready(function() {
-        $('#product_list').DataTable({
-            paging: false
+        var table = $('#product_list').DataTable({
+            "scrollY": "250px",
+            "scrollCollapse": true,
         });
     });
 </script>

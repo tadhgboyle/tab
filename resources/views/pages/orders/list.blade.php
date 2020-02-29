@@ -42,7 +42,10 @@ use App\Transactions;
     $('#order_list').DataTable({
         "order": [
             [0, "desc"]
-        ]
+        ],
+        paging: false,
+        "scrollY": "250px",
+        "scrollCollapse": true,
     });
 </script>
 @endsection
