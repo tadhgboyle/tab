@@ -32,19 +32,19 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                    <a href="orders" class="nav-link">Orders</a>
+                    <a href="/orders" class="nav-link">Orders</a>
                 </li>
                 <?php
                 }
                 ?>
                 <li class="nav-item">
-                    <a href="logout" class="nav-link">Logout</a>
+                    <a href="/logout" class="nav-link">Logout</a>
                 </li>
             <?php
             } else {
             ?>
                 <li class="nav-item">
-                    <a href="login" class="nav-link">Login</a>
+                    <a href="/login" class="nav-link">Login</a>
                 </li>
             <?php } ?>
         </ul>

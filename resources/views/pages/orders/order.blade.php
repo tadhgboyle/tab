@@ -28,10 +28,10 @@ use App\Products;
                     @foreach(Products::all() as $product)
                     <tr>
                         <td class="table-text">
-                            <center><input type="checkbox" id="product" name="product[]" value="{{ $product->id }}" onclick="updateItems('<?php echo $product->name ?>' , <?php echo $product->price ?>)" /></center>
+                            <center><input type="checkbox" name="product[]" value="{{ $product->id }}" onclick="updateItems('<?php echo $product->name ?>' , <?php echo $product->price ?>)" /></center>
                         </td>
                         <td class="table-text">
-                            <center><input type="number" id="quantity" name="quantity[]" value="1"/></center>
+                            <center><input type="number" name="quantity[{{ $product->id }}]" value="1"/></center>
                         </td>
                         <td class="table-text">
                             <div>{{ $product->name }}</div>
@@ -46,7 +46,7 @@ use App\Products;
             <button>Submit</button>
         </form>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4" align="center">
         <h3>Items</h3>
         <div id="items"></div>
     </div>

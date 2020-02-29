@@ -13,12 +13,19 @@ class OrderController extends Controller
     public function submit(Request $request)
     {
         if (isset($request->product)) {
+            print_r($request->all());
             $products = array();
             $total_price = 0;
+            $quantity = 1;
+            $product_quantity = 1;
             foreach ($request->product as $product) {
-                array_push($products, $product);
+                if (array_key_exists($product, $request->quantity)) {
+                    $quantity = $request->quantity[$product];
+                    $product_quantity = $product . "*" . $quantity;
+                }
+                array_push($products, $product_quantity);
                 $product_price = Products::select('price')->where('id', '=', $product)->get();
-                $total_price += $product_price['0']['price'];
+                $total_price += ($product_price['0']['price'] * $quantity);
             }
             $purchaser_info = User::select('full_name', 'balance')->where('id', '=', $request->purchaser_id)->get();
             $remaining_balance = $purchaser_info['0']['balance'] - $total_price;
