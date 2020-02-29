@@ -14,7 +14,7 @@ class LoginController extends Controller
         } else {
             return redirect('/login')
             ->withInput($request->all())
-            ->withErrors(Auth::attempt($request->except(['_token'])));
+            ->with('error', 'There was an error logging in. Please try again.');
         }
         return redirect('/');
     }

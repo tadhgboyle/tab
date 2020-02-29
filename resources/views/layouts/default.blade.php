@@ -18,8 +18,6 @@
 
         @include('includes.navbar')
 
-        @include('common.errors')
-
         @yield('content')
 
         @include('includes.footer')

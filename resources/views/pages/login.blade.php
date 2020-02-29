@@ -1,24 +1,23 @@
 @extends('layouts.default')
 @section('content')
-<div>
-    @include('common.errors')
-    <h2>Login</h2>
-    <p>Please enter your credentials.</p>
-    <form action="/login/auth" method="post">
-        {{ csrf_field() }}
-        <div>
-            <strong>Username</strong>
-            <input type="text" name="username" value="" placeholder="Username">
-            <span style="color:red;"></span>
+<h2>Login</h2>
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        @if (\Session::has('error'))
+        <div class="alert alert-danger">
+            <p>{!! \Session::get('error') !!}</p>
         </div>
-        <div>
-            <strong>Password</strong>
-            <input type="password" name="password" placeholder="Password">
-            <span style="color:red;"></span>
-        </div>
-        <div class="form-group">
-            <input type="submit" value="Login">
-        </div>
-    </form>
+        @endif
+        <form action="/login/auth" method="post">
+            {{ csrf_field() }}
+            <div class="form-group">
+                Username<input type="text" name="username" class="form-control" value="" placeholder="Username">
+                Password<input type="password" name="password" class="form-control" placeholder="Password">
+                <button type="submit">Login</button>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4"></div>
 </div>
 @stop
