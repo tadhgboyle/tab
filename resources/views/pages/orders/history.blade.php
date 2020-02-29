@@ -5,7 +5,8 @@ use App\Transactions;
 @extends('layouts.default')
 @section('content')
 <h2>User History</h2>
-<p>Total spent: ${{ Transactions::where('purchaser_id', '=', request()->route('id'))->sum('total_price') }}</p>
+<p>User: {{ DB::table('users')->where('id', request()->route('id'))->pluck('full_name')->first() }}</p>
+<p>Total spent: ${{ number_format(Transactions::where('purchaser_id', '=', request()->route('id'))->sum('total_price'), 2) }}</p>
 <table id="order_list">
     <thead>
         <th>Time</th>
