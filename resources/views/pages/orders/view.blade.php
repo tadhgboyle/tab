@@ -19,7 +19,7 @@ $transaction_items = explode(", ", $transaction['0']['products']);
 <ul>
     <?php 
     foreach ($transaction_items as $items) {
-        $item_info = Products::select('name', 'price')->where('id', '=', $items)->get();
+        $item_info = Products::select('name', 'price')->where('id', '=', strtok($items, "*"))->get();
         $quantity = substr($items, strpos($items, "*") + 1); 
         echo "<li>" . $item_info['0']['name'] . " @ $" . $item_info['0']['price'] . " (x" . $quantity . ")</li>";
     }

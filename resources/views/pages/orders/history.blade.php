@@ -31,7 +31,7 @@ use App\Transactions;
                 <div>${{ $transaction->total_price }}</div>
             </td>
             <td>
-                <div><a href="orders/view/{{ $transaction->id }}">View</a></div>
+                <div><a href="/orders/view/{{ $transaction->id }}">View</a></div>
             </td>
         </tr>
         @endforeach

@@ -5,7 +5,7 @@
     <div class="col-md-4"></div>
     <div class="panel-body col-md-4">
         <form action="/users/new/commit" method="POST" class="form-horizontal">
-            {{ csrf_field() }}
+            @csrf
             Full Name<input type="text" name="full_name" class="form-control" placeholder="Full Name" value="{{ old('full_name') }}">
             Username<input type="text" name="username" class="form-control" placeholder="Username (Optional)" value="{{ old('username') }}">
             Balance<input type="number" step="0.01" name="balance" class="form-control" placeholder="Balance" value="{{ old('balance') }}">

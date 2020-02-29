@@ -15,7 +15,7 @@ use App\Products;
         </div>
         @endif
         <form method="post" id="order" action="/orders/{{ request()->route('id') }}/submit">
-            {{ csrf_field() }}
+            @csrf
             <input type="hidden" name="purchaser_id" value="{{ request()->route('id') }}">
             <input type="hidden" name="cashier_id" value="{{ Auth::user()->id }}">
             <table id="product_list">
