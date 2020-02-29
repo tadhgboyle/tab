@@ -32,7 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders', function () {
         return View::make('pages.orders.list');
     });
-    Route::get('/orders/{id}/view', function () {
+    Route::get('/orders/view/{id}', function () {
         return View::make('pages.orders.view');
     });
     Route::get('/orders/{id}', function () {

@@ -18,7 +18,7 @@ class CreateTransactionsTable extends Migration
             $table->integer('purchaser_id');
             $table->integer('cashier_id');
             $table->string('products');
-            $table->double('total_price');
+            $table->float('total_price');
             $table->nullableTimestamps();
         });
     }

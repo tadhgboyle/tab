@@ -17,7 +17,7 @@ class CreateUsersTable extends Migration
             $table->bigIncrements('id')->unique();
             $table->string('full_name');
             $table->string('username')->unique();
-            $table->double('balance');
+            $table->float('balance');
             $table->string('role')->nullable();
             $table->string('password')->nullable();
             $table->nullableTimestamps();
