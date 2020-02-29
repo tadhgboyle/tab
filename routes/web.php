@@ -11,6 +11,7 @@
 |
 */
 
+use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', function () {
@@ -39,26 +40,29 @@ Route::middleware('auth')->group(function () {
         return View::make('pages.orders.order');
     })->where('id', '[0-9]+');
     Route::post('/orders/{id}/submit', 'OrderController@submit');
-    // users
-    Route::get('/users', function () {
-        return View::make('pages.users.list');
+    // admin only
+    Route::middleware(CheckRole::class)->group(function () {
+        // users
+        Route::get('/users', function () {
+            return View::make('pages.users.list');
+        });
+        Route::get('/users/edit/{id}', function () {
+            return View::make('pages.users.edit');
+        })->where('id', '[0-9]+');
+        Route::post('/users/edit/{id}/commit', 'UsersController@edit');
+        Route::get('/users/delete/{id}', 'UsersController@delete')->where('id', '[0-9]+');
+        // products
+        Route::get('/products', function () {
+            return View::make('pages.products.list');
+        });
+        Route::get('/products/new', function () {
+            return View::make('pages.products.new');
+        });
+        Route::post('/products/new/commit', 'ProductsController@new');
+        Route::get('/products/edit/{id}', function () {
+            return View::make('pages.products.edit');
+        })->where('id', '[0-9]+');
+        Route::post('/products/edit/{id}/commit', 'ProductsController@edit');
+        Route::get('/products/delete/{id}', 'ProductsController@delete')->where('id', '[0-9]+');
     });
-    Route::get('/users/edit/{id}', function () {
-        return View::make('pages.users.edit');
-    })->where('id', '[0-9]+');
-    Route::post('/users/edit/{id}/commit', 'UsersController@edit');
-    Route::get('/users/delete/{id}', 'UsersController@delete')->where('id', '[0-9]+');
-    // products
-    Route::get('/products', function () {
-        return View::make('pages.products.list');
-    });
-    Route::get('/products/new', function () {
-        return View::make('pages.products.new');
-    });
-    Route::post('/products/new/commit', 'ProductsController@new');
-    Route::get('/products/edit/{id}', function () {
-        return View::make('pages.products.edit');
-    })->where('id', '[0-9]+');
-    Route::post('/products/edit/{id}/commit', 'ProductsController@edit');
-    Route::get('/products/delete/{id}', 'ProductsController@delete')->where('id', '[0-9]+');
 });
