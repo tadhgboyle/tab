@@ -36,6 +36,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders/view/{id}', function () {
         return View::make('pages.orders.view');
     });
+    Route::get('/orders/history/{id}', function () {
+        return View::make('pages.orders.history');
+    });
     Route::get('/orders/{id}', function () {
         return View::make('pages.orders.order');
     })->where('id', '[0-9]+');
