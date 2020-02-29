@@ -42,7 +42,7 @@ class ProductsController extends Controller
         }
         DB::table('products')
             ->where('id', $request->id)
-            ->update(['name' => $request->name, 'price' => $request->price, 'editor_id' => $request->id]);
+            ->update(['name' => $request->name, 'price' => $request->price, 'editor_id' => $request->editor_id]);
         return redirect('/products');
     }
 

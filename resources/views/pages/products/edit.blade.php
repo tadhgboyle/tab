@@ -1,6 +1,7 @@
 @extends('layouts.default')
 @section('content')
 <h2>Edit Product</h2>
+<p>Editing: {{ DB::table('products')->where('id', request()->route('id'))->pluck('name')->first() }}</p>
 <div class="row">
     <div class="col-md-4"></div>
     <div class="panel-body col-md-4">
@@ -15,12 +16,14 @@
                 return redirect('/products');
             }
             ?>
-            <div class="form-group">
-                <input type="hidden" name="id" value="{{ Auth::user()->id }}">
-                Name<input type="text" name="name" class="form-control" placeholder="Name" value="{{ $product_info['0']['name'] }}">
-                Price<input type="number" step="0.01" name="price" class="form-control" placeholder="Price" value="{{ $product_info['0']['price'] }}">
-                <button type="submit">Edit Product</button>
-            </div>
+            <input type="hidden" name="id" value="{{ request()->route('id') }}">
+            <input type="hidden" name="editor_id" value="{{ Auth::user()->id }}">
+            Name<input type="text" name="name" class="form-control" placeholder="Name" value="{{ $product_info['0']['name'] }}">
+            Price<input type="number" step="0.01" name="price" class="form-control" placeholder="Price" value="{{ $product_info['0']['price'] }}">
+            <button type="submit">Edit Product</button>
+        </form>
+        <form>
+            <button type="submit" formaction="/products/delete/{{ request()->route('id') }}">Delete Product</button>
         </form>
     </div>
     <div class="col-md-4"></div>
