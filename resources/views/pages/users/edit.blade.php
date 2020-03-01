@@ -4,14 +4,19 @@
 <p>Editing: {{ DB::table('users')->where('id', request()->route('id'))->pluck('full_name')->first() }}</p>
 <div class="row">
     <div class="col-md-4"></div>
-    <div class="panel-body col-md-4">
+    <div class="col-md-4">
+        @if (\Session::has('error'))
+        <div class="alert alert-danger">
+            <p>{!! \Session::get('error') !!}</p>
+        </div>
+        @endif
         <form action="/users/edit/{{ request()->route('id') }}/commit" method="POST" class="form-horizontal">
             @csrf
             <?php
 
             use App\User;
 
-            $array = User::select('full_name', 'username', 'balance', 'role')->where('id', '=', request()->route('id'))->get();
+            $array = User::select('full_name', 'username', 'balance', 'role', 'password')->where('id', '=', request()->route('id'))->get();
             if (empty($array)) {
                 return redirect('/users');
             }
@@ -27,6 +32,8 @@
             <label for="cashier">Cashier</label><br>
             <input type="radio" name="role" value="administrator" @if($array['0']['role']=="administrator" ) checked @endif>
             <label for="administrator">Administrator</label>
+            <input type="password" name="password" class="form-control" placeholder="Password">
+            <input type="password" name="password_confirmation" class="form-control" placeholder="Confirm Password">
             <br>
             <button type="submit">Edit User</button>
         </form>

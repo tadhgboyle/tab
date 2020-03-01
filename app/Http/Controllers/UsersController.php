@@ -52,10 +52,51 @@ class UsersController extends Controller
                 ->withInput($request->all())
                 ->withErrors($validator);
         }
+        $password = NULL;
+        $old_role = strtolower(DB::table('users')->where('id', $request->id)->pluck('role')->first());
+        $new_role = strtolower($request->role);
+        $staff_roles = array(
+            'cashier',
+            'administrator'
+        );
+        // if same role
+        if ($old_role == $new_role) {
+            DB::table('users')
+                ->where('id', $request->id)
+                ->update(['full_name' => $request->full_name, 'username' => $request->username, 'balance' => $request->balance, 'role' => $request->role]);
+            return redirect('/users');
+        }
+        // if old role is staff and new role is staff
+        else if (in_array($old_role, $staff_roles) && in_array($new_role, $staff_roles)) {
+            DB::table('users')
+                ->where('id', $request->id)
+                ->update(['full_name' => $request->full_name, 'username' => $request->username, 'balance' => $request->balance, 'role' => $request->role]);
+            return redirect('/users');
+        }
+        // if old role is camper and new role is staff
+        else if (!in_array($old_role, $staff_roles) && in_array($new_role, $staff_roles)) {
+            if (isset($request->password)) {
+                if ($request->password == $request->password_confirmation) {
+                    $password = bcrypt($request->password);
+                } else {
+                    return redirect()->back()->with('error', 'Please confirm the password')->withInput($request->all());
+                }
+            } else {
+                return redirect()->back()->with('error', 'Please enter a password')->withInput($request->all());
+            }
+        }
+        // if old role is camper and new role is camper
+        else if (!in_array($old_role, $staff_roles) && !in_array($new_role, $staff_roles)) {
+            $password = NULL;
+        }
+        // if old role is staff and new role is camper
+        else {
+            $password = NULL;
+        }
         DB::table('users')
             ->where('id', $request->id)
-            ->update(['full_name' => $request->full_name, 'username' => $request->username, 'balance' => $request->balance, 'role' => $request->role]);
-            return redirect('/users');
+            ->update(['full_name' => $request->full_name, 'username' => $request->username, 'balance' => $request->balance, 'role' => $request->role, 'password' => $password]);
+        return redirect('/users');
     }
 
     public function delete($id)

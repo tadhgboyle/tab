@@ -34,7 +34,7 @@ use App\User;
                             <center><input type="checkbox" name="product[]" value="{{ $product->id }}" id="{{ $product->name . ' $' . $product->price }}" class="clickable" /></center>
                         </td>
                         <td class="table-text">
-                            <center><input type="number" name="quantity[{{ $product->id }}]" id="quantity[{{ $product->id }}]" value="1" /></center>
+                            <center><input type="number" name="quantity[{{ $product->id }}]" id="quantity[{{ $product->id }}]" value="1" class="quantity"/></center>
                         </td>
                         <td class="table-text">
                             <div>{{ $product->name }}</div>
@@ -72,7 +72,6 @@ use App\User;
         var quantity = 1;
         $("#total_price").html('Total Price: $' + total_price.toFixed(2));
         $("#remaining_balance").html('Remaining Balance: $' + (purchaser_balance - total_price).toFixed(2));
-
         $('.clickable').click(function() {
             if ($(this).is(':checked')) {
                 quantity = parseInt(document.getElementById('quantity[' + document.getElementById($(this).attr('id')).value + ']').value);
@@ -98,6 +97,9 @@ use App\User;
                 $("#total_price").html('Total Price: $' + total_price.toFixed(2));
                 $("#remaining_balance").html('Remaining Balance: $' + (purchaser_balance - total_price).toFixed(2));
             }
+        });
+        $(".quantity").bind('keyup mouseup', function() {
+            // todo
         });
     });
 </script>
