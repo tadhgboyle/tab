@@ -4,6 +4,7 @@
 
 ### Todo:
 *High to Low sort*
+- Support quantities in items sidebar.
 - Allow returning items (negative quantity?)
 - Allow converting a camper to a staff role.
 - Add tax. Make configurable + PST on a per item basis.

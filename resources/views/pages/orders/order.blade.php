@@ -34,7 +34,7 @@ use App\User;
                             <center><input type="checkbox" name="product[]" value="{{ $product->id }}" id="{{ $product->name . ' $' . $product->price }}" class="clickable" /></center>
                         </td>
                         <td class="table-text">
-                            <center><input type="number" name="quantity[{{ $product->id }}]" value="1" /></center>
+                            <center><input type="number" name="quantity[{{ $product->id }}]" id="quantity[{{ $product->id }}]" value="1" /></center>
                         </td>
                         <td class="table-text">
                             <div>{{ $product->name }}</div>
@@ -61,25 +61,29 @@ use App\User;
     $(document).ready(function() {
         var table = $('#product_list').DataTable({
             paging: false,
-            "scrollY": "250px",
+            // we want the scroll to be as big as possible without making the page scroll
+            "scrollY": "300px",
             "scrollCollapse": true,
         });
         // handle the item sidebar
         const checked = [];
         var total_price = 0.00;
         const purchaser_balance = parseFloat(document.getElementById('purchaser_balance').value).toFixed(2);
+        var quantity = 1;
         $("#total_price").html('Total Price: $' + total_price.toFixed(2));
         $("#remaining_balance").html('Remaining Balance: $' + (purchaser_balance - total_price).toFixed(2));
 
         $('.clickable').click(function() {
             if ($(this).is(':checked')) {
-                checked.push($(this).attr('id') + '<br>');
-                total_price += parseFloat($(this).attr('id').split('$')[1]);
+                quantity = parseInt(document.getElementById('quantity[' + document.getElementById($(this).attr('id')).value + ']').value);
+                checked.push($(this).attr('id') + ' (x' + quantity + ')<br>');
+                total_price += (parseFloat($(this).attr('id').split('$')[1]) * quantity);
             } else {
-                const index = checked.indexOf($(this).attr('id') + '<br>');
+                quantity = parseInt(document.getElementById('quantity[' + document.getElementById($(this).attr('id')).value + ']').value);
+                const index = checked.indexOf($(this).attr('id') + ' (x' + quantity + ')<br>');
                 if (index >= 0) {
                     checked.splice(index, 1);
-                    total_price -= parseFloat($(this).attr('id').split('$')[1]);
+                    total_price -= (parseFloat($(this).attr('id').split('$')[1]) * quantity);
                 }
             }
             $("#items").html(checked);
