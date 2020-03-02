@@ -22,8 +22,8 @@ class OrderController extends Controller
                 $product_info = Products::select('name', 'price')->where('id', '=', $product)->get();
                 if (array_key_exists($product, $request->quantity)) {
                     $quantity = $request->quantity[$product];
-                    if ($quantity < 1) {
-                        return redirect()->back()->withInput()->with('error', 'Quantity must be above 0 for item ' . $product_info['0']['name']);
+                    if ($quantity == 0) {
+                        return redirect()->back()->withInput()->with('error', 'Quantity must be above or below 0 for item ' . $product_info['0']['name']);
                     }
                     $product_quantity = $product . "*" . $quantity;
                 }

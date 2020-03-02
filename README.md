@@ -4,7 +4,6 @@
 
 ### Todo:
 *High to Low sort*
-- Allow returning items (negative quantity?)
 - Allow undoing/returning entire order
 - Allow user to change light/dark mode?
 - Add tax. Make configurable + PST on a per item basis.
