@@ -34,7 +34,7 @@ use App\User;
                             <center><input type="checkbox" name="product[]" value="{{ $product->id }}" id="{{ $product->name . ' $' . $product->price }}" class="clickable" /></center>
                         </td>
                         <td class="table-text">
-                            <center><input type="number" id="quantity[{{ $product->id }}]" value="1" class="quantity" /></center>
+                            <center><input type="number" name="quantity[{{ $product->id }}]" id="quantity[{{ $product->id }}]" value="1" /></center>
                         </td>
                         <td class="table-text">
                             <div>{{ $product->name }}</div>
@@ -66,6 +66,7 @@ use App\User;
             "scrollCollapse": true,
         });
         // handle the item sidebar
+        // refractor this!!
         const checked = [];
         var total_price = 0.00;
         const purchaser_balance = parseFloat(document.getElementById('purchaser_balance').value).toFixed(2);
@@ -74,7 +75,7 @@ use App\User;
         $("#remaining_balance").html('Remaining Balance: $' + (purchaser_balance - total_price).toFixed(2));
         $('.clickable').click(function() {
             if ($(this).is(':checked')) {
-                 document.getElementById('quantity[' + document.getElementById($(this).attr('id')).value + ']').disabled = true;
+                document.getElementById('quantity[' + document.getElementById($(this).attr('id')).value + ']').disabled = true;
                 quantity = parseInt(document.getElementById('quantity[' + document.getElementById($(this).attr('id')).value + ']').value);
                 checked.push($(this).attr('id') + ' (x' + quantity + ')<br>');
                 total_price += (parseFloat($(this).attr('id').split('$')[1]) * quantity);
@@ -99,6 +100,11 @@ use App\User;
                 $("#total_price").html('Total Price: $' + total_price.toFixed(2));
                 $("#remaining_balance").html('Remaining Balance: $' + (purchaser_balance - total_price).toFixed(2));
             }
+        });
+        $('form').submit(function(e) {
+            $(':disabled').each(function(e) {
+                $(this).removeAttr('disabled');
+            })
         });
     });
 </script>
