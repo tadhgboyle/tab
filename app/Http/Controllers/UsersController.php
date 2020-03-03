@@ -59,15 +59,8 @@ class UsersController extends Controller
             'cashier',
             'administrator'
         );
-        // if same role
-        if ($old_role == $new_role) {
-            DB::table('users')
-                ->where('id', $request->id)
-                ->update(['full_name' => $request->full_name, 'username' => $request->username, 'balance' => $request->balance, 'role' => $request->role]);
-            return redirect('/users');
-        }
-        // if old role is staff and new role is staff
-        else if (in_array($old_role, $staff_roles) && in_array($new_role, $staff_roles)) {
+        // if same role or changing from one staff role to another
+        if (($old_role == $new_role) || (in_array($old_role, $staff_roles) && in_array($new_role, $staff_roles))) {
             DB::table('users')
                 ->where('id', $request->id)
                 ->update(['full_name' => $request->full_name, 'username' => $request->username, 'balance' => $request->balance, 'role' => $request->role]);
@@ -85,11 +78,7 @@ class UsersController extends Controller
                 return redirect()->back()->with('error', 'Please enter a password')->withInput($request->all());
             }
         }
-        // if old role is camper and new role is camper
-        else if (!in_array($old_role, $staff_roles) && !in_array($new_role, $staff_roles)) {
-            $password = NULL;
-        }
-        // if old role is staff and new role is camper
+        // if new role is camper
         else {
             $password = NULL;
         }
