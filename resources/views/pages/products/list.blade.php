@@ -18,7 +18,7 @@ use App\Products;
                 <div>{{ $product->name}}</div>
             </td>
             <td class="table-text">
-                <div>${{ $product->price }}</div>
+                <div>${{ number_format($product->price, 2) }}</div>
             </td>
             <td>
                 <div><a href="products/edit/{{ $product->id }}">Edit</a></div>

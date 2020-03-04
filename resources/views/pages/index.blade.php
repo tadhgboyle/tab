@@ -30,7 +30,7 @@ use App\User;
                         <div><a href="orders/{{ $result->id }}">{{ $result->full_name }}</div>
                     </td>
                     <td class="table-text">
-                        <div>${{ $result->balance }}</div>
+                        <div>${{ number_format($result->balance, 2) }}</div>
                     </td>
                 </tr>
                 @endforeach

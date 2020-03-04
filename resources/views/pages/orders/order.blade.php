@@ -40,7 +40,7 @@ use App\User;
                             <div>{{ $product->name }}</div>
                         </td>
                         <td class="table-text">
-                            <div>${{ $product->price }}</div>
+                            <div>${{ number_format($product->price, 2) }}</div>
                         </td>
                     </tr>
                     @endforeach
@@ -55,6 +55,8 @@ use App\User;
         <div id="total_price"></div>
         <div id="remaining_balance"></div>
         <input type="submit" form="order" value="Submit" class="disableable">
+        <span>&nbsp;&nbsp;</span>
+        <input type="submit"onclick="window.location='/';" value="Cancel">
     </div>
 </div>
 <script>

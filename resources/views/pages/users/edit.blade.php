@@ -24,7 +24,7 @@
             <input type="hidden" name="id" value="{{ request()->route('id') }}">
             Full Name<input type="text" name="full_name" class="form-control" placeholder="Full Name" value="{{ $array['0']['full_name'] }}">
             Username<input type="text" name="username" class="form-control" placeholder="Username (Optional)" value="{{ $array['0']['username'] }}">
-            Balance<input type="number" step="0.01" name="balance" class="form-control" placeholder="Balance" value="{{ $array['0']['balance'] }}">
+            Balance<input type="number" step="0.01" name="balance" class="form-control" placeholder="Balance" value="{{ number_format($array['0']['balance'], 2) }}">
 
             <input type="radio" name="role" value="camper" @if($array['0']['role']=="camper" ) checked @endif>
             <label for="camper">Camper</label><br>

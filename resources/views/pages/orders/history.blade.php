@@ -29,7 +29,7 @@ use App\Transactions;
                 <div> {{ DB::table('users')->where('id', $transaction->cashier_id)->pluck('full_name')->first() }}</div>
             </td>
             <td class="table-text">
-                <div>${{ $transaction->total_price }}</div>
+                <div>${{ number_format($transaction->total_price, 2) }}</div>
             </td>
             <td class="table-text">
                 <div>{{ $transaction->status == 0 ? "Normal" : "Returned" }}</div>

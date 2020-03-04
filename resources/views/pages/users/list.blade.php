@@ -24,7 +24,7 @@ use App\User;
                 <div>{{ $user->username }}</div>
             </td>
             <td class="table-text">
-                <div>${{ $user->balance }}</div>
+                <div>${{ number_format($user->balance, 2) }}</div>
             </td>
             <td class="table-text">
                 <div>{{ ucfirst($user->role) }}</div>

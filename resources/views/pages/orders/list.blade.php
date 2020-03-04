@@ -22,8 +22,8 @@ use App\Transactions;
         <th>Purchaser</th>
         <th>Cashier</th>
         <th>Total Price</th>
-        <th></th>
         <th>Status</th>
+        <th></th>
     </thead>
     <tbody>
         @foreach (Transactions::orderBy('created_at', 'DESC')->get() as $transaction)
@@ -38,13 +38,13 @@ use App\Transactions;
                 <div>{{ DB::table('users')->where('id', $transaction->cashier_id)->pluck('full_name')->first() }}</div>
             </td>
             <td class="table-text">
-                <div>${{ $transaction->total_price }}</div>
-            </td>
-            <td>
-                <div><a href="orders/view/{{ $transaction->id }}">View</a></div>
+                <div>${{ number_format($transaction->total_price, 2) }}</div>
             </td>
             <td class="table-text">
                 <div>{{ $transaction->status == 0 ? "Normal" : "Returned" }}</div>
+            </td>
+            <td>
+                <div><a href="orders/view/{{ $transaction->id }}">View</a></div>
             </td>
         </tr>
         @endforeach
