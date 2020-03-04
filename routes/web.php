@@ -68,5 +68,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/products/edit/{id}/commit', 'ProductsController@edit')->where('id', '[0-9]+');
         Route::get('/products/delete/{id}', 'ProductsController@delete')->where('id', '[0-9]+');
         Route::get('/orders/return/{id}', 'OrderController@return')->where('id', '[0-9]+');
+        Route::get('/settings', function () {
+            return View::make('pages.settings');
+        });
+        Route::post('/settings/submit', 'SettingsController@update');
     });
 });

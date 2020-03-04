@@ -4,7 +4,7 @@
 <p>Editing: {{ DB::table('products')->where('id', request()->route('id'))->pluck('name')->first() }}</p>
 <div class="row">
     <div class="col-md-4"></div>
-    <div class="panel-body col-md-4">
+    <div class="col-md-4">
         <form action="/products/edit/{{ request()->route('id') }}/commit" method="POST" class="form-horizontal">
             @csrf
             <?php

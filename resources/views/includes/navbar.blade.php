@@ -32,8 +32,11 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                    <a href="/orders" class="nav-link">Orders</a>
-                </li>
+                        <a href="/orders" class="nav-link">Orders</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/settings" class="nav-link">Settings</a>
+                    </li>
                 <?php
                 }
                 ?>
