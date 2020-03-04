@@ -17,6 +17,10 @@ $transaction_items = explode(", ", $transaction['0']['products']);
         <h4>Purchaser: {{ DB::table('users')->where('id', $transaction['0']['purchaser_id'])->pluck('full_name')->first() }}</h4>
         <h4>Cashier: {{ DB::table('users')->where('id', $transaction['0']['cashier_id'])->pluck('full_name')->first() }}</h4>
         <h4>Total Price: ${{ $transaction['0']['total_price'] }}</h4>
+        <h4>Status: {{ $transaction['0']['status'] == 0 ? "Normal" : "Returned" }}</h4>
+        @if($transaction['0']['status'] == 0)
+        <h4><a href="orders/return/{{ $transaction['0']['id'] }}">Return</a></h4>
+        @endif
     </div>
     <div class="col-md-4">
         <h2 align="center">Items</h2>

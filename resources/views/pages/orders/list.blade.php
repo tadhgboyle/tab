@@ -24,7 +24,6 @@ use App\Transactions;
         <th>Total Price</th>
         <th></th>
         <th>Status</th>
-        <th></th>
     </thead>
     <tbody>
         @foreach (Transactions::orderBy('created_at', 'DESC')->get() as $transaction)
@@ -46,13 +45,6 @@ use App\Transactions;
             </td>
             <td class="table-text">
                 <div>{{ $transaction->status == 0 ? "Normal" : "Returned" }}</div>
-            </td>
-            <td>
-                @if($transaction->status == 0)
-                <div><a href="orders/return/{{ $transaction->id }}">Return</a></div>
-                @else
-                <div>Returned</div>
-                @endif
             </td>
         </tr>
         @endforeach
