@@ -35,14 +35,14 @@ Route::middleware('auth')->group(function () {
     });
     Route::get('/orders/view/{id}', function () {
         return View::make('pages.orders.view');
-    });
+    })->where('id', '[0-9]+');
     Route::get('/orders/history/{id}', function () {
         return View::make('pages.orders.history');
-    });
+    })->where('id', '[0-9]+');
     Route::get('/orders/{id}', function () {
         return View::make('pages.orders.order');
     })->where('id', '[0-9]+');
-    Route::post('/orders/{id}/submit', 'OrderController@submit');
+    Route::post('/orders/{id}/submit', 'OrderController@submit')->where('id', '[0-9]+');
     // admin only
     Route::middleware(CheckRole::class)->group(function () {
         // users
@@ -52,7 +52,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/users/edit/{id}', function () {
             return View::make('pages.users.edit');
         })->where('id', '[0-9]+');
-        Route::post('/users/edit/{id}/commit', 'UsersController@edit');
+        Route::post('/users/edit/{id}/commit', 'UsersController@edit')->where('id', '[0-9]+');
         Route::get('/users/delete/{id}', 'UsersController@delete')->where('id', '[0-9]+');
         // products
         Route::get('/products', function () {
@@ -65,7 +65,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/products/edit/{id}', function () {
             return View::make('pages.products.edit');
         })->where('id', '[0-9]+');
-        Route::post('/products/edit/{id}/commit', 'ProductsController@edit');
+        Route::post('/products/edit/{id}/commit', 'ProductsController@edit')->where('id', '[0-9]+');
         Route::get('/products/delete/{id}', 'ProductsController@delete')->where('id', '[0-9]+');
+        Route::get('/orders/return/{id}', 'OrderController@return')->where('id', '[0-9]+');
     });
 });

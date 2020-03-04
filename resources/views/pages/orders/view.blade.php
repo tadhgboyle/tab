@@ -25,6 +25,7 @@ $transaction_items = explode(", ", $transaction['0']['products']);
                 <th>Name</th>
                 <th>Price</th>
                 <th>Quantity</th>
+                <th>Item Price</th>
             </thead>
             <tbody>
                 @foreach($transaction_items as $product)
@@ -41,6 +42,9 @@ $transaction_items = explode(", ", $transaction['0']['products']);
                     </td>
                     <td class="table-text">
                         <div>{{ $quantity }}</div>
+                    </td>
+                    <td class="table-text">
+                        <div>${{ $item_info['0']['price'] * $quantity }}</div>
                     </td>
                 </tr>
                 @endforeach

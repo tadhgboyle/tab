@@ -7,7 +7,7 @@ use App\User;
 ?>
 <div class="row">
     <div class="col-md-3"></div>
-    <div class="panel-body col-md-6">
+    <div class="col-md-6">
         @if (\Session::has('success'))
         <div class="alert alert-success">
             <p>{!! \Session::get('success') !!}</p>

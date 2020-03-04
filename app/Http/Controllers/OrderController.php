@@ -51,4 +51,23 @@ class OrderController extends Controller
             return redirect()->back()->withInput()->with('error', 'Please select at least one item.');
         }
     }
+    public function return($id)
+    {
+        $order_info = Transactions::select('purchaser_id', 'products')->where('id', '=', $id)->get();
+        $purchaser_info = User::select('id', 'full_name', 'balance')->where('id', '=', $order_info['0']['purchaser_id'])->get();
+        $total_price = 0;
+        foreach (explode(", ", $order_info['0']['products']) as $items) {
+            $item = strtok($items, "*");
+            $quantity = substr($items, strpos($items, "*") + 1);
+            $item_price = Products::where('id', '=', $item)->pluck('price')->first();
+            $total_price += $item_price * $quantity;
+        }
+        DB::table('users')
+        ->where('id', $purchaser_info['0']['id'])
+        ->update(['balance' => ($purchaser_info['0']['balance'] + $total_price)]);
+        DB::table('transactions')
+        ->where('id', $id)
+        ->update(['status' => '1']);
+        return redirect('/orders')->with('success', 'Successfully returned order ' . $id . ' for ' . $purchaser_info['0']['full_name']);
+    }
 }

@@ -6,13 +6,14 @@ use App\Transactions;
 @section('content')
 <h2>User History</h2>
 <p>User: {{ DB::table('users')->where('id', request()->route('id'))->pluck('full_name')->first() }}</p>
-<p>Total spent: ${{ number_format(Transactions::where('purchaser_id', '=', request()->route('id'))->sum('total_price'), 2) }}</p>
+<p>Total spent: ${{ number_format(Transactions::where([['purchaser_id', '=', request()->route('id')], ['status', '=', '0']])->sum('total_price'), 2) }}</p>
 <table id="order_list">
     <thead>
         <th>Time</th>
         <th>Purchaser</th>
         <th>Cashier</th>
         <th>Total Price</th>
+        <th>Status</th>
         <th></th>
     </thead>
     <tbody>
@@ -29,6 +30,9 @@ use App\Transactions;
             </td>
             <td class="table-text">
                 <div>${{ $transaction->total_price }}</div>
+            </td>
+            <td class="table-text">
+                <div>{{ $transaction->status == 0 ? "Normal" : "Returned" }}</div>
             </td>
             <td>
                 <div><a href="/orders/view/{{ $transaction->id }}">View</a></div>
