@@ -92,10 +92,13 @@ use App\Http\Controllers\SettingsController;
         $('.clickable').click(function() {
             const quantity_id = document.getElementById('quantity[' + document.getElementById($(this).attr('id')).value + ']');
             const pst_id = document.getElementById('pst[' + document.getElementById($(this).attr('id')).value + ']').value;
+            if (quantity_id == 0) {
+                return;
+            }
             if ($(this).is(':checked')) {
                 if (pst_id == 1) {
                     total_tax_percent += ((parseFloat(current_pst) + parseFloat(current_gst)) - 1).toFixed(2);
-                    total_pst += parseFloat(((parseFloat($(this).attr('id').split('$')[1] * quantity)) * current_pst) - parseFloat($(this).attr('id').split('$')[1] * quantity));
+                    total_pst += parseFloat(((parseFloat($(this).attr('id').split('$')[1] * quantity_id.value)) * current_pst) - parseFloat($(this).attr('id').split('$')[1] * quantity_id.value));
                 } else {
                     total_tax_percent += parseFloat(current_gst).toFixed(2);
                 }
@@ -107,7 +110,7 @@ use App\Http\Controllers\SettingsController;
             } else {
                 if (pst_id == 1) {
                     total_tax_percent += ((parseFloat(current_pst) + parseFloat(current_gst)) - 1).toFixed(2);
-                    total_pst -= parseFloat(((parseFloat($(this).attr('id').split('$')[1] * quantity)) * current_pst) - parseFloat($(this).attr('id').split('$')[1] * quantity));
+                    total_pst -= parseFloat(((parseFloat($(this).attr('id').split('$')[1] * quantity_id.value)) * current_pst) - parseFloat($(this).attr('id').split('$')[1] * quantity_id.value));
                 } else {
                     total_tax_percent += parseFloat(current_gst).toFixed(2);
                 }
