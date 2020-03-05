@@ -33,7 +33,7 @@ use App\Products;
                 <div>${{ number_format($product->price, 2) }}</div>
             </td>
             <td>
-                <div>{{ $product->pst == 0 ? "No" : "Yes"}}</a></div>
+                <div>{!! $product->pst == 0 ? "<h5><span class=\"badge badge-danger\">No</span></h5>" : "<h5><span class=\"badge badge-success\">Yes</span></h5>"!!}</div>
             </td>
             <td>
                 <div><a href="products/edit/{{ $product->id }}">Edit</a></div>

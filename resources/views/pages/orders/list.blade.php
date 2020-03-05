@@ -41,7 +41,7 @@ use App\Transactions;
                 <div>${{ number_format($transaction->total_price, 2) }}</div>
             </td>
             <td class="table-text">
-                <div>{{ $transaction->status == 0 ? "Normal" : "Returned" }}</div>
+            <div>{!! $transaction->status == 0 ? "<h5><span class=\"badge badge-success\">Normal</span></h5>" : "<h5><span class=\"badge badge-danger\">Returned</span></h5>"!!}</div>
             </td>
             <td>
                 <div><a href="orders/view/{{ $transaction->id }}">View</a></div>
@@ -59,7 +59,7 @@ use App\Transactions;
             [0, "desc"]
         ],
         paging: false,
-        "scrollY": "250px",
+        "scrollY": "340px",
         "scrollCollapse": true,
     });
 </script>

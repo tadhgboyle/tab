@@ -45,7 +45,7 @@ use App\User;
     });
     $('#user_list').DataTable({
         paging: false,
-        "scrollY": "350px",
+        "scrollY": "340px",
         "scrollCollapse": true,
     });
 </script>
