@@ -71,8 +71,8 @@ class OrderController extends Controller
                 $total_tax = ($total_tax + SettingsController::getPst()) - 1;
             }
             $total_price += ($item_price * $quantity) * $total_tax;
+            $total_tax = SettingsController::getGst();
         }
-        $total_tax = SettingsController::getGst();
         DB::table('users')
             ->where('id', $purchaser_info['0']['id'])
             ->update(['balance' => ($purchaser_info['0']['balance'] + $total_price)]);
