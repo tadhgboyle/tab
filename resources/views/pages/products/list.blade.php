@@ -9,6 +9,7 @@ use App\Products;
     <thead>
         <th>Name</th>
         <th>Price</th>
+        <th>PST</th>
         <th></th>
     </thead>
     <tbody>
@@ -19,6 +20,9 @@ use App\Products;
             </td>
             <td class="table-text">
                 <div>${{ number_format($product->price, 2) }}</div>
+            </td>
+            <td>
+                <div>{{ $product->pst == 0 ? "No" : "Yes"}}</a></div>
             </td>
             <td>
                 <div><a href="products/edit/{{ $product->id }}">Edit</a></div>

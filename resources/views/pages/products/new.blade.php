@@ -9,6 +9,8 @@
             <input type="hidden" name="id" value="{{ Auth::user()->id }}">
             Name<input type="text" name="name" class="form-control" placeholder="Name" value="{{ old('name') }}">
             Price<input type="number" step="0.01" name="price" class="form-control" placeholder="Price" value="{{ old('price') }}">
+            PST<input type="checkbox" name="pst">
+            <br>
             <button type="submit">Create Product</button>
         </form>
     </div>
