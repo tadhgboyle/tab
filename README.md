@@ -4,7 +4,6 @@
 
 ### Todo:
 *High to Low sort*
-- Add tax. Make configurable + PST on a per item basis.
 - Add tags to products + be able to search by tags.
 - Stats -> Income by week, month... Most popular products...
 - Add stock/inventory features...

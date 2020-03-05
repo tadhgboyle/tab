@@ -6,7 +6,11 @@ use App\Transactions;
 @section('content')
 <h2>User History</h2>
 <p>User: {{ DB::table('users')->where('id', request()->route('id'))->pluck('full_name')->first() }}</p>
-<p>Total spent: ${{ number_format(Transactions::where([['purchaser_id', '=', request()->route('id')], ['status', '=', '0']])->sum('total_price'), 2) }}</p>
+<span>Total spent: ${{ number_format(Transactions::where('purchaser_id', '=', request()->route('id'))->sum('total_price'), 2) }}</span>,&nbsp;
+<span>Total returned: ${{ number_format(Transactions::where([['purchaser_id', '=', request()->route('id')], ['status', '=', '1']])->sum('total_price'), 2) }}</span>,&nbsp;
+<span>Total owing: ${{ number_format(Transactions::where([['purchaser_id', '=', request()->route('id')], ['status', '=', '0']])->sum('total_price'), 2) }}</span>
+<br>
+<br>
 <table id="order_list">
     <thead>
         <th>Time</th>
