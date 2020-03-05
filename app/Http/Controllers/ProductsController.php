@@ -31,7 +31,7 @@ class ProductsController extends Controller
         $product->pst = $pst;
         $product->creator_id = $request->id;
         $product->save();
-        return redirect('/products');
+        return redirect('/products')->with('success', 'Successfully created ' . $request->name);
     }
 
     public function edit(Request $request)
@@ -52,7 +52,7 @@ class ProductsController extends Controller
         DB::table('products')
             ->where('id', $request->id)
             ->update(['name' => $request->name, 'price' => $request->price, 'pst' => $pst, 'editor_id' => $request->editor_id]);
-        return redirect('/products');
+        return redirect('/products')->with('success', 'Successfully edited ' . $request->name);
     }
 
     public function delete($id)

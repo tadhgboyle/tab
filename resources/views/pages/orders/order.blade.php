@@ -4,6 +4,7 @@
 
 use App\Products;
 use App\User;
+use App\Http\Controllers\SettingsController;
 ?>
 <h2>Cashier</h2>
 <p>Purchaser: {{ DB::table('users')->where('id', request()->route('id'))->pluck('full_name')->first() }}</p>
@@ -19,6 +20,9 @@ use App\User;
             @csrf
             <input type="hidden" name="purchaser_id" value="{{ request()->route('id') }}">
             <input type="hidden" name="cashier_id" value="{{ Auth::user()->id }}">
+            <input type="hidden" id="current_gst" value="{{ SettingsController::getGst() }}">
+            <input type="hidden" id="current_pst" value="{{ SettingsController::getPst() }}">
+
             <input type="hidden" id="purchaser_balance" value="{{ User::where('id', '=', request()->route('id'))->pluck('balance')->first() }}">
             <table id="product_list">
                 <thead>
@@ -32,6 +36,7 @@ use App\User;
                     <tr>
                         <td class="table-text">
                             <center><input type="checkbox" name="product[]" value="{{ $product->id }}" id="{{ $product->name . ' $' . $product->price }}" class="clickable" /></center>
+                            <input type="hidden" id="pst[{{ $product->id }}]" name="pst[{{ $product->id }}]" value="{{ $product->pst }}" />
                         </td>
                         <td class="table-text">
                             <center><input type="number" name="quantity[{{ $product->id }}]" id="quantity[{{ $product->id }}]" value="1" /></center>
@@ -52,6 +57,8 @@ use App\User;
         <h3>Items</h3>
         <div id="items"></div>
         <hr>
+        <div id="gst"></div>
+        <div id="pst"></div>
         <div id="total_price"></div>
         <div id="remaining_balance"></div>
         <input type="submit" form="order" value="Submit" class="disableable">
@@ -70,27 +77,52 @@ use App\User;
         // handle the item sidebar
         // refractor this!!
         const checked = [];
+        var total_gst = 0.00;
+        var total_pst = 0.00;
+        const current_gst = parseFloat(document.getElementById('current_gst').value).toFixed(2);
+        const current_pst = parseFloat(document.getElementById('current_pst').value).toFixed(2);
+        var total_tax_percent = 0.00;
         var total_price = 0.00;
         const purchaser_balance = parseFloat(document.getElementById('purchaser_balance').value).toFixed(2);
         var quantity = 1;
+        $("#gst").html('GST: $' + total_gst.toFixed(2));
+        $("#pst").html('PST: $' + total_pst.toFixed(2));
         $("#total_price").html('Total Price: $' + total_price.toFixed(2));
         $("#remaining_balance").html('Remaining Balance: $' + (purchaser_balance - total_price).toFixed(2));
         $('.clickable').click(function() {
+            const quantity_id = document.getElementById('quantity[' + document.getElementById($(this).attr('id')).value + ']');
+            const pst_id = document.getElementById('pst[' + document.getElementById($(this).attr('id')).value + ']').value;
             if ($(this).is(':checked')) {
-                document.getElementById('quantity[' + document.getElementById($(this).attr('id')).value + ']').disabled = true;
-                quantity = parseInt(document.getElementById('quantity[' + document.getElementById($(this).attr('id')).value + ']').value);
+                if (pst_id == 1) {
+                    total_tax_percent += ((parseFloat(current_pst) + parseFloat(current_gst)) - 1).toFixed(2);
+                    total_pst += parseFloat(((parseFloat($(this).attr('id').split('$')[1] * quantity)) * current_pst) - parseFloat($(this).attr('id').split('$')[1] * quantity));
+                } else {
+                    total_tax_percent += parseFloat(current_gst).toFixed(2);
+                }
+                quantity_id.disabled = true;
+                quantity = parseInt(quantity_id.value);
                 checked.push($(this).attr('id') + ' (x' + quantity + ')<br>');
-                total_price += (parseFloat($(this).attr('id').split('$')[1]) * quantity);
+                total_gst += parseFloat(((parseFloat($(this).attr('id').split('$')[1] * quantity)) * current_gst) - parseFloat($(this).attr('id').split('$')[1] * quantity));
+                total_price += (parseFloat($(this).attr('id').split('$')[1]) * quantity) * total_tax_percent;
             } else {
-                document.getElementById('quantity[' + document.getElementById($(this).attr('id')).value + ']').disabled = false;
-                quantity = parseInt(document.getElementById('quantity[' + document.getElementById($(this).attr('id')).value + ']').value);
+                if (pst_id == 1) {
+                    total_tax_percent += ((parseFloat(current_pst) + parseFloat(current_gst)) - 1).toFixed(2);
+                    total_pst -= parseFloat(((parseFloat($(this).attr('id').split('$')[1] * quantity)) * current_pst) - parseFloat($(this).attr('id').split('$')[1] * quantity));
+                } else {
+                    total_tax_percent += parseFloat(current_gst).toFixed(2);
+                }
+                quantity_id.disabled = false;
+                quantity = parseInt(quantity_id.value);
                 const index = checked.indexOf($(this).attr('id') + ' (x' + quantity + ')<br>');
                 if (index >= 0) {
                     checked.splice(index, 1);
-                    total_price -= (parseFloat($(this).attr('id').split('$')[1]) * quantity);
+                    total_gst -= parseFloat(((parseFloat($(this).attr('id').split('$')[1] * quantity)) * current_gst) - parseFloat($(this).attr('id').split('$')[1] * quantity));
+                    total_price -= (parseFloat($(this).attr('id').split('$')[1]) * quantity) * total_tax_percent;
                 }
             }
             $("#items").html(checked);
+            $("#gst").html('GST: $' + total_gst.toFixed(2));
+            $("#pst").html('PST: $' + total_pst.toFixed(2))
             $("#total_price").html('Total Price: $' + total_price.toFixed(2));
             $("#remaining_balance").html('Remaining Balance: $' + purchaser_balance);
             if (total_price > purchaser_balance) {
@@ -102,7 +134,9 @@ use App\User;
                 $("#total_price").html('Total Price: $' + total_price.toFixed(2));
                 $("#remaining_balance").html('Remaining Balance: $' + (purchaser_balance - total_price).toFixed(2));
             }
+            total_tax_percent = 0.00;
         });
+        // if we dont have this things will break
         $('form').submit(function(e) {
             $(':disabled').each(function(e) {
                 $(this).removeAttr('disabled');

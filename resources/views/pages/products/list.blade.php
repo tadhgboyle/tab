@@ -5,6 +5,17 @@ use App\Products;
 @extends('layouts.default')
 @section('content')
 <h2>Product List</h2>
+<div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
+        @if (\Session::has('success'))
+        <div class="alert alert-success">
+            <p>{!! \Session::get('success') !!}</p>
+        </div>
+        @endif
+    </div>
+    <div class="col-md-3"></div>
+</div>
 <table id="product_list">
     <thead>
         <th>Name</th>

@@ -27,7 +27,7 @@ use App\User;
                 @foreach(User::all() as $result)
                 <tr>
                     <td class="table-text">
-                        <div><a href="orders/{{ $result->id }}">{{ $result->full_name }}</div>
+                        <div><a href="orders/{{ $result->id }}">{{ $result->full_name }}</a></div>
                     </td>
                     <td class="table-text">
                         <div>${{ number_format($result->balance, 2) }}</div>
