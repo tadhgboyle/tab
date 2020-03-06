@@ -32,7 +32,7 @@ use App\Transactions;
                 <div>{{ $transaction->created_at }}</div>
             </td>
             <td class="table-text">
-                <div>{{ DB::table('users')->where('id', $transaction->purchaser_id)->pluck('full_name')->first() }}</div>
+                <div><a href="orders/history/{{ $transaction->purchaser_id }}">{{ DB::table('users')->where('id', $transaction->purchaser_id)->pluck('full_name')->first() }}</a></div>
             </td>
             <td class="table-text">
                 <div>{{ DB::table('users')->where('id', $transaction->cashier_id)->pluck('full_name')->first() }}</div>
