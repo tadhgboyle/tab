@@ -2,6 +2,17 @@
  
 :raised_hands: Thank you to [DataTables](https://datatables.net) for the fast and interactive tables.
 
+## Features so far:
+- User role control
+    - Three different access levels to choose from. Change each user's role anytime!
+- Product control and editing
+    - Change the name and price anytime.
+    - Optional PST charge on a per-item basis.
+- Live preview of price (with taxes) on sidebar during every purchase. If the user does not have enough money the submit button will be disabled (Backend check as well though!).
+- Return any individual item or a whole order.
+- Editable GST and PST percentages.
+- Detailed user history and order list pages with fully interactive and searchable tables (see above!).
+
 ### Todo:
 *High to Low sort*
 - Let parents set $ per area (waterfront, candy store etc) [Started - untested]
