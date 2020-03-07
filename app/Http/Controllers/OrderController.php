@@ -7,6 +7,7 @@ use App\Products;
 use App\Transactions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 
 class OrderController extends Controller
 {
@@ -40,6 +41,11 @@ class OrderController extends Controller
             if ($remaining_balance < 0) {
                 return redirect()->back()->withInput()->with('error', 'Not enough balance. ' . $purchaser_info['0']['full_name'] . " only has $" . $purchaser_info['0']['balance']);
             } else {
+                foreach($products as $product) {
+                    if (!this::checkLimit($request->purchaser->id, $product, $total_price)) {
+                        return redirect()->back()->withInput()->with('error', 'Not enough left to spend on that category today :(');
+                    }
+                }
                 DB::table('users')
                     ->where('id', $request->purchaser_id)
                     ->update(['balance' => $remaining_balance]);
@@ -80,5 +86,32 @@ class OrderController extends Controller
             ->where('id', $id)
             ->update(['status' => '1']);
         return redirect('/orders')->with('success', 'Successfully returned order ' . $id . ' for ' . $purchaser_info['0']['full_name']);
+    }
+
+    public function checkLimit($user, $product, $total_price)
+    {
+        $category = Products::where('id', '=', $product)->select('category')->first();
+        $price = Products::where('id', '=', $product)->select('price')->first();
+
+        $category_limit = UserLimits::where([['id', '=', $user], ['category', '=', $category]])->select('limit_per_day')->first();
+
+        // find all transactions with user id from past 24 hours
+        // for each product get its price and category
+        // add up and evaluate
+        $transactions = Transactions::where([['created_at', '>=', Carbon::now()->subDay()->toDateTimeString()], []])->get();
+
+        foreach ($transactions as $transaction) {
+            foreach ($transaction['0']['products'] as $transaction_product) {
+                if ($category = Products::where('id', '=', $transaction_product)->select('category')->first()) {
+                    $category_spent += $price;
+                }
+            }
+        }
+
+        if (($category_spent + $total_price) > $category_limit) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

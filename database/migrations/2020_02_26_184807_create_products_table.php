@@ -17,10 +17,12 @@ class CreateProductsTable extends Migration
             $table->bigIncrements('id');
             $table->string('name')->unique();
             $table->float('price');
+            $table->string('category');
+            $table->string('tags');
             $table->tinyInteger('pst')->default('0');
             $table->integer('creator_id');
             $table->integer('editor_id')->nullable();
-            $table->nullableTimestamps();
+            $table->timestamps();
         });
     }
 
