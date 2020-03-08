@@ -15,18 +15,20 @@ class OrderController extends Controller
     {
         if (isset($request->product)) {
             $products = array();
+            $transaction_categories = array();
             $total_price = 0;
             $quantity = 1;
             $product_quantity = 1;
             $total_tax = SettingsController::getGst();
             foreach ($request->product as $product) {
-                $product_info = Products::select('name', 'price', 'pst')->where('id', $product)->get();
+                $product_info = Products::select('name', 'price', 'category', 'pst')->where('id', $product)->get();
                 if (array_key_exists($product, $request->quantity)) {
                     $quantity = $request->quantity[$product];
                     if ($quantity < 1) {
                         return redirect()->back()->withInput()->with('error', 'Quantity must be above 1 for item ' . $product_info['0']['name']);
                     }
                     $product_quantity = $product . "*" . $quantity;
+                    if (!in_array($product_info['0']['category'], $transaction_categories)) array_push($transaction_categories, $product_info['0']['category']);
                 }
                 if ($product_info['0']['pst'] == 1) {
                     $total_tax = ($total_tax + SettingsController::getPst()) - 1;
@@ -40,40 +42,43 @@ class OrderController extends Controller
             if ($remaining_balance < 0) {
                 return redirect()->back()->withInput()->with('error', 'Not enough balance. ' . $purchaser_info['0']['full_name'] . " only has $" . $purchaser_info['0']['balance']);
             }
-
-            foreach ($products as $product) {
-                $category = DB::table('products')->where('id', '=', strtok($product, "*"))->pluck('category')->first();
+            $category_spent = 0.00;
+            $category_limit = 0.00;
+            foreach ($transaction_categories as $category) {
                 $category_limit = DB::table('user_limits')->where([['user_id', $request->purchaser_id], ['category', '=', $category]])->pluck('limit_per_day')->first();
-                $category_spent = 0.00;
                 $transactions = Transactions::where([['created_at', '>=', Carbon::now()->subDay()->toDateTimeString()], ['purchaser_id', '=', $request->purchaser_id]])->get();
                 foreach ($transactions as $transaction) {
                     foreach (explode(", ", $transaction['products']) as $transaction_product) {
-                        if ($category = DB::table('products')->where('id', '=', strtok($transaction_product, "*"))->pluck('category')->first()) {
+                        if (strtolower($category) == DB::table('products')->where('id', '=', strtok($transaction_product, "*"))->pluck('category')->first()) {
                             $product_price = DB::table('products')->where('id', '=', strtok($transaction_product, "*"))->pluck('price')->first();
                             $category_spent += $product_price;
                         }
                     }
                 }
+                foreach ($products as $product) {
+                    $product_info = Products::select('price', 'category')->where('id', strtok($product, "*"))->get();
+                    if ($product_info['0']['category'] = $category) {
+                        $category_spent += $product_info['0']['price'];
+                    }
+                }
+                if ($category_spent >= $category_limit) {
+                    return redirect()->back()->with('error', 'Not enough balance in that category: ' . $category . '.');
+                    $category_spent = 0.00;
+                    $category_limit = 0.00;
+                }
             }
-            if ($category_spent > $category_limit) {
-                $category_spent = 0.00;
-                $category_limit = 0.00;
-                return redirect()->back()->with('error', 'Not enough balance in that category: ' . $category);
-            } else {
-                $category_spent = 0.00;
-                $category_limit = 0.00;
-                DB::table('users')
-                    ->where('id', $request->purchaser_id)
-                    ->update(['balance' => $remaining_balance]);
+            DB::table('users')
+                ->where('id', $request->purchaser_id)
+                ->update(['balance' => $remaining_balance]);
 
-                $transaction = new Transactions();
-                $transaction->purchaser_id = $request->purchaser_id;
-                $transaction->cashier_id = $request->cashier_id;
-                $transaction->products = implode(", ", $products);
-                $transaction->total_price = $total_price;
-                $transaction->save();
-                return redirect('/')->with('success', 'Order #' . $transaction->id . '. ' . $purchaser_info['0']['full_name'] . " now has $" . round($remaining_balance, 2));
-            }
+            $transaction = new Transactions();
+            $transaction->purchaser_id = $request->purchaser_id;
+            $transaction->cashier_id = $request->cashier_id;
+            $transaction->products = implode(", ", $products);
+            $transaction->total_price = $total_price;
+            $transaction->save();
+
+            return redirect('/')->with('success', 'Order #' . $transaction->id . '. ' . $purchaser_info['0']['full_name'] . " now has $" . round($remaining_balance, 2));
         } else {
             return redirect()->back()->withInput()->with('error', 'Please select at least one item.');
         }
