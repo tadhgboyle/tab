@@ -18,7 +18,6 @@ class CreateProductsTable extends Migration
             $table->string('name')->unique();
             $table->float('price');
             $table->string('category');
-            $table->string('tags');
             $table->tinyInteger('pst')->default('0');
             $table->integer('creator_id');
             $table->integer('editor_id')->nullable();

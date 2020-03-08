@@ -17,6 +17,7 @@
 *High to Low sort*
 - Let parents set $ per area (waterfront, candy store etc) [Started - untested]
     - Add tags and categories to products + be able to search by tags.
+- While viewing an order be able to return items via table (removed -1 feature)
 - Stats -> Income by week, month... Most popular products...
 - Add stock/inventory features...
 - Add tracking of role/balance etc changes
