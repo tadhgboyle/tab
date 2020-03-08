@@ -9,8 +9,11 @@ use App\Products;
     <div class="col-md-3"></div>
     <div class="col-md-6">
         @if (\Session::has('success'))
-        <div class="alert alert-success">
-            <p>{!! \Session::get('success') !!}</p>
+        <div class="alert alert-success alert-dismissable">
+            <span>{!! \Session::get('success') !!}</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
         @endif
     </div>
@@ -19,6 +22,7 @@ use App\Products;
 <table id="product_list">
     <thead>
         <th>Name</th>
+        <th>Category</th>
         <th>Price</th>
         <th>PST</th>
         <th></th>
@@ -27,7 +31,10 @@ use App\Products;
         @foreach (Products::all() as $product)
         <tr>
             <td class="table-text">
-                <div>{{ $product->name}}</div>
+                <div>{{ $product->name }}</div>
+            </td>
+            <td class="table-text">
+                <div>{{ ucfirst($product->category) }}</div>
             </td>
             <td class="table-text">
                 <div>${{ number_format($product->price, 2) }}</div>

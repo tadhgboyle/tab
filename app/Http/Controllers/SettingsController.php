@@ -20,7 +20,12 @@ class SettingsController extends Controller
         return Settings::all()['1']['value'];
     }
 
-    public function update(Request $request)
+    public static function getCategories()
+    {
+        return Settings::all()->where('setting', 'category');
+    }
+
+    public function editTax(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'gst' => 'required|numeric',
@@ -36,6 +41,32 @@ class SettingsController extends Controller
             ->update(['value' => $request->gst]);
         DB::table('settings')->where('setting', '=', 'pst')
             ->update(['value' => $request->pst]);
-        return redirect('/settings')->with('success', 'Updated tax percentages.');
+        return redirect('/settings')->with('success', 'Updated settings.');
+    }
+
+    public function newCat(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors($validator);
+        }
+
+        $settings = new Settings();
+        $settings->setting = "category";
+        $settings->value = strtolower($request->name);
+        $settings->editor_id = $request->editor_id;
+        $settings->save();
+
+        return redirect('/settings')->with('success', 'Created new category ' . $request->name . '.');
+    }
+
+    public function deleteCat(Request $request)
+    {
+        Settings::where('id', $request->id)->delete();
+        return redirect('/settings')->with('success', 'Deleted category.');
     }
 }

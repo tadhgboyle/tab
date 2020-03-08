@@ -9,13 +9,19 @@ use App\User;
     <div class="col-md-3"></div>
     <div class="col-md-6">
         @if (\Session::has('success'))
-        <div class="alert alert-success">
-            <p>{!! \Session::get('success') !!}</p>
+        <div class="alert alert-success alert-dismissable">
+            <span>{!! \Session::get('success') !!}</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
         @endif
         @if (\Session::has('error'))
-        <div class="alert alert-danger">
-            <p>{!! \Session::get('error') !!}</p>
+        <div class="alert alert-danger alert-dismissable">
+            <span>{!! \Session::get('error') !!}</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
         @endif
         <table id="user_list">

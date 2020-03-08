@@ -12,8 +12,11 @@ use App\Http\Controllers\SettingsController;
     <div class="col-md-2"></div>
     <div class="col-md-6">
         @if (\Session::has('error'))
-        <div class="alert alert-danger">
-            <p>{!! \Session::get('error') !!}</p>
+        <div class="alert alert-danger alert-dismissable">
+            <span>{!! \Session::get('error') !!}</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
         @endif
         <form method="post" id="order" action="/orders/{{ request()->route('id') }}/submit">
@@ -63,7 +66,7 @@ use App\Http\Controllers\SettingsController;
         <div id="remaining_balance"></div>
         <input type="submit" form="order" value="Submit" class="disableable">
         <span>&nbsp;&nbsp;</span>
-        <input type="submit"onclick="window.location='/';" value="Cancel">
+        <input type="submit" onclick="window.location='/';" value="Cancel">
     </div>
 </div>
 <script>

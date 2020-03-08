@@ -68,9 +68,19 @@ Route::middleware('auth')->group(function () {
         Route::post('/products/edit/{id}/commit', 'ProductsController@edit')->where('id', '[0-9]+');
         Route::get('/products/delete/{id}', 'ProductsController@delete')->where('id', '[0-9]+');
         Route::get('/orders/return/{id}', 'OrderController@return')->where('id', '[0-9]+');
+        // settings
         Route::get('/settings', function () {
-            return View::make('pages.settings');
+            return View::make('pages.settings.settings');
         });
-        Route::post('/settings/submit', 'SettingsController@update');
+        Route::post('/settings/submit', 'SettingsController@editTax');
+        Route::get('/settings/category/new', function () {
+            return View::make('pages.settings.new');
+        });
+        Route::post('/settings/category/new', 'SettingsController@newCat');
+        Route::get('/settings/category/edit/{id}', function () {
+            return View::make('pages.settings.edit');
+        })->where('id', '[0-9]+');
+        Route::get('/settings/category/edit/{id}/commit', 'SettingsController@editCat')->where('id', '[0-9]+');
+        Route::get('/settings/category/delete/{id}', 'SettingsController@deleteCat')->where('id', '[0-9]+');
     });
 });
