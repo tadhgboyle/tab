@@ -11,7 +11,7 @@
 
             use App\Products;
 
-            $product_info = Products::select('name', 'price', 'pst')->where('id', '=', request()->route('id'))->get();
+            $product_info = Products::select('name', 'category', 'price', 'pst')->where('id', '=', request()->route('id'))->get();
             if (empty($product_info)) {
                 return redirect('/products');
             }
@@ -21,6 +21,17 @@
             Name<input type="text" name="name" class="form-control" placeholder="Name" value="{{ $product_info['0']['name'] }}">
             Price<input type="number" step="0.01" name="price" class="form-control" placeholder="Price" value="{{ number_format($product_info['0']['price'], 2) }}">
             PST<input type="checkbox" name="pst" {{ $product_info['0']['pst'] == 0 ? "" : "checked" }}>
+            <br>
+            <?php
+
+            use App\Http\Controllers\SettingsController;
+            ?>
+            Category
+            <select id="categories">
+                @foreach(SettingsController::getCategories() as $category)
+                <option value="{{ $category->id }}" {{ $product_info['0']['category'] == $category->value ? "selected" : "" }}>{{ ucfirst($category->value) }}</option>
+                @endforeach
+            </select>
             <br>
             <button type="submit">Edit Product</button>
         </form>
