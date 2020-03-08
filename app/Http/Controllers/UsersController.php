@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Validator;
 use App\User;
+use App\UserLimits;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -59,6 +60,17 @@ class UsersController extends Controller
             'cashier',
             'administrator'
         );
+        // update their limits
+        foreach ($request->limit as $category => $limit) {
+            if ($limit == "") $limit = "-1";
+            if ($limit < -1) {
+                return redirect()->back()->with('error', 'Limit must be above -1 for ' . ucfirst($category) . '. (-1 means no limit, 0 means not allowed.)')->withInput($request->all());
+            }
+            UserLimits::updateOrCreate(
+                ['user_id' => $request->id, 'category' => $category],
+                ['limit_per_day' => $limit, 'editor_id' => $request->editor_id]
+            );
+        }
         // if same role or changing from one staff role to another
         if (($old_role == $new_role) || (in_array($old_role, $staff_roles) && in_array($new_role, $staff_roles))) {
             DB::table('users')

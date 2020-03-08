@@ -9,8 +9,8 @@ use App\Http\Controllers\SettingsController;
 <h2>Cashier</h2>
 <p>Purchaser: {{ DB::table('users')->where('id', request()->route('id'))->pluck('full_name')->first() }}</p>
 <div class="row">
-    <div class="col-md-2"></div>
-    <div class="col-md-6">
+    <div class="col-md-1"></div>
+    <div class="col-md-7">
         @if (\Session::has('error'))
         <div class="alert alert-danger alert-dismissable">
             <span>{!! \Session::get('error') !!}</span>
@@ -32,6 +32,7 @@ use App\Http\Controllers\SettingsController;
                     <th></th>
                     <th>Quantity</th>
                     <th>Name</th>
+                    <th>Category</th>
                     <th>Price</th>
                 </thead>
                 <tbody>
@@ -46,6 +47,9 @@ use App\Http\Controllers\SettingsController;
                         </td>
                         <td class="table-text">
                             <div>{{ $product->name }}</div>
+                        </td>
+                        <td class="table-text">
+                            <div>{{ ucfirst($product->category) }}</div>
                         </td>
                         <td class="table-text">
                             <div>${{ number_format($product->price, 2) }}</div>

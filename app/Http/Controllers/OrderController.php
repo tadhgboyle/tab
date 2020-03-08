@@ -51,18 +51,20 @@ class OrderController extends Controller
                     foreach (explode(", ", $transaction['products']) as $transaction_product) {
                         if (strtolower($category) == DB::table('products')->where('id', '=', strtok($transaction_product, "*"))->pluck('category')->first()) {
                             $product_price = DB::table('products')->where('id', '=', strtok($transaction_product, "*"))->pluck('price')->first();
-                            $category_spent += $product_price;
+                            $product_quantity = ltrim(strstr($transaction_product, '*'), '*');
+                            $category_spent += ($product_price * $product_quantity);
                         }
                     }
                 }
                 foreach ($products as $product) {
                     $product_info = Products::select('price', 'category')->where('id', strtok($product, "*"))->get();
+                    $product_quantity = ltrim(strstr($product, '*'), '*');
                     if ($product_info['0']['category'] = $category) {
-                        $category_spent += $product_info['0']['price'];
+                        $category_spent += ($product_info['0']['price'] * $product_quantity);
                     }
                 }
-                if ($category_spent >= $category_limit) {
-                    return redirect()->back()->with('error', 'Not enough balance in that category: ' . $category . '.');
+                if ($category_spent >= $category_limit && $category_limit != -1) {
+                    return redirect()->back()->with('error', 'Not enough balance in that category: ' . ucfirst($category) . '. Limit: $' . $category_limit . '.');
                     $category_spent = 0.00;
                     $category_limit = 0.00;
                 }

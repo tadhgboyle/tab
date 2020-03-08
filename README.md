@@ -3,6 +3,7 @@
 :raised_hands: Thank you to [DataTables](https://datatables.net) for the fast and interactive tables.
 
 ## Features so far:
+
 - User role control
     - Three different access levels to choose from. Change each user's role anytime!
 - Product control and editing
@@ -14,10 +15,11 @@
 - Detailed user history and order list pages with fully interactive and searchable tables (see above!).
 
 ### Todo:
+
 *High to Low sort*
-- Let parents set $ per area (waterfront, candy store etc) [Started - untested]
-    - Add tags and categories to products + be able to search by tags.
+- Let parents set $ per area (waterfront, candy store etc) [Started]
 - While viewing an order be able to return items via table (removed -1 feature)
+- Click on item name to check/uncheck checkbox. Makes it not as hard to click a small area
 - Stats -> Income by week, month... Most popular products...
 - Add stock/inventory features...
 - Add tracking of role/balance etc changes
