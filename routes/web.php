@@ -28,6 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/', function () {
         return View::make('pages.index');
     });
+    Route::get('/logout', 'LoginController@logout');
     // cashier
     Route::get('/orders', function () {
         return View::make('pages.orders.list');
