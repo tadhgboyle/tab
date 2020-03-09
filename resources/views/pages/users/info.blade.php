@@ -65,8 +65,8 @@ use App\Transactions;
             </thead>
             <tbody>
                 @foreach(SettingsController::getCategories() as $category)
-                <?php 
-                $category_limit = DB::table('user_limits')->where([['user_id', request()->route('id')], ['category', $category->value]])->pluck('limit_per_day')->first();
+                <?php
+                $category_limit = UserLimitsController::findLimit(request()->route('id'), $category->value);
                 $category_spent = UserLimitsController::findSpent(request()->route('id'), $category->value);
                 ?>
                 <tr>
@@ -80,7 +80,7 @@ use App\Transactions;
                         <div>${{ number_format($category_spent, 2) }}</div>
                     </td>
                     <td class="table-text">
-                    <div>{!! $category_limit == "-1" ? "<i>Unlimited</i>" : "$" . number_format($category_limit - $category_spent, 2) !!}</div>
+                        <div>{!! $category_limit == "-1" ? "<i>Unlimited</i>" : "$" . number_format($category_limit - $category_spent, 2) !!}</div>
                     </td>
                 </tr>
                 @endforeach

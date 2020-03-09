@@ -45,7 +45,7 @@ class OrderController extends Controller
             $category_spent = 0.00;
             $category_limit = 0.00;
             foreach ($transaction_categories as $category) {
-                $category_limit = DB::table('user_limits')->where([['user_id', $request->purchaser_id], ['category', '=', $category]])->pluck('limit_per_day')->first();
+                $category_limit = UserLimitsController::findLimit($request->purchaser_id, $category);
                 $category_spent = UserLimitsController::findSpent($request->purchaser_id, $category);
                 foreach ($products as $product) {
                     $product_info = Products::select('price', 'category')->where('id', strtok($product, "*"))->get();
