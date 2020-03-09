@@ -37,6 +37,17 @@ class UsersController extends Controller
             $user->password = bcrypt($request->password);
         }
         $user->save();
+        // update their limits
+        foreach ($request->limit as $category => $limit) {
+            if ($limit == "") $limit = "-1";
+            if ($limit < -1) {
+                return redirect()->back()->with('error', 'Limit must be above -1 for ' . ucfirst($category) . '. (-1 means no limit, 0 means not allowed.)')->withInput($request->all());
+            }
+            UserLimits::updateOrCreate(
+                ['user_id' => $user->id, 'category' => $category],
+                ['limit_per_day' => $limit, 'editor_id' => $request->editor_id]
+            );
+        }
         return redirect('/users');
     }
 

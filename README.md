@@ -17,7 +17,6 @@
 ### Todo:
 
 *High to Low sort*
-- Let parents set $ per area (waterfront, candy store etc) [Started]
 - While viewing an order be able to return items via table (removed -1 feature)
 - Click on item name to check/uncheck checkbox. Makes it not as hard to click a small area
 - Stats -> Income by week, month... Most popular products...
