@@ -100,6 +100,6 @@ class OrderController extends Controller
         DB::table('transactions')
             ->where('id', $id)
             ->update(['status' => '1']);
-        return redirect('/orders')->with('success', 'Successfully returned order ' . $id . ' for ' . $purchaser_info['0']['full_name']);
+        return redirect('/orders')->with('success', 'Successfully returned order #' . $id . ' for ' . $purchaser_info['0']['full_name']);
     }
 }

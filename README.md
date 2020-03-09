@@ -20,6 +20,23 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 - Editable GST and PST percentages.
 - Detailed user history and order list pages with fully interactive and searchable tables (see above!).
 
+## Screenshots:
+
+#### First Cashier Page
+![First Cashier Page](https://images.tadhgboyle.dev/scrn135552.png)
+
+#### Second Cashier Page
+![Second Cashier Page](https://images.tadhgboyle.dev/scrn135623.png)
+
+#### User Information Page
+![User Info Page](https://images.tadhgboyle.dev/scrn135504.png)
+
+#### Order List Page
+![Order List Page](https://images.tadhgboyle.dev/scrn135734.png)
+
+#### Order Information Page
+![Order Info Page](https://images.tadhgboyle.dev/scrn135910.png)
+
 ## Roadmap:
 
 *High to Low priority sort*
