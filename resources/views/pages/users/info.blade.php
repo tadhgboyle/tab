@@ -54,6 +54,7 @@ use App\Transactions;
         <?php
 
         use App\Http\Controllers\SettingsController;
+        use App\Http\Controllers\UserLimitsController;
         ?>
         <table id="category_list">
             <thead>
@@ -64,18 +65,22 @@ use App\Transactions;
             </thead>
             <tbody>
                 @foreach(SettingsController::getCategories() as $category)
+                <?php 
+                $category_limit = DB::table('user_limits')->where([['user_id', request()->route('id')], ['category', $category->value]])->pluck('limit_per_day')->first();
+                $category_spent = UserLimitsController::findSpent(request()->route('id'), $category->value);
+                ?>
                 <tr>
                     <td class="table-text">
                         <div>{{ ucfirst($category->value) }}</div>
                     </td>
                     <td class="table-text">
-                        <div>{!! DB::table('user_limits')->where([['user_id', request()->route('id')], ['category', $category->value]])->pluck('limit_per_day')->first() == "-1" ? "<i>Unlimited</i>" : "$" . number_format(DB::table('user_limits')->where([['user_id', request()->route('id')], ['category', $category->value]])->pluck('limit_per_day')->first(), 2) !!}</div>
+                        <div>{!! $category_limit == "-1" ? "<i>Unlimited</i>" : "$" . number_format($category_limit, 2) !!}</div>
                     </td>
                     <td class="table-text">
-                        <div>findSpent()</div>
+                        <div>${{ number_format($category_spent, 2) }}</div>
                     </td>
                     <td class="table-text">
-                    <div>Total - findSpent()</div>
+                    <div>{!! $category_limit == "-1" ? "<i>Unlimited</i>" : "$" . number_format($category_limit - $category_spent, 2) !!}</div>
                     </td>
                 </tr>
                 @endforeach
