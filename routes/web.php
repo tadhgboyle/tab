@@ -53,7 +53,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/users/info/{id}', function () {
             return View::make('pages.users.info');
         })->where('id', '[0-9]+');
-        Route::get('/users/delete/{id}', 'UsersController@delete')->where('id', '[0-9]+');
+        Route::get('/users/delete/{id}', 'UsersController@delete')->where('id', '[0-9]+')->name('delete_user');
         // products
         Route::get('/products', function () {
             return View::make('pages.products.list');
@@ -66,8 +66,8 @@ Route::middleware('auth')->group(function () {
             return View::make('pages.products.edit');
         })->where('id', '[0-9]+');
         Route::post('/products/edit/{id}/commit', 'ProductsController@edit')->where('id', '[0-9]+');
-        Route::get('/products/delete/{id}', 'ProductsController@delete')->where('id', '[0-9]+');
-        Route::get('/orders/return/{id}', 'OrderController@return')->where('id', '[0-9]+');
+        Route::get('/products/delete/{id}', 'ProductsController@delete')->where('id', '[0-9]+')->name('delete_product');
+        Route::get('/orders/return/{id}', 'OrderController@return')->where('id', '[0-9]+')->name('return_order');
         // settings
         Route::get('/settings', function () {
             return View::make('pages.settings.settings');

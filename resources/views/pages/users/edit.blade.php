@@ -18,7 +18,7 @@
                 return redirect('/users');
             }
             ?>
-            <input type="hidden" name="id" value="{{ request()->route('id') }}">
+            <input type="hidden" name="id" id="user_id" value="{{ request()->route('id') }}">
             Full Name<input type="text" name="full_name" class="form-control" placeholder="Full Name" value="{{ $user_info['0']['full_name'] }}">
             Username<input type="text" name="username" class="form-control" placeholder="Username (Optional)" value="{{ $user_info['0']['username'] }}">
             Balance<input type="number" step="0.01" name="balance" class="form-control" placeholder="Balance" value="{{ number_format($user_info['0']['balance'], 2) }}">
@@ -47,8 +47,40 @@
         </form>
         <br>
         <form>
-            <button type="submit" formaction="/users/delete/{{ request()->route('id') }}">Delete User</button>
+            <a href="javascript:;" data-toggle="modal" onclick="deleteData()" data-target="#DeleteModal" class="btn btn-xs btn-danger">Delete</a>
         </form>
     </div>
 </div>
+<div id="DeleteModal" class="modal fade" role="dialog">
+    <div class="modal-dialog ">
+        <!-- Modal content-->
+        <form action="" id="deleteForm" method="get">
+            <div class="modal-content">
+                <div class="modal-body">
+                    {{ csrf_field() }}
+                    <p class="text-center">Are you sure you want to delete this user?</p>
+                </div>
+                <div class="modal-footer">
+                    <center>
+                        <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
+                        <button type="submit" name="" class="btn btn-danger" data-dismiss="modal" onclick="formSubmit()">Delete</button>
+                    </center>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    function deleteData() {
+        var id = document.getElementById('user_id').value;
+        console.log(id);
+        var url = '{{ route("delete_user", ":id") }}';
+        url = url.replace(':id', id);
+        $("#deleteForm").attr('action', url);
+    }
+
+    function formSubmit() {
+        $("#deleteForm").submit();
+    }
+</script>
 @endsection

@@ -19,7 +19,10 @@ $transaction_items = explode(", ", $transaction['0']['products']);
         <h4>Total Price: ${{ number_format($transaction['0']['total_price'], 2) }}</h4>
         <h4>Status: {{ $transaction['0']['status'] == 0 ? "Normal" : "Returned" }}</h4>
         @if($transaction['0']['status'] == 0)
-        <h4><a href="/orders/return/{{ $transaction['0']['id'] }}">Return</a></h4>
+        <form>
+            <input type="hidden" id="transaction_id" value="{{ $transaction['0']['id'] }}">
+            <a href="javascript:;" data-toggle="modal" onclick="returnData()" data-target="#returnModal" class="btn btn-xs btn-danger">Return</a>
+        </form>
         @endif
     </div>
     <div class="col-md-5">
@@ -56,7 +59,26 @@ $transaction_items = explode(", ", $transaction['0']['products']);
         </table>
     </div>
 </div>
-<script>
+<div id="returnModal" class="modal fade" role="dialog">
+    <div class="modal-dialog ">
+        <!-- Modal content-->
+        <form action="" id="returnForm" method="get">
+            <div class="modal-content">
+                <div class="modal-body">
+                    {{ csrf_field() }}
+                    <p class="text-center">Are you sure you want to return this transaction?</p>
+                </div>
+                <div class="modal-footer">
+                    <center>
+                        <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
+                        <button type="submit" name="" class="btn btn-danger" data-dismiss="modal" onclick="formSubmit()">Return</button>
+                    </center>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
     $(document).ready(function() {
         var table = $('#product_list').DataTable({
             paging: false,
@@ -65,5 +87,17 @@ $transaction_items = explode(", ", $transaction['0']['products']);
             "scrollCollapse": true,
         });
     });
+
+    function returnData() {
+        var id = document.getElementById('transaction_id').value;
+        console.log(id);
+        var url = '{{ route("return_order", ":id") }}';
+        url = url.replace(':id', id);
+        $("#returnForm").attr('action', url);
+    }
+
+    function formSubmit() {
+        $("#returnForm").submit();
+    }
 </script>
 @endsection

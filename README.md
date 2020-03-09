@@ -29,7 +29,6 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 - Click on item name to check/uncheck checkbox. Makes it not as hard to click a small area
 - Discounts? Check if purchaser is staff role and give % off? (Edit % in settings)
 - Add sales/discounts to item for period of time (automatic or button)
-- Add confirm modal when deleting anything
 - Stats: Income by week, month, most popular products etc
 - Add stock/inventory features
 - Add tracking of role/balance etc changes
