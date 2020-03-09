@@ -4,11 +4,7 @@
 <div class="row">
     <div class="col-md-4"></div>
     <div class="col-md-4">
-        @if (\Session::has('error'))
-        <div class="alert alert-danger">
-            <p>{!! \Session::get('error') !!}</p>
-        </div>
-        @endif
+        @include('includes.messages')
         <form action="/login/auth" method="post">
             @csrf
             <div class="form-group">

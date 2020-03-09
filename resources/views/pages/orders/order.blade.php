@@ -11,14 +11,7 @@ use App\Http\Controllers\SettingsController;
 <div class="row">
     <div class="col-md-1"></div>
     <div class="col-md-7">
-        @if (\Session::has('error'))
-        <div class="alert alert-danger alert-dismissable">
-            <span>{!! \Session::get('error') !!}</span>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        @endif
+        @include('includes.messages')
         <form method="post" id="order" action="/orders/{{ request()->route('id') }}/submit">
             @csrf
             <input type="hidden" name="purchaser_id" value="{{ request()->route('id') }}">

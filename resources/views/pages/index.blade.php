@@ -8,22 +8,7 @@ use App\User;
 <div class="row">
     <div class="col-md-3"></div>
     <div class="col-md-6">
-        @if (\Session::has('success'))
-        <div class="alert alert-success alert-dismissable">
-            <span>{!! \Session::get('success') !!}</span>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        @endif
-        @if (\Session::has('error'))
-        <div class="alert alert-danger alert-dismissable">
-            <span>{!! \Session::get('error') !!}</span>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        @endif
+    @include('includes.messages')
         <table id="user_list">
             <thead>
                 <th>Full Name</th>
@@ -52,7 +37,7 @@ use App\User;
     });
     $('#user_list').DataTable({
         paging: false,
-        "scrollY": "350px",
+        "scrollY": "341px",
         "scrollCollapse": true,
     });
 </script>

@@ -22,14 +22,7 @@
 
     </div>
     <div class="col-md-4">
-        @if (\Session::has('error'))
-        <div class="alert alert-danger alert-dismissable">
-            <span>{!! \Session::get('error') !!}</span>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>>
-        </div>
-        @endif
+        @include('includes.messages')
         <input type="hidden" name="editor_id" value="{{ Auth::user()->id }}">
         <?php
 
@@ -37,7 +30,7 @@
         ?>
         @foreach(SettingsController::getCategories() as $category)
         {{ ucfirst($category->value) }} Limit/day
-        <input type="number" step="0.01" name="limit[{{ $category->value }}]" class="form-control" placeholder="Limit" value="{{ DB::table('user_limits')->where([['user_id', request()->route('id')], ['category', $category->value]])->pluck('limit_per_day')->first() }}">
+        <input type="number" step="0.01" name="limit[{{ $category->value }}]" class="form-control" placeholder="Limit">
         @endforeach
         </form>
     </div>

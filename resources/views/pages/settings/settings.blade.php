@@ -2,16 +2,9 @@
 @section('content')
 <h2>Settings</h2>
 <div class="row">
-    <div class="col-md-3"></div>
+    <div class="col-md-2"></div>
     <div class="col-md-4">
-        @if (\Session::has('success'))
-        <div class="alert alert-success alert-dismissible">
-            <span>{!! \Session::get('success') !!}</span>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        @endif
+    @include('includes.messages')
         <form action="/settings/submit" method="POST">
             @csrf
             <?php
@@ -27,15 +20,13 @@
         <table id="category_list">
             <thead>
                 <th>Category</th>
+                <th></th>
             </thead>
             <tbody>
                 @foreach(SettingsController::getCategories() as $category)
                 <tr>
                     <td class="table-text">
                         <div>{{ ucfirst($category->value) }}</div>
-                    </td>
-                    <td class="table-text">
-                        <div><a href="settings/category/edit/{{ $category->id }}">Edit</a></div>
                     </td>
                     <td class="table-text">
                         <div><a href="settings/category/delete/{{ $category->id }}">Delete</a></div>
@@ -46,7 +37,7 @@
         </table>
         <input type="submit" onclick="window.location='settings/category/new';" value="New Category">
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
     </div>
 </div>
 <script>
@@ -58,6 +49,7 @@
         searching: false,
         "scrollY": "350px",
         "scrollCollapse": true,
+        bInfo: false,
     });
 </script>
 @stop

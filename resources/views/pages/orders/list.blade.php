@@ -8,14 +8,7 @@ use App\Transactions;
 <div class="row">
     <div class="col-md-3"></div>
     <div class="col-md-6">
-        @if (\Session::has('success'))
-        <div class="alert alert-success alert-dismissable">
-            <span>{!! \Session::get('success') !!}</span>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        @endif
+        @include('includes.messages')
     </div>
     <div class="col-md-3"></div>
 </div>
@@ -44,7 +37,7 @@ use App\Transactions;
                 <div>${{ number_format($transaction->total_price, 2) }}</div>
             </td>
             <td class="table-text">
-            <div>{!! $transaction->status == 0 ? "<h5><span class=\"badge badge-success\">Normal</span></h5>" : "<h5><span class=\"badge badge-danger\">Returned</span></h5>"!!}</div>
+                <div>{!! $transaction->status == 0 ? "<h5><span class=\"badge badge-success\">Normal</span></h5>" : "<h5><span class=\"badge badge-danger\">Returned</span></h5>"!!}</div>
             </td>
             <td>
                 <div><a href="orders/view/{{ $transaction->id }}">View</a></div>

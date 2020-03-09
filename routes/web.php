@@ -28,7 +28,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/', function () {
         return View::make('pages.index');
     });
-    Route::get('/logout', 'LoginController@logout')->name('logout');
     // cashier
     Route::get('/orders', function () {
         return View::make('pages.orders.list');
@@ -77,10 +76,6 @@ Route::middleware('auth')->group(function () {
             return View::make('pages.settings.new');
         });
         Route::post('/settings/category/new', 'SettingsController@newCat');
-        Route::get('/settings/category/edit/{id}', function () {
-            return View::make('pages.settings.edit');
-        })->where('id', '[0-9]+');
-        Route::get('/settings/category/edit/{id}/commit', 'SettingsController@editCat')->where('id', '[0-9]+');
         Route::get('/settings/category/delete/{id}', 'SettingsController@deleteCat')->where('id', '[0-9]+');
     });
 });
