@@ -4,7 +4,7 @@ use App\Transactions;
 ?>
 @extends('layouts.default')
 @section('content')
-<h2>User History</h2>
+<h2>User Info</h2>
 <p>User: {{ DB::table('users')->where('id', request()->route('id'))->pluck('full_name')->first() }}</p>
 <span>Total spent: ${{ number_format(Transactions::where('purchaser_id', '=', request()->route('id'))->sum('total_price'), 2) }}</span>,&nbsp;
 <span>Total returned: ${{ number_format(Transactions::where([['purchaser_id', '=', request()->route('id')], ['status', '=', '1']])->sum('total_price'), 2) }}</span>,&nbsp;
@@ -52,7 +52,10 @@ use App\Transactions;
     $('#order_list').DataTable({
         "order": [
             [0, "desc"]
-        ]
+        ],
+        paging: false,
+        "scrollY": "250px",
+        "scrollCollapse": true,
     });
 </script>
 @endsection

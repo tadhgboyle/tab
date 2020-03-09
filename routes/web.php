@@ -36,9 +36,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders/view/{id}', function () {
         return View::make('pages.orders.view');
     })->where('id', '[0-9]+');
-    Route::get('/orders/history/{id}', function () {
-        return View::make('pages.orders.history');
-    })->where('id', '[0-9]+');
     Route::get('/orders/{id}', function () {
         return View::make('pages.orders.order');
     })->where('id', '[0-9]+');
@@ -53,6 +50,9 @@ Route::middleware('auth')->group(function () {
             return View::make('pages.users.edit');
         })->where('id', '[0-9]+');
         Route::post('/users/edit/{id}/commit', 'UsersController@edit')->where('id', '[0-9]+');
+        Route::get('/users/info/{id}', function () {
+            return View::make('pages.users.info');
+        })->where('id', '[0-9]+');
         Route::get('/users/delete/{id}', 'UsersController@delete')->where('id', '[0-9]+');
         // products
         Route::get('/products', function () {

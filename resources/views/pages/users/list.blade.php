@@ -30,7 +30,7 @@ use App\User;
                 <div>{{ ucfirst($user->role) }}</div>
             </td>
             <td>
-                <div><a href="orders/history/{{ $user->id }}">History</a></div>
+                <div><a href="users/info/{{ $user->id }}">Info</a></div>
             </td>
             <td>
                 <div><a href="users/edit/{{ $user->id }}">Edit</a></div>
