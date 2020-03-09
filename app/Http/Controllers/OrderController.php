@@ -46,16 +46,7 @@ class OrderController extends Controller
             $category_limit = 0.00;
             foreach ($transaction_categories as $category) {
                 $category_limit = DB::table('user_limits')->where([['user_id', $request->purchaser_id], ['category', '=', $category]])->pluck('limit_per_day')->first();
-                $transactions = Transactions::where([['created_at', '>=', Carbon::now()->subDay()->toDateTimeString()], ['purchaser_id', '=', $request->purchaser_id]])->get();
-                foreach ($transactions as $transaction) {
-                    foreach (explode(", ", $transaction['products']) as $transaction_product) {
-                        if (strtolower($category) == DB::table('products')->where('id', '=', strtok($transaction_product, "*"))->pluck('category')->first()) {
-                            $product_price = DB::table('products')->where('id', '=', strtok($transaction_product, "*"))->pluck('price')->first();
-                            $product_quantity = ltrim(strstr($transaction_product, '*'), '*');
-                            $category_spent += ($product_price * $product_quantity);
-                        }
-                    }
-                }
+                $category_spent = UserLimitsController::findSpent($request->purchaser_id, $category);
                 foreach ($products as $product) {
                     $product_info = Products::select('price', 'category')->where('id', strtok($product, "*"))->get();
                     $product_quantity = ltrim(strstr($product, '*'), '*');

@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('content')
 <h2>Edit User</h2>
-<p>Editing: {{ DB::table('users')->where('id', request()->route('id'))->pluck('full_name')->first() }}</p>
+<p>User: {{ DB::table('users')->where('id', request()->route('id'))->pluck('full_name')->first() }} <a href="/users/info/{{ request()->route('id') }}">(Info)</a></p>
 <div class="row">
     <div class="col-md-2"></div>
     <div class="col-md-4">
@@ -43,7 +43,7 @@
     </form>
     <div class="col-md-2">
         <form>
-            <button type="submit" form="edit_user">Edit User</button>
+            <button type="submit" form="edit_user">Submit</button>
         </form>
         <br>
         <form>

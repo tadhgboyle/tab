@@ -7,7 +7,7 @@ use App\User;
 use App\Http\Controllers\SettingsController;
 ?>
 <h2>Cashier</h2>
-<p>Purchaser: {{ DB::table('users')->where('id', request()->route('id'))->pluck('full_name')->first() }}</p>
+<p>User: {{ DB::table('users')->where('id', request()->route('id'))->pluck('full_name')->first() }}</p>
 <div class="row">
     <div class="col-md-1"></div>
     <div class="col-md-7">
