@@ -77,6 +77,6 @@ Route::middleware('auth')->group(function () {
             return View::make('pages.settings.new');
         });
         Route::post('/settings/category/new', 'SettingsController@newCat');
-        Route::get('/settings/category/delete/{id}', 'SettingsController@deleteCat')->where('id', '[0-9]+');
+        Route::get('/settings/category/delete/{name}', 'SettingsController@deleteCat')->where('id', '[0-9]+')->name('delete_category');
     });
 });

@@ -4,7 +4,7 @@
 <div class="row">
     <div class="col-md-2"></div>
     <div class="col-md-4">
-    @include('includes.messages')
+        @include('includes.messages')
         <form action="/settings/submit" method="POST">
             @csrf
             <?php
@@ -13,6 +13,7 @@
             ?>
             GST<input type="number" step="0.01" name="gst" class="form-control" placeholder="GST" value="{{ SettingsController::getGst() }}">
             PST<input type="number" step="0.01" name="pst" class="form-control" placeholder="PST" value="{{ SettingsController::getPst() }}">
+            Staff Discount<input type="number" step="0.01" name="staff_discount" class="form-control" placeholder="Staff Discount" value="{{ SettingsController::getStaffDiscount() }}">
             <button type="submit">Submit</button>
         </form>
     </div>
@@ -29,7 +30,12 @@
                         <div>{{ ucfirst($category->value) }}</div>
                     </td>
                     <td class="table-text">
-                        <div><a href="settings/category/delete/{{ $category->id }}">Delete</a></div>
+                        <div>
+                            <form>
+                                <input type="hidden" id="category_name" value="{{ $category->value }}">
+                                <a href="javascript:;" data-toggle="modal" onclick="deleteData()" data-target="#DeleteModal">Delete</a>
+                            </form>
+                        </div>
                     </td>
                 </tr>
                 @endforeach
@@ -40,7 +46,25 @@
     <div class="col-md-2">
     </div>
 </div>
-<script>
+<div id="DeleteModal" class="modal fade" role="dialog">
+    <div class="modal-dialog ">
+        <form action="" id="deleteForm" method="get">
+            <div class="modal-content">
+                <div class="modal-body">
+                    {{ csrf_field() }}
+                    <p class="text-center">Are you sure you want to delete this category?</p>
+                </div>
+                <div class="modal-footer">
+                    <center>
+                        <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
+                        <button type="submit" name="" class="btn btn-danger" data-dismiss="modal" onclick="formSubmit()">Delete</button>
+                    </center>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
     $(document).ready(function() {
         $('#category_list').DataTable();
     });
@@ -51,5 +75,17 @@
         "scrollCollapse": true,
         bInfo: false,
     });
+
+    function deleteData() {
+        var name = document.getElementById('category_name').value;
+        console.log(name);
+        var url = '{{ route("delete_category", ":name") }}';
+        url = url.replace(':name', name);
+        $("#deleteForm").attr('action', url);
+    }
+
+    function formSubmit() {
+        $("#deleteForm").submit();
+    }
 </script>
 @stop

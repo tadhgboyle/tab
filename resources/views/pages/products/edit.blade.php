@@ -43,7 +43,6 @@
 </div>
 <div id="DeleteModal" class="modal fade" role="dialog">
     <div class="modal-dialog ">
-        <!-- Modal content-->
         <form action="" id="deleteForm" method="get">
             <div class="modal-content">
                 <div class="modal-body">
@@ -63,7 +62,6 @@
 <script type="text/javascript">
     function deleteData() {
         var id = document.getElementById('product_id').value;
-        console.log(id);
         var url = '{{ route("delete_product", ":id") }}';
         url = url.replace(':id', id);
         $("#deleteForm").attr('action', url);
