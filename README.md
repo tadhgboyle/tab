@@ -23,6 +23,7 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 ## Roadmap:
 
 *High to Low priority sort*
+- Calculate taxes in UserLimitController::findSpent()
 - Store price of item during purchase (example: 1*3$1.65)
     - While viewing an order be able to return items via table (removed -1 feature)
 - Click on item name to check/uncheck checkbox. Makes it not as hard to click a small area
