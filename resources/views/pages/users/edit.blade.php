@@ -12,6 +12,7 @@
             use App\User;
             use Illuminate\Support\Facades\DB;
             use App\Http\Controllers\SettingsController;
+            use App\Http\Controllers\UserLimitsController;
 
             $user_info = User::select('full_name', 'username', 'balance', 'role', 'password')->where('id', '=', request()->route('id'))->get();
             if (empty($user_info)) {
@@ -23,11 +24,11 @@
             Username<input type="text" name="username" class="form-control" placeholder="Username (Optional)" value="{{ $user_info['0']['username'] }}">
             Balance<input type="number" step="0.01" name="balance" class="form-control" placeholder="Balance" value="{{ number_format($user_info['0']['balance'], 2) }}">
 
-            <input type="radio" name="role" value="camper" @if($user_info['0']['role']=="camper" ) checked @endif>
+            <input type="radio" name="role" value="camper" @if($user_info['0']['role']=="camper") checked @endif>
             <label for="camper">Camper</label><br>
-            <input type="radio" name="role" value="cashier" @if($user_info['0']['role']=="cashier" ) checked @endif>
+            <input type="radio" name="role" value="cashier" @if($user_info['0']['role']=="cashier") checked @endif>
             <label for="cashier">Cashier</label><br>
-            <input type="radio" name="role" value="administrator" @if($user_info['0']['role']=="administrator" ) checked @endif>
+            <input type="radio" name="role" value="administrator" @if($user_info['0']['role']=="administrator") checked @endif>
             <label for="administrator">Administrator</label>
             <input type="password" name="password" class="form-control" placeholder="Password">
             <input type="password" name="password_confirmation" class="form-control" placeholder="Confirm Password">
@@ -36,8 +37,13 @@
         @include('includes.messages')
         <input type="hidden" name="editor_id" value="{{ Auth::user()->id }}">
         @foreach(SettingsController::getCategories() as $category)
-        {{ ucfirst($category->value) }} Limit/day
-        <input type="number" step="0.01" name="limit[{{ $category->value }}]" class="form-control" placeholder="Limit" value="{{ DB::table('user_limits')->where([['user_id', request()->route('id')], ['category', $category->value]])->pluck('limit_per_day')->first() }}">
+        {{ ucfirst($category->value) }} Limit
+        <input type="number" step="0.01" name="limit[{{ $category->value }}]" class="form-control" placeholder="Limit" value="{{ DB::table('user_limits')->where([['user_id', request()->route('id')], ['category', $category->value]])->pluck('limit_per')->first() }}">
+        <input type="radio" name="duration[{{ $category->value }}]" value="0" @if(UserLimitsController::findDuration(request()->route('id') ,$category->value) == "day") checked @endif>
+        <label for="day">Day</label>&nbsp;
+        <input type="radio" name="duration[{{ $category->value }}]" value="1" @if(UserLimitsController::findDuration(request()->route('id') ,$category->value) == "week") checked @endif>
+        <label for="week">Week</label>
+        <br>
         @endforeach
     </div>
     </form>

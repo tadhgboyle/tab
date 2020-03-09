@@ -7,10 +7,15 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class UserLimitsController extends Controller
-{
+{   
+    public static function findDuration($user, $category)
+    {
+        return DB::table('user_limits')->where([['user_id', $user], ['category', '=', $category]])->pluck('duration')->first() == 0 ? "day" : "week";
+    }
+
     public static function findLimit($user, $category)
     {
-        return DB::table('user_limits')->where([['user_id', $user], ['category', '=', $category]])->pluck('limit_per_day')->first();
+        return DB::table('user_limits')->where([['user_id', $user], ['category', '=', $category]])->pluck('limit_per')->first();
     }
 
     public static function findSpent($user, $category)

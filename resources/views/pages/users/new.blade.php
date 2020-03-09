@@ -29,8 +29,13 @@
         use App\Http\Controllers\SettingsController;
         ?>
         @foreach(SettingsController::getCategories() as $category)
-        {{ ucfirst($category->value) }} Limit/day
+        {{ ucfirst($category->value) }} Limit
         <input type="number" step="0.01" name="limit[{{ $category->value }}]" class="form-control" placeholder="Limit">
+        <input type="radio" name="duration[{{ $category->value }}]" value="0">
+        <label for="day">Day</label>&nbsp;
+        <input type="radio" name="duration[{{ $category->value }}]" value="1">
+        <label for="week">Week</label>
+        <br>
         @endforeach
         </form>
     </div>

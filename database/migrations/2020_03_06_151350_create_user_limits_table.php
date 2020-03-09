@@ -17,7 +17,7 @@ class CreateUserLimitsTable extends Migration
             $table->bigIncrements('limit_id');
             $table->integer('user_id');
             $table->string('category');
-            $table->float('limit_per_day');
+            $table->float('limit_per');
             $table->integer('editor_id');
             $table->timestamps();
         });

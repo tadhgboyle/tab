@@ -74,7 +74,7 @@ use App\Transactions;
                         <div>{{ ucfirst($category->value) }}</div>
                     </td>
                     <td class="table-text">
-                        <div>{!! $category_limit == "-1" ? "<i>Unlimited</i>" : "$" . number_format($category_limit, 2) !!}</div>
+                        <div>{!! $category_limit == "-1" ? "<i>Unlimited</i>" : "$" . number_format($category_limit, 2) . "/" . UserLimitsController::findDuration(request()->route('id'), $category->value) !!}</div>
                     </td>
                     <td class="table-text">
                         <div>${{ number_format($category_spent, 2) }}</div>

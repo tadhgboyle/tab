@@ -4,6 +4,8 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 
 :raised_hands: Thank you to [DataTables](https://datatables.net) for the fast and interactive tables.
 
+*Note: Migrations are not up to date. I am manually editing my local MySQL tables and will update migrations when it is more stable.*
+
 ## Features (so far):
 
 - User control
@@ -11,7 +13,8 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
         - Cashiers can ring up orders
         - Administrators can create/edit/delete users, products, categories and settings. They can also view user history and see detailed information about every order.
 - Parental control
-    - Parents or guardians can set their children a certain amount of money to spend in each category per day.
+    - Parents or guardians can set their children a certain amount of money to spend in each category.
+    - These limits can be set per-category to either day or week.
 - Product control and editing
     - Change the name and price anytime.
     - Optional PST charge on a per-item basis.
@@ -40,7 +43,6 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 ## Roadmap:
 
 *High to Low priority sort*
-- Add option select limit/day *or* limit/week per category
 - Store price of item during purchase (example: 1*3$1.65)
     - This means when you return an order/product (see next point), they get the correct price back even if the price has changed since the order. 
     - While viewing an order be able to return items via table (removed -1 feature)

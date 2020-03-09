@@ -39,13 +39,15 @@ class UsersController extends Controller
         $user->save();
         // update their limits
         foreach ($request->limit as $category => $limit) {
+            $duration = 0;
+            if ($request->duration[$category] == "" ? $duration = 0 : $duration = $request->duration[$category]);
             if ($limit == "") $limit = "-1";
             if ($limit < -1) {
                 return redirect()->back()->with('error', 'Limit must be above -1 for ' . ucfirst($category) . '. (-1 means no limit, 0 means not allowed.)')->withInput($request->all());
             }
             UserLimits::updateOrCreate(
                 ['user_id' => $user->id, 'category' => $category],
-                ['limit_per_day' => $limit, 'editor_id' => $request->editor_id]
+                ['limit_per' => $limit, 'duration' => $duration, 'editor_id' => $request->editor_id]
             );
         }
         return redirect('/users');
@@ -73,13 +75,15 @@ class UsersController extends Controller
         );
         // update their limits
         foreach ($request->limit as $category => $limit) {
+            $duration = 0;
+            if ($request->duration[$category] == "" ? $duration = 0 : $duration = $request->duration[$category]);
             if ($limit == "") $limit = "-1";
             if ($limit < -1) {
                 return redirect()->back()->with('error', 'Limit must be above -1 for ' . ucfirst($category) . '. (-1 means no limit, 0 means not allowed.)')->withInput($request->all());
             }
             UserLimits::updateOrCreate(
                 ['user_id' => $request->id, 'category' => $category],
-                ['limit_per_day' => $limit, 'editor_id' => $request->editor_id]
+                ['limit_per' => $limit, 'duration' => $duration, 'editor_id' => $request->editor_id]
             );
         }
         // if same role or changing from one staff role to another
