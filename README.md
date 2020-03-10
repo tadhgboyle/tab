@@ -43,9 +43,7 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 ## Roadmap:
 
 *High to Low priority sort*
-- Store price of item during purchase (example: 1*3$1.65)
-    - This means when you return an order/product (see next point), they get the correct price back even if the price has changed since the order. 
-    - While viewing an order be able to return items via table (removed -1 feature)
+- While viewing an order be able to return items via table (removed -1 feature)
 - Click on item name to check/uncheck checkbox. Makes it not as hard to click a small area
 - Discounts? Check if purchaser is staff role and give % off? (Edit % in settings)
 - Add sales/discounts to item for period of time (automatic or button)
