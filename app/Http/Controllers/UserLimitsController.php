@@ -22,7 +22,7 @@ class UserLimitsController extends Controller
     {
         $category_spent = 0.00;
         $tax_percent = SettingsController::getGst();
-        $transactions = Transactions::where([['created_at', '>=', Carbon::now()->subDay()->toDateTimeString()], ['purchaser_id', '=', $user]])->get();
+        $transactions = Transactions::where([['created_at', '>=', Carbon::now()->subDay()->toDateTimeString()], ['purchaser_id', $user], ['status', '0']])->get();
         foreach ($transactions as $transaction) {
             foreach (explode(", ", $transaction['products']) as $transaction_product) {
                 if (strtolower($category) == DB::table('products')->where('id', '=', strtok($transaction_product, "*"))->pluck('category')->first()) {
