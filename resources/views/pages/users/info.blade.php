@@ -67,14 +67,15 @@ use App\Transactions;
                 @foreach(SettingsController::getCategories() as $category)
                 <?php
                 $category_limit = UserLimitsController::findLimit(request()->route('id'), $category->value);
-                $category_spent = UserLimitsController::findSpent(request()->route('id'), $category->value);
+                $category_duration = UserLimitsController::findDuration(request()->route('id'), $category->value);
+                $category_spent = UserLimitsController::findSpent(request()->route('id'), $category->value, $category_duration);
                 ?>
                 <tr>
                     <td class="table-text">
                         <div>{{ ucfirst($category->value) }}</div>
                     </td>
                     <td class="table-text">
-                        <div>{!! $category_limit == "-1" ? "<i>Unlimited</i>" : "$" . number_format($category_limit, 2) . "/" . UserLimitsController::findDuration(request()->route('id'), $category->value) !!}</div>
+                        <div>{!! $category_limit == "-1" ? "<i>Unlimited</i>" : "$" . number_format($category_limit, 2) . "/" . $category_duration !!}</div>
                     </td>
                     <td class="table-text">
                         <div>${{ number_format($category_spent, 2) }}</div>

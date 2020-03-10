@@ -18,11 +18,15 @@ class UserLimitsController extends Controller
         return DB::table('user_limits')->where([['user_id', $user], ['category', '=', $category]])->pluck('limit_per')->first();
     }
 
-    public static function findSpent($user, $category)
+    public static function findSpent($user, $category, $duration)
     {
         $category_spent = 0.00;
         $tax_percent = SettingsController::getGst();
-        $transactions = Transactions::where([['created_at', '>=', Carbon::now()->subDay()->toDateTimeString()], ['purchaser_id', $user], ['status', '0']])->get();
+        if ($duration == "day") {
+            $transactions = Transactions::where([['created_at', '>=', Carbon::now()->subDay()->toDateTimeString()], ['purchaser_id', $user], ['status', '0']])->get();
+        } else if ($duration == "week") {
+            $transactions = Transactions::where([['created_at', '>=', Carbon::now()->subWeek()->toDateTimeString()], ['purchaser_id', $user], ['status', '0']])->get();
+        }
         foreach ($transactions as $transaction) {
             foreach (explode(", ", $transaction['products']) as $transaction_product) {
                 if (strtolower($category) == DB::table('products')->where('id', '=', strtok($transaction_product, "*"))->pluck('category')->first()) {

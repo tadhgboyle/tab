@@ -62,7 +62,7 @@ class OrderController extends Controller
             $category_limit = 0.00;
             foreach ($transaction_categories as $category) {
                 $category_limit = UserLimitsController::findLimit($request->purchaser_id, $category);
-                $category_spent = UserLimitsController::findSpent($request->purchaser_id, $category);
+                $category_spent = UserLimitsController::findSpent($request->purchaser_id, $category, UserLimitsController::findDuration($request->purchaser_id, $category));
                 foreach ($products as $product) {
                     $product_info = OrderController::deserializeProduct($product);
                     if ($product_info['category'] = $category) {
@@ -86,7 +86,7 @@ class OrderController extends Controller
             $transaction->total_price = $total_price;
             $transaction->save();
 
-            return redirect('/')->with('success', 'Order #' . $transaction->id . '. ' . $purchaser_info['0']['full_name'] . " now has $" . round($remaining_balance, 2));
+            return redirect('/')->with('success', 'Order #' . $transaction->id . '. ' . $purchaser_info['0']['full_name'] . " now has $" . number_format(round($remaining_balance, 2), 2));
         } else {
             return redirect()->back()->withInput()->with('error', 'Please select at least one item.');
         }
