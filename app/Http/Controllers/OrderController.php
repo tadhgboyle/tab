@@ -13,17 +13,14 @@ class OrderController extends Controller
 
     public static function deserializeProduct($product)
     {
-        // everything before * -> id
         $product_id = strtok($product, "*");
         $product_name = DB::table('products')->where('id', $product_id)->pluck('name')->first();
         $product_category= DB::table('products')->where('id', $product_id)->pluck('category')->first();
-        // everything between * and $ -> quantity
-        $product_price = 0.00;
+        $product_price = ltrim(strstr($product, '$'), '$');
+        $product_quantity = 0.00;
         if (preg_match('/\*(.*?)\$/', $product, $match) == 1) {
-            $product_price = $match[1];
+            $product_quantity = $match[1];
         }
-        // everything after $ -> price
-        $product_quantity = ltrim(strstr($product, '$'), '$');
         return array('id' => $product_id, 'name' => $product_name, 'category' => $product_category,'price' => $product_price, 'quantity' => $product_quantity);
     }
 

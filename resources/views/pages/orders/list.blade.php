@@ -25,7 +25,7 @@ use App\Transactions;
         @foreach (Transactions::orderBy('created_at', 'DESC')->get() as $transaction)
         <tr>
             <td class="table-text">
-                <div>{{ $transaction->created_at }}</div>
+                <div>{{ $transaction->created_at->format('M jS Y h:ia') }}</div>
             </td>
             <td class="table-text">
                 <div><a href="users/info/{{ $transaction->purchaser_id }}">{{ DB::table('users')->where('id', $transaction->purchaser_id)->pluck('full_name')->first() }}</a></div>
@@ -51,9 +51,7 @@ use App\Transactions;
         $('#order_list').DataTable();
     });
     $('#order_list').DataTable({
-        "order": [
-            [0, "desc"]
-        ],
+        "order": [],
         paging: false,
         "scrollY": "340px",
         "scrollCollapse": true,

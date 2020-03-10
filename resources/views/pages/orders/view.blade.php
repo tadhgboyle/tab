@@ -14,7 +14,7 @@ $transaction_items = explode(", ", $transaction['0']['products']);
     <div class="col-md-7">
         <br>
         <h4>Order ID: {{request()->route('id') }}</h4>
-        <h4>Time: {{ $transaction['0']['created_at'] }}</h4>
+        <h4>Time: {{ $transaction['0']['created_at']->format('M jS Y h:ia') }}</h4>
         <h4>Purchaser: {{ DB::table('users')->where('id', $transaction['0']['purchaser_id'])->pluck('full_name')->first() }}</h4>
         <h4>Cashier: {{ DB::table('users')->where('id', $transaction['0']['cashier_id'])->pluck('full_name')->first() }}</h4>
         <h4>Total Price: ${{ number_format($transaction['0']['total_price'], 2) }}</h4>

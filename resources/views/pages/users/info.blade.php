@@ -27,7 +27,7 @@ use App\Transactions;
                 @foreach (Transactions::where('purchaser_id', '=', request()->route('id'))->get() as $transaction)
                 <tr>
                     <td class="table-text">
-                        <div>{{ $transaction->created_at }}</div>
+                        <div>{{ $transaction->created_at->format('M jS Y h:ia') }}</div>
                     </td>
                     <td class="table-text">
                         <div> {{ DB::table('users')->where('id', $transaction->purchaser_id)->pluck('full_name')->first() }}</div>
@@ -94,9 +94,7 @@ use App\Transactions;
         $('#order_list').DataTable();
     });
     $('#order_list').DataTable({
-        "order": [
-            [0, "desc"]
-        ],
+        "order": [],
         paging: false,
         searching: false,
         "scrollY": "245px",
