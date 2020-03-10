@@ -50,7 +50,7 @@ class UsersController extends Controller
                 ['limit_per' => $limit, 'duration' => $duration, 'editor_id' => $request->editor_id]
             );
         }
-        return redirect('/users');
+        return redirect('/users')->with('success', 'Created ' . $request->full_name . ' profile.');
     }
 
     public function edit(Request $request)
@@ -112,7 +112,7 @@ class UsersController extends Controller
         DB::table('users')
             ->where('id', $request->id)
             ->update(['full_name' => $request->full_name, 'username' => $request->username, 'balance' => $request->balance, 'role' => $request->role, 'password' => $password]);
-        return redirect('/users');
+        return redirect('/users')->with('success', 'Updated ' . $request->full_name . ' profile.');
     }
 
     public function delete($id)

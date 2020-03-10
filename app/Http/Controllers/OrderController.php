@@ -13,15 +13,43 @@ class OrderController extends Controller
 
     public static function deserializeProduct($product)
     {
+        /**
+         * Example serialized product:
+         * 3*5$1.45G1.07P1.05R0
+         * ID: 3
+         * Quantity: 5
+         * Price: 1.45 each
+         * Gst: 1.07
+         * Pst: 1.05
+         * Returned: 0 / False
+         * */
         $product_id = strtok($product, "*");
         $product_name = DB::table('products')->where('id', $product_id)->pluck('name')->first();
-        $product_category= DB::table('products')->where('id', $product_id)->pluck('category')->first();
-        $product_price = ltrim(strstr($product, '$'), '$');
-        $product_quantity = 0.00;
+        $product_category = DB::table('products')->where('id', $product_id)->pluck('category')->first();
+        $product_quantity = $product_price = $product_gst = $product_pst = $product_returned = 0.00;
         if (preg_match('/\*(.*?)\$/', $product, $match) == 1) {
             $product_quantity = $match[1];
         }
-        return array('id' => $product_id, 'name' => $product_name, 'category' => $product_category,'price' => $product_price, 'quantity' => $product_quantity);
+        if (preg_match('/\$(.*?)G/', $product, $match) == 1) {
+            $product_price = $match[1];
+        }
+        if (preg_match('/G(.*?)P/', $product, $match) == 1) {
+            $product_gst = $match[1];
+        }
+        if (preg_match('/P(.*?)r/', $product, $match) == 1) {
+            $product_pst = $match[1];
+        }
+        $product_returned = substr($product, strpos($product, "R") + 1);
+        return array(
+            'id' => $product_id,
+            'name' => $product_name,
+            'category' => $product_category,
+            'quantity' => $product_quantity,
+            'price' => $product_price,
+            'gst' => $product_gst,
+            'pst' => $product_pst,
+            'returned' => $product_returned
+        );
     }
 
     public function submit(Request $request)
@@ -32,6 +60,7 @@ class OrderController extends Controller
             $total_price = 0;
             $quantity = 1;
             $product_quantity = 1;
+            $pst_metadata = "";
             $total_tax = SettingsController::getGst();
             foreach ($request->product as $product) {
                 $product_info = Products::select('name', 'price', 'category', 'pst')->where('id', $product)->get();
@@ -40,11 +69,14 @@ class OrderController extends Controller
                     if ($quantity < 1) {
                         return redirect()->back()->withInput()->with('error', 'Quantity must be above 1 for item ' . $product_info['0']['name']);
                     }
-                    $product_quantity = $product . "*" . $quantity . "$" . $product_info['0']['price'];
+                    if ($product_info['0']['pst'] == 1) {
+                        $total_tax = ($total_tax + SettingsController::getPst()) - 1;
+                        $pst_metadata = SettingsController::getPst();
+                    } else {
+                        $pst_metadata = "";
+                    }
+                    $product_quantity = $product . "*" . $quantity . "$" . $product_info['0']['price'] . "G" . SettingsController::getGst() . "P" . $pst_metadata . "R0";
                     if (!in_array($product_info['0']['category'], $transaction_categories)) array_push($transaction_categories, $product_info['0']['category']);
-                }
-                if ($product_info['0']['pst'] == 1) {
-                    $total_tax = ($total_tax + SettingsController::getPst()) - 1;
                 }
                 array_push($products, $product_quantity);
                 $total_price += (($product_info['0']['price'] * $quantity) * $total_tax);

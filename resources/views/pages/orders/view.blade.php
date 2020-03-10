@@ -15,14 +15,19 @@ $transaction_items = explode(", ", $transaction['0']['products']);
         <br>
         <h4>Order ID: {{request()->route('id') }}</h4>
         <h4>Time: {{ $transaction['0']['created_at']->format('M jS Y h:ia') }}</h4>
-        <h4>Purchaser: {{ DB::table('users')->where('id', $transaction['0']['purchaser_id'])->pluck('full_name')->first() }}</h4>
-        <h4>Cashier: {{ DB::table('users')->where('id', $transaction['0']['cashier_id'])->pluck('full_name')->first() }}</h4>
+        <h4>Purchaser: <a
+                href="/users/info/{{ $transaction['0']['purchaser_id'] }}">{{ DB::table('users')->where('id', $transaction['0']['purchaser_id'])->pluck('full_name')->first() }}</a>
+        </h4>
+        <h4>Cashier: <a
+                href="/users/info/{{ $transaction['0']['cashier_id'] }}">{{ DB::table('users')->where('id', $transaction['0']['cashier_id'])->pluck('full_name')->first() }}</a>
+        </h4>
         <h4>Total Price: ${{ number_format($transaction['0']['total_price'], 2) }}</h4>
         <h4>Status: {{ $transaction['0']['status'] == 0 ? "Normal" : "Returned" }}</h4>
         @if($transaction['0']['status'] == 0)
         <form>
             <input type="hidden" id="transaction_id" value="{{ $transaction['0']['id'] }}">
-            <a href="javascript:;" data-toggle="modal" onclick="returnData()" data-target="#returnModal" class="btn btn-xs btn-danger">Return</a>
+            <a href="javascript:;" data-toggle="modal" onclick="returnData()" data-target="#returnModal"
+                class="btn btn-xs btn-danger">Return</a>
         </form>
         @endif
     </div>
@@ -34,6 +39,7 @@ $transaction_items = explode(", ", $transaction['0']['products']);
                 <th>Price</th>
                 <th>Quantity</th>
                 <th>Item Price</th>
+                <th></th>
             </thead>
             <tbody>
                 @foreach($transaction_items as $product)
@@ -53,6 +59,9 @@ $transaction_items = explode(", ", $transaction['0']['products']);
                     <td class="table-text">
                         <div>${{ number_format($item_info['price'] * $item_info['quantity'], 2) }}</div>
                     </td>
+                    <td class="table-text">
+                        <div><a href="">Return</a></div>
+                    </td>
                 </tr>
                 @endforeach
             </tbody>
@@ -70,7 +79,8 @@ $transaction_items = explode(", ", $transaction['0']['products']);
                 <div class="modal-footer">
                     <center>
                         <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
-                        <button type="submit" name="" class="btn btn-danger" data-dismiss="modal" onclick="formSubmit()">Return</button>
+                        <button type="submit" name="" class="btn btn-danger" data-dismiss="modal"
+                            onclick="formSubmit()">Return</button>
                     </center>
                 </div>
             </div>

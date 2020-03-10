@@ -5,6 +5,13 @@ use App\User;
 @extends('layouts.default')
 @section('content')
 <h2>User List</h2>
+<div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
+        @include('includes.messages')
+    </div>
+    <div class="col-md-3"></div>
+</div>
 <table id="user_list">
     <thead>
         <th>Full Name</th>
