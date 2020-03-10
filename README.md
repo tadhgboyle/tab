@@ -43,7 +43,6 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 ## Roadmap:
 
 *High to Low priority sort*
-- Add relevent tax info to deserializeProduct()
 - While viewing an order be able to return items via table (removed -1 feature)
 - Click on item name to check/uncheck checkbox. Makes it not as hard to click a small area
 - Discounts? Check if purchaser is staff role and give % off? (Edit % in settings)
