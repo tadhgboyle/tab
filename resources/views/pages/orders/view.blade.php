@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OrderController;
 use App\Products;
 use App\Transactions;
 
@@ -37,21 +38,20 @@ $transaction_items = explode(", ", $transaction['0']['products']);
             <tbody>
                 @foreach($transaction_items as $product)
                 <?php
-                $item_info = Products::select('name', 'price')->where('id', '=', strtok($product, "*"))->get();
-                $quantity = substr($product, strpos($product, "*") + 1);
+                $item_info = OrderController::deserializeProduct($product);
                 ?>
                 <tr>
                     <td class="table-text">
-                        <div>{{ $item_info['0']['name'] }}</div>
+                        <div>{{ $item_info['name'] }}</div>
                     </td>
                     <td class="table-text">
-                        <div>${{ number_format($item_info['0']['price'], 2) }}</div>
+                        <div>${{ number_format($item_info['price'], 2) }}</div>
                     </td>
                     <td class="table-text">
-                        <div>{{ $quantity }}</div>
+                        <div>{{ $item_info['quantity'] }}</div>
                     </td>
                     <td class="table-text">
-                        <div>${{ number_format($item_info['0']['price'] * $quantity, 2) }}</div>
+                        <div>${{ number_format($item_info['price'] * $item_info['quantity'], 2) }}</div>
                     </td>
                 </tr>
                 @endforeach
@@ -61,7 +61,6 @@ $transaction_items = explode(", ", $transaction['0']['products']);
 </div>
 <div id="returnModal" class="modal fade" role="dialog">
     <div class="modal-dialog ">
-        <!-- Modal content-->
         <form action="" id="returnForm" method="get">
             <div class="modal-content">
                 <div class="modal-body">

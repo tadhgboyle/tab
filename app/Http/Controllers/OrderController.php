@@ -7,10 +7,26 @@ use App\Products;
 use App\Transactions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Carbon;
 
 class OrderController extends Controller
 {
+
+    public static function deserializeProduct($product)
+    {
+        // everything before * -> id
+        $product_id = strtok($product, "*");
+        $product_name = DB::table('products')->where('id', $product_id)->pluck('name')->first();
+        $product_category= DB::table('products')->where('id', $product_id)->pluck('category')->first();
+        // everything between * and $ -> quantity
+        $product_price = 0.00;
+        if (preg_match('/\*(.*?)\$/', $product, $match) == 1) {
+            $product_price = $match[1];
+        }
+        // everything after $ -> price
+        $product_quantity = ltrim(strstr($product, '$'), '$');
+        return array('id' => $product_id, 'name' => $product_name, 'category' => $product_category,'price' => $product_price, 'quantity' => $product_quantity);
+    }
+
     public function submit(Request $request)
     {
         if (isset($request->product)) {
@@ -27,7 +43,7 @@ class OrderController extends Controller
                     if ($quantity < 1) {
                         return redirect()->back()->withInput()->with('error', 'Quantity must be above 1 for item ' . $product_info['0']['name']);
                     }
-                    $product_quantity = $product . "*" . $quantity;
+                    $product_quantity = $product . "*" . $quantity . "$" . $product_info['0']['price'];
                     if (!in_array($product_info['0']['category'], $transaction_categories)) array_push($transaction_categories, $product_info['0']['category']);
                 }
                 if ($product_info['0']['pst'] == 1) {
@@ -48,10 +64,9 @@ class OrderController extends Controller
                 $category_limit = UserLimitsController::findLimit($request->purchaser_id, $category);
                 $category_spent = UserLimitsController::findSpent($request->purchaser_id, $category);
                 foreach ($products as $product) {
-                    $product_info = Products::select('price', 'category')->where('id', strtok($product, "*"))->get();
-                    $product_quantity = ltrim(strstr($product, '*'), '*');
-                    if ($product_info['0']['category'] = $category) {
-                        $category_spent += ($product_info['0']['price'] * $product_quantity);
+                    $product_info = OrderController::deserializeProduct($product);
+                    if ($product_info['category'] = $category) {
+                        $category_spent += ($product_info['price'] * $product_info['quantity']);
                     }
                 }
                 if ($category_spent >= $category_limit && $category_limit != -1) {
@@ -84,14 +99,11 @@ class OrderController extends Controller
         $purchaser_info = User::select('id', 'full_name', 'balance')->where('id', $order_info['0']['purchaser_id'])->get();
         $total_price = 0;
         foreach (explode(", ", $order_info['0']['products']) as $items) {
-            $item = strtok($items, "*");
-            $quantity = substr($items, strpos($items, "*") + 1);
-            $item_info = Products::select('price', 'pst')->where('id', $item)->get();
-            $item_price = $item_info['0']['price'];
-            if ($item_info['0']['pst'] == 1) {
+            $item_info = OrderController::deserializeProduct($items);
+            if (DB::table('products')->where('id', $item_info['id'])->pluck('pst')->first() == 1) {
                 $total_tax = ($total_tax + SettingsController::getPst()) - 1;
             }
-            $total_price += ($item_price * $quantity) * $total_tax;
+            $total_price += ($item_info['price'] * $item_info['quantity']) * $total_tax;
             $total_tax = SettingsController::getGst();
         }
         DB::table('users')

@@ -19,7 +19,6 @@
         setTimeout(
             function() {
                 $(".alert").alert('close')
-                console.log('closing alert');
             }, 2000);
     });
 </script>

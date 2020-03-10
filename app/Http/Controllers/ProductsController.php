@@ -33,11 +33,12 @@ class ProductsController extends Controller
         $product->pst = $pst;
         $product->creator_id = $request->id;
         $product->save();
-        return redirect('/products')->with('success', 'Successfully created ' . $request->name);
+        return redirect('/products')->with('success', 'Successfully created ' . $request->name + '.');
     }
 
     public function edit(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'price' => 'required|numeric',
@@ -55,7 +56,7 @@ class ProductsController extends Controller
         DB::table('products')
             ->where('id', $request->id)
             ->update(['name' => $request->name, 'category' => $request->category, 'price' => $request->price, 'pst' => $pst, 'editor_id' => $request->editor_id]);
-        return redirect('/products')->with('success', 'Successfully edited ' . $request->name);
+        return redirect('/products')->with('success', 'Successfully edited ' . $request->name . '.');
     }
 
     public function delete($id)

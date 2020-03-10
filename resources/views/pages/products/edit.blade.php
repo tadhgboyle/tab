@@ -27,9 +27,9 @@
             use App\Http\Controllers\SettingsController;
             ?>
             Category
-            <select id="categories">
+            <select name="category" >
                 @foreach(SettingsController::getCategories() as $category)
-                <option value="{{ $category->id }}" {{ $product_info['0']['category'] == $category->value ? "selected" : "" }}>{{ ucfirst($category->value) }}</option>
+                <option value="{{ $category->value }}" {{ $product_info['0']['category'] == $category->value ? "selected" : "" }}>{{ ucfirst($category->value) }}</option>
                 @endforeach
             </select>
             <br>
