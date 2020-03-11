@@ -110,12 +110,12 @@ class OrderController extends Controller
                 $category_spent = UserLimitsController::findSpent($request->purchaser_id, $category, UserLimitsController::findDuration($request->purchaser_id, $category));
                 foreach ($products as $product) {
                     $product_info = OrderController::deserializeProduct($product);
-                    if ($product_info['category'] = $category) {
+                    if ($product_info['category'] == $category) {
                         $category_spent += ($product_info['price'] * $product_info['quantity']);
                     }
                 }
                 if ($category_spent >= $category_limit && $category_limit != -1) {
-                    return redirect()->back()->with('error', 'Not enough balance in that category: ' . ucfirst($category) . '. Limit: $' . $category_limit . '.');
+                    return redirect()->back()->with('error', 'Not enough balance in that category: ' . ucfirst($category) . ', limit: $' . $category_limit . '.');
                     $category_spent = 0.00;
                     $category_limit = 0.00;
                 }

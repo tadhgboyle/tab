@@ -38,7 +38,7 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 ![Order List Page](https://images.tadhgboyle.dev/scrn135734.png)
 
 #### Order Information Page
-![Order Info Page](https://images.tadhgboyle.dev/scrn135910.png)
+![Order Info Page](https://images.tadhgboyle.dev/scrn185343.png)
 
 ## Roadmap:
 
