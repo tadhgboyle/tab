@@ -32,7 +32,7 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 ![Second Cashier Page](https://images.tadhgboyle.dev/scrn135623.png)
 
 #### User Information Page
-![User Info Page](https://images.tadhgboyle.dev/scrn135504.png)
+![User Info Page](https://images.tadhgboyle.dev/scrn193710.png)
 
 #### Order List Page
 ![Order List Page](https://images.tadhgboyle.dev/scrn135734.png)
@@ -43,7 +43,6 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 ## Roadmap:
 
 *High to Low priority sort*
-- Click on item name to check/uncheck checkbox. Makes it not as hard to click a small area
 - Discounts? Check if purchaser is staff role and give % off? (Edit % in settings)
 - Add sales/discounts to item for period of time (automatic or button)
 - Stats: Income by week, month, most popular products etc

@@ -12,7 +12,7 @@ use App\Transactions;
 <br>
 <br>
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-7">
         <h3>History</h3>
         <table id="order_list">
             <thead>
@@ -24,7 +24,7 @@ use App\Transactions;
                 <th></th>
             </thead>
             <tbody>
-                @foreach (Transactions::where('purchaser_id', '=', request()->route('id'))->get() as $transaction)
+                @foreach (Transactions::where('purchaser_id', '=', request()->route('id'))->orderBy('created_at', 'DESC')->get() as $transaction)
                 <tr>
                     <td class="table-text">
                         <div>{{ $transaction->created_at->format('M jS Y h:ia') }}</div>
@@ -49,7 +49,7 @@ use App\Transactions;
             </tbody>
         </table>
     </div>
-    <div class="col-md-4" align="center">
+    <div class="col-md-5" align="center">
         <h3>Categories</h3>
         <?php
 
