@@ -11,7 +11,8 @@ $transaction_items = explode(", ", $transaction['0']['products']);
 @section('content')
 <h2>View Order</h2>
 <div class="row">
-    <div class="col-md-7">
+    <div class="col-md-6">
+        @include('includes.messages')
         <br>
         <h4>Order ID: {{request()->route('id') }}</h4>
         <h4>Time: {{ $transaction['0']['created_at']->format('M jS Y h:ia') }}</h4>
@@ -26,12 +27,12 @@ $transaction_items = explode(", ", $transaction['0']['products']);
         @if($transaction['0']['status'] == 0)
         <form>
             <input type="hidden" id="transaction_id" value="{{ $transaction['0']['id'] }}">
-            <a href="javascript:;" data-toggle="modal" onclick="returnData()" data-target="#returnModal"
+            <a href="javascript:;" data-toggle="modal" data-target="#returnModal"
                 class="btn btn-xs btn-danger">Return</a>
         </form>
         @endif
     </div>
-    <div class="col-md-5">
+    <div class="col-md-6">
         <h2 align="center">Items</h2>
         <table id="product_list">
             <thead>
@@ -60,7 +61,18 @@ $transaction_items = explode(", ", $transaction['0']['products']);
                         <div>${{ number_format($item_info['price'] * $item_info['quantity'], 2) }}</div>
                     </td>
                     <td class="table-text">
-                        <div><a href="">Return</a></div>
+                        <div>
+                            @if($transaction['0']['status'] == 0 && $item_info['returned'] < $item_info['quantity'])
+                                <form>
+                                <input type="hidden" id="item_id" value="{{ $item_info['id'] }}">
+                                <a href="javascript:;" data-toggle="modal"
+                                    onclick="window.location='/orders/return/item/{{ $item_info['id'] }}/{{ $transaction['0']['id'] }}';"
+                                    class="btn btn-xs btn-danger">Return ({{ $item_info['quantity'] - $item_info['returned'] }})</a>
+                                </form>
+                                @else
+                                Returned
+                                @endif
+                        </div>
                     </td>
                 </tr>
                 @endforeach
@@ -80,7 +92,7 @@ $transaction_items = explode(", ", $transaction['0']['products']);
                     <center>
                         <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
                         <button type="submit" name="" class="btn btn-danger" data-dismiss="modal"
-                            onclick="formSubmit()">Return</button>
+                            onclick="returnData()">Return</button>
                     </center>
                 </div>
             </div>
@@ -91,21 +103,15 @@ $transaction_items = explode(", ", $transaction['0']['products']);
     $(document).ready(function() {
         var table = $('#product_list').DataTable({
             paging: false,
-            // we want the scroll to be as big as possible without making the page scroll
             "scrollY": "300px",
             "scrollCollapse": true,
         });
     });
 
     function returnData() {
-        var id = document.getElementById('transaction_id').value;
-        console.log(id);
-        var url = '{{ route("return_order", ":id") }}';
-        url = url.replace(':id', id);
+        let url = '{{ route("return_order", ":id") }}';
+            url = url.replace(':id', document.getElementById('transaction_id').value);
         $("#returnForm").attr('action', url);
-    }
-
-    function formSubmit() {
         $("#returnForm").submit();
     }
 </script>
