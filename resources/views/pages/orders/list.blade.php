@@ -1,6 +1,7 @@
 <?php
 
 use App\Transactions;
+use App\Http\Controllers\OrderController;
 ?>
 @extends('layouts.default')
 @section('content')
@@ -28,7 +29,9 @@ use App\Transactions;
                 <div>{{ $transaction->created_at->format('M jS Y h:ia') }}</div>
             </td>
             <td class="table-text">
-                <div><a href="users/info/{{ $transaction->purchaser_id }}">{{ DB::table('users')->where('id', $transaction->purchaser_id)->pluck('full_name')->first() }}</a></div>
+                <div><a
+                        href="users/info/{{ $transaction->purchaser_id }}">{{ DB::table('users')->where('id', $transaction->purchaser_id)->pluck('full_name')->first() }}</a>
+                </div>
             </td>
             <td class="table-text">
                 <div>{{ DB::table('users')->where('id', $transaction->cashier_id)->pluck('full_name')->first() }}</div>
@@ -37,7 +40,9 @@ use App\Transactions;
                 <div>${{ number_format($transaction->total_price, 2) }}</div>
             </td>
             <td class="table-text">
-                <div>{!! $transaction->status == 0 ? "<h5><span class=\"badge badge-success\">Normal</span></h5>" : "<h5><span class=\"badge badge-danger\">Returned</span></h5>"!!}</div>
+                <div>{!! !OrderController::checkReturned($transaction->id) ? "<h5><span class=\"badge
+                            badge-success\">Normal</span></h5>" : "<h5><span class=\"badge
+                            badge-danger\">Returned</span></h5>"!!}</div>
             </td>
             <td>
                 <div><a href="orders/view/{{ $transaction->id }}">View</a></div>

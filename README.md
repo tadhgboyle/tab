@@ -19,8 +19,11 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
     - Change the name and price anytime.
     - Optional PST charge on a per-item basis.
 - Live preview of price (with taxes) on sidebar during every purchase. If the user does not have enough money the submit button will be disabled (Backend check as well though!).
-- Return any order.
+- Flexible return system
+    - Either return a whole order, or:
+    - Return an individual item from an order. A counter shows how many are left to be returned. Multiple backend checks to verify validity of return.
 - Editable GST and PST percentages.
+- Editable staff discount - 
 - Detailed user history and order list pages with fully interactive and searchable tables (see above!).
 
 ## Screenshots:
@@ -43,7 +46,8 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 ## Roadmap:
 
 *High to Low priority sort*
-- Discounts? Check if purchaser is staff role and give % off? (Edit % in settings)
+- Staff Discount: check if purchaser is staff role and give % off (per item basis) 
+    - Serialize so if it gets returned they get the discount back
 - Add sales/discounts to item for period of time (automatic or button)
 - Stats: Income by week, month, most popular products etc
 - Add stock/inventory features
@@ -55,3 +59,10 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 - Add PDF printing of all users transactions
 - Seperate orders, users and stats into weeks
 - Allow user to change light/dark mode
+
+## Issues/Bugs:
+- After returning one item in an order, if they want to return the whole thing, only refund where the deserialized is R0
+- "Total Returned" update to reflect R0
+- Edit "Status" message to be more informative and clear
+- Add check for return button to see if all items have been returned but the order hasn't been set to 1
+    - Hide button and update value if so

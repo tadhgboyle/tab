@@ -11,6 +11,29 @@ use Illuminate\Support\Facades\DB;
 class OrderController extends Controller
 {
 
+    public static function checkReturned($order)
+    {
+        $order_info = Transactions::select('products', 'status')->where('id', $order)->get();
+        $products_returned = 0;
+        $order_products = 0;
+        if ($order_info['0']['status'] == "1") return true;
+        else {
+            foreach (explode(", ", $order_info) as $product) {
+                $product_info = OrderController::deserializeProduct($product);
+                if ($product_info['returned'] >= $product_info['quantity']) {
+                    $products_returned++;
+                }
+                $order_products++;
+            }
+            if ($products_returned >= $order_products) {
+                DB::table('transactions')
+                    ->where('id', $order)
+                    ->update(['status' => '1']);
+                return true;
+            } else return false;
+        }
+    }
+
     public static function serializeProduct($id, $quantity, $price, $gst, $pst, $returned)
     {
         /**
@@ -141,28 +164,21 @@ class OrderController extends Controller
     {
         $total_tax = SettingsController::getGst();
         $order_info = Transactions::select('purchaser_id', 'products', 'status')->where('id', $id)->get();
-        if ($order_info['0']['status'] == "1") {
-            return redirect()->back()->with('error', 'That order has already been returned.');
-        }
+
+        // this should never happen, but a security measure.
+        if (OrderController::checkReturned($id)) return redirect()->back()->with('error', 'That order has already been fully returned.');
+
         $purchaser_info = User::select('id', 'full_name', 'balance')->where('id', $order_info['0']['purchaser_id'])->get();
         $total_price = 0;
-        $returned_count = 0;
-        $product_count = 0;
+        // loop through products from the order and deserialize them to get their prices & taxes etc when they were purchased
         foreach (explode(", ", $order_info['0']['products']) as $items) {
             $item_info = OrderController::deserializeProduct($items);
-            // check if all order items have been fully returned
-            $product_count++;
-            if ($item_info['returned'] >= $item_info['quantity']) $returned_count++;
-            if (DB::table('products')->where('id', $item_info['id'])->pluck('pst')->first() == 1) {
-                $total_tax = ($total_tax + SettingsController::getPst()) - 1;
+            if ($item_info['pst'] == 0) {
+                $total_tax = ($total_tax + $item_info['pst']) - 1;
             }
             $total_price += ($item_info['price'] * $item_info['quantity']) * $total_tax;
-            $total_tax = SettingsController::getGst();
         }
-        if ($returned_count >= $product_count) {
-            if ($order_info['0']['status'] == 1)
-            return redirect()->back()->with('error', 'That order has already been fully returned.' . $returned_count . ' ' . count((array) $order_info['0']['products']));
-        }
+        // update their balance and set the status to 1 for the returned order
         DB::table('users')
             ->where('id', $purchaser_info['0']['id'])
             ->update(['balance' => ($purchaser_info['0']['balance'] + $total_price)]);
@@ -174,24 +190,27 @@ class OrderController extends Controller
 
     public function returnItem($item, $order)
     {
-        $order_info = Transactions::select('id', 'purchaser_id', 'products', 'status')->where('id', $order)->get();
-        if ($order_info['0']['status'] == "1") {
-            return redirect()->back()->with('error', 'That order has already been returned, so you cannot return an item from it.');
-        }
+        $order_info = Transactions::select('id', 'purchaser_id', 'products')->where('id', $order)->get();
+        // this shouldnt happen, but worth a check.
+        if (OrderController::checkReturned($order)) return redirect()->back()->with('error', 'That order has already been returned, so you cannot return an item from it.');
+        // again, loop through the order products and match the item id
         foreach (explode(", ", $order_info['0']['products']) as $order_products) {
             $order_product = OrderController::deserializeProduct($order_products);
             $total_tax = 0.00;
             if ($order_product['id'] == $item) {
+                // when the id matches the item and it has not been returned more times than it was purchased, then ++ the returned count and refund the original cost + taxes
                 if ($order_product['returned'] < $order_product['quantity']) {
                     $order_product['returned']++;
-                    if ($order_product['pst'] = 0) $total_tax = $order_product['gst'];
+                    // check taxes and apply correct %
+                    if ($order_product['pst'] == 0) $total_tax = $order_product['gst'];
                     else $total_tax = (($order_product['pst'] + $order_product['gst']) - 1);
+                    // gets funky now. find the exact string of the original item from the string of order items and replace with the new string where the R value is ++
                     $updated_products = str_replace(
                         $order_products,
                         OrderController::serializeProduct($order_product['id'], $order_product['quantity'], $order_product['price'], $order_product['gst'], $order_product['pst'], $order_product['returned']),
                         explode(", ", $order_info['0']['products'])
                     );
-                    print_r($updated_products);
+                    // now refund the user
                     DB::table('users')
                         ->where('id', $order_info['0']['purchaser_id'])
                         ->update(['balance' => ($order_product['price'] * $total_tax)]);
@@ -201,10 +220,10 @@ class OrderController extends Controller
             }
             // ignore
         }
-        // store all products, update the one we need and update in mysql
+        // now insert the funky replaced string where it was originally
         DB::table('transactions')
             ->where('id', $order_info['0']['id'])
             ->update(['products' => implode(", ", $updated_products)]);
-        return redirect()->back()->with('success', 'Successfully returned x1 ' . $order_product['name'] . '.');
+        return redirect()->back()->with('success', 'Successfully returned x1 ' . $order_product['name'] . ' for order #' . $order . '.');
     }
 }

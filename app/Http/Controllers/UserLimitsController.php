@@ -34,7 +34,8 @@ class UserLimitsController extends Controller
                     if (DB::table('products')->where('id', '=', $item_info['id'])->pluck('pst')->first() == "1") {
                         $tax_percent = ($tax_percent + SettingsController::getPst()) - 1;
                     }
-                    $category_spent += ($item_info['price'] * $item_info['quantity']) * $tax_percent;
+                    $quantity_available = $item_info['quantity'] - $item_info['returned'];
+                    $category_spent += ($item_info['price'] * $quantity_available) * $tax_percent;
                 }
             }
         }

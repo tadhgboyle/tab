@@ -23,8 +23,8 @@ $transaction_items = explode(", ", $transaction['0']['products']);
                 href="/users/info/{{ $transaction['0']['cashier_id'] }}">{{ DB::table('users')->where('id', $transaction['0']['cashier_id'])->pluck('full_name')->first() }}</a>
         </h4>
         <h4>Total Price: ${{ number_format($transaction['0']['total_price'], 2) }}</h4>
-        <h4>Status: {{ $transaction['0']['status'] == 0 ? "Normal" : "Returned" }}</h4>
-        @if($transaction['0']['status'] == 0)
+        <h4>Status: {{ OrderController::checkReturned($transaction['0']['id']) ? "Returned" : "Normal" }}</h4>
+        @if(!OrderController::checkReturned($transaction['0']['id']))
         <form>
             <input type="hidden" id="transaction_id" value="{{ $transaction['0']['id'] }}">
             <a href="javascript:;" data-toggle="modal" data-target="#returnModal"
@@ -67,7 +67,8 @@ $transaction_items = explode(", ", $transaction['0']['products']);
                                 <input type="hidden" id="item_id" value="{{ $item_info['id'] }}">
                                 <a href="javascript:;" data-toggle="modal"
                                     onclick="window.location='/orders/return/item/{{ $item_info['id'] }}/{{ $transaction['0']['id'] }}';"
-                                    class="btn btn-xs btn-danger">Return ({{ $item_info['quantity'] - $item_info['returned'] }})</a>
+                                    class="btn btn-xs btn-danger">Return
+                                    ({{ $item_info['quantity'] - $item_info['returned'] }})</a>
                                 </form>
                                 @else
                                 Returned
