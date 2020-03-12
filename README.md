@@ -61,8 +61,4 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 - Allow user to change light/dark mode
 
 ## Issues/Bugs:
-- After returning one item in an order, if they want to return the whole thing, only refund where the deserialized is R0
-- "Total Returned" update to reflect R0
 - Edit "Status" message to be more informative and clear
-- Add check for return button to see if all items have been returned but the order hasn't been set to 1
-    - Hide button and update value if so
