@@ -44,7 +44,6 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 ![Order Info Page](https://images.tadhgboyle.dev/scrn185343.png)
 
 ## Roadmap:
-
 *High to Low priority sort*
 - Staff Discount: check if purchaser is staff role and give % off (per item basis) 
     - Serialize so if it gets returned they get the discount back
@@ -61,4 +60,4 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 - Allow user to change light/dark mode
 
 ## Issues/Bugs:
-- Edit "Status" message to be more informative and clear
+*None that I know of right now!*
