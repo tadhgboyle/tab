@@ -75,7 +75,7 @@ class OrderController extends Controller
         if (preg_match('/G(.*?)P/', $product, $match) == 1) {
             $product_gst = $match[1];
         }
-        if (preg_match('/P(.*?)r/', $product, $match) == 1) {
+        if (preg_match('/P(.*?)R/', $product, $match) == 1) {
             $product_pst = $match[1];
         }
         $product_returned = substr($product, strpos($product, "R") + 1);
@@ -112,7 +112,7 @@ class OrderController extends Controller
                         $total_tax = ($total_tax + SettingsController::getPst()) - 1;
                         $pst_metadata = SettingsController::getPst();
                     } else {
-                        $pst_metadata = "";
+                        $pst_metadata = "null";
                     }
                     $product_quantity = $product . "*" . $quantity . "$" . $product_info['0']['price'] . "G" . SettingsController::getGst() . "P" . $pst_metadata . "R0";
                     if (!in_array($product_info['0']['category'], $transaction_categories)) array_push($transaction_categories, $product_info['0']['category']);
@@ -153,7 +153,6 @@ class OrderController extends Controller
             $transaction->products = implode(", ", $products);
             $transaction->total_price = $total_price;
             $transaction->save();
-
             return redirect('/')->with('success', 'Order #' . $transaction->id . '. ' . $purchaser_info['0']['full_name'] . " now has $" . number_format(round($remaining_balance, 2), 2));
         } else {
             return redirect()->back()->withInput()->with('error', 'Please select at least one item.');
@@ -162,7 +161,7 @@ class OrderController extends Controller
 
     public function returnOrder($id)
     {
-        $total_tax = SettingsController::getGst();
+        $total_tax = 0;
         $order_info = Transactions::select('purchaser_id', 'products', 'status')->where('id', $id)->get();
 
         // this should never happen, but a security measure.
@@ -173,8 +172,11 @@ class OrderController extends Controller
         // loop through products from the order and deserialize them to get their prices & taxes etc when they were purchased
         foreach (explode(", ", $order_info['0']['products']) as $items) {
             $item_info = OrderController::deserializeProduct($items);
-            if ($item_info['pst'] == 0) {
-                $total_tax = ($total_tax + $item_info['pst']) - 1;
+            echo $item_info['pst'];
+            if ($item_info['pst'] == "null") {
+                $total_tax = $item_info['gst'];
+            } else {
+                $total_tax = ($item_info['gst'] + $item_info['pst']) - 1;
             }
             $total_price += ($item_info['price'] * $item_info['quantity']) * $total_tax;
         }
@@ -191,6 +193,7 @@ class OrderController extends Controller
     public function returnItem($item, $order)
     {
         $order_info = Transactions::select('id', 'purchaser_id', 'products')->where('id', $order)->get();
+        $user_balance = User::where('id', $order_info['0']['purchaser_id'])->pluck('balance')->first();
         // this shouldnt happen, but worth a check.
         if (OrderController::checkReturned($order)) return redirect()->back()->with('error', 'That order has already been returned, so you cannot return an item from it.');
         // again, loop through the order products and match the item id
@@ -202,7 +205,7 @@ class OrderController extends Controller
                 if ($order_product['returned'] < $order_product['quantity']) {
                     $order_product['returned']++;
                     // check taxes and apply correct %
-                    if ($order_product['pst'] == 0) $total_tax = $order_product['gst'];
+                    if ($order_product['pst'] == "null") $total_tax = $order_product['gst'];
                     else $total_tax = (($order_product['pst'] + $order_product['gst']) - 1);
                     // gets funky now. find the exact string of the original item from the string of order items and replace with the new string where the R value is ++
                     $updated_products = str_replace(
@@ -213,7 +216,7 @@ class OrderController extends Controller
                     // now refund the user
                     DB::table('users')
                         ->where('id', $order_info['0']['purchaser_id'])
-                        ->update(['balance' => ($order_product['price'] * $total_tax)]);
+                        ->update(['balance' => $user_balance += ($order_product['price'] * $total_tax)]);
                 } else {
                     return redirect()->back()->with('error', 'That item has already been returned the maximum amount of times for that order.');
                 }

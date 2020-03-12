@@ -38,7 +38,7 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 ![User Info Page](https://images.tadhgboyle.dev/scrn193710.png)
 
 #### Order List Page
-![Order List Page](https://images.tadhgboyle.dev/scrn135734.png)
+![Order List Page](https://images.tadhgboyle.dev/scrn172322.png)
 
 #### Order Information Page
 ![Order Info Page](https://images.tadhgboyle.dev/scrn185343.png)
@@ -48,9 +48,13 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 - Staff Discount: check if purchaser is staff role and give % off (per item basis) 
     - Serialize so if it gets returned they get the discount back
 - Add sales/discounts to item for period of time (automatic or button)
+- Add auditing/tracking of everything
+    - Role changes
+    - New users
+    - Price changes
+    - Etc
 - Stats: Income by week, month, most popular products etc
 - Add stock/inventory features
-- Add tracking of role/balance etc changes
 - Bulk change prices of items (Everything 10% *off* or everything 20% *more* etc)
 - Add Manager role.
     - All Cashier permissions + adding/editing products
