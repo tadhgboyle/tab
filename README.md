@@ -60,6 +60,7 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
     - All Cashier permissions + adding/editing products
 - Merge index and orders page with ajax for moar speeeeeed.
 - Add PDF printing of all users transactions
+- For parents to pay off balance possibly integrate with Square API
 - Seperate orders, users and stats into weeks
 - Allow user to change light/dark mode
 
