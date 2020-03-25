@@ -40,9 +40,10 @@ use App\Http\Controllers\OrderController;
                 <div>${{ number_format($transaction->total_price, 2) }}</div>
             </td>
             <td class="table-text">
-                <div>{!! !OrderController::checkReturned($transaction->id) ? "<h5><span class=\"badge
-                            badge-success\">Normal</span></h5>" : "<h5><span class=\"badge
-                            badge-danger\">Returned</span></h5>"!!}</div>
+                <div>{!! !OrderController::checkReturned($transaction->id) ?
+                    "<h5><span class=\"badge badge-success\">Normal</span></h5>" :
+                    "<h5><span class=\"badge badge-danger\">Returned</span></h5>"!!}
+                </div>
             </td>
             <td>
                 <div><a href="orders/view/{{ $transaction->id }}">View</a></div>
@@ -57,8 +58,8 @@ use App\Http\Controllers\OrderController;
     });
     $('#order_list').DataTable({
         "order": [],
-        paging: false,
-        "scrollY": "340px",
+        "paging": false,
+        "scrollY": "26vw",
         "scrollCollapse": true,
     });
 </script>

@@ -51,7 +51,7 @@
         <form action="" id="deleteForm" method="get">
             <div class="modal-content">
                 <div class="modal-body">
-                    {{ csrf_field() }}
+                    @csrf
                     <p class="text-center">Are you sure you want to delete this category?</p>
                 </div>
                 <div class="modal-footer">
@@ -69,17 +69,17 @@
         $('#category_list').DataTable();
     });
     $('#category_list').DataTable({
-        paging: false,
-        searching: false,
-        "scrollY": "350px",
+        "paging": false,
+        "searching": false,
+        "scrollY": "26vw",
         "scrollCollapse": true,
-        bInfo: false,
+        "bInfo": false,
     });
 
     function deleteData() {
-        var name = document.getElementById('category_name').value;
+        let name = document.getElementById('category_name').value;
         console.log(name);
-        var url = '{{ route("delete_category", ":name") }}';
+        let url = '{{ route("delete_category", ":name") }}';
         url = url.replace(':name', name);
         $("#deleteForm").attr('action', url);
     }

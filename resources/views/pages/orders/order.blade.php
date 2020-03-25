@@ -68,23 +68,23 @@ use App\Http\Controllers\SettingsController;
 </div>
 <script>
     $(document).ready(function() {
-        var table = $('#product_list').DataTable({
-            paging: false,
+        let table = $('#product_list').DataTable({
+            "paging": false,
             // we want the scroll to be as big as possible without making the page scroll
-            "scrollY": "300px",
+            "scrollY": "23vw",
             "scrollCollapse": true,
         });
         // handle the item sidebar
         // refractor this!!
         const checked = [];
-        var total_gst = 0.00;
-        var total_pst = 0.00;
+        let total_gst = 0.00;
+        let total_pst = 0.00;
         const current_gst = parseFloat(document.getElementById('current_gst').value).toFixed(2);
         const current_pst = parseFloat(document.getElementById('current_pst').value).toFixed(2);
-        var total_tax_percent = 0.00;
-        var total_price = 0.00;
+        let total_tax_percent = 0.00;
+        let total_price = 0.00;
         const purchaser_balance = parseFloat(document.getElementById('purchaser_balance').value).toFixed(2);
-        var quantity = 1;
+        let quantity = 1;
         $("#gst").html('GST: $' + total_gst.toFixed(2));
         $("#pst").html('PST: $' + total_pst.toFixed(2));
         $("#total_price").html('Total Price: $' + total_price.toFixed(2));
@@ -92,9 +92,7 @@ use App\Http\Controllers\SettingsController;
         $('.clickable').click(function() {
             const quantity_id = document.getElementById('quantity[' + document.getElementById($(this).attr('id')).value + ']');
             const pst_id = document.getElementById('pst[' + document.getElementById($(this).attr('id')).value + ']').value;
-            if (quantity_id == 0) {
-                return;
-            }
+            if (quantity_id == 0) return;
             if ($(this).is(':checked')) {
                 if (pst_id == 1) {
                     total_tax_percent += ((parseFloat(current_pst) + parseFloat(current_gst)) - 1).toFixed(2);
