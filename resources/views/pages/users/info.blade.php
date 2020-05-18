@@ -9,6 +9,7 @@ use App\Http\Controllers\OrderController;
 <h2>User Info</h2>
 
 <p>User: {{ DB::table('users')->where('id', request()->route('id'))->pluck('full_name')->first() }} <a href="/users/edit/{{ request()->route('id') }}">(Edit)</a></p>
+<p>Role: {{ ucfirst(DB::table('users')->where('id', request()->route('id'))->pluck('role')->first()) }}</p>
 <span>Balance: ${{ number_format(DB::table('users')->where('id', request()->route('id'))->pluck('balance')->first(), 2) }}, </span>
 <span>Total spent: ${{ number_format(Transactions::where('purchaser_id', request()->route('id'))->sum('total_price'), 2) }}, </span>
 <span>Total returned: ${{ number_format(Transactions::where([['purchaser_id', request()->route('id')], ['status', '1']])->sum('total_price'), 2) }}, </span>

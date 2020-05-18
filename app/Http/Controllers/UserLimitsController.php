@@ -15,7 +15,9 @@ class UserLimitsController extends Controller
 
     public static function findLimit($user, $category)
     {
-        return DB::table('user_limits')->where([['user_id', $user], ['category', '=', $category]])->pluck('limit_per')->first();
+        $limit = DB::table('user_limits')->where([['user_id', $user], ['category', '=', $category]])->pluck('limit_per')->first();
+        if ($limit == null) return "-1";
+        else return $limit;
     }
 
     public static function findSpent($user, $category, $duration)

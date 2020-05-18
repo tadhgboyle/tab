@@ -41,8 +41,11 @@ class UsersController extends Controller
         // Update their category limits
         foreach ($request->limit as $category => $limit) {
             $duration = 0;
-            if ($request->duration[$category] == "" ? $duration = 0 : $duration = $request->duration[$category]);
-            if ($limit == "") $limit = "-1";
+            // Default to limit per day rather than week if not specified
+            // Fixed undefined index 'category' 
+            if (($request->duration[$category] == NULL || $request->duration[$category] == "") ? $duration = 0 : $duration = $request->duration[$category]);
+            // Default to unlimited limit if not specified
+            if ($limit == NULL || $limit == "") $limit = "-1";
             if ($limit < -1) {
                 return redirect()
                     ->back()
