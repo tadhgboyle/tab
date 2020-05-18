@@ -66,18 +66,23 @@ class OrderController extends Controller
         $product_name = DB::table('products')->where('id', $product_id)->pluck('name')->first();
         $product_category = DB::table('products')->where('id', $product_id)->pluck('category')->first();
         $product_quantity = $product_price = $product_gst = $product_pst = $product_returned = 0.00;
+        // Quantity
         if (preg_match('/\*(.*?)\$/', $product, $match) == 1) {
             $product_quantity = $match[1];
         }
+        // Price
         if (preg_match('/\$(.*?)G/', $product, $match) == 1) {
             $product_price = $match[1];
         }
+        // Gst 
         if (preg_match('/G(.*?)P/', $product, $match) == 1) {
             $product_gst = $match[1];
         }
+        // Pst 
         if (preg_match('/P(.*?)R/', $product, $match) == 1) {
             $product_pst = $match[1];
         }
+        // Returned
         $product_returned = substr($product, strpos($product, "R") + 1);
         return array(
             'id' => $product_id,

@@ -13,10 +13,9 @@ class LoginController extends Controller
             return redirect('/');
         } else {
             return redirect('/login')
-            ->withInput($request->all())
-            ->with('error', 'There was an error logging in. Please try again.');
+                ->withInput($request->all())
+                ->with('error', 'There was an error logging in. Please try again.');
         }
-        return redirect('/');
     }
 
     public function logout()

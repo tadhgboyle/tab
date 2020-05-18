@@ -47,7 +47,7 @@ class SettingsController extends Controller
             ->update(['value' => $request->gst]);
         DB::table('settings')->where('setting', 'pst')
             ->update(['value' => $request->pst]);
-            DB::table('settings')->where('setting', 'staff_discount')
+        DB::table('settings')->where('setting', 'staff_discount')
             ->update(['value' => $request->staff_discount]);
         return redirect('/settings')->with('success', 'Updated settings.');
     }

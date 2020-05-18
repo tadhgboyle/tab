@@ -33,7 +33,7 @@ class ProductsController extends Controller
         $product->pst = $pst;
         $product->creator_id = $request->id;
         $product->save();
-        return redirect('/products')->with('success', 'Successfully created ' . $request->name + '.');
+        return redirect('/products')->with('success', 'Successfully created ' . $request->name . '.');
     }
 
     public function edit(Request $request)

@@ -5,7 +5,9 @@ use App\Http\Controllers\OrderController;
 ?>
 @extends('layouts.default')
 @section('content')
+
 <h2>User Info</h2>
+
 <p>User: {{ DB::table('users')->where('id', request()->route('id'))->pluck('full_name')->first() }} <a href="/users/edit/{{ request()->route('id') }}">(Edit)</a></p>
 <span>Balance: ${{ number_format(DB::table('users')->where('id', request()->route('id'))->pluck('balance')->first(), 2) }}, </span>
 <span>Total spent: ${{ number_format(Transactions::where('purchaser_id', request()->route('id'))->sum('total_price'), 2) }}, </span>
@@ -13,6 +15,7 @@ use App\Http\Controllers\OrderController;
 <span>Total owing: ${{ number_format(Transactions::where([['purchaser_id', request()->route('id')], ['status', '0']])->sum('total_price'), 2) }}</span>
 <br>
 <br>
+
 <div class="row">
     <div class="col-md-7">
         <h3>History</h3>
