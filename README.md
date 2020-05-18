@@ -1,5 +1,8 @@
 # tabReborn
 
+![version](https://img.shields.io/badge/version-0.4.1--alpha-success)
+![watch](https://img.shields.io/github/watchers/Aberdeener/tabReborn?label=Watch&style=social)
+
 A lightweight, selfhosted web app that camps, resorts and schools can use as a simple POS.
 
 :raised_hands: Thank you to [DataTables](https://datatables.net) for the fast and interactive tables.

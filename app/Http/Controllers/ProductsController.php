@@ -23,9 +23,8 @@ class ProductsController extends Controller
                 ->withErrors($validator);
         }
         $pst = 0;
-        if ($request->has('pst')) {
-            $pst = 1;
-        }
+        if ($request->has('pst')) $pst = 1;
+
         $product = new Products();
         $product->name = $request->name;
         $product->category = $request->category;
@@ -50,9 +49,8 @@ class ProductsController extends Controller
                 ->withErrors($validator);
         }
         $pst = 0;
-        if ($request->has('pst')) {
-            $pst = 1;
-        }
+        if ($request->has('pst')) $pst = 1;
+    
         DB::table('products')
             ->where('id', $request->id)
             ->update(['name' => $request->name, 'category' => $request->category, 'price' => $request->price, 'pst' => $pst, 'editor_id' => $request->editor_id]);
