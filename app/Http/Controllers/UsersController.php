@@ -24,33 +24,37 @@ class UsersController extends Controller
                 ->withInput($request->all())
                 ->withErrors($validator);
         }
+
+        // Create a new User object and hash it's password if required by their role
         $user = new User();
         $user->full_name = $request->full_name;
-        if (empty($request->username)) {
-            $user->username = strtolower(str_replace(" ", "", $request->full_name));
-        } else {
-            $user->username = $request->username;
-        }
+        if (empty($request->username)) $user->username = strtolower(str_replace(" ", "", $request->full_name));
+        else $user->username = $request->username;
         $user->balance = $request->balance;
         $user->role = $request->role;
+
         if ($request->role != "camper") {
             $user->password = bcrypt($request->password);
         }
         $user->save();
-        // update their limits
+
+        // Update their category limits
         foreach ($request->limit as $category => $limit) {
             $duration = 0;
             if ($request->duration[$category] == "" ? $duration = 0 : $duration = $request->duration[$category]);
             if ($limit == "") $limit = "-1";
             if ($limit < -1) {
-                return redirect()->back()->with('error', 'Limit must be above -1 for ' . ucfirst($category) . '. (-1 means no limit, 0 means not allowed.)')->withInput($request->all());
+                return redirect()
+                    ->back()
+                    ->with('error', 'Limit must be -1 or above for ' . ucfirst($category) . '. (-1 means no limit, 0 means not allowed.)')
+                    ->withInput($request->all());
             }
             UserLimits::updateOrCreate(
                 ['user_id' => $user->id, 'category' => $category],
                 ['limit_per' => $limit, 'duration' => $duration, 'editor_id' => $request->editor_id]
             );
         }
-        return redirect('/users')->with('success', 'Created ' . $request->full_name . ' profile.');
+        return redirect('/users')->with('success', 'Created user with name ' . $request->full_name . '.');
     }
 
     public function edit(Request $request)
@@ -66,6 +70,7 @@ class UsersController extends Controller
                 ->withInput($request->all())
                 ->withErrors($validator);
         }
+
         $password = NULL;
         $old_role = strtolower(DB::table('users')->where('id', $request->id)->pluck('role')->first());
         $new_role = strtolower($request->role);
@@ -73,7 +78,7 @@ class UsersController extends Controller
             'cashier',
             'administrator'
         );
-        // update their limits
+        // Update their category limits
         foreach ($request->limit as $category => $limit) {
             $duration = 0;
             if ($request->duration[$category] == "" ? $duration = 0 : $duration = $request->duration[$category]);
@@ -86,14 +91,16 @@ class UsersController extends Controller
                 ['limit_per' => $limit, 'duration' => $duration, 'editor_id' => $request->editor_id]
             );
         }
-        // if same role or changing from one staff role to another
+        
+        // TODO: This next part is fucking terrifying. Probably can find a better solution.
+        // If same role or changing from one staff role to another
         if (($old_role == $new_role) || (in_array($old_role, $staff_roles) && in_array($new_role, $staff_roles))) {
             DB::table('users')
                 ->where('id', $request->id)
                 ->update(['full_name' => $request->full_name, 'username' => $request->username, 'balance' => $request->balance, 'role' => $request->role]);
             return redirect('/users');
         }
-        // if old role is camper and new role is staff
+        // If old role is camper and new role is staff
         else if (!in_array($old_role, $staff_roles) && in_array($new_role, $staff_roles)) {
             if (isset($request->password)) {
                 if ($request->password == $request->password_confirmation) {
@@ -105,10 +112,9 @@ class UsersController extends Controller
                 return redirect()->back()->with('error', 'Please enter a password')->withInput($request->all());
             }
         }
-        // if new role is camper
-        else {
-            $password = NULL;
-        }
+        // If new role is camper
+        else $password = NULL;
+
         DB::table('users')
             ->where('id', $request->id)
             ->update(['full_name' => $request->full_name, 'username' => $request->username, 'balance' => $request->balance, 'role' => $request->role, 'password' => $password]);
@@ -117,6 +123,7 @@ class UsersController extends Controller
 
     public function delete($id)
     {
+        // TODO: Gracefully handle this. Not sure what happens when a user is deleted after they have made transctions...
         User::where('id', $id)->delete();
         return redirect('/users');
     }

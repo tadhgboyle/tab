@@ -42,7 +42,8 @@ class SettingsController extends Controller
                 ->withInput($request->all())
                 ->withErrors($validator);
         }
-        // this is inefficient. find better solution
+
+        // This is probably not as efficient as it could be...
         DB::table('settings')->where('setting', 'gst')
             ->update(['value' => $request->gst]);
         DB::table('settings')->where('setting', 'pst')
@@ -63,6 +64,7 @@ class SettingsController extends Controller
                 ->withErrors($validator);
         }
 
+        // TODO: Category ID's -> Allow for renaming of categories
         $settings = new Settings();
         $settings->setting = "category";
         $settings->value = strtolower($request->name);
@@ -74,6 +76,7 @@ class SettingsController extends Controller
 
     public function deleteCat(Request $request)
     {
+        // TODO: Fallback "default" category for items whose categories were deleted?
         Settings::where([['setting', 'category'], ['value', $request->name]])->delete();
         return redirect('/settings')->with('success', 'Deleted category ' . $request->name . '.');
     }
