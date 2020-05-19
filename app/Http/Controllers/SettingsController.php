@@ -44,11 +44,14 @@ class SettingsController extends Controller
         }
 
         // This is probably not as efficient as it could be...
-        DB::table('settings')->where('setting', 'gst')
+        DB::table('settings')
+            ->where('setting', 'gst')
             ->update(['value' => $request->gst]);
-        DB::table('settings')->where('setting', 'pst')
+        DB::table('settings')
+            ->where('setting', 'pst')
             ->update(['value' => $request->pst]);
-        DB::table('settings')->where('setting', 'staff_discount')
+        DB::table('settings')
+            ->where('setting', 'staff_discount')
             ->update(['value' => $request->staff_discount]);
         return redirect('/settings')->with('success', 'Updated settings.');
     }
@@ -78,6 +81,6 @@ class SettingsController extends Controller
     {
         // TODO: Fallback "default" category for items whose categories were deleted?
         Settings::where([['setting', 'category'], ['value', $request->name]])->delete();
-        return redirect('/settings')->with('success', 'Deleted category ' . $request->name . '.');
+        return redirect('/settings')->with('success', 'Deleted category ' . ucfirst($request->name) . '.');
     }
 }

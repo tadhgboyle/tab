@@ -32,8 +32,8 @@
                     <td class="table-text">
                         <div>
                             <form>
-                                <input type="hidden" id="category_name" value="{{ $category->value }}">
-                                <a href="javascript:;" data-toggle="modal" onclick="deleteData()" data-target="#DeleteModal">Delete</a>
+                                <input type="hidden" id="{{ $category->value }}" value="{{ $category->value }}">
+                                <a href="javascript:;" data-toggle="modal" onclick="deleteData('{{ $category->value }}')" data-target="#DeleteModal">Delete</a>
                             </form>
                         </div>
                     </td>
@@ -76,8 +76,8 @@
         "bInfo": false,
     });
 
-    function deleteData() {
-        let name = document.getElementById('category_name').value;
+    function deleteData(category_name) {
+        let name = document.getElementById(category_name).value;
         console.log(name);
         let url = '{{ route("delete_category", ":name") }}';
         url = url.replace(':name', name);
