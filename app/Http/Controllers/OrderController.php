@@ -217,7 +217,7 @@ class OrderController extends Controller
 
             // Only proceed if this is the requested item id
             if ($order_product['id'] == $item) {
-                $found = true;
+                $found == true;
 
                 // If it has not been returned more times than it was purchased, then ++ the returned count and refund the original cost + taxes
                 if ($order_product['returned'] < $order_product['quantity']) {
