@@ -15,7 +15,7 @@ class UsersController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'full_name' => 'required|min:4',
-            'balance' => 'required|numeric',
+            'balance' => 'numeric',
             'role' => 'required',
             'password' => 'required_if:role,==,cashier|required_if:role,==,administrator|nullable|confirmed|min:6',
         ]);
@@ -29,8 +29,12 @@ class UsersController extends Controller
         $user = new User();
         $user->full_name = $request->full_name;
         if (empty($request->username)) $user->username = strtolower(str_replace(" ", "", $request->full_name));
+
+        $balance = 0;
+        if ($request->balance != null || $request->balance != "") $balance = $request->balance;
+
         else $user->username = $request->username;
-        $user->balance = $request->balance;
+        $user->balance = $balance;
         $user->role = $request->role;
 
         if ($request->role != "camper") {
@@ -121,7 +125,7 @@ class UsersController extends Controller
         DB::table('users')
             ->where('id', $request->id)
             ->update(['full_name' => $request->full_name, 'username' => $request->username, 'balance' => $request->balance, 'role' => $request->role, 'password' => $password]);
-        return redirect('/users')->with('success', 'Updated ' . $request->full_name . ' profile.');
+        return redirect('/users')->with('success', 'Updated ' . $request->full_name . '\'s profile.');
     }
 
     public function delete($id)
