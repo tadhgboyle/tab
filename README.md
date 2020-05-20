@@ -68,6 +68,4 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 - Move to Material Design. Bootstrap is ugly
 
 ## Issues/Bugs:
-- Inconsistent miscalculations during returns and limit checking. Sometimes it happens and sometimes it doesn't.
-- When new categories are created, everyone defaults to `0.00` limit. Change this to `-1`.
 - Gracefully handle user/product/category/order deletion.

@@ -34,7 +34,7 @@ class UserLimitsController extends Controller
         // Loop applicable transactions, then do a bunch of wacky shit
         foreach ($transactions as $transaction) {
             // Loop transaction products. Determine if the product's category is the one we are looking at,
-            // if so, add its (value * quantity) * tax to the end result
+            // if so, add its ((value * (quantity - returned)) * tax) to the end result
             foreach (explode(", ", $transaction['products']) as $transaction_product) {
                 if (strtolower($category) == DB::table('products')->where('id', '=', strtok($transaction_product, "*"))->pluck('category')->first()) {
                     $item_info = OrderController::deserializeProduct($transaction_product);
