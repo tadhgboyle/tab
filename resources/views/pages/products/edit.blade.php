@@ -19,7 +19,13 @@
             <input type="hidden" name="id" id="product_id" value="{{ request()->route('id') }}">
             <input type="hidden" name="editor_id" value="{{ Auth::user()->id }}">
             Name<input type="text" name="name" class="form-control" placeholder="Name" value="{{ $product_info['0']['name'] }}">
-            Price<input type="number" step="0.01" name="price" class="form-control" placeholder="Price" value="{{ number_format($product_info['0']['price'], 2) }}">
+            Price<div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">$</div>
+                </div>
+                <input type="number" step="0.01" name="price" class="form-control" placeholder="Price"
+                    value="{{ number_format($product_info['0']['price'], 2) }}">
+            </div>
             PST<input type="checkbox" name="pst" {{ $product_info['0']['pst'] == 0 ? "" : "checked" }}>
             <br>
             <?php
@@ -27,16 +33,19 @@
             use App\Http\Controllers\SettingsController;
             ?>
             Category
-            <select name="category" >
+            <select name="category">
                 @foreach(SettingsController::getCategories() as $category)
-                <option value="{{ $category->value }}" {{ $product_info['0']['category'] == $category->value ? "selected" : "" }}>{{ ucfirst($category->value) }}</option>
+                <option value="{{ $category->value }}"
+                    {{ $product_info['0']['category'] == $category->value ? "selected" : "" }}>
+                    {{ ucfirst($category->value) }}</option>
                 @endforeach
             </select>
             <br>
             <button type="submit">Edit Product</button>
         </form>
         <form>
-            <a href="javascript:;" data-toggle="modal" onclick="deleteData()" data-target="#DeleteModal" class="btn btn-xs btn-danger">Delete</a>
+            <a href="javascript:;" data-toggle="modal" onclick="deleteData()" data-target="#DeleteModal"
+                class="btn btn-xs btn-danger">Delete</a>
         </form>
     </div>
     <div class="col-md-4"></div>
@@ -51,8 +60,9 @@
                 </div>
                 <div class="modal-footer">
                     <center>
-                        <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
-                        <button type="submit" name="" class="btn btn-danger" data-dismiss="modal" onclick="formSubmit()">Delete</button>
+                        <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+                        <button type="submit" name="" class="btn btn-danger" data-dismiss="modal"
+                            onclick="formSubmit()">Delete</button>
                     </center>
                 </div>
             </div>

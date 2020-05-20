@@ -56,7 +56,7 @@
                 </div>
                 <div class="modal-footer">
                     <center>
-                        <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
                         <button type="submit" name="" class="btn btn-danger" data-dismiss="modal" onclick="formSubmit()">Delete</button>
                     </center>
                 </div>
