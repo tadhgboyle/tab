@@ -138,6 +138,8 @@ class OrderController extends Controller
             // Loop categories within this transaction
             foreach ($transaction_categories as $category) {
                 $category_limit = UserLimitsController::findLimit($request->purchaser_id, $category);
+                // Skip this category if they have unlimited. Saves time querying
+                if ($category_limit == -1) continue;
                 $category_spent = $category_spent_orig = UserLimitsController::findSpent($request->purchaser_id, $category, UserLimitsController::findDuration($request->purchaser_id, $category));
                 // Loop all products in this transaction. If the product's category is the current one in the above loop, add it's price to category spent
                 foreach ($products as $product) {
@@ -147,7 +149,7 @@ class OrderController extends Controller
                     }
                 }
                 // Break loop if we exceed their limit
-                if ($category_spent >= $category_limit && $category_limit != -1) {
+                if ($category_spent >= $category_limit) {
                     return redirect()->back()->with('error', 'Not enough balance in that category: ' . ucfirst($category) . ' (Limit: $' . $category_limit . ', Remaining: $' . ($category_limit - number_format($category_spent_orig, 2)) . ').');
                 }
             }

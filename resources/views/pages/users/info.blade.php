@@ -100,11 +100,15 @@ use App\Http\Controllers\OrderController;
         $('#order_list').DataTable();
     });
     $('#order_list').DataTable({
-        "order": [],
+        order: [],
         paging: false,
         searching: false,
-        "scrollY": "225px",
-        "scrollCollapse": true,
+        scrollY: "280px",
+        scrollCollapse: true,
+        language: {
+            emptyTable: "No orders to show.",
+            infoEmpty: ""
+        }
     });
     $(document).ready(function() {
         $('#category_list').DataTable();

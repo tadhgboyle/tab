@@ -23,12 +23,13 @@ class UserLimitsController extends Controller
 
     public static function findSpent($user, $category, $duration)
     {
+        // First, if they have unlimited money for this category, let's grab all their transactions
+        if (UserLimitsController::findLimit(request()->route('id'), $category) == -1) $transactions = Transactions::where([['purchaser_id', $user], ['status', '0']])->get();
         // Determine how far back to grab transactions from
-        if ($duration == "day") $transactions = Transactions::where([['created_at', '>=', Carbon::now()->subDay()->toDateTimeString()], ['purchaser_id', $user], ['status', '0']])->get();
-        else if ($duration == "week") $transactions = Transactions::where([['created_at', '>=', Carbon::now()->subWeek()->toDateTimeString()], ['purchaser_id', $user], ['status', '0']])->get();
-        
+        else ($transactions = Transactions::where([['created_at', '>=', Carbon::now()->subDays($duration == "day" ? 1 : 7)->toDateTimeString()], ['purchaser_id', $user], ['status', '0']])->get());
+
         $category_spent = 0.00;
-        $tax_percent = SettingsController::getGst();
+        $tax_percent = 0.00;
 
         // Loop applicable transactions, then do a bunch of wacky shit
         foreach ($transactions as $transaction) {
@@ -37,10 +38,7 @@ class UserLimitsController extends Controller
             foreach (explode(", ", $transaction['products']) as $transaction_product) {
                 if (strtolower($category) == DB::table('products')->where('id', '=', strtok($transaction_product, "*"))->pluck('category')->first()) {
                     $item_info = OrderController::deserializeProduct($transaction_product);
-                    // TODO: Use the product's PST info rather than the global settings value for better accuracy
-                    if (DB::table('products')->where('id', '=', $item_info['id'])->pluck('pst')->first() == "1") {
-                        $tax_percent = ($tax_percent + SettingsController::getPst()) - 1;
-                    }
+                    if ($item_info['pst'] != "null") $tax_percent = ($item_info['gst'] + $item_info['pst']) - 1;
                     $quantity_available = $item_info['quantity'] - $item_info['returned'];
                     $category_spent += ($item_info['price'] * $quantity_available) * $tax_percent;
                 }
