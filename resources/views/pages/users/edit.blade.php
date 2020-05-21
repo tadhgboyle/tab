@@ -1,44 +1,46 @@
 @extends('layouts.default')
 @section('content')
 <h2>Edit User</h2>
-<p>User: {{ DB::table('users')->where('id', request()->route('id'))->pluck('full_name')->first() }} <a
-        href="/users/info/{{ request()->route('id') }}">(Info)</a></p>
+@php
+use App\User;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\UserLimitsController;
+
+$user = User::find(request()->route('id'));
+if ($user == null) return redirect()->to('/users')->with('error', 'Invalid user.')->send();
+@endphp
+<p>User: {{ $user->full_name }} <a href="/users/info/{{ request()->route('id') }}">(Info)</a></p>
 <div class="row">
     <div class="col-md-2"></div>
     <div class="col-md-4">
         <form action="/users/edit/{{ request()->route('id') }}/commit" id="edit_user" method="POST">
             @csrf
-            <?php
-
-            use App\User;
-            use Illuminate\Support\Facades\DB;
-            use App\Http\Controllers\SettingsController;
-            use App\Http\Controllers\UserLimitsController;
-
-            $user_info = User::select('full_name', 'username', 'balance', 'role', 'password')->where('id', '=', request()->route('id'))->get();
-            if (empty($user_info)) {
-                return redirect('/users');
-            }
-            ?>
             <input type="hidden" name="id" id="user_id" value="{{ request()->route('id') }}">
-            Full Name<input type="text" name="full_name" class="form-control" placeholder="Full Name"
-                value="{{ $user_info['0']['full_name'] }}">
-            Username<input type="text" name="username" class="form-control" placeholder="Username (Optional)"
-                value="{{ $user_info['0']['username'] }}">
-            Balance<div class="input-group">
+
+            <span>Full Name</span>
+            <input type="text" name="full_name" class="form-control" placeholder="Full Name"
+                value="{{ $user->full_name }}">
+            <span>Username</span>
+            <input type="text" name="username" class="form-control" placeholder="Username (Optional)"
+                value="{{ $user->username }}">
+            <span>Balance</span>
+            <div class="input-group">
                 <div class="input-group-prepend">
                     <div class="input-group-text">$</div>
                 </div>
                 <input type="number" step="0.01" name="balance" class="form-control" placeholder="Balance"
-                    value="{{ number_format($user_info['0']['balance'], 2) }}">
+                    value="{{ number_format($user->balance, 2) }}">
             </div>
-            <input type="radio" name="role" value="camper" @if($user_info['0']['role']=="camper" ) checked @endif>
+
+            <input type="radio" name="role" value="camper" @if($user->role == "camper") checked @endif>
             <label for="camper">Camper</label><br>
-            <input type="radio" name="role" value="cashier" @if($user_info['0']['role']=="cashier" ) checked @endif>
+            <input type="radio" name="role" value="cashier" @if($user->role == "cashier") checked @endif>
             <label for="cashier">Cashier</label><br>
-            <input type="radio" name="role" value="administrator" @if($user_info['0']['role']=="administrator" ) checked
-                @endif>
+            <input type="radio" name="role" value="administrator" @if($user->role == "administrator") checked @endif>
             <label for="administrator">Administrator</label>
+
+            <!-- TODO: Make these only show when a staff role is selected above -->
             <input type="password" name="password" class="form-control" placeholder="Password">
             <input type="password" name="password_confirmation" class="form-control" placeholder="Confirm Password">
     </div>
@@ -46,28 +48,27 @@
         @include('includes.messages')
         <input type="hidden" name="editor_id" value="{{ Auth::user()->id }}">
         @foreach(SettingsController::getCategories() as $category)
-        {{ ucfirst($category->value) }} Limit
-        <div class="input-group">
-            <div class="input-group-prepend">
-                <div class="input-group-text">$</div>
+            <span>{{ ucfirst($category->value) }} Limit</span>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">$</div>
+                </div>
+                <input type="number" step="0.01" name="limit[{{ $category->value }}]" class="form-control"
+                    placeholder="Limit" value="{{ UserLimitsController::findLimit($user->id, $category->value) }}">
             </div>
-            <input type="number" step="0.01" name="limit[{{ $category->value }}]" class="form-control"
-                placeholder="Limit"
-                value="{{ DB::table('user_limits')->where([['user_id', request()->route('id')], ['category', $category->value]])->pluck('limit_per')->first() }}">
-        </div>
-        <input type="radio" name="duration[{{ $category->value }}]" value="0"
-            @if(UserLimitsController::findDuration(request()->route('id') ,$category->value) == "day") checked @endif>
-        <label for="day">Day</label>&nbsp;
-        <input type="radio" name="duration[{{ $category->value }}]" value="1"
-            @if(UserLimitsController::findDuration(request()->route('id') ,$category->value) == "week") checked @endif>
-        <label for="week">Week</label>
-        <br>
+            <input type="radio" name="duration[{{ $category->value }}]" value="0"
+                @if(UserLimitsController::findDuration($user->id, $category->value) == "day") checked @endif>
+            <label for="day">Day</label>&nbsp;
+            <input type="radio" name="duration[{{ $category->value }}]" value="1"
+                @if(UserLimitsController::findDuration($user->id, $category->value) == "week") checked @endif>
+            <label for="week">Week</label>
+            <br>
         @endforeach
     </div>
     </form>
     <div class="col-md-2">
         <form>
-            <button type="submit" form="edit_user">Submit</button>
+            <button type="submit" form="edit_user" class="btn btn-xs btn-success">Submit</button>
         </form>
         <br>
         <form>

@@ -2,6 +2,7 @@
 
 use App\Transactions;
 use App\Http\Controllers\OrderController;
+use App\User;
 ?>
 @extends('layouts.default')
 @section('content')
@@ -24,17 +25,19 @@ use App\Http\Controllers\OrderController;
     </thead>
     <tbody>
         @foreach (Transactions::orderBy('created_at', 'DESC')->get() as $transaction)
+        @php $user = User::find($transaction->purchaser_id) @endphp
+        @if($user == null) @continue @endif
         <tr>
             <td class="table-text">
                 <div>{{ $transaction->created_at->format('M jS Y h:ia') }}</div>
             </td>
             <td class="table-text">
-                <div><a
-                        href="users/info/{{ $transaction->purchaser_id }}">{{ DB::table('users')->where('id', $transaction->purchaser_id)->pluck('full_name')->first() }}</a>
+                <div>
+                    <a href="users/info/{{ $user->id }}">{{ $user->full_name }}</a>
                 </div>
             </td>
             <td class="table-text">
-                <div>{{ DB::table('users')->where('id', $transaction->cashier_id)->pluck('full_name')->first() }}</div>
+                <div>{{ User::find($transaction->cashier_id)->full_name }}</div>
             </td>
             <td class="table-text">
                 <div>${{ number_format($transaction->total_price, 2) }}</div>

@@ -25,7 +25,7 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 - Flexible return system
     - Either return a whole order, or:
     - Return an individual item from an order. A counter shows how many are left to be returned. Multiple backend checks to verify validity of return.
-- Editable GST and PST percentages per product.
+- Editable GST and PST percentages.
 - Detailed user history and order list pages with fully interactive and searchable tables.
 
 ## Screenshots:
@@ -47,22 +47,25 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 
 ## Roadmap:
 *High to Low priority sort*
+- Fix everything in Issues/Bugs
 - Staff Discount: check if purchaser is staff role and give % off (per item basis) 
     - Serialize so if it gets returned they get the discount back
+- Instead/as well as category limits, allow setting a hard limit per day/week.
+    - Example: Make user with $35, and each day of the week they can spend max of $5
+- Stats: Income by week, month, most popular products etc
 - Add sales/discounts to item for period of time (automatic or button)
 - Add auditing/tracking of everything
     - Role changes
     - New users
     - Price changes
     - Etc
-- Stats: Income by week, month, most popular products etc
 - Add stock/inventory features
 - Bulk change prices of items (Everything 10% *off* or everything 20% *more* etc)
 - Add Manager role.
     - All Cashier permissions + adding/editing products
 - Merge index and orders page with ajax for better preformance
 - Add PDF printing of all users transactions
-- For parents to pay off balance possibly integrate with Square API
+- For parents to pay off balance possibly integrate with Square/Paypal API
 - Seperate orders, users and stats into weeks (Like Green Bay)
 - Allow user to change light/dark mode
 - Move to Material Design. Bootstrap is ugly
