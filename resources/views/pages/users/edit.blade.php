@@ -8,7 +8,7 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserLimitsController;
 
 $user = User::find(request()->route('id'));
-if ($user == null) return redirect()->to('/users')->with('error', 'Invalid user.')->send();
+if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->send();
 @endphp
 <p>User: {{ $user->full_name }} <a href="/users/info/{{ request()->route('id') }}">(Info)</a></p>
 <div class="row">
