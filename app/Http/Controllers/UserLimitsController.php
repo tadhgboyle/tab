@@ -29,7 +29,6 @@ class UserLimitsController extends Controller
         else ($transactions = Transactions::where([['created_at', '>=', Carbon::now()->subDays($duration == "day" ? 1 : 7)->toDateTimeString()], ['purchaser_id', $user], ['status', '0']])->get());
 
         $category_spent = 0.00;
-        $tax_percent = 0.00;
 
         // Loop applicable transactions, then do a bunch of wacky shit
         foreach ($transactions as $transaction) {
@@ -38,7 +37,8 @@ class UserLimitsController extends Controller
             foreach (explode(", ", $transaction['products']) as $transaction_product) {
                 if (strtolower($category) == DB::table('products')->where('id', '=', strtok($transaction_product, "*"))->pluck('category')->first()) {
                     $item_info = OrderController::deserializeProduct($transaction_product);
-                    if ($item_info['pst'] != "null") $tax_percent = ($item_info['gst'] + $item_info['pst']) - 1;
+                    $tax_percent = $item_info['gst'];
+                    if ($item_info['pst'] != "null") $tax_percent += $item_info['pst'] - 1;
                     $quantity_available = $item_info['quantity'] - $item_info['returned'];
                     $category_spent += ($item_info['price'] * $quantity_available) * $tax_percent;
                 }

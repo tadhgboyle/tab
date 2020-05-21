@@ -14,6 +14,7 @@
     </button>
 </div>
 @endif
+<!-- Validation Errors -->
 @foreach ($errors->all() as $error)
 <div class="alert alert-danger alert-dismissable fade show">
     <span>{!! $error !!}</span>
@@ -22,11 +23,12 @@
     </button>
 </div>
 @endforeach
+<!-- Timeout Script -->
 <script>
     $(document).ready(function() {
         setTimeout(
             function() {
                 $(".alert").alert('close')
-            }, 2400);
+            }, 2250);
     });
 </script>
