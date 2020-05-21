@@ -13,7 +13,7 @@ class ProductsController extends Controller
     public function new(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|min:3',
+            'name' => 'required|min:3|unique:products,name',
             'price' => 'required|numeric',
             'category' => 'required',
         ]);
@@ -58,8 +58,9 @@ class ProductsController extends Controller
     }
 
     public function delete($id)
-    {
+    {   
+        $name = Products::find($id)->name;
         Products::where('id', $id)->delete();
-        return redirect('/products');
+        return redirect('/products')->with('success', 'Successfully deleted ' . $name . '.');
     }
 }
