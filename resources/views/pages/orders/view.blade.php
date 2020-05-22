@@ -1,36 +1,36 @@
-<?php
-
-use App\Http\Controllers\OrderController;
-use App\Products;
-use App\Transactions;
-
-$transaction = Transactions::where('id', '=', request()->route('id'))->get();
-$transaction_items = explode(", ", $transaction['0']['products']);
-?>
 @extends('layouts.default')
 @section('content')
 <h2>View Order</h2>
+@php
+use App\Http\Controllers\OrderController;
+use App\Products;
+use App\Transactions;
+use App\User;
+
+$transaction = Transactions::find(request()->route('id'));
+if ($transaction == null) return redirect('/orders')->with('error', 'Invalid order.')->send();
+
+$transaction_items = explode(", ", $transaction->products);
+$transaction_returned = OrderController::checkReturned($transaction->id);
+@endphp
 <div class="row">
     <div class="col-md-6">
         @include('includes.messages')
         <br>
-        <h4>Order ID: {{request()->route('id') }}</h4>
-        <h4>Time: {{ $transaction['0']['created_at']->format('M jS Y h:ia') }}</h4>
-        <h4>Purchaser: <a
-                href="/users/info/{{ $transaction['0']['purchaser_id'] }}">{{ DB::table('users')->where('id', $transaction['0']['purchaser_id'])->pluck('full_name')->first() }}</a>
+        <h4>Order ID: {{ request()->route('id') }}</h4>
+        <h4>Date: {{ $transaction->created_at->format('M jS Y h:ia') }}</h4>
+        <h4>Purchaser: <a href="/users/info/{{ $transaction->purchaser_id }}">{{ User::find($transaction->purchaser_id)->full_name }}</a>
         </h4>
-        <h4>Cashier: <a
-                href="/users/info/{{ $transaction['0']['cashier_id'] }}">{{ DB::table('users')->where('id', $transaction['0']['cashier_id'])->pluck('full_name')->first() }}</a>
+        <h4>Cashier: <a href="/users/info/{{ $transaction->cashier_id }}">{{ User::find($transaction->cashier_id)->full_name }}</a>
         </h4>
-        <h4>Total Price: ${{ number_format($transaction['0']['total_price'], 2) }}</h4>
-        <h4>Status: {{ OrderController::checkReturned($transaction['0']['id']) ? "" : "Not" }} Returned</h4>
+        <h4>Total Price: ${{ number_format($transaction->total_price, 2) }}</h4>
+        <h4>Status: {{ $transaction_returned ? "" : "Not" }} Returned</h4>
         <br>
-        @if(!OrderController::checkReturned($transaction['0']['id']))
-        <form>
-            <input type="hidden" id="transaction_id" value="{{ $transaction['0']['id'] }}">
-            <a href="javascript:;" data-toggle="modal" data-target="#returnModal"
-                class="btn btn-xs btn-danger">Return</a>
-        </form>
+        @if(!$transaction_returned)
+            <form>
+                <input type="hidden" id="transaction_id" value="{{ $transaction->id }}">
+                <a href="javascript:;" data-toggle="modal" data-target="#returnModal" class="btn btn-xs btn-danger">Return</a>
+            </form>
         @endif
     </div>
     <div class="col-md-6">
@@ -45,9 +45,9 @@ $transaction_items = explode(", ", $transaction['0']['products']);
             </thead>
             <tbody>
                 @foreach($transaction_items as $product)
-                <?php
+                @php
                 $item_info = OrderController::deserializeProduct($product);
-                ?>
+                @endphp
                 <tr>
                     <td class="table-text">
                         <div>{{ $item_info['name'] }}</div>
@@ -63,17 +63,16 @@ $transaction_items = explode(", ", $transaction['0']['products']);
                     </td>
                     <td class="table-text">
                         <div>
-                            @if($transaction['0']['status'] == 0 && $item_info['returned'] < $item_info['quantity'])
-                                <form>
+                            @if($transaction->status == 0 && $item_info['returned'] < $item_info['quantity']) <form>
                                 <input type="hidden" id="item_id" value="{{ $item_info['id'] }}">
                                 <a href="javascript:;" data-toggle="modal"
-                                    onclick="window.location='/orders/return/item/{{ $item_info['id'] }}/{{ $transaction['0']['id'] }}';"
+                                    onclick="window.location='/orders/return/item/{{ $item_info['id'] }}/{{ $transaction->id }}';"
                                     class="btn btn-xs btn-danger">Return
                                     ({{ $item_info['quantity'] - $item_info['returned'] }})</a>
                                 </form>
-                                @else
-                                Returned
-                                @endif
+                            @else
+                                <span>Returned</span>
+                            @endif
                         </div>
                     </td>
                 </tr>
@@ -87,7 +86,7 @@ $transaction_items = explode(", ", $transaction['0']['products']);
         <form action="" id="returnForm" method="get">
             <div class="modal-content">
                 <div class="modal-body">
-                    {{ csrf_field() }}
+                    @csrf
                     <p class="text-center">Are you sure you want to return this transaction?</p>
                 </div>
                 <div class="modal-footer">
