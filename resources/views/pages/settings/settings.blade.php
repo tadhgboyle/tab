@@ -13,8 +13,10 @@
             ?>
             GST<input type="number" step="0.01" name="gst" class="form-control" placeholder="GST" value="{{ SettingsController::getGst() }}">
             PST<input type="number" step="0.01" name="pst" class="form-control" placeholder="PST" value="{{ SettingsController::getPst() }}">
+            <!-- TODO: this -->
             Staff Discount<input type="number" step="0.01" name="staff_discount" class="form-control" placeholder="Staff Discount" value="{{ SettingsController::getStaffDiscount() }}">
-            <button type="submit">Submit</button>
+            <p></p>
+            <button type="submit" class="btn btn-xs btn-success">Save Settings</button>
         </form>
     </div>
     <div class="col-md-4">
@@ -41,7 +43,8 @@
                 @endforeach
             </tbody>
         </table>
-        <input type="submit" onclick="window.location='settings/category/new';" value="New Category">
+        <p></p>
+        <input type="submit" onclick="window.location='settings/category/new';" value="New Category" class="btn btn-xs btn-success">
     </div>
     <div class="col-md-2">
     </div>
