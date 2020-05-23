@@ -5,9 +5,11 @@
 use App\Transactions;
 use App\Http\Controllers\OrderController;
 use App\User;
+use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\UserLimitsController;
 
 $user = User::find(request()->route('id'));
-if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->send();   
+if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->send();
 @endphp
 <p>User: {{ $user->full_name }} <a href="/users/edit/{{ $user->id }}">(Edit)</a></p>
 <p>Role: {{ ucfirst($user->role) }}</p>
@@ -26,29 +28,33 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
                 <th>Time</th>
                 <th>Purchaser</th>
                 <th>Cashier</th>
-                <th>Total Price</th>
+                <th>Price</th>
                 <th>Status</th>
                 <th></th>
             </thead>
             <tbody>
-                @foreach (Transactions::where('purchaser_id', '=', request()->route('id'))->orderBy('created_at', 'DESC')->get() as $transaction)
+                @foreach (Transactions::where('purchaser_id', $user->id)->orderBy('created_at', 'DESC')->get() as $transaction)
                 <tr>
                     <td class="table-text">
                         <div>{{ $transaction->created_at->format('M jS Y h:ia') }}</div>
                     </td>
                     <td class="table-text">
-                        <div> {{ DB::table('users')->where('id', $transaction->purchaser_id)->pluck('full_name')->first() }}</div>
+                        <div>{{ $user->full_name }}</div>
                     </td>
                     <td class="table-text">
-                        <div> {{ DB::table('users')->where('id', $transaction->cashier_id)->pluck('full_name')->first() }}</div>
+                        <div>{{ User::find($transaction->cashier_id)->full_name }}</div>
                     </td>
                     <td class="table-text">
                         <div>${{ number_format($transaction->total_price, 2) }}</div>
                     </td>
                     <td class="table-text">
-                        <div>{!! !OrderController::checkReturned($transaction->id) ? "<h5><span class=\"badge badge-success\">Normal</span></h5>" : "<h5><span class=\"badge badge-danger\">Returned</span></h5>"!!}</div>
+                        <div>
+                            {!! !OrderController::checkReturned($transaction->id)
+                            ? "<h5><span class=\"badge badge-success\">Normal</span></h5>"
+                            : "<h5><span class=\"badge badge-danger\">Returned</span></h5>" !!}
+                        </div>
                     </td>
-                    <td>
+                    <td class="table-text">
                         <div><a href="/orders/view/{{ $transaction->id }}">View</a></div>
                     </td>
                 </tr>
@@ -56,13 +62,8 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
             </tbody>
         </table>
     </div>
-    <div class="col-md-5" align="center">
+    <div class="col-md-5">
         <h3>Categories</h3>
-        <?php
-
-        use App\Http\Controllers\SettingsController;
-        use App\Http\Controllers\UserLimitsController;
-        ?>
         <table id="category_list">
             <thead>
                 <th>Category</th>
@@ -72,23 +73,31 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
             </thead>
             <tbody>
                 @foreach(SettingsController::getCategories() as $category)
-                <?php
+                @php
                 $category_limit = UserLimitsController::findLimit(request()->route('id'), $category->value);
                 $category_duration = UserLimitsController::findDuration(request()->route('id'), $category->value);
                 $category_spent = UserLimitsController::findSpent(request()->route('id'), $category->value, $category_duration);
-                ?>
+                @endphp
                 <tr>
                     <td class="table-text">
                         <div>{{ ucfirst($category->value) }}</div>
                     </td>
                     <td class="table-text">
-                        <div>{!! $category_limit == "-1" ? "<i>Unlimited</i>" : "$" . number_format($category_limit, 2) . "/" . $category_duration !!}</div>
+                        <div>
+                            {!! $category_limit == "-1"
+                            ? "<i>Unlimited</i>"
+                            : "$" . number_format($category_limit, 2) . "/" . $category_duration !!}
+                        </div>
                     </td>
                     <td class="table-text">
                         <div>${{ number_format($category_spent, 2) }}</div>
                     </td>
                     <td class="table-text">
-                        <div>{!! $category_limit == "-1" ? "<i>Unlimited</i>" : "$" . number_format($category_limit - $category_spent, 2) !!}</div>
+                        <div>
+                            {!! $category_limit == "-1"
+                            ? "<i>Unlimited</i>"
+                            : "$" . number_format($category_limit - $category_spent, 2) !!}
+                        </div>
                     </td>
                 </tr>
                 @endforeach
@@ -99,6 +108,7 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
 <script>
     $(document).ready(function() {
         $('#order_list').DataTable();
+        $('#category_list').DataTable();
     });
     $('#order_list').DataTable({
         order: [],
@@ -110,9 +120,6 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
             emptyTable: "No orders to show.",
             infoEmpty: ""
         }
-    });
-    $(document).ready(function() {
-        $('#category_list').DataTable();
     });
     $('#category_list').DataTable({
         searching: false,
