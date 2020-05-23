@@ -43,7 +43,7 @@ class SettingsController extends Controller
                 ->withErrors($validator);
         }
 
-        // This is probably not as efficient as it could be...
+        // TODO: This is probably not as efficient as it could be...
         DB::table('settings')
             ->where('setting', 'gst')
             ->update(['value' => $request->gst]);
@@ -59,17 +59,17 @@ class SettingsController extends Controller
     public function newCat(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
+            'name' => 'required|unique:settings,value',
         ]);
         if ($validator->fails()) {
             return redirect()->back()
-                ->withInput($request->all())
+                ->withInput()
                 ->withErrors($validator);
         }
 
         // TODO: Category ID's -> Allow for renaming of categories
         $settings = new Settings();
-        $settings->setting = "category";
+        $settings->setting = 'category';
         $settings->value = strtolower($request->name);
         $settings->editor_id = $request->editor_id;
         $settings->save();

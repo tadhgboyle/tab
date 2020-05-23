@@ -71,4 +71,4 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 - Move to Material Design. Bootstrap is ugly
 
 ## Issues/Bugs:
-- Gracefully handle user/product/category/order deletion.
+- Gracefully handle category deletion.
