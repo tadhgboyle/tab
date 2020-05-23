@@ -1,19 +1,20 @@
-<?php
-
-use App\Transactions;
-use App\Http\Controllers\OrderController;
-?>
 @extends('layouts.default')
 @section('content')
-
 <h2>User Info</h2>
+@php
+use App\Transactions;
+use App\Http\Controllers\OrderController;
+use App\User;
 
-<p>User: {{ DB::table('users')->where('id', request()->route('id'))->pluck('full_name')->first() }} <a href="/users/edit/{{ request()->route('id') }}">(Edit)</a></p>
-<p>Role: {{ ucfirst(DB::table('users')->where('id', request()->route('id'))->pluck('role')->first()) }}</p>
-<span>Balance: ${{ number_format(DB::table('users')->where('id', request()->route('id'))->pluck('balance')->first(), 2) }}, </span>
-<span>Total spent: ${{ number_format(Transactions::where('purchaser_id', request()->route('id'))->sum('total_price'), 2) }}, </span>
-<span>Total returned: ${{ number_format(Transactions::where([['purchaser_id', request()->route('id')], ['status', '1']])->sum('total_price'), 2) }}, </span>
-<span>Total owing: ${{ number_format(Transactions::where([['purchaser_id', request()->route('id')], ['status', '0']])->sum('total_price'), 2) }}</span>
+$user = User::find(request()->route('id'));
+if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->send();   
+@endphp
+<p>User: {{ $user->full_name }} <a href="/users/edit/{{ $user->id }}">(Edit)</a></p>
+<p>Role: {{ ucfirst($user->role) }}</p>
+<span>Balance: ${{ number_format($user->balance, 2) }}, </span>
+<span>Total spent: ${{ User::findSpent($user) }}, </span>
+<span>Total returned: ${{ User::findReturned($user) }}, </span>
+<span>Total owing: ${{ User::findOwing($user) }}</span>
 <br>
 <br>
 
