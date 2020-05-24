@@ -7,14 +7,34 @@
         @include('includes.messages')
         <form action="/settings/submit" method="POST">
             @csrf
-            <?php
-
+            @php
             use App\Http\Controllers\SettingsController;
-            ?>
-            GST<input type="number" step="0.01" name="gst" class="form-control" placeholder="GST" value="{{ SettingsController::getGst() }}">
-            PST<input type="number" step="0.01" name="pst" class="form-control" placeholder="PST" value="{{ SettingsController::getPst() }}">
-            <!-- TODO: this -->
-            Staff Discount<input type="number" step="0.01" name="staff_discount" class="form-control" placeholder="Staff Discount" value="{{ SettingsController::getStaffDiscount() }}">
+            @endphp
+            <br>
+            <span>GST</span>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">%</div>
+                </div>
+                <input type="number" step="0.01" name="gst" class="form-control" placeholder="GST"
+                    value="{{ SettingsController::getGst() }}">
+            </div>
+            <span>PST</span>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">%</div>
+                </div>
+                <input type="number" step="0.01" name="pst" class="form-control" placeholder="PST"
+                    value="{{ SettingsController::getPst() }}">
+            </div>
+            <span>Staff Discount</span>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">%</div>
+                </div>
+                <input type="number" step="0.01" name="staff_discount" class="form-control"
+                    placeholder="Staff Discount (Not working yet)" value="{{ SettingsController::getStaffDiscount() }}">
+            </div>
             <p></p>
             <button type="submit" class="btn btn-xs btn-success">Save Settings</button>
         </form>
@@ -35,7 +55,8 @@
                         <div>
                             <form>
                                 <input type="hidden" id="{{ $category->value }}" value="{{ $category->value }}">
-                                <a href="javascript:;" data-toggle="modal" onclick="deleteData('{{ $category->value }}')" data-target="#DeleteModal">Delete</a>
+                                <a href="javascript:;" data-toggle="modal"
+                                    onclick="deleteData('{{ $category->value }}')" data-target="#DeleteModal">Delete</a>
                             </form>
                         </div>
                     </td>
@@ -44,7 +65,8 @@
             </tbody>
         </table>
         <p></p>
-        <input type="submit" onclick="window.location='settings/category/new';" value="New Category" class="btn btn-xs btn-success">
+        <input type="submit" onclick="window.location='settings/category/new';" value="New Category"
+            class="btn btn-xs btn-success">
     </div>
     <div class="col-md-2">
     </div>
@@ -60,7 +82,8 @@
                 <div class="modal-footer">
                     <center>
                         <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
-                        <button type="submit" name="" class="btn btn-danger" data-dismiss="modal" onclick="formSubmit()">Delete</button>
+                        <button type="submit" name="" class="btn btn-danger" data-dismiss="modal"
+                            onclick="formSubmit()">Delete</button>
                     </center>
                 </div>
             </div>

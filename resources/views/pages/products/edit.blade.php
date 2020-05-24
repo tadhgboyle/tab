@@ -8,15 +8,15 @@ use App\Http\Controllers\SettingsController;
 $product = Products::find(request()->route('id'));
 if ($product == null) return redirect('/products')->with('error', 'Invalid product.')->send();
 @endphp
-<p>Editing: {{ DB::table('products')->where('id', request()->route('id'))->pluck('name')->first() }}</p>
+<p>Editing: {{ $product->name }}</p>
 <div class="row">
     <div class="col-md-3"></div>
     <div class="col-md-4">
-        <form action="/products/edit/{{ request()->route('id') }}/commit" id="edit_product" method="POST" class="form-horizontal">
+        <form action="/products/edit/{{ request()->route('id') }}/commit" id="edit_product" method="POST">
             @csrf
-
             <input type="hidden" name="id" id="product_id" value="{{ request()->route('id') }}">
             <input type="hidden" name="editor_id" value="{{ Auth::user()->id }}">
+            
             <span>Name</span>
             <input type="text" name="name" class="form-control" placeholder="Name" value="{{ $product->name }}">
             <br>
@@ -39,7 +39,6 @@ if ($product == null) return redirect('/products')->with('error', 'Invalid produ
                     {{ ucfirst($category->value) }}</option>
                 @endforeach
             </select>
-            <br>
         </form>
     </div>
     <div class="col-md-4">

@@ -35,6 +35,9 @@
                         <a href="/orders" class="nav-link">Orders</a>
                     </li>
                     <li class="nav-item">
+                        <a href="/statistics" class="nav-link">Statistics</a>
+                    </li>
+                    <li class="nav-item">
                         <a href="/settings" class="nav-link">Settings</a>
                     </li>
                 <?php

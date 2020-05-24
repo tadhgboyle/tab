@@ -69,6 +69,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/products/delete/{id}', 'ProductsController@delete')->where('id', '[0-9]+')->name('delete_product');
         Route::get('/orders/return/order/{id}', 'OrderController@returnOrder')->where('id', '[0-9]+')->name('return_order');
         Route::get('/orders/return/item/{item}/{order}', 'OrderController@returnItem')->where(['id', '[0-9]+'], ['order', '[0-9]+'])->name('return_item');
+        // Statistics
+        Route::get('/statistics', function () {
+            return View::make('pages.statistics.statistics');
+        });        
         // settings
         Route::get('/settings', function () {
             return View::make('pages.settings.settings');
