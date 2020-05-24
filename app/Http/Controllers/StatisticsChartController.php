@@ -8,10 +8,12 @@ use App\Transactions;
 
 class StatisticsChartController extends Controller
 {
+    // TODO: Allow changing from viewing months - weeks - days
     public static function recentOrders()
     {
         $recentorders = new StatisticsChart;
 
+        // TODO: Make this one select statement
         $normal_data = Transactions::selectRaw('COUNT(*) as count, MONTH(created_at) month')->groupBy('month')->where('status', 0)->get();
         $returned_data = Transactions::selectRaw('COUNT(*) as count, MONTH(created_at) month')->groupBy('month')->where('status', 1)->get();
 
@@ -27,10 +29,11 @@ class StatisticsChartController extends Controller
 
         $recentorders->labels($labels);
         $recentorders->dataset('Normal Orders', 'line', $normal_orders)->color("rgb(137, 46, 234)")->fill(true);
-        $recentorders->dataset('Returned Orders', 'line', array_pad($returned_orders, -(count($normal_orders)), 0))->color("rgb(62, 113, 223)")->fill(false);
+        $recentorders->dataset('Returned Orders', 'line', array_pad($returned_orders, - (count($normal_orders)), 0))->color("rgb(62, 113, 223)")->fill(false);
         return $recentorders;
     }
 
+    // TODO: Specify duration to look back + boolean to look at returned or not
     public static function popularItems()
     {
         $popularitems = new StatisticsChart;
@@ -47,5 +50,10 @@ class StatisticsChartController extends Controller
         $popularitems->labels($labels);
         $popularitems->dataset('Items', 'bar', $sales)->color("rgb(255, 99, 132)");
         return $popularitems;
+    }
+
+    // TODO: This
+    public static function popularCategories()
+    {
     }
 }

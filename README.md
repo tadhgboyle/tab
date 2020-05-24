@@ -27,6 +27,10 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
     - Return an individual item from an order. A counter shows how many are left to be returned. Multiple backend checks to verify validity of return.
 - Editable GST and PST percentages.
 - Detailed user history and order list pages with fully interactive and searchable tables.
+- Detailed statistics charts (Thanks to [Laravel Charts](https://charts.erik.cat/)!)
+    - View # of orders and returns.
+    - View all products and how many times they have sold.
+    - More planned charts in roadmap.
 
 ## Screenshots:
 
@@ -45,6 +49,9 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 #### Order Information Page
 ![Order Info Page](https://images.tadhgboyle.dev/scrn185343.png)
 
+#### Chart.js Statistics Page
+![Chart.js Statistics Page](https://i.imgur.com/AsHG1iD.png)
+
 ## Roadmap:
 *High to Low priority sort*
 - Fix everything in Issues/Bugs
@@ -52,7 +59,9 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
     - Serialize so if it gets returned they get the discount back
 - Instead/as well as category limits, allow setting a hard limit per day/week.
     - Example: Make user with $35, and each day of the week they can spend max of $5
-- Stats: Income by week, month, most popular products etc
+- Stats: Income by week, month, most popular products etc (In text form on different page)
+    - (Todo) View all categories and how many times they have sold (Charts).
+    - (Todo) View a user and their count of orders, returns, top products/categories (Charts).
 - Add sales/discounts to item for period of time (automatic or button)
 - Add auditing/tracking of everything
     - Role changes
