@@ -8,9 +8,10 @@
         <form action="/settings/category/new" method="POST">
             @csrf
             <input type="hidden" name="editor_id" value="{{ Auth::user()->id }}">
-            Name<input type="text" name="name" class="form-control" placeholder="Category Name">
+            <span>Name</span>
+            <input type="text" name="name" class="form-control" placeholder="Category Name">
             <br>
-            <button type="submit">Submit</button>
+            <button type="submit" class="btn btn-xs btn-success">Submit</button>
         </form>
     </div>
     <div class="col-md-4">
