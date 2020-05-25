@@ -10,12 +10,12 @@ class UserLimitsController extends Controller
 {
     public static function findDuration($user, $category)
     {
-        return DB::table('user_limits')->where([['user_id', $user], ['category', '=', $category]])->pluck('duration')->first() == 0 ? "day" : "week";
+        return DB::table('user_limits')->where([['user_id', $user], ['category', $category]])->pluck('duration')->first() == 0 ? "day" : "week";
     }
 
     public static function findLimit($user, $category)
     {
-        $limit = DB::table('user_limits')->where([['user_id', $user], ['category', '=', $category]])->pluck('limit_per')->first();
+        $limit = DB::table('user_limits')->where([['user_id', $user], ['category', $category]])->pluck('limit_per')->first();
         // Usually this will happen when we make a new category after a user was made
         if ($limit == null) return "-1";
         else return $limit;
