@@ -21,9 +21,10 @@ class StatisticsChartController extends Controller
         // TODO: Make this one select statement
         $normal_data = Transactions::where('created_at', '>=', Carbon::now()->subDays($lookBack)->toDateTimeString())->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
         $returned_data = Transactions::where([['created_at', '>=', Carbon::now()->subDays($lookBack)->toDateTimeString()], ['status', '1']])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
-        $labels = array();
 
+        $labels = array();
         $normal_orders = array();
+
         foreach ($normal_data as $child) {
             array_push($labels, $child['date']);
             array_push($normal_orders, $child['count']);
@@ -37,22 +38,24 @@ class StatisticsChartController extends Controller
         return $recentorders;
     }
 
-    // TODO: Allow changing from viewing months - weeks - days + boolean to look at returned or not
     public static function popularItems($lookBack)
     {
         $popularitems = new StatisticsChart;
 
-        $labels = array();
         $sales = array();
+        
         foreach (Products::all() as $product) {
             $sold = Products::findSold($product->id, $lookBack);
             if ($sold == 0) continue;
-            array_push($labels, $product->name);
-            array_push($sales, $sold);
+            array_push($sales, ['name' => $product->name, 'sold' => $sold]);
         }
 
-        $popularitems->labels($labels);
-        $popularitems->dataset('Sold', 'bar', $sales)->color("rgb(255, 99, 132)");
+        uasort($sales, function ($a, $b) {
+            return ($a['sold'] > $b['sold'] ? -1 : 1);
+        });
+
+        $popularitems->labels(array_column($sales, 'name'));
+        $popularitems->dataset('Sold', 'bar', array_column($sales, 'sold'))->color("rgb(255, 99, 132)");
         return $popularitems;
     }
 

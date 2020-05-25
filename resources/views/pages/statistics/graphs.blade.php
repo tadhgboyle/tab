@@ -25,6 +25,7 @@ $popularitems = StatisticsChartController::popularItems($lookBack);
         </form>
     </div>
 </div>
+<br>
 <div class="row">
     <div class="col-md-6">
         <h3>Recent Orders</h3>
