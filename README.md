@@ -1,8 +1,5 @@
 # tabReborn
 
-![version](https://img.shields.io/badge/version-0.4.1--alpha-success)
-![watch](https://img.shields.io/github/watchers/Aberdeener/tabReborn?label=Watch&style=social)
-
 A lightweight, selfhosted web app that camps, resorts and schools can use as a simple POS.
 
 :raised_hands: Thank you to [DataTables](https://datatables.net) for the fast and interactive tables.
@@ -55,6 +52,7 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 ## Roadmap:
 *High to Low priority sort*
 - Fix everything in Issues/Bugs
+- Add stock/inventory features
 - Staff Discount: check if purchaser is staff role and give % off (per item basis) 
     - Serialize so if it gets returned they get the discount back
 - Instead/as well as category limits, allow setting a hard limit per day/week.
@@ -68,11 +66,9 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
     - New users
     - Price changes
     - Etc
-- Add stock/inventory features
 - Bulk change prices of items (Everything 10% *off* or everything 20% *more* etc)
 - Add Manager role.
     - All Cashier permissions + adding/editing products
-- Merge index and orders page with ajax for better preformance
 - Add PDF printing of all users transactions
 - For parents to pay off balance possibly integrate with Square/Paypal API
 - Seperate orders, users and stats into weeks (Like Green Bay)

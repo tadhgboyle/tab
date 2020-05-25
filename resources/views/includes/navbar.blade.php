@@ -34,8 +34,14 @@
                     <li class="nav-item">
                         <a href="/orders" class="nav-link">Orders</a>
                     </li>
-                    <li class="nav-item">
-                        <a href="/statistics" class="nav-link">Statistics</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Statistics
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="/statistics">Text</a>
+                            <a class="dropdown-item" href="/statistics/graphs">Graphs</a>
+                        </div>
                     </li>
                     <li class="nav-item">
                         <a href="/settings" class="nav-link">Settings</a>

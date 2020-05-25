@@ -25,9 +25,30 @@ class SettingsController extends Controller
         return DB::table('settings')->where('setting', 'staff_discount')->pluck('value')->first();
     }
 
+    public static function getLookBack()
+    {
+        return DB::table('settings')->where('setting', 'lookBack')->pluck('value')->first();
+    }
+
     public static function getCategories()
     {
         return Settings::all()->where('setting', 'category');
+    }
+
+    public static function editLookBack(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'lookback' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors($validator);
+        }
+        DB::table('settings')
+            ->where('setting', 'lookBack')
+            ->update(['value' => $request->lookback]);
+        return redirect('/statistics/graphs')->send();
     }
 
     public function editTax(Request $request)
