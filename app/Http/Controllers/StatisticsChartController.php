@@ -45,7 +45,7 @@ class StatisticsChartController extends Controller
         $labels = array();
         $sales = array();
         foreach (Products::all() as $product) {
-            $sold = Products::findSold($product->id);
+            $sold = Products::findSold($product->id, $lookBack);
             if ($sold == 0) continue;
             array_push($labels, $product->name);
             array_push($sales, $sold);
