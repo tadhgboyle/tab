@@ -33,7 +33,8 @@ class OrderController extends Controller
             } else return false;
         }
     }
-
+    
+    // TODO: Embed name and category
     public static function serializeProduct($id, $quantity, $price, $gst, $pst, $returned)
     {
         /**
@@ -50,6 +51,7 @@ class OrderController extends Controller
         return $id . "*" . $quantity . "$" . $price . "G" . $gst . "P" . $pst . "R" . $returned;
     }
 
+    // TODO: Embed name and category
     public static function deserializeProduct($product)
     {
         /**
