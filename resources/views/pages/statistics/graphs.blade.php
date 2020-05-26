@@ -6,8 +6,8 @@ use App\Http\Controllers\StatisticsChartController;
 use App\Http\Controllers\SettingsController;
 
 $lookBack = SettingsController::getLookBack();
-$recentorders = StatisticsChartController::recentOrders($lookBack);
-$popularitems = StatisticsChartController::popularItems($lookBack);
+$orderinfo = StatisticsChartController::orderInfo($lookBack);
+$iteminfo = StatisticsChartController::itemInfo($lookBack);
 @endphp
 <div class="row">
     <div class="col-md-2">
@@ -28,21 +28,21 @@ $popularitems = StatisticsChartController::popularItems($lookBack);
 <br>
 <div class="row">
     <div class="col-md-6">
-        <h3>Recent Orders</h3>
+        <h3>Order Info</h3>
         <div>
-            {!! $recentorders->container() !!}
+            {!! $orderinfo->container() !!}
         </div>
     </div>
     <div class="col-md-6">
-        <h3>Popular Items</h3>
+        <h3>Item Info</h3>
         <div>
-            {!! $popularitems->container() !!}
+            {!! $iteminfo->container() !!}
         </div>
     </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js" charset="utf-8"></script>
-{!! $recentorders->script() !!}
-{!! $popularitems->script() !!}
+{!! $orderinfo->script() !!}
+{!! $iteminfo->script() !!}
 
 <!-- Handle chaning the lookBack dropdown -->
 <script>

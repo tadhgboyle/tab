@@ -14,7 +14,7 @@ class StatisticsChartController extends Controller
     // $lookBack = 14 => Last 2 weeks
     // $lookBack = 7 => Last 1 week
     // $lookBack = 1 => Last 1 day
-    public static function recentOrders($lookBack)
+    public static function orderInfo($lookBack)
     {
         $recentorders = new StatisticsChart;
 
@@ -33,12 +33,12 @@ class StatisticsChartController extends Controller
         foreach ($returned_data as $child) array_push($returned_orders, $child['count']);
 
         $recentorders->labels($labels);
-        $recentorders->dataset('Normal Orders', 'line', $normal_orders)->color("rgb(137, 46, 234)")->fill(true);
-        $recentorders->dataset('Returned Orders', 'line', array_pad($returned_orders, - (count($normal_orders)), 0))->color("rgb(62, 113, 223)")->fill(false);
+        $recentorders->dataset('Normal Orders', 'line', $normal_orders)->color("rgb(0, 255, 0)")->fill(true);
+        $recentorders->dataset('Returned Orders', 'line', array_pad($returned_orders, - (count($normal_orders)), 0))->color("rgb(242, 94, 125)")->fill(false);
         return $recentorders;
     }
 
-    public static function popularItems($lookBack)
+    public static function itemInfo($lookBack)
     {
         $popularitems = new StatisticsChart;
 
@@ -55,7 +55,7 @@ class StatisticsChartController extends Controller
         });
 
         $popularitems->labels(array_column($sales, 'name'));
-        $popularitems->dataset('Sold', 'bar', array_column($sales, 'sold'))->color("rgb(255, 99, 132)");
+        $popularitems->dataset('Sold', 'bar', array_column($sales, 'sold'))->color("rgb(0, 255, 0)");
         return $popularitems;
     }
 

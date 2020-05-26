@@ -26,16 +26,18 @@ class User extends Authenticatable
         $returned = 0.00;
         $transactions = Transactions::where('purchaser_id', $user->id)->get();
 
-        foreach($transactions as $transaction) {
+        foreach ($transactions as $transaction) {
             if ($transaction->status == 1) {
                 $returned += $transaction->total_price;
                 continue;
             }
-            
-            foreach(explode(", ", $transaction->products) as $transaction_product) {
+
+            foreach (explode(", ", $transaction->products) as $transaction_product) {
                 $product = OrderController::deserializeProduct($transaction_product);
                 if ($product['returned'] > 0) {
-                    $returned += $product['returned'] * $product['price'] * ($product['pst'] + $product['gst'] - 1);
+                    $tax = $product['gst'];
+                    if ($product['pst'] != "null") $tax += ($product['pst'] - 1);
+                    $returned += $product['returned'] * $product['price'] * $tax;
                 }
             }
         }
