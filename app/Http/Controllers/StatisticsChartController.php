@@ -43,7 +43,7 @@ class StatisticsChartController extends Controller
         $popularitems = new StatisticsChart;
 
         $sales = array();
-        
+
         foreach (Products::all() as $product) {
             $sold = Products::findSold($product->id, $lookBack);
             if ($sold == 0) continue;
