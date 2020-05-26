@@ -5,9 +5,14 @@ namespace App;
 use App\Http\Controllers\OrderController;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Rennokki\QueryCache\Traits\QueryCacheable;
 
 class Products extends Model
 {
+    use QueryCacheable;
+    
+    protected $cacheFor = 180;
+
     public static function findSold($product, $lookBack) {
 
         $sold = 0;

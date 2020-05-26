@@ -4,9 +4,13 @@ namespace App;
 
 use App\Http\Controllers\OrderController;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Rennokki\QueryCache\Traits\QueryCacheable;
 
 class User extends Authenticatable
 {
+    use QueryCacheable;
+
+    protected $cacheFor = 180;
 
     // Find how much a user has spent in total. 
     // Does not factor in returned items/orders.
