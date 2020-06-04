@@ -17,6 +17,7 @@ use App\Products;
         <th>Name</th>
         <th>Category</th>
         <th>Price</th>
+        <th>Stock</th>
         <th>PST</th>
         <th></th>
     </thead>
@@ -32,8 +33,12 @@ use App\Products;
             <td class="table-text">
                 <div>${{ number_format($product->price, 2) }}</div>
             </td>
+            <td class="table-text">
+                <div>{{ ucfirst(Products::getStock($product->id)) }}</div>
+            </td>
             <td>
-                <div>{!! $product->pst == 0 ? "<h5><span class=\"badge badge-danger\">No</span></h5>" : "<h5><span class=\"badge badge-success\">Yes</span></h5>"!!}</div>
+                <div>{!! $product->pst == 0 ? "<h5><span class=\"badge badge-danger\">No</span></h5>" : "<h5><span
+                            class=\"badge badge-success\">Yes</span></h5>"!!}</div>
             </td>
             <td>
                 <div><a href="products/edit/{{ $product->id }}">Edit</a></div>

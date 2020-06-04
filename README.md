@@ -18,7 +18,13 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 - Product control and editing
     - Change the name and price anytime.
     - Optional PST charge on a per-item basis.
-- Live preview of price (with taxes) on sidebar during every purchase. If the user does not have enough money the submit button will be disabled (Backend check as well though!).
+- Inventory/Stock management *(In progress)*
+    - Each product has some settings:
+        - "Stock" / "Unlimited Stock" -> Set stock count for this product, or set it to be unlimited.
+        - "Box Size" -> When receiving, instead of counting/multiplying all of the boxes received, set this and receive using boxes.
+            - Example: A box of Skittles might have 16 Skittle packs in it. If 4 boxes arrived, instead of adding 16*4 to the stock count, add 4 boxes.
+        - "Override Stock" -> Override the stock count for this item.
+- Live preview of price (with taxes) on sidebar during every purchase. If the user does not have enough money the submit button will be disabled (Backend check as well though!)
 - Flexible return system
     - Either return a whole order, or:
     - Return an individual item from an order. A counter shows how many are left to be returned. Multiple backend checks to verify validity of return.
@@ -52,7 +58,10 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 ## Roadmap:
 *High to Low priority sort*
 - Fix everything in Issues/Bugs
-- Add stock/inventory features
+- Complete inventory features
+- Simplify user creation/editing into 1 view
+- When editing/creating a product, dynamically hide fields which are irrelevent
+    - Example: Don't show stock field when unlimited stock is selected
 - Staff Discount: check if purchaser is staff role and give % off (per item basis) 
     - Serialize so if it gets returned they get the discount back
 - Instead/as well as category limits, allow setting a hard limit per day/week.

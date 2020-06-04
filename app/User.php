@@ -42,7 +42,7 @@ class User extends Authenticatable
             }
         }
 
-        return $returned;
+        return number_format($returned, 2);
     }
 
     // Find how much money a user owes. 

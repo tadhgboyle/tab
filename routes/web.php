@@ -60,20 +60,20 @@ Route::middleware('auth')->group(function () {
             return View::make('pages.products.list');
         });
         Route::get('/products/new', function () {
-            return View::make('pages.products.new');
+            return View::make('pages.products.form');
         });
         Route::post('/products/new/commit', 'ProductsController@new');
         Route::get('/products/edit/{id}', function () {
-            return View::make('pages.products.edit');
+            return View::make('pages.products.form');
         })->where('id', '[0-9]+');
-        Route::post('/products/edit/{id}/commit', 'ProductsController@edit')->where('id', '[0-9]+');
+        Route::post('/products/edit/commit', 'ProductsController@edit')->where('id', '[0-9]+');
         Route::get('/products/delete/{id}', 'ProductsController@delete')->where('id', '[0-9]+')->name('delete_product');
         Route::get('/orders/return/order/{id}', 'OrderController@returnOrder')->where('id', '[0-9]+')->name('return_order');
         Route::get('/orders/return/item/{item}/{order}', 'OrderController@returnItem')->where(['id', '[0-9]+'], ['order', '[0-9]+'])->name('return_item');
         // Statistics
         Route::get('/statistics/graphs', function () {
             return View::make('pages.statistics.graphs');
-        });        
+        });
         Route::post('/statistics/graphs/update', 'SettingsController@editLookBack');
         // Settings
         Route::get('/settings', function () {
