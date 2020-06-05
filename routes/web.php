@@ -11,7 +11,6 @@
 |
 */
 
-use App\Http\Controllers\SettingsController;
 use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
 
@@ -19,18 +18,15 @@ Route::get('/login', function () {
     return View::make('pages.login');
 })->name('login');
 Route::post('/login/auth', 'LoginController@auth');
-// these are up here till migrations are done 
-Route::get('/users/new', function () {
-    return View::make('pages.users.new');
-});
-Route::post('/users/new/commit', 'UsersController@new');
-// middleware('auth') requires the user to be signed in to view the page
+
+// Middleware('auth') requires the user to be signed in to view the page
 Route::middleware('auth')->group(function () {
     Route::get('/', function () {
         return View::make('pages.index');
     });
     Route::get('/logout', 'LoginController@logout');
-    // cashier
+
+    /* Cashier */
     Route::get('/orders', function () {
         return View::make('pages.orders.list');
     });
@@ -41,21 +37,28 @@ Route::middleware('auth')->group(function () {
         return View::make('pages.orders.order');
     })->where('id', '[0-9]+');
     Route::post('/orders/{id}/submit', 'OrderController@submit')->where('id', '[0-9]+');
-    // admin only
+
+    // Admin Only
     Route::middleware(CheckRole::class)->group(function () {
-        // users
+
+        /* Users */
         Route::get('/users', function () {
             return View::make('pages.users.list');
         });
+        Route::get('/users/new', function () {
+            return View::make('pages.users.form');
+        });
+        Route::post('/users/new/commit', 'UsersController@new');
         Route::get('/users/edit/{id}', function () {
-            return View::make('pages.users.edit');
+            return View::make('pages.users.form');
         })->where('id', '[0-9]+');
-        Route::post('/users/edit/{id}/commit', 'UsersController@edit')->where('id', '[0-9]+');
+        Route::post('/users/edit/commit', 'UsersController@edit')->where('id', '[0-9]+');
         Route::get('/users/info/{id}', function () {
             return View::make('pages.users.info');
         })->where('id', '[0-9]+');
         Route::get('/users/delete/{id}', 'UsersController@delete')->where('id', '[0-9]+')->name('delete_user');
-        // products
+
+        /* Products */
         Route::get('/products', function () {
             return View::make('pages.products.list');
         });
@@ -70,12 +73,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/products/delete/{id}', 'ProductsController@delete')->where('id', '[0-9]+')->name('delete_product');
         Route::get('/orders/return/order/{id}', 'OrderController@returnOrder')->where('id', '[0-9]+')->name('return_order');
         Route::get('/orders/return/item/{item}/{order}', 'OrderController@returnItem')->where(['id', '[0-9]+'], ['order', '[0-9]+'])->name('return_item');
-        // Statistics
+
+        /* Statistics */
         Route::get('/statistics/graphs', function () {
             return View::make('pages.statistics.graphs');
         });
         Route::post('/statistics/graphs/update', 'SettingsController@editLookBack');
-        // Settings
+
+        /* Settings */
         Route::get('/settings', function () {
             return View::make('pages.settings.settings');
         });

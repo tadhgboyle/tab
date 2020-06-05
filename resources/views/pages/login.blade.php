@@ -8,9 +8,10 @@
         <form action="/login/auth" method="post">
             @csrf
             <div class="form-group">
-                Username<input type="text" name="username" class="form-control" value="" placeholder="Username">
+                Username<input type="text" name="username" class="form-control" placeholder="Username">
                 Password<input type="password" name="password" class="form-control" placeholder="Password">
-                <button type="submit">Login</button>
+                <br>
+                <button type="submit" class="btn btn-xs btn-success">Login</button>
             </div>
         </form>
     </div>
