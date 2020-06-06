@@ -30,7 +30,7 @@ $product = Products::find(request()->route('id'));
 
             <span>Name</span>
             <input type="text" name="name" class="form-control" placeholder="Name"
-                value="{{ isset($product->name) ? $product->name : '' }}">
+                value="{{ $product->name ?? '' }}">
             <br>
             <span>Price</span>
             <div class="input-group">
@@ -38,7 +38,7 @@ $product = Products::find(request()->route('id'));
                     <div class="input-group-text">$</div>
                 </div>
                 <input type="number" step="0.01" name="price" class="form-control" placeholder="Price"
-                    value="{{ isset($product->price) ? $product->price : '' }}">
+                    value="{{ $product->price ?? '' }}">
             </div>
             <br>
 
@@ -65,7 +65,7 @@ $product = Products::find(request()->route('id'));
                 <div class="input-group-text">#</div>
             </div>
             <input type="number" step="1" name="stock" class="form-control" placeholder="Stock"
-                value="{{ isset($product->stock) ? $product->stock : '' }}">
+                value="{{ $product->stock ?? '' }}">
         </div>
         <br>
         <span>Box Size</span>
@@ -74,7 +74,7 @@ $product = Products::find(request()->route('id'));
                 <div class="input-group-text">#</div>
             </div>
             <input type="number" step="1" name="box_size" class="form-control" placeholder="Box Size"
-                value="{{ isset($product->box_size) ? $product->box_size : '' }}">
+                value="{{ $product->box_size ?? '' }}">
         </div>
         <br>
 

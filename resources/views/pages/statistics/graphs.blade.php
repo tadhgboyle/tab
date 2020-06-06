@@ -44,7 +44,7 @@ $iteminfo = StatisticsChartController::itemInfo($lookBack);
 {!! $orderinfo->script() !!}
 {!! $iteminfo->script() !!}
 
-<!-- Handle chaning the lookBack dropdown -->
+<!-- Handle changing the lookBack dropdown -->
 <script>
     $('#lookback').change(function () {
         this.form.submit();
