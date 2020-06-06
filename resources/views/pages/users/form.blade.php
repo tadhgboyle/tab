@@ -17,11 +17,11 @@ $user = User::find(request()->route('id'));
 
             <span>Full Name</span>
             <input type="text" name="full_name" class="form-control" placeholder="Full Name"
-                value="{{ isset($user->full_name) ? $user->full_name : '' }}">
+                value="{{ $user->full_name ?? '' }}">
 
             <span>Username</span>
             <input type="text" name="username" class="form-control" placeholder="Username (Optional)"
-                value="{{ isset($user->username) ? $user->username  : ''}}">
+                value="{{ $user->username ?? ''}}">
 
             <span>Balance</span>
             &nbsp;

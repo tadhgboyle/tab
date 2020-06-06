@@ -18,9 +18,9 @@ class UsersController extends Controller
         $validator = Validator::make($request->all(), [
             'full_name' => 'required|min:4|unique:users,full_name',
             'username' => 'nullable|min:3|unique:users,username',
-            'balance' => 'nullable|nullable',
+            'balance' => 'nullable',
             'role' => 'required|in:camper,cashier,administrator',
-            'password' => 'required_unless:role,==,camper|nullable|required_with:password_confirmation|same:password_confirmation|min:6',
+            'password' => 'required_unless:role,camper|nullable|confirmed|min:6',
         ]);
         if ($validator->fails()) {
             return redirect('/users/new')
@@ -43,24 +43,22 @@ class UsersController extends Controller
         if (User::where('username', $user->username)->first() != null) $user->username = $user->username . mt_rand(0, 100);
 
         $balance = 0;
-        if ($request->balance != null || $request->balance != "") $balance = $request->balance;
+        if (isset($request->balance)) $balance = $request->balance;
 
         $user->balance = $balance;
         $user->role = $request->role;
 
-        if ($request->role != "camper") {
-            $user->password = bcrypt($request->password);
-        }
+        if ($request->role != "camper") $user->password = bcrypt($request->password);
+
         $user->save();
 
         // Update their category limits
         foreach ($request->limit as $category => $limit) {
             $duration = 0;
             // Default to limit per day rather than week if not specified
-            // TODO: Fix "Undefined index ['category']" when only setting limits for somethings...
-            if (($request->duration[$category] == NULL || $request->duration[$category] == "") ? $duration = 0 : $duration = $request->duration[$category]);
+            if (!isset($request->duration[$category]) ? $duration = 0 : $duration = $request->duration[$category]);
             // Default to unlimited limit if not specified
-            if ($limit == NULL || $limit == "") $limit = "-1";
+            if (!isset($limit)) $limit = -1;
             if ($limit < -1) {
                 return redirect()
                     ->back()
@@ -72,7 +70,7 @@ class UsersController extends Controller
                 ['limit_per' => $limit, 'duration' => $duration, 'editor_id' => $request->editor_id]
             );
         }
-        return redirect('/users')->with('success', 'Created user with name ' . $request->full_name . '.');
+        return redirect('/users')->with('success', 'Created user ' . $request->full_name . '.');
     }
 
     public function edit(Request $request)
@@ -90,7 +88,7 @@ class UsersController extends Controller
                 ->withErrors($validator);
         }
 
-        $password = NULL;
+        $password = null;
         $old_role = strtolower(DB::table('users')->where('id', $request->id)->pluck('role')->first());
         $new_role = strtolower($request->role);
         $staff_roles = array(
@@ -117,7 +115,7 @@ class UsersController extends Controller
             DB::table('users')
                 ->where('id', $request->id)
                 ->update(['full_name' => $request->full_name, 'username' => $request->username, 'balance' => $request->balance, 'role' => $request->role]);
-            return redirect('/users')->with('success', 'Updated ' . $request->full_name . '\'s profile.');
+            return redirect('/users')->with('success', 'Updated user ' . $request->full_name . '.');
         }
         // If old role is camper and new role is staff
         else if (!in_array($old_role, $staff_roles) && in_array($new_role, $staff_roles)) {
@@ -132,18 +130,18 @@ class UsersController extends Controller
             }
         }
         // If new role is camper
-        else $password = NULL;
+        else $password = null;
 
         DB::table('users')
             ->where('id', $request->id)
             ->update(['full_name' => $request->full_name, 'username' => $request->username, 'balance' => $request->balance, 'role' => $request->role, 'password' => $password]);
-        return redirect('/users')->with('success', 'Updated ' . $request->full_name . '\'s profile.');
+        return redirect('/users')->with('success', 'Updated user ' . $request->full_name . '.');
     }
 
     public function delete($id)
     {
         $name = User::where('id', $id)->first()->full_name;
         User::where('id', $id)->delete();
-        return redirect('/users')->with('success', 'Deleted user ' . $name);
+        return redirect('/users')->with('success', 'Deleted user ' . $name . '.');
     }
 }
