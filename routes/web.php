@@ -41,6 +41,10 @@ Route::middleware('auth')->group(function () {
     // Admin Only
     Route::middleware(CheckRole::class)->group(function () {
 
+        /* Orders */
+        Route::get('/orders/return/order/{id}', 'OrderController@returnOrder')->where('id', '[0-9]+')->name('return_order');
+        Route::get('/orders/return/item/{item}/{order}', 'OrderController@returnItem')->where(['id', '[0-9]+'], ['order', '[0-9]+'])->name('return_item');
+
         /* Users */
         Route::get('/users', function () {
             return View::make('pages.users.list');
@@ -71,8 +75,6 @@ Route::middleware('auth')->group(function () {
         })->where('id', '[0-9]+');
         Route::post('/products/edit/commit', 'ProductsController@edit')->where('id', '[0-9]+');
         Route::get('/products/delete/{id}', 'ProductsController@delete')->where('id', '[0-9]+')->name('delete_product');
-        Route::get('/orders/return/order/{id}', 'OrderController@returnOrder')->where('id', '[0-9]+')->name('return_order');
-        Route::get('/orders/return/item/{item}/{order}', 'OrderController@returnItem')->where(['id', '[0-9]+'], ['order', '[0-9]+'])->name('return_item');
 
         /* Statistics */
         Route::get('/statistics/graphs', function () {
@@ -86,7 +88,7 @@ Route::middleware('auth')->group(function () {
         });
         Route::post('/settings/submit', 'SettingsController@editTax');
         Route::get('/settings/category/new', function () {
-            return View::make('pages.settings.new');
+            return View::make('pages.settings.category.new');
         });
         Route::post('/settings/category/new', 'SettingsController@newCat');
         Route::get('/settings/category/delete/{name}', 'SettingsController@deleteCat')->where('id', '[0-9]+')->name('delete_category');

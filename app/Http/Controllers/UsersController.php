@@ -24,7 +24,7 @@ class UsersController extends Controller
         ]);
         if ($validator->fails()) {
             return redirect('/users/new')
-                ->withInput($request->all())
+                ->withInput()
                 ->withErrors($validator);
         }
 
@@ -43,7 +43,7 @@ class UsersController extends Controller
         if (User::where('username', $user->username)->first() != null) $user->username = $user->username . mt_rand(0, 100);
 
         $balance = 0;
-        if (isset($request->balance)) $balance = $request->balance;
+        if (!empty($request->balance)) $balance = $request->balance;
 
         $user->balance = $balance;
         $user->role = $request->role;
@@ -56,9 +56,9 @@ class UsersController extends Controller
         foreach ($request->limit as $category => $limit) {
             $duration = 0;
             // Default to limit per day rather than week if not specified
-            if (!isset($request->duration[$category]) ? $duration = 0 : $duration = $request->duration[$category]);
+            empty($request->duration[$category]) ? $duration = 0 : $duration = $request->duration[$category];
             // Default to unlimited limit if not specified
-            if (!isset($limit)) $limit = -1;
+            if (empty($limit)) $limit = -1;
             if ($limit < -1) {
                 return redirect()
                     ->back()
@@ -89,17 +89,14 @@ class UsersController extends Controller
         }
 
         $password = null;
-        $old_role = strtolower(DB::table('users')->where('id', $request->id)->pluck('role')->first());
+        $old_role = strtolower(User::find($request->id)->role);
         $new_role = strtolower($request->role);
-        $staff_roles = array(
-            'cashier',
-            'administrator'
-        );
+        $staff_roles = ['cashier', 'administrator'];
         // Update their category limits
         foreach ($request->limit as $category => $limit) {
             $duration = 0;
-            if ($request->duration[$category] == "" ? $duration = 0 : $duration = $request->duration[$category]);
-            if ($limit == "") $limit = "-1";
+            empty($request->duration[$category]) ? $duration = 0 : $duration = $request->duration[$category];
+            if (empty($limit)) $limit = -1;
             if ($limit < -1) {
                 return redirect()->back()->with('error', 'Limit must be above -1 for ' . ucfirst($category) . '. (-1 means no limit, 0 means not allowed.)')->withInput($request->all());
             }
@@ -119,7 +116,7 @@ class UsersController extends Controller
         }
         // If old role is camper and new role is staff
         else if (!in_array($old_role, $staff_roles) && in_array($new_role, $staff_roles)) {
-            if (isset($request->password)) {
+            if (!empty($request->password)) {
                 if ($request->password == $request->password_confirmation) {
                     $password = bcrypt($request->password);
                 } else {
@@ -140,7 +137,7 @@ class UsersController extends Controller
 
     public function delete($id)
     {
-        $name = User::where('id', $id)->first()->full_name;
+        $name = User::find($id)->full_name;
         User::where('id', $id)->delete();
         return redirect('/users')->with('success', 'Deleted user ' . $name . '.');
     }

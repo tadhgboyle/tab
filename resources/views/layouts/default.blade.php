@@ -15,9 +15,11 @@
 
         @include('includes.navbar')
 
-    </br>
+        </br>
 
         @yield('content')
+
+        <hr>
 
         @include('includes.footer')
 

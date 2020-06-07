@@ -15,34 +15,39 @@ $user = User::find(request()->route('id'));
             @csrf
             <input type="hidden" name="id" id="user_id" value="{{ request()->route('id') }}">
 
-            <span>Full Name</span>
+            <!-- 
+                Short hand ternary: 
+                <A> ?? <B> 
+                A will be shown if not null, but if it is null, B will be shown
+            -->
+            <span>Full Name<sup style="color: red">*</sup></span>
             <input type="text" name="full_name" class="form-control" placeholder="Full Name"
-                value="{{ $user->full_name ?? '' }}">
+                value="{{ $user->full_name ?? old('full_name') }}">
 
             <span>Username</span>
             <input type="text" name="username" class="form-control" placeholder="Username (Optional)"
-                value="{{ $user->username ?? ''}}">
+                value="{{ $user->username ?? old('username') }}">
 
             <span>Balance</span>
-            &nbsp;
             <div class="input-group">
                 <div class="input-group-prepend">
                     <div class="input-group-text">$</div>
                 </div>
                 <input type="number" step="0.01" name="balance" class="form-control" placeholder="Balance"
-                    value="{{ isset($user->balance) ? number_format($user->balance, 2) : '' }}">
+                    value="{{ isset($user->balance) ? number_format($user->balance, 2) : number_format(old('balance'), 2) }}">
             </div>
 
             <label for="camper">Camper</label>
-            <input type="radio" name="role" value="camper" @if(isset($user->role) && $user->role == "camper") checked
-            @endif><br>
+            <input type="radio" name="role" value="camper" @if((isset($user->role) && $user->role ==
+            "camper")||
+            old('role') == "camper") checked @endif><br>
             <label for="cashier">Cashier</label>
-            <input type="radio" name="role" value="cashier" @if(isset($user->role) && $user->role == "cashier")
-            checked
-            @endif><br>
+            <input type="radio" name="role" value="cashier" @if((isset($user->role) && $user->role ==
+            "cashier")||
+            old('role') == "cashier") checked @endif><br>
             <label for="administrator">Administrator</label>
-            <input type="radio" name="role" value="administrator" @if(isset($user->role) && $user->role ==
-            "administrator") checked @endif>
+            <input type="radio" name="role" value="administrator" @if((isset($user->role) && $user->role ==
+            "administrator") || old('role') == "administrator") checked @endif>
 
             <!-- TODO: Make these only show when a staff role is selected above -->
             <input type="password" name="password" class="form-control" placeholder="Password"
