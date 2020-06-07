@@ -18,7 +18,9 @@ class CreateProductsTable extends Migration
             $table->string('name')->unique();
             $table->float('price');
             $table->string('category');
-            $table->tinyInteger('pst')->default('0');
+            $table->boolean('pst')->default(false);
+
+            $table->boolean('deleted')->default(false);
 
             $table->integer('stock');
             // true/false if this product has unlimited stock (since -1 could be a valid inventory count)

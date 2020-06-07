@@ -70,6 +70,11 @@ class Products extends Model
         return Products::addStock($product, $boxCount * Products::getBoxSize($product));
     }
 
+    public static function isDeleted($product)
+    {
+        return Products::find($product)->deleted;
+    }
+
     public static function findSold($product, $lookBack)
     {
 

@@ -34,7 +34,7 @@ if ($user == null) return redirect('/')->with('error', 'Invalid user.')->send();
                     <th>Price</th>
                 </thead>
                 <tbody>
-                    @foreach(Products::all() as $product)
+                    @foreach(Products::all()->where('deleted', false) as $product)
                     <tr>
                         <td class="table-text">
                             <center>

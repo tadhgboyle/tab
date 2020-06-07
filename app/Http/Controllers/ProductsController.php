@@ -23,14 +23,14 @@ class ProductsController extends Controller
                 ->withErrors($validator);
         }
 
-        $pst = 0;
-        if ($request->has('pst')) $pst = 1;
+        $pst = false;
+        if ($request->has('pst')) $pst = true;
 
         $stock = 0;
-        if ($request->stock != null || $request->stock != "") $stock = $request->stock;
+        if (!empty($request->stock)) $stock = $request->stock;
         // Box size of -1 means they cannot receive stock via box. Instead must use normal stock
         $box_size = -1;
-        if ($request->box_size != null || $request->box_size != "") $box_size = $request->box_size;
+        if (!empty($request->box_size)) $box_size = $request->box_size;
 
         $unlimited_stock = false;
         if ($request->has('unlimited_stock')) $unlimited_stock = true;
@@ -56,28 +56,34 @@ class ProductsController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
+            'name' => 'required|min:3',
             'price' => 'required|numeric',
             'category' => 'required'
         ]);
         if ($validator->fails()) {
             return redirect()->back()
-                ->withInput($request->all())
+                ->withInput()
                 ->withErrors($validator);
         }
-        $pst = 0;
-        if ($request->has('pst')) $pst = 1;
+
+        $pst = false;
+        if ($request->has('pst')) $pst = true;
+
+        $unlimited_stock = false;
+        if ($request->has('unlimited_stock')) $unlimited_stock = true;
+
+        $stock_override = false;
+        if ($request->has('stock_override')) $stock_override = true;
 
         DB::table('products')
-            ->where('id', $request->id)
-            ->update(['name' => $request->name, 'price' => $request->price, 'category' => $request->category, 'stock' => $request->stock, 'box_size' => $request->box_size, 'pst' => $pst, 'editor_id' => $request->editor_id]);
+            ->where('id', $request->product_id)
+            ->update(['name' => $request->name, 'price' => $request->price, 'category' => $request->category, 'stock' => $request->stock, 'box_size' => $request->box_size, 'unlimited_stock' => $unlimited_stock, 'stock_override' => $stock_override, 'pst' => $pst, 'editor_id' => $request->editor_id]);
         return redirect('/products')->with('success', 'Successfully edited ' . $request->name . '.');
     }
 
     public function delete($id)
     {
-        $name = Products::find($id)->name;
-        Products::where('id', $id)->delete();
-        return redirect('/products')->with('success', 'Successfully deleted ' . $name . '.');
+        Products::where('id', $id)->update(['deleted' => true]);
+        return redirect('/products')->with('success', 'Successfully deleted ' . Products::find($id)->name . '.');
     }
 }

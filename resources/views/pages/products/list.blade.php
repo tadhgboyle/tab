@@ -22,7 +22,7 @@ use App\Products;
         <th></th>
     </thead>
     <tbody>
-        @foreach (Products::all() as $product)
+        @foreach (Products::all()->where('deleted', false) as $product)
         <tr>
             <td class="table-text">
                 <div>{{ $product->name }}</div>
@@ -37,8 +37,8 @@ use App\Products;
                 <div>{{ ucfirst(Products::getStock($product->id)) }}</div>
             </td>
             <td>
-                <div>{!! $product->pst == 0 ? "<h5><span class=\"badge badge-danger\">No</span></h5>" : "<h5><span
-                            class=\"badge badge-success\">Yes</span></h5>"!!}</div>
+                <div>{!! $product->pst ? "<h5><span class=\"badge badge-success\">Yes</span></h5>" : "<h5><span
+                            class=\"badge badge-danger\">No</span></h5>" !!}</div>
             </td>
             <td>
                 <div><a href="products/edit/{{ $product->id }}">Edit</a></div>

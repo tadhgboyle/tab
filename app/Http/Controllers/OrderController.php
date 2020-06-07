@@ -34,7 +34,6 @@ class OrderController extends Controller
         }
     }
     
-    // TODO: Embed name and category
     public static function serializeProduct($id, $quantity, $price, $gst, $pst, $returned)
     {
         /**
@@ -51,7 +50,6 @@ class OrderController extends Controller
         return $id . "*" . $quantity . "$" . $price . "G" . $gst . "P" . $pst . "R" . $returned;
     }
 
-    // TODO: Embed name and category
     public static function deserializeProduct($product)
     {
         /**
@@ -116,7 +114,7 @@ class OrderController extends Controller
                     if ($quantity < 1) {
                         return redirect()->back()->withInput()->with('error', 'Quantity must be above 1 for item ' . $product_info['0']['name']);
                     }
-                    if ($product_info['0']['pst'] == 1) {
+                    if ($product_info['0']['pst'] == true) {
                         $total_tax = ($total_tax + SettingsController::getPst()) - 1;
                         $pst_metadata = SettingsController::getPst();
                     } else {
