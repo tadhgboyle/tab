@@ -1,0 +1,80 @@
+@extends('layouts.default')
+@section('content')
+@php
+use App\Products;
+use App\Http\Controllers\UserLimitsController;
+use App\Http\Controllers\SettingsController;
+@endphp
+
+<h2>Stock Adjustment</h2>
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-7">
+        @include('includes.messages')
+        <table id="product_list">
+            <thead>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Stock</th>
+                <th>Box Size</th>
+                <th></th>
+            </thead>
+            <tbody>
+                @foreach(Products::all()->where('deleted', false) as $product)
+                <tr>
+                    <td class="table-text">
+                        <div>{{ $product->name }}</div>
+                    </td>
+                    <td class="table-text">
+                        <div>{{ ucfirst($product->category) }}</div>
+                    </td>
+                    <td class="table-text">
+                        <div>{{ Products::getStock($product->id) }}</div>
+                    </td>
+                    <td class="table-text">
+                        <div>{{ $product->box_size == -1 ? 'N/A' : $product->box_size }}</div>
+                    </td>
+                    <td class="table-text">
+                        <div><button class="btn btn-xs btn-info" id="adjust_select"
+                                value="{{ $product->id }}">Adjust</button></div>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-4">
+        <div id="adjust_product"></div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        let table = $('#product_list').DataTable({
+            "paging": false,
+            "scrollY": "23vw",
+            "scrollCollapse": true,
+        });
+    });
+
+   $(document).on("click", "#adjust_select", function() {
+        $.ajax({
+            type : "POST",
+            // TODO: use route()
+            url : "https://tab.tadhgboyle.dev/products/adjust/ajax",
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "id": $(this).attr("value")
+            },
+            beforeSend : function() {
+                $('#adjust_product').show().html("<center><img src='https://media3.giphy.com/media/L05HgB2h6qICDs5Sms/giphy.gif?cid=ecf05e47c2a8e1dc529f989ade9151c632332012d0a97dcb&rid=giphy.gif' style='max-height: 50px;'></img></center>");
+            },
+            success : function(response) {
+                $('#adjust_product').html(response);
+            },
+            error: function(xhr, status, error) {
+                $('#adjust_product').show().html("<p style='color: red;'><b>ERROR: </b><br>" + xhr.responseText + "</p>");
+            }
+        });
+    });
+</script>
+@stop

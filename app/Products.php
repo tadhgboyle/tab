@@ -14,7 +14,7 @@ class Products extends Model
     protected $cacheFor = 180;
 
     // Used to check if items in order have enough stock BEFORE using removeStock() to remove it.
-    // If we didnt use this, 
+    // If we didnt use this, then stock would be adjusted and then the order would fail, resulting in inaccurate stock.
     public static function hasStock(array $productIds)
     {
         foreach ($productIds as $productId => $amount) {
@@ -29,7 +29,7 @@ class Products extends Model
     public static function getStock($productId)
     {
         $product = Products::find($productId);
-        if ($product->unlimited_stock) return 'unlimited';
+        if ($product->unlimited_stock) return 'Unlimited';
         else return $product->stock;
     }
 
@@ -41,8 +41,8 @@ class Products extends Model
     public static function removeStock($product, $removeStock)
     {
         // Checks 3 things:
-        // 1. If the stock is more than we are removing OF If the product has unlimited stock - continue
-        // 3. If the above fails, if the product has stock override - continue
+        // 1. If the stock is more than we are removing OR -> 2. If the product has unlimited stock => continue
+        // 3. If the above fails, if the product has stock override => continue
         if ((Products::getStock($product) > $removeStock || $product->unlimited_stock) || $product->stock_override) {
             Products::where('id', $product)->decrement('stock', $removeStock);
             return true;

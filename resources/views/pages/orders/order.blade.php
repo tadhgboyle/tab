@@ -31,6 +31,7 @@ if ($user == null) return redirect('/')->with('error', 'Invalid user.')->send();
                     <th>Quantity</th>
                     <th>Name</th>
                     <th>Category</th>
+                    <th>Stock</th>
                     <th>Price</th>
                 </thead>
                 <tbody>
@@ -55,6 +56,9 @@ if ($user == null) return redirect('/')->with('error', 'Invalid user.')->send();
                         </td>
                         <td class="table-text">
                             <div>{{ ucfirst($product->category) }}</div>
+                        </td>
+                        <td class="table-text">
+                            <div>{{ Products::getStock($product->id) }}</div>
                         </td>
                         <td class="table-text">
                             <div>${{ number_format($product->price, 2) }}</div>

@@ -18,6 +18,7 @@ use App\Products;
         <th>Category</th>
         <th>Price</th>
         <th>Stock</th>
+        <th>Box Size</th>
         <th>PST</th>
         <th></th>
     </thead>
@@ -34,7 +35,10 @@ use App\Products;
                 <div>${{ number_format($product->price, 2) }}</div>
             </td>
             <td class="table-text">
-                <div>{{ ucfirst(Products::getStock($product->id)) }}</div>
+                <div>{{ Products::getStock($product->id) }}</div>
+            </td>
+            <td class="table-text">
+                <div>{{ $product->box_size == -1 ? 'N/A' : $product->box_size }}</div>
             </td>
             <td>
                 <div>{!! $product->pst ? "<h5><span class=\"badge badge-success\">Yes</span></h5>" : "<h5><span
