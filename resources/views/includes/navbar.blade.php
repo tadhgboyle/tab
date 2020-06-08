@@ -32,7 +32,7 @@
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="/products">List</a>
                     <a class="dropdown-item" href="/products/new">Create</a>
-                    <a class="dropdown-item" href="/products/receive">Receive</a>
+                    <a class="dropdown-item" href="/products/adjust">Adjust</a>
                 </div>
             </li>
             <li class="nav-item">

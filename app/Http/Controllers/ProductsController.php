@@ -86,4 +86,11 @@ class ProductsController extends Controller
         Products::where('id', $id)->update(['deleted' => true]);
         return redirect('/products')->with('success', 'Successfully deleted ' . Products::find($id)->name . '.');
     }
+
+    public function ajaxInit()
+    {
+        $product = Products::find(\Request::get('id'));
+
+        return view('pages.products.adjust.form', compact('product', $product));
+    }
 }
