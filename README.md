@@ -91,6 +91,7 @@ Documentation (in the form of a printable user handbook) is being written.
 - Add Manager role.
     - All Cashier permissions + adding/editing products
 - Add PDF printing of all users transactions
+    - In settings page, allow to upload a custom logo to be on invoice
 - Seperate orders, users and stats into weeks (Like Green Bay)
 - Allow user to change light/dark mode
 - Move to Material Design. Bootstrap is ugly

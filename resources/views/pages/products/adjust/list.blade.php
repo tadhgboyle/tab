@@ -8,8 +8,15 @@ use App\Http\Controllers\SettingsController;
 
 <h2>Stock Adjustment</h2>
 <div class="row">
-    <div class="col-md-1"></div>
-    <div class="col-md-7">
+    <div class="col-md-2">
+        <select id="category_select">
+            <option value="">Choose a Category</option>
+            @foreach(SettingsController::getCategories() as $category)
+            <option value="{{ $category->value }}">{{ ucfirst($category->value) }}</option>
+            @endforeach
+        </select>
+    </div>
+    <div class="col-md-6">
         <table id="product_list">
             <thead>
                 <th>Name</th>
@@ -20,7 +27,7 @@ use App\Http\Controllers\SettingsController;
             </thead>
             <tbody>
                 <!-- TODO: Dropdown to select category to show -->
-                @foreach(Products::all()->where('deleted', false) as $product)
+                @foreach(Products::where('deleted', false)->get() as $product)
                 <tr>
                     <td class="table-text">
                         <div>{{ $product->name }}</div>
@@ -53,12 +60,18 @@ use App\Http\Controllers\SettingsController;
     </div>
 </div>
 <script type="text/javascript">
+    let table = null;
+
     $(document).ready(function() {
-        let table = $('#product_list').DataTable({
+        table = $('#product_list').DataTable({
             "paging": false,
             "scrollY": "23vw",
             "scrollCollapse": true,
         });
+    });
+
+    $('#category_select').on('change',function(){
+        table.search($(this).val()).draw(); //Exact value, column, reg
     });
 
    $(document).on("click", "#adjust_select", function() {
