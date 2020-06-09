@@ -91,7 +91,7 @@ class Products extends Model
         foreach (Transactions::where('created_at', '>=', Carbon::now()->subDays($lookBack)->toDateTimeString())->get() as $transaction) {
             foreach (explode(", ", $transaction->products) as $transaction_product) {
                 $deserialized_product = OrderController::deserializeProduct($transaction_product);
-                if ($deserialized_product['id'] == $product) $sold += $deserialized_product['quantity'];
+                if ($deserialized_product['id'] == $product) $sold += ($deserialized_product['quantity'] - $deserialized_product['returned']);
             }
         }
 
