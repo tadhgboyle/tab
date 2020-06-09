@@ -10,7 +10,6 @@ use App\Http\Controllers\SettingsController;
 <div class="row">
     <div class="col-md-1"></div>
     <div class="col-md-7">
-        @include('includes.messages')
         <table id="product_list">
             <thead>
                 <th>Name</th>
@@ -20,6 +19,7 @@ use App\Http\Controllers\SettingsController;
                 <th></th>
             </thead>
             <tbody>
+                <!-- TODO: Dropdown to select category to show -->
                 @foreach(Products::all()->where('deleted', false) as $product)
                 <tr>
                     <td class="table-text">
@@ -35,8 +35,8 @@ use App\Http\Controllers\SettingsController;
                         <div>{{ $product->box_size == -1 ? 'N/A' : $product->box_size }}</div>
                     </td>
                     <td class="table-text">
-                        <div><button class="btn btn-xs btn-info" id="adjust_select"
-                                value="{{ $product->id }}">Adjust</button></div>
+                        <div><button class="btn btn-info" id="adjust_select" value="{{ $product->id }}">Adjust</button>
+                        </div>
                     </td>
                 </tr>
                 @endforeach
@@ -44,10 +44,15 @@ use App\Http\Controllers\SettingsController;
         </table>
     </div>
     <div class="col-md-4">
-        <div id="adjust_product"></div>
+        @include('includes.messages')
+        <div id="adjust_product">
+            @if(session()->has('last_product'))
+            @include('pages.products.adjust.form', ['product' => session('last_product')])
+            @endif
+        </div>
     </div>
 </div>
-<script>
+<script type="text/javascript">
     $(document).ready(function() {
         let table = $('#product_list').DataTable({
             "paging": false,

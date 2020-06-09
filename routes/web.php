@@ -79,6 +79,7 @@ Route::middleware('auth')->group(function () {
             return view('pages.products.adjust.list');
         })->where('id', '[0-9]+');
         Route::post('/products/adjust/ajax', 'ProductsController@ajaxInit')->name('adjustAjax');
+        Route::post('/products/adjust/commit', 'ProductsController@adjustStock');
 
         /* Statistics */
         Route::get('/statistics/graphs', function () {

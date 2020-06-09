@@ -38,11 +38,14 @@ class Products extends Model
         return Products::where('id', $product)->update(['stock' => $stock]);
     }
 
-    public static function removeStock($product, $removeStock)
+    public static function removeStock($product, $removeStock, $strict)
     {
         // Checks 3 things:
         // 1. If the stock is more than we are removing OR -> 2. If the product has unlimited stock => continue
         // 3. If the above fails, if the product has stock override => continue
+        if (!$strict) {
+            return Products::where('id', $product)->decrement('stock', $removeStock);
+        }
         if ((Products::getStock($product) > $removeStock || $product->unlimited_stock) || $product->stock_override) {
             Products::where('id', $product)->decrement('stock', $removeStock);
             return true;
@@ -68,6 +71,11 @@ class Products extends Model
     public static function addBox($product, $boxCount)
     {
         return Products::addStock($product, $boxCount * Products::getBoxSize($product));
+    }
+
+    public static function removeBox($product, $boxCount)
+    {
+        return Products::removeStock($product, $boxCount * Products::getBoxSize($product), false);
     }
 
     public static function isDeleted($product)

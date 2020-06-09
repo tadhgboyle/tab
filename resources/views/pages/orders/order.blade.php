@@ -48,7 +48,7 @@ if ($user == null) return redirect('/')->with('error', 'Invalid user.')->send();
                         <td class="table-text">
                             <center>
                                 <input type="number" name="quantity[{{ $product->id }}]"
-                                    id="quantity[{{ $product->id }}]" value="1" />
+                                    id="quantity[{{ $product->id }}]" value="1" min="1"/>
                             </center>
                         </td>
                         <td class="table-text">
