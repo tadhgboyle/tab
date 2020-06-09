@@ -33,7 +33,7 @@ class OrderController extends Controller
             } else return false;
         }
     }
-    
+
     public static function serializeProduct($id, $quantity, $price, $gst, $pst, $returned)
     {
         /**
@@ -112,7 +112,7 @@ class OrderController extends Controller
                 if (array_key_exists($product, $request->quantity)) {
                     $quantity = $request->quantity[$product];
                     if ($quantity < 1) {
-                        return redirect()->back()->withInput()->with('error', 'Quantity must be above 1 for item ' . $product_info['0']['name']);
+                        return redirect()->back()->withInput()->with('error', 'Quantity must be >= 1 for item ' . $product_info['0']['name']);
                     }
                     if ($product_info['0']['pst'] == true) {
                         $total_tax = ($total_tax + SettingsController::getPst()) - 1;
@@ -154,9 +154,7 @@ class OrderController extends Controller
                 }
             }
             // Update their balance
-            DB::table('users')
-                ->where('id', $request->purchaser_id)
-                ->update(['balance' => $remaining_balance]);
+            User::find($request->purchaser_id)->update(['balance' => $remaining_balance]);
 
             // Save transaction in database
             $transaction = new Transactions();
@@ -194,12 +192,8 @@ class OrderController extends Controller
         }
 
         // Update their balance and set the status to 1 for the returned order
-        DB::table('users')
-            ->where('id', $purchaser_info['0']['id'])
-            ->update(['balance' => ($purchaser_info['0']['balance'] + $total_price)]);
-        DB::table('transactions')
-            ->where('id', $id)
-            ->update(['status' => '1']);
+        User::find($purchaser_info['0']['id'])->update(['balance' => ($purchaser_info['0']['balance'] + $total_price)]);
+        Transactions::find($id)->update(['status' => 1]);
         return redirect()->back()->with('success', 'Successfully returned order #' . $id . ' for ' . $purchaser_info['0']['full_name']);
     }
 
@@ -236,13 +230,9 @@ class OrderController extends Controller
                         explode(", ", $order_info['0']['products'])
                     );
                     // Update their balance
-                    DB::table('users')
-                        ->where('id', $order_info['0']['purchaser_id'])
-                        ->update(['balance' => $user_balance += ($order_product['price'] * $total_tax)]);
+                    User::find($order_info['0']['purchaser_id'])->update(['balance' => $user_balance += ($order_product['price'] * $total_tax)]);
                     // Now insert the funky replaced string where it was originally
-                    DB::table('transactions')
-                        ->where('id', $order_info['0']['id'])
-                        ->update(['products' => implode(", ", $updated_products)]);
+                    Transactions::find($order_info['0']['id'])->update(['products' => implode(", ", $updated_products)]);
                     return redirect()->back()->with('success', 'Successfully returned x1 ' . $order_product['name'] . ' for order #' . $order . '.');
                 } else {
                     return redirect()->back()->with('error', 'That item has already been returned the maximum amount of times for that order.');

@@ -11,6 +11,7 @@ class User extends Authenticatable
     use QueryCacheable;
 
     protected $cacheFor = 180;
+    protected $fillable = ['balance'];
 
     // Find how much a user has spent in total. 
     // Does not factor in returned items/orders.

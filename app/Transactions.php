@@ -10,4 +10,5 @@ class Transactions extends Model
     use QueryCacheable;
 
     protected $cacheFor = 180;
+    protected $fillable = ['products', 'status'];
 }

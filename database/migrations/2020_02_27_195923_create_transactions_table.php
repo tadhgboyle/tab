@@ -19,7 +19,7 @@ class CreateTransactionsTable extends Migration
             $table->integer('cashier_id');
             $table->string('products');
             $table->float('total_price');
-            $table->tinyInteger('status')->default('0');
+            $table->tinyInteger('status')->default(0);
             $table->nullableTimestamps();
         });
     }
