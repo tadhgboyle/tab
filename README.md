@@ -6,6 +6,8 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 
 *Note: Migrations are not up to date. I am manually editing my local MySQL tables and will update migrations when it is more stable.*
 
+Documentation (in the form of a printable user handbook) is being written. 
+
 ## Features (so far):
 
 - User control
@@ -24,6 +26,8 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
         - "Box Size" -> When receiving, instead of counting/multiplying all of the boxes received, set this and receive using boxes.
             - Example: A box of Skittles might have 16 Skittle packs in it. If 4 boxes arrived, instead of adding 16*4 to the stock count, add 4 boxes.
         - "Override Stock" -> Override the stock count for this item.
+    - Fast and easy to use stock adjustment page.
+        - Uses AJAX to snappily load all available adjustments for the selected product.
 - Live preview of price (with taxes) on sidebar during every purchase. If the user does not have enough money the submit button will be disabled (Backend check as well though!)
 - Flexible return system
     - Either return a whole order, or:
@@ -55,13 +59,21 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 #### Chart.js Statistics Page
 ![Chart.js Statistics Page](https://i.imgur.com/AsHG1iD.png)
 
+#### Stock Adjustment Page
+![Stock Adjustment Page](https://i.imgur.com/L6cAMWo.png)
+
 ## Roadmap:
 *High to Low priority sort*
 - Fix everything in Issues/Bugs
 - Complete inventory features
-- Simplify user creation/editing into 1 view
+    - Remaining: 
+        - Validation logic for adjustment page
+        - Check stock during orders
+        - Item sidebar stock alerts? (Not looking forward to this)
 - When editing/creating a product, dynamically hide fields which are irrelevent
     - Example: Don't show stock field when unlimited stock is selected
+- Create user "pay out" page, which will be used to mark how much a user has paid off of their owing amount.
+    - Track what payment method was used, as well as the transaction # + more details (depending on how they pay)
 - Staff Discount: check if purchaser is staff role and give % off (per item basis) 
     - Serialize so if it gets returned they get the discount back
 - Instead/as well as category limits, allow setting a hard limit per day/week.
@@ -79,7 +91,6 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 - Add Manager role.
     - All Cashier permissions + adding/editing products
 - Add PDF printing of all users transactions
-- For parents to pay off balance possibly integrate with Square/Paypal API
 - Seperate orders, users and stats into weeks (Like Green Bay)
 - Allow user to change light/dark mode
 - Move to Material Design. Bootstrap is ugly
