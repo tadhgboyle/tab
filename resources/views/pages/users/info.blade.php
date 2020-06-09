@@ -26,7 +26,6 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
         <table id="order_list">
             <thead>
                 <th>Time</th>
-                <th>Purchaser</th>
                 <th>Cashier</th>
                 <th>Price</th>
                 <th>Status</th>
@@ -37,9 +36,6 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
                 <tr>
                     <td class="table-text">
                         <div>{{ $transaction->created_at->format('M jS Y h:ia') }}</div>
-                    </td>
-                    <td class="table-text">
-                        <div>{{ $user->full_name }}</div>
                     </td>
                     <td class="table-text">
                         <div>{{ User::find($transaction->cashier_id)->full_name }}</div>

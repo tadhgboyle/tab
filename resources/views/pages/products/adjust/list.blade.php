@@ -71,7 +71,7 @@ use App\Http\Controllers\SettingsController;
     });
 
     $('#category_select').on('change',function(){
-        table.search($(this).val()).draw(); //Exact value, column, reg
+        table.search($(this).val()).draw();
     });
 
    $(document).on("click", "#adjust_select", function() {
