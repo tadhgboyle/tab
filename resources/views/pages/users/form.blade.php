@@ -49,13 +49,10 @@ $user = User::find(request()->route('id'));
             <input type="radio" name="role" value="administrator" @if((isset($user->role) && $user->role ==
             "administrator") || old('role') == "administrator") checked @endif>
 
-            <!-- TODO: Make these only show when a staff role is selected above -->
-            <div id="password_hidable" style="display: none">
-                <input type="password" name="password" class="form-control" placeholder="Password"
-                    autocomplete="new-password">
-                <input type="password" name="password_confirmation" class="form-control" placeholder="Confirm Password"
-                    autocomplete="new-password">
-            </div>
+            <input type="password" name="password" class="form-control password_hidable" placeholder="Password"
+                autocomplete="new-password" readonly>
+            <input type="password" name="password_confirmation" class="form-control password_hidable"
+                placeholder="Confirm Password" autocomplete="new-password" readonly>
     </div>
 
     <div class="col-md-4">
@@ -117,7 +114,7 @@ $user = User::find(request()->route('id'));
 </div>
 <script type="text/javascript">
     $(document).ready(function() {
-        updatePassword($("input[name='role']:checked").val());
+        updatePassword($("input[name=role]:checked").val());
     });
 
     $('input[type=radio][name=role]').change(function() {
@@ -125,7 +122,13 @@ $user = User::find(request()->route('id'));
     });
 
     function updatePassword(role) {
-        if (role !== undefined) document.getElementById('password_hidable').style.display = role != 'camper' ? 'block' : 'none';
+        if (role !== undefined) {
+            let fields = document.getElementsByClassName('password_hidable');
+            for (var i = 0; i < fields.length; i++) { 
+                if (role == 'camper') $(fields[i]).val('');
+                fields[i].readOnly = role != 'camper' ? false : true; 
+            }
+        }
     }
 
     function deleteData() {

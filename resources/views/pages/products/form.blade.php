@@ -66,8 +66,8 @@ $product = Products::find(request()->route('id'));
             <div class="input-group-prepend">
                 <div class="input-group-text">#</div>
             </div>
-            <input type="number" step="1" name="stock" class="form-control" placeholder="Stock"
-                value="{{ $product->stock ?? old('stock') }}">
+            <input type="number" step="1" name="stock" class="form-control unlimited_stock_attr" placeholder="Stock"
+                value="{{ $product->stock ?? old('stock') }}" readonly>
         </div>
         <br>
         <span>Box Size</span>
@@ -75,8 +75,8 @@ $product = Products::find(request()->route('id'));
             <div class="input-group-prepend">
                 <div class="input-group-text">#</div>
             </div>
-            <input type="number" step="1" name="box_size" class="form-control" placeholder="Box Size"
-                value="{{ $product->box_size ?? old('stock') }}">
+            <input type="number" step="1" name="box_size" class="form-control unlimited_stock_attr"
+                placeholder="Box Size" value="{{ $product->box_size ?? old('stock') }}" readonly>
         </div>
         <br>
 
@@ -124,6 +124,23 @@ $product = Products::find(request()->route('id'));
     </div>
 </div>
 <script type="text/javascript">
+    $(document).ready(function() {
+        updateUnlimitedAttr($('input[type=checkbox][name=unlimited_stock]').prop('checked'));
+    });
+        
+    $('input[type=checkbox][name=unlimited_stock]').change(function() {
+        updateUnlimitedAttr($(this).prop('checked'))
+    });
+        
+    function updateUnlimitedAttr(checked) {
+        let fields = document.getElementsByClassName('unlimited_stock_attr');
+        for (var i = 0; i < fields.length; i++) { 
+            if (checked) $(fields[i]).val("");
+            fields[i].readOnly = checked; 
+        } 
+    }
+
+
     function deleteData() {
         var id = document.getElementById('product_id').value;
         var url = '{{ route("delete_product", ":id") }}';
