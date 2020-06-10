@@ -89,7 +89,6 @@ class ProductsController extends Controller
 
     public function adjustStock(Request $request)
     {
-        // TODO: If errors: redirect back with the ajax form still showing
         $productId = $request->product_id;
         $product = Products::find($productId);
         if ($product == null) return redirect('/products/adjust')->with('error', 'Invalid Product.');
@@ -97,15 +96,9 @@ class ProductsController extends Controller
         // We only flash() not put() so if they go to adjust page later, nothing shows up by default
         session()->flash('last_product', $product);
 
-        /*
-            Fix this logic.
-            -adjust_stock is only required if adjust_box is not available or empty
-            -adjust_box is only required if adjust_stock is empty
-            -both cannot be 0
-        */
         $validator = Validator::make($request->all(), [
-            'adjust_stock' => 'required|numeric|not_in:0',
-            'adjust_box' => 'sometimes|numeric|not_in:0',
+            'adjust_stock' => 'numeric',
+            'adjust_box' => 'numeric',
         ]);
         if ($validator->fails()) {
             return redirect()->back()
@@ -115,13 +108,16 @@ class ProductsController extends Controller
         $adjust_stock = $request->adjust_stock;
         $adjust_box = $request->adjust_box;
 
-        Products::addStock($productId, $adjust_stock);
-
-        if ($request->has('adjust_box')) {
-            Products::addBox($productId, $adjust_box);
+        if ($adjust_stock == 0) {
+            if (!$request->has('adjust_box')) return redirect()->back()->with('error', 'Please specify how much stock to add to ' . $product->name . '.');
+            else if ($request->adjust_box == 0) return redirect()->back()->with('error', 'Please specify how many boxes or stock to add to ' . $product->name . '.');
         }
 
-        return redirect('/products/adjust')->with('success', 'Successfully added ' . $adjust_stock . ' stock and ' . $adjust_box . ' boxes to ' . $product->name . '.');
+        Products::addStock($productId, $adjust_stock);
+
+        if ($request->has('adjust_box')) Products::addBox($productId, $adjust_box);
+
+        return redirect()->back()->with('success', 'Successfully added ' . $adjust_stock . ' stock and ' . $adjust_box . ' boxes to ' . $product->name . '.');
     }
 
     public function ajaxInit()

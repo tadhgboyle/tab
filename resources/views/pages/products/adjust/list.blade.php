@@ -8,7 +8,7 @@ use App\Http\Controllers\SettingsController;
 
 <h2>Stock Adjustment</h2>
 <div class="row">
-    <div class="col-md-2">
+    <div class="col-md-1">
         <select id="category_select">
             <option value="">Choose a Category</option>
             @foreach(SettingsController::getCategories() as $category)
@@ -16,7 +16,7 @@ use App\Http\Controllers\SettingsController;
             @endforeach
         </select>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-7">
         <table id="product_list">
             <thead>
                 <th>Name</th>
