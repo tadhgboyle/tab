@@ -50,10 +50,12 @@ $user = User::find(request()->route('id'));
             "administrator") || old('role') == "administrator") checked @endif>
 
             <!-- TODO: Make these only show when a staff role is selected above -->
-            <input type="password" name="password" class="form-control" placeholder="Password"
-                autocomplete="new-password">
-            <input type="password" name="password_confirmation" class="form-control" placeholder="Confirm Password"
-                autocomplete="new-password">
+            <div id="password_hidable" style="display: none">
+                <input type="password" name="password" class="form-control" placeholder="Password"
+                    autocomplete="new-password">
+                <input type="password" name="password_confirmation" class="form-control" placeholder="Confirm Password"
+                    autocomplete="new-password">
+            </div>
     </div>
 
     <div class="col-md-4">
@@ -78,7 +80,6 @@ $user = User::find(request()->route('id'));
         UserLimitsController::findDuration($user->id, $category->value) == "week") checked @endif>
         <label for="week">Week</label>
         <br>
-
         @endforeach
     </div>
     </form>
@@ -115,6 +116,18 @@ $user = User::find(request()->route('id'));
     </div>
 </div>
 <script type="text/javascript">
+    $(document).ready(function() {
+        updatePassword($("input[name='role']:checked").val());
+    });
+
+    $('input[type=radio][name=role]').change(function() {
+        updatePassword(this.value)
+    });
+
+    function updatePassword(role) {
+        if (role !== undefined) document.getElementById('password_hidable').style.display = role != 'camper' ? 'block' : 'none';
+    }
+
     function deleteData() {
         var id = document.getElementById('user_id').value;
         var url = '{{ route("delete_user", ":id") }}';
