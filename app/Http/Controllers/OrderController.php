@@ -164,7 +164,7 @@ class OrderController extends Controller
                 }
                 // Break loop if we exceed their limit
                 if ($category_spent >= $category_limit) {
-                    return redirect()->back()->with('error', 'Not enough balance in that category: ' . ucfirst($category) . ' (Limit: $' . $category_limit . ', Remaining: $' . ($category_limit - number_format($category_spent_orig, 2)) . ').');
+                    return redirect()->back()->withInput()->with('error', 'Not enough balance in that category: ' . ucfirst($category) . ' (Limit: $' . $category_limit . ', Remaining: $' . ($category_limit - number_format($category_spent_orig, 2)) . ').');
                 }
             }
             // Update their balance

@@ -1,5 +1,13 @@
 /*
- * Table styles
+ * readonly attribute colouring
+ */
+
+input[readonly][type=password] {
+    background-color: rgb(253, 171, 171) !important;
+}
+
+/*
+ * Datatables styles
  */
 
 table.dataTable {
