@@ -26,7 +26,6 @@ use App\Http\Controllers\SettingsController;
                 <th></th>
             </thead>
             <tbody>
-                <!-- TODO: Dropdown to select category to show -->
                 @foreach(Products::where('deleted', false)->get() as $product)
                 <tr>
                     <td class="table-text">
