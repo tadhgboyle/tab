@@ -21,42 +21,35 @@ $('.clickable').click(function () {
     const quantity = parseInt(quantity_id.value);
     const pst_id = document.getElementById('pst[' + current_id + ']').value;
     const current_price = parseFloat($(this).attr('id').split('$')[1]);
+    const list_style = $(this).attr('id') + ' (x' + quantity + ')<br>';
 
     if (quantity_id == 0) return;
-    // If we click to check an item
     if (quantity > 0) {
         if ($(this).is(':checked')) {
             if (pst_id == 1) {
-                total_tax_percent += (parseFloat(current_pst) + parseFloat(current_gst) - 1).toFixed(2);
-                total_pst += parseFloat((current_price * quantity) * current_pst) - current_price * quantity;
+                // I dont know why we need parseFloat(), but shit breaks without it
+                total_tax_percent += (parseFloat(current_pst) + parseFloat(current_gst) - 1);
+                total_pst += current_price * quantity * current_pst - current_price * quantity;
             } else {
-                total_tax_percent += parseFloat(current_gst).toFixed(2);
+                total_tax_percent += current_gst;
             }
-            // Set the quantity input to disabled
             quantity_id.disabled = true;
-            // Get quantity of this item and add to checked array
-            checked.push($(this).attr('id') + ' (x' + quantity + ')<br>');
-            // Add prices * quantity for taxes and total cost
-            total_gst += parseFloat((current_price * quantity) * current_gst) - current_price * quantity;
+            checked.push(list_style);
+            total_gst += (current_price * quantity) * current_gst - current_price * quantity;
             total_price += (current_price * quantity) * total_tax_percent;
-        }
-        // If we unclick an item
-        else {
-            // If the item has PST, remove it from total_pst
+        } else {
             if (pst_id == 1) {
-                total_tax_percent += (parseFloat(current_pst) + parseFloat(current_gst) - 1).toFixed(2);
-                total_pst -= parseFloat((current_price * quantity) * current_pst) - current_price * quantity;
+                // I dont know why we need parseFloat(), but shit breaks without it
+                total_tax_percent += (parseFloat(current_pst) + parseFloat(current_gst) - 1);
+                total_pst -= current_price * quantity * current_pst - current_price * quantity;
             } else {
-                total_tax_percent += parseFloat(current_gst).toFixed(2);
+                total_tax_percent += current_gst;
             }
-            // Allow editing of quantity again
             quantity_id.disabled = false;
-            // Find the current item in the checked array and remove it
-            const index = checked.indexOf($(this).attr('id') + ' (x' + quantity + ')<br>');
+            const index = checked.indexOf(list_style);
             if (index >= 0) {
                 checked.splice(index, 1);
-                // Then subtract cost from taxes and price
-                total_gst -= parseFloat((current_price * quantity) * current_gst) - current_price * quantity;
+                total_gst -= (current_price * quantity) * current_gst - current_price * quantity;
                 total_price -= (current_price * quantity) * total_tax_percent;
             }
         }
