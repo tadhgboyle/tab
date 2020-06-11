@@ -96,4 +96,5 @@ Documentation (in the form of a printable user handbook) is being written.
 - Move to Material Design. Bootstrap is ugly
 
 ## Issues/Bugs:
+- On errors during order, return back with their input + quantities
 - Gracefully handle category deletion.

@@ -48,7 +48,7 @@ if ($user == null) return redirect('/')->with('error', 'Invalid user.')->send();
                         <td class="table-text">
                             <center>
                                 <input type="number" name="quantity[{{ $product->id }}]"
-                                    id="quantity[{{ $product->id }}]" value="1" min="1"/>
+                                    id="quantity[{{ $product->id }}]" value="1" min="1" />
                             </center>
                         </td>
                         <td class="table-text">
@@ -78,9 +78,9 @@ if ($user == null) return redirect('/')->with('error', 'Invalid user.')->send();
         <div id="total_price"></div>
         <div id="remaining_balance"></div>
         <p></p>
-        <input type="submit" form="order" value="Submit" class="disableable btn btn-xs btn-success">
+        <input type="submit" form="order" value="Submit" class="disableable btn btn-success" disabled>
         <span>&nbsp;&nbsp;</span>
-        <input type="submit" onclick="window.location='/';" value="Cancel" class="btn btn-xs btn-danger">
+        <input type="submit" onclick="window.location='/';" value="Cancel" class="btn btn-danger">
     </div>
 </div>
 <script>
