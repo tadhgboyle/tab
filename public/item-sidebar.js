@@ -74,7 +74,7 @@ $('.clickable').click(function () {
         $("#total_price").html('<span style="color:red">Total Price: $' + total_price.toFixed(2) + '</span>');
         $("#remaining_balance").html('<span style="color:red">Remaining Balance: $' + (purchaser_balance - total_price).toFixed(2) + '</span>');
     } else {
-        $('.disableable').prop('disabled', false);
+        $('.disableable').prop('disabled', checked.length < 1);
         $("#total_price").html('Total Price: $' + total_price.toFixed(2));
         $("#remaining_balance").html('Remaining Balance: $' + (purchaser_balance - total_price).toFixed(2));
     }

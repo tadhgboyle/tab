@@ -58,7 +58,7 @@ Documentation (in the form of a printable user handbook) is being written.
 ![Order Info Page](https://images.tadhgboyle.dev/scrn185343.png)
 
 #### Chart.js Statistics Page
-![Chart.js Statistics Page](https://i.imgur.com/AsHG1iD.png)
+![Chart.js Statistics Page](https://i.imgur.com/5hCGf3i.png)
 
 #### Stock Adjustment Page
 ![Stock Adjustment Page](https://i.imgur.com/L6cAMWo.png)
@@ -96,5 +96,6 @@ Documentation (in the form of a printable user handbook) is being written.
 - Move to Material Design. Bootstrap is ugly
 
 ## Issues/Bugs:
-- On errors during order, return back with their input + quantities
+- Disable submit button when anything goes wrong (balance, stock etc) 
+    - Then on the backend, if they somehow bypass the disabled submit button: on errors during order, return back with their input + quantities
 - Gracefully handle category deletion.
