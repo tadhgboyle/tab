@@ -15,13 +15,12 @@ class Products extends Model
 
     // Used to check if items in order have enough stock BEFORE using removeStock() to remove it.
     // If we didnt use this, then stock would be adjusted and then the order would fail, resulting in inaccurate stock.
-    public static function hasStock(array $productIds)
+    public static function hasStock($productId, $quantity)
     {
-        foreach ($productIds as $productId => $amount) {
-            $product = Products::find($productId);
-            if ((Products::getStock($productId) >= $amount || $product->unlimited_stock) || $product->stock_override) {
-                return 'Not enough of ' . $product->name . ' in stock. Only ' . Products::getStock($productId) . ' remaining.';
-            }
+        $product = Products::find($productId);
+        if ($product == null) return false;
+        if (!((Products::getStock($productId) >= $quantity || $product->unlimited_stock) || $product->stock_override)) {
+            return false;
         }
         return true;
     }

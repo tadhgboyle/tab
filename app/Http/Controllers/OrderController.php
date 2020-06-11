@@ -100,7 +100,7 @@ class OrderController extends Controller
     {
         if (isset($request->product)) {
 
-            $products = $transaction_categories = array();
+            $products = $transaction_categories = $stock_products = array();
             $total_price = 0;
             $quantity = 1;
             $product_metadata = $pst_metadata = "";
@@ -114,6 +114,14 @@ class OrderController extends Controller
                     if ($quantity < 1) {
                         return redirect()->back()->withInput()->with('error', 'Quantity must be >= 1 for item ' . $product_info['0']['name']);
                     }
+
+                    // Stock handling
+                    if (!Products::hasStock($product, $quantity)) {
+                        return redirect()->back()->withInput()->with('error', 'Not enough ' . $product_info['0']['name'] . ' in stock. Only ' . Products::getStock($product) . ' remaining.');
+                    } else {
+                        array_push($stock_products, $product);
+                    }
+
                     if ($product_info['0']['pst'] == true) {
                         $total_tax = ($total_tax + SettingsController::getPst()) - 1;
                         $pst_metadata = SettingsController::getPst();
@@ -123,9 +131,15 @@ class OrderController extends Controller
                     $product_metadata = $product . "*" . $quantity . "$" . $product_info['0']['price'] . "G" . SettingsController::getGst() . "P" . $pst_metadata . "R0";
                     if (!in_array($product_info['0']['category'], $transaction_categories)) array_push($transaction_categories, $product_info['0']['category']);
                 }
+
                 array_push($products, $product_metadata);
                 $total_price += (($product_info['0']['price'] * $quantity) * $total_tax);
                 $total_tax = SettingsController::getGst();
+            }
+
+            // Stock handling
+            foreach($stock_products as $product) {
+                Products::removeStock($product, $request->quantity[$product], false);
             }
 
             $purchaser_info = User::select('full_name', 'balance')->where('id', $request->purchaser_id)->get();

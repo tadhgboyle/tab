@@ -13,8 +13,6 @@ class UsersController extends Controller
 
     public function new(Request $request)
     {
-        // TODO: If the selected role is camper, but they accidentally typed something into "password" field, it sends an error to confirm, 
-        // even though it is "required_unless"... Laravel issue?
         $validator = Validator::make($request->all(), [
             'full_name' => 'required|min:4|unique:users,full_name',
             'username' => 'nullable|min:3|unique:users,username',

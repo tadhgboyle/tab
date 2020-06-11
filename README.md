@@ -21,6 +21,7 @@ Documentation (in the form of a printable user handbook) is being written.
     - Change the name and price anytime.
     - Optional PST charge on a per-item basis.
 - Inventory/Stock management *(In progress)*
+    - Depending on each product's settings (See next point), during an order, stock will be automatically removed as per quantity.
     - Each product has some settings:
         - "Stock" / "Unlimited Stock" -> Set stock count for this product, or set it to be unlimited.
         - "Box Size" -> When receiving, instead of counting/multiplying all of the boxes received, set this and receive using boxes.
@@ -67,11 +68,9 @@ Documentation (in the form of a printable user handbook) is being written.
 - Fix everything in Issues/Bugs
 - Complete inventory features
     - Remaining: 
-        - Validation logic for adjustment page
-        - Check stock during orders
+        - "Set stock" in adjust page as well as add/subtract.
         - Item sidebar stock alerts? (Not looking forward to this)
-- When editing/creating a product, dynamically hide fields which are irrelevent
-    - Example: Don't show stock field when unlimited stock is selected
+- Change CSS to make readonly fields a tint of red to make it more clear they are not editable.
 - Create user "pay out" page, which will be used to mark how much a user has paid off of their owing amount.
     - Track what payment method was used, as well as the transaction # + more details (depending on how they pay)
 - Staff Discount: check if purchaser is staff role and give % off (per item basis) 
