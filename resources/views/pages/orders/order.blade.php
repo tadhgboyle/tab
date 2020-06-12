@@ -39,8 +39,9 @@ if ($user == null) return redirect('/')->with('error', 'Invalid user.')->send();
                     <tr>
                         <td class="table-text">
                             <center>
-                                <input type="checkbox" name="product[]" value="{{ $product->id }}"
-                                    id="{{ $product->name . ' $' . $product->price }}" class="clickable" />
+                                <input type="checkbox" name="product[{{ $product->id }}]" value="{{ $product->id }}"
+                                    id="{{ $product->name . ' $' . $product->price }}" class="clickable"
+                                    @if(session('product[' . $product->id . ']')) checked @endif />
                             </center>
                             <input type="hidden" id="pst[{{ $product->id }}]" name="pst[{{ $product->id }}]"
                                 value="{{ $product->pst }}" />
@@ -48,7 +49,8 @@ if ($user == null) return redirect('/')->with('error', 'Invalid user.')->send();
                         <td class="table-text">
                             <center>
                                 <input type="number" name="quantity[{{ $product->id }}]"
-                                    id="quantity[{{ $product->id }}]" value="1" min="1" />
+                                    id="quantity[{{ $product->id }}]"
+                                    value="{{ session('quantity[' . $product->id . ']', 1) }}" min="1" />
                             </center>
                         </td>
                         <td class="table-text">

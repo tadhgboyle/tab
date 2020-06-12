@@ -96,6 +96,8 @@ Documentation (in the form of a printable user handbook) is being written.
 - Move to Material Design. Bootstrap is ugly
 
 ## Issues/Bugs:
+- When the order page (re)loads, if a box is checked and the cashier unselects it, everything is thrown off.
+    - Fix: On document load, loop thru form and set item sidebar 
 - Disable submit button when anything goes wrong (balance, stock etc) 
     - Then on the backend, if they somehow bypass the disabled submit button: on errors during order, return back with their input + quantities
 - Change how to select items and quantities. Right now it is somewhat not intuitive.

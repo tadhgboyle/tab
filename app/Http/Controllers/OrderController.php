@@ -106,6 +106,13 @@ class OrderController extends Controller
             $product_metadata = $pst_metadata = "";
             $total_tax = SettingsController::getGst();
 
+            // For some reason, old() does not seem to work with array[] inputs in form. This will do for now... 
+            // ^ I'm sure its a silly mistake on my end
+            foreach ($request->product as $product) {
+                session()->flash('quantity[' . $product . ']', $request->quantity[$product]);
+                session()->flash('product[' . $product . ']', true);
+            }
+
             // Loop each product. Serialize it, and add it's cost to the transaction total
             foreach ($request->product as $product) {
                 $product_info = Products::select('name', 'price', 'category', 'pst')->where('id', $product)->get();
@@ -137,11 +144,6 @@ class OrderController extends Controller
                 $total_tax = SettingsController::getGst();
             }
 
-            // Stock handling
-            foreach($stock_products as $product) {
-                Products::removeStock($product, $request->quantity[$product], false);
-            }
-
             $purchaser_info = User::select('full_name', 'balance')->where('id', $request->purchaser_id)->get();
             $remaining_balance = $purchaser_info['0']['balance'] - $total_price;
             if ($remaining_balance < 0) {
@@ -167,6 +169,12 @@ class OrderController extends Controller
                     return redirect()->back()->withInput()->with('error', 'Not enough balance in that category: ' . ucfirst($category) . ' (Limit: $' . $category_limit . ', Remaining: $' . ($category_limit - number_format($category_spent_orig, 2)) . ').');
                 }
             }
+
+            // Stock handling
+            foreach ($stock_products as $product) {
+                Products::removeStock($product, $request->quantity[$product], false);
+            }
+
             // Update their balance
             User::find($request->purchaser_id)->update(['balance' => $remaining_balance]);
 

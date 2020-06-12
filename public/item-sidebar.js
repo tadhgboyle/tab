@@ -1,11 +1,9 @@
 // This is blackmagic code that (somehow) handles the live sidebar
 const checked = [];
-let total_gst = 0.00;
-let total_pst = 0.00;
+let total_gst = total_pst = total_tax_percent = total_price = 0;
 const current_gst = parseFloat(document.getElementById('current_gst').value).toFixed(2);
 const current_pst = parseFloat(document.getElementById('current_pst').value).toFixed(2);
-let total_tax_percent = 0.00;
-let total_price = 0.00;
+
 const purchaser_balance = parseFloat(document.getElementById('purchaser_balance').value).toFixed(2);
 let quantity = 1;
 
@@ -30,9 +28,7 @@ $('.clickable').click(function () {
                 // I dont know why we need parseFloat(), but shit breaks without it
                 total_tax_percent += (parseFloat(current_pst) + parseFloat(current_gst) - 1);
                 total_pst += current_price * quantity * current_pst - current_price * quantity;
-            } else {
-                total_tax_percent += current_gst;
-            }
+            } else total_tax_percent += current_gst;
             quantity_id.disabled = true;
             checked.push(list_style);
             total_gst += (current_price * quantity) * current_gst - current_price * quantity;
@@ -42,9 +38,7 @@ $('.clickable').click(function () {
                 // I dont know why we need parseFloat(), but shit breaks without it
                 total_tax_percent += (parseFloat(current_pst) + parseFloat(current_gst) - 1);
                 total_pst -= current_price * quantity * current_pst - current_price * quantity;
-            } else {
-                total_tax_percent += current_gst;
-            }
+            } else total_tax_percent += current_gst;
             quantity_id.disabled = false;
             const index = checked.indexOf(list_style);
             if (index >= 0) {
@@ -72,7 +66,7 @@ $('.clickable').click(function () {
         $("#remaining_balance").html('Remaining Balance: $' + (purchaser_balance - total_price).toFixed(2));
     }
     // This is needed for some silly reason
-    total_tax_percent = 0.00;
+    total_tax_percent = 0;
 });
 
 // Removes the "disabled" attribute from quantity fields. 
