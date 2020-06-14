@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Transactions;
+use App\Products;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -24,9 +25,9 @@ class UserLimitsController extends Controller
     public static function findSpent($user, $category, $duration)
     {
         // First, if they have unlimited money for this category, let's grab all their transactions
-        if (UserLimitsController::findLimit(request()->route('id'), $category) == -1) $transactions = Transactions::where([['purchaser_id', $user], ['status', '0']])->get();
+        if (UserLimitsController::findLimit($user, $category) == -1) $transactions = Transactions::where([['purchaser_id', $user], ['status', 0]])->get();
         // Determine how far back to grab transactions from
-        else ($transactions = Transactions::where([['created_at', '>=', Carbon::now()->subDays($duration == "day" ? 1 : 7)->toDateTimeString()], ['purchaser_id', $user], ['status', '0']])->get());
+        else ($transactions = Transactions::where([['created_at', '>=', Carbon::now()->subDays($duration == "day" ? 1 : 7)->toDateTimeString()], ['purchaser_id', $user], ['status', 0]])->get());
 
         $category_spent = 0.00;
 
@@ -35,7 +36,7 @@ class UserLimitsController extends Controller
             // Loop transaction products. Determine if the product's category is the one we are looking at,
             // if so, add its ((value * (quantity - returned)) * tax) to the end result
             foreach (explode(", ", $transaction['products']) as $transaction_product) {
-                if (strtolower($category) == DB::table('products')->where('id', '=', strtok($transaction_product, "*"))->pluck('category')->first()) {
+                if (strtolower($category) == Products::find(strtok($transaction_product, "*"))->category) {
                     $item_info = OrderController::deserializeProduct($transaction_product);
                     $tax_percent = $item_info['gst'];
                     if ($item_info['pst'] != "null") $tax_percent += $item_info['pst'] - 1;

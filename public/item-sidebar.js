@@ -12,6 +12,10 @@ $("#pst").html('PST: $' + total_pst.toFixed(2));
 $("#total_price").html('Total Price: $' + total_price.toFixed(2));
 $("#remaining_balance").html('Remaining Balance: $' + (purchaser_balance - total_price).toFixed(2));
 
+// Edge Case: Page was reloaded with things selected
+// TODO
+
+// Handle clicks on items
 $('.clickable').click(function () {
 
     const current_id = document.getElementById($(this).attr('id')).value;

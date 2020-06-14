@@ -16,7 +16,7 @@ if ($user == null) return redirect('/')->with('error', 'Invalid user.')->send();
     <div class="col-md-1"></div>
     <div class="col-md-7">
         @include('includes.messages')
-        <form method="post" id="order" action="/orders/{{ request()->route('id') }}/submit">
+        <form method="post" id="order" action="/orders/submit">
             @csrf
             <input type="hidden" name="purchaser_id" value="{{ request()->route('id') }}">
             <input type="hidden" name="cashier_id" value="{{ Auth::user()->id }}">

@@ -22,6 +22,7 @@ use App\Http\Controllers\SettingsController;
                 <th>Name</th>
                 <th>Category</th>
                 <th>Stock</th>
+                <th>Stock Override</th>
                 <th>Box Size</th>
                 <th></th>
             </thead>
@@ -36,6 +37,9 @@ use App\Http\Controllers\SettingsController;
                     </td>
                     <td class="table-text">
                         <div>{{ Products::getStock($product->id) }}</div>
+                    </td>
+                    <td class="table-text">
+                        <div>{{ $product->stock_override ? 'True' : 'False' }}</div>
                     </td>
                     <td class="table-text">
                         <div>{{ $product->box_size == -1 ? 'N/A' : $product->box_size }}</div>
