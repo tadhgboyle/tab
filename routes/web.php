@@ -36,7 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders/{id}', function () {
         return view('pages.orders.order');
     })->where('id', '[0-9]+');
-    Route::post('/orders/{id}/submit', 'OrderController@submit')->where('id', '[0-9]+');
+    Route::post('/orders/submit', 'OrderController@submit')->where('id', '[0-9]+');
 
     // Admin Only
     Route::middleware(CheckRole::class)->group(function () {

@@ -157,6 +157,7 @@ class OrderController extends Controller
                 // Skip this category if they have unlimited. Saves time querying
                 if ($category_limit == -1) continue;
                 $category_spent = $category_spent_orig = UserLimitsController::findSpent($request->purchaser_id, $category, UserLimitsController::findDuration($request->purchaser_id, $category));
+
                 // Loop all products in this transaction. If the product's category is the current one in the above loop, add it's price to category spent
                 foreach ($products as $product) {
                     $product_metadata = OrderController::deserializeProduct($product);
