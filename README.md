@@ -25,11 +25,11 @@ Documentation (in the form of a printable user handbook) is being written.
     - Each product has some settings:
         - "Stock" / "Unlimited Stock" -> Set stock count for this product, or set it to be unlimited.
         - "Box Size" -> When receiving, instead of counting/multiplying all of the boxes received, set this and receive using boxes.
-            - Example: A box of Skittles might have 16 Skittle packs in it. If 4 boxes arrived, instead of adding 16*4 to the stock count, add 4 boxes.
+            - Example: A box of Skittles might have 16 Skittle packs in it. If 4 boxes arrived, instead of calculating 16*4, add 4 boxes.
         - "Override Stock" -> Override the stock count for this item.
     - Fast and easy to use stock adjustment page.
         - Uses AJAX to snappily load all available adjustments for the selected product.
-- Live preview of price (with taxes) on sidebar during every purchase. If the user does not have enough money the submit button will be disabled (Backend check as well though!)
+- Live preview of price (with taxes, quantities, etc) on sidebar during every purchase. If the user does not have enough money the submit button will be disabled (Backend check as well though!)
 - Flexible return system
     - Either return a whole order, or:
     - Return an individual item from an order. A counter shows how many are left to be returned. Multiple backend checks to verify validity of return.
@@ -38,7 +38,11 @@ Documentation (in the form of a printable user handbook) is being written.
 - Detailed statistics charts (Thanks to [Laravel Charts](https://charts.erik.cat/)!)
     - View # of orders and returns.
     - View all products and how many times they have sold.
-    - More planned charts in roadmap.
+    - More planned charts in the [Roadmap](#roadmap).
+
+## Installation:
+
+*Todo*
 
 ## Screenshots:
 
@@ -64,13 +68,12 @@ Documentation (in the form of a printable user handbook) is being written.
 ![Stock Adjustment Page](https://i.imgur.com/L6cAMWo.png)
 
 ## Roadmap:
+
 *High to Low priority sort*
 - Fix everything in Issues/Bugs
 - Complete inventory features
     - Remaining: 
         - "Set stock" in adjust page as well as add/subtract.
-        - Item sidebar stock alerts? (Not looking forward to this)
-- Change CSS to make readonly fields a tint of red to make it more clear they are not editable.
 - Create user "pay out" page, which will be used to mark how much a user has paid off of their owing amount.
     - Track what payment method was used, as well as the transaction # + more details (depending on how they pay)
 - Staff Discount: check if purchaser is staff role and give % off (per item basis) 
@@ -80,6 +83,8 @@ Documentation (in the form of a printable user handbook) is being written.
 - Stats: Income by week, month, most popular products etc (In text form on different page)
     - (Todo) View all categories and how many times they have sold (Charts).
     - (Todo) View a user and their count of orders, returns, top products/categories (Charts).
+    - (Todo) Staff sales tracking (Charts).
+    - (Todo) User's favorite items (Charts).
 - Add sales/discounts to item for period of time (automatic or button)
 - Add auditing/tracking of everything
     - Role changes
@@ -96,9 +101,7 @@ Documentation (in the form of a printable user handbook) is being written.
 - Move to Material Design. Bootstrap is ugly
 
 ## Issues/Bugs:
-- When the order page (re)loads, if a box is checked and the cashier unselects it, everything is thrown off.
-    - Fix: On document load, loop thru form and set item sidebar 
-- Disable submit button when anything goes wrong (balance, stock etc) 
+- Disable submit button when anything goes wrong *(Remaining: Stock, Categories)* 
     - Then on the backend, if they somehow bypass the disabled submit button: on errors during order, return back with their input + quantities
 - Change how to select items and quantities. Right now it is somewhat not intuitive.
     - 1. Allow changing quantity after checking box
