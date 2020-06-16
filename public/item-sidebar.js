@@ -12,8 +12,7 @@ $("#total_price").html('Total Price: $' + total_price.toFixed(2));
 $("#remaining_balance").html('Remaining Balance: $' + (purchaser_balance - total_price).toFixed(2));
 
 // Edge Case: Page was reloaded with things selected
-// TODO: in progress. working basically, but when the item is unselected the Total Price is wrong
-// Also, very inefficient code. will fix when fully workin'
+// TODO: very inefficient code. will fix when fully workin'
 // TODO: Loading spinner while this page loads
 $(document).ready(function () {
     $('#order').find(':input').each(function () {
@@ -89,7 +88,10 @@ $('.clickable').click(function () {
             if (index >= 0) {
                 checked.splice(index, 1);
                 total_gst -= (current_price * quantity) * current_gst - current_price * quantity;
+                console.log('total:' + total_price);
+                // Janky fix for after page reloading + unselecting -> negative total price
                 total_price -= (current_price * quantity) * total_tax_percent;
+                if (total_price < 0) total_price = 0;
             }
         }
     }
