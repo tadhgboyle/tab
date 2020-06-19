@@ -87,7 +87,7 @@ use App\Http\Controllers\SettingsController;
                 "id": $(this).attr("value")
             },
             beforeSend : function() {
-                $('#adjust_product').show().html("<center><img src='https://media3.giphy.com/media/L05HgB2h6qICDs5Sms/giphy.gif?cid=ecf05e47c2a8e1dc529f989ade9151c632332012d0a97dcb&rid=giphy.gif' style='max-height: 50px;'></img></center>");
+                $('#adjust_product').show().html("<center><img src='{{ url('loader.gif') }}' class='loading-spinner'></img></center>");
             },
             success : function(response) {
                 $('#adjust_product').html(response);

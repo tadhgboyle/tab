@@ -7,6 +7,14 @@ input[readonly] {
 }
 
 /*
+ * Spinner on cashier and product adjust pages
+ */
+
+img.loading-spinner {
+    width: 50px;
+}
+
+/*
  * Datatables styles
  */
 

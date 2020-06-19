@@ -1,6 +1,5 @@
 @extends('layouts.default')
 @section('content')
-
 <h2>Cashier</h2>
 @php
 
@@ -12,9 +11,12 @@ $user = User::find(request()->route('id'));
 if ($user == null) return redirect('/')->with('error', 'Invalid user.')->send();
 @endphp
 <p>User: {{ $user->full_name }} <a href="/users/info/{{ request()->route('id') }}">(Info)</a></p>
+<div id="loading" align="center">
+    <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
+</div>
 <div class="row">
     <div class="col-md-1"></div>
-    <div class="col-md-7">
+    <div class="col-md-7" id="cashier" style="display: none">
         @include('includes.messages')
         <form method="post" id="order" action="/orders/submit">
             @csrf
