@@ -15,7 +15,7 @@ use App\User;
                 <th>Balance</th>
             </thead>
             <tbody>
-                @foreach(User::all() as $result)
+                @foreach(User::where('deleted', false)->get() as $result)
                 <tr>
                     <td class="table-text">
                         <div><a href="orders/{{ $result->id }}">{{ $result->full_name }}</a></div>

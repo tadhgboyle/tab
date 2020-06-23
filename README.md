@@ -14,13 +14,15 @@ Documentation (in the form of a printable user handbook) is being written.
     - Three different access levels to choose from (Camper, Cashier and Administrator). Change each user's role anytime.
         - Cashiers can ring up orders
         - Administrators can create/edit/delete users, products, categories and settings. They can also view user history and see detailed information about every order.
+    - Users can be edited anytime, with an easy to use interface.
+    - Users can be (soft) deleted anytime.
 - Parental control
     - Parents or guardians can set their children a certain amount of money to spend in each category.
     - These limits can be set per-category to either day or week.
 - Product control and editing
     - Change the name and price anytime.
     - Optional PST charge on a per-item basis.
-- Inventory/Stock management *(In progress)*
+- Inventory/Stock management
     - Depending on each product's settings (See next point), during an order, stock will be automatically removed as per quantity.
     - Each product has some settings:
         - "Stock" / "Unlimited Stock" -> Set stock count for this product, or set it to be unlimited.
@@ -74,6 +76,8 @@ Documentation (in the form of a printable user handbook) is being written.
 - Complete inventory features
     - Remaining: 
         - "Set stock" in adjust page as well as add/subtract.
+        - Add product option if stock should be added back upon return or not.
+- Change user list to display deleted users & add an undelete function. (All for products as well).
 - Create user "pay out" page, which will be used to mark how much a user has paid off of their owing amount.
     - Track what payment method was used, as well as the transaction # + more details (depending on how they pay)
 - Staff Discount: check if purchaser is staff role and give % off (per item basis) 

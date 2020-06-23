@@ -23,7 +23,7 @@ use App\User;
         <th></th>
     </thead>
     <tbody>
-        @foreach (User::all() as $user)
+        @foreach (User::where('deleted', false)->get() as $user)
         <tr>
             <td class="table-text">
                 <div>{{ $user->full_name }}</div>

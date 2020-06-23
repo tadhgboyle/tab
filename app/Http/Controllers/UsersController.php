@@ -135,8 +135,7 @@ class UsersController extends Controller
 
     public function delete($id)
     {
-        $name = User::find($id)->full_name;
-        User::where('id', $id)->delete();
-        return redirect('/users')->with('success', 'Deleted user ' . $name . '.');
+        User::where('id', $id)->update(['deleted' => true]);
+        return redirect('/users')->with('success', 'Deleted user ' . User::find($id)->full_name . '.');
     }
 }

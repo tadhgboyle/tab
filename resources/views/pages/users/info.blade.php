@@ -11,8 +11,9 @@ use App\Http\Controllers\UserLimitsController;
 $user = User::find(request()->route('id'));
 if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->send();
 @endphp
-<p>User: {{ $user->full_name }} <a href="/users/edit/{{ $user->id }}">(Edit)</a></p>
+<p>User: {{ $user->full_name }} @if(!$user->deleted)<a href="/users/edit/{{ $user->id }}">(Edit)</a>@endif</p>
 <p>Role: {{ ucfirst($user->role) }}</p>
+<p>Deleted: {{ $user->deleted ? 'True' : 'False' }}</p>
 <span>Balance: ${{ number_format($user->balance, 2) }}, </span>
 <span>Total spent: ${{ User::findSpent($user) }}, </span>
 <span>Total returned: ${{ User::findReturned($user) }}, </span>
@@ -32,7 +33,8 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
                 <th></th>
             </thead>
             <tbody>
-                @foreach (Transactions::where('purchaser_id', $user->id)->orderBy('created_at', 'DESC')->get() as $transaction)
+                @foreach (Transactions::where('purchaser_id', $user->id)->orderBy('created_at', 'DESC')->get() as
+                $transaction)
                 <tr>
                     <td class="table-text">
                         <div>{{ $transaction->created_at->format('M jS Y h:ia') }}</div>
@@ -72,7 +74,8 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
                 @php
                 $category_limit = UserLimitsController::findLimit(request()->route('id'), $category->value);
                 $category_duration = UserLimitsController::findDuration(request()->route('id'), $category->value);
-                $category_spent = UserLimitsController::findSpent(request()->route('id'), $category->value, $category_duration);
+                $category_spent = UserLimitsController::findSpent(request()->route('id'), $category->value,
+                $category_duration);
                 @endphp
                 <tr>
                     <td class="table-text">
