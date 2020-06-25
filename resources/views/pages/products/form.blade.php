@@ -135,11 +135,9 @@ $product = Products::find(request()->route('id'));
     function updateUnlimitedAttr(checked) {
         let fields = document.getElementsByClassName('unlimited_stock_attr');
         for (var i = 0; i < fields.length; i++) { 
-            if (checked) $(fields[i]).val("");
             fields[i].readOnly = checked; 
         } 
     }
-
 
     function deleteData() {
         var id = document.getElementById('product_id').value;

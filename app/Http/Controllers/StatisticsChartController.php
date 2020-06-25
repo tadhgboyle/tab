@@ -5,36 +5,47 @@ namespace App\Http\Controllers;
 use App\Charts\StatisticsChart;
 use App\Products;
 use App\Transactions;
+use Carbon\CarbonPeriod;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 
 class StatisticsChartController extends Controller
 {
-    // $lookBack = 90 => Last 3 months
-    // $lookBack = 30 => Last 1 month
-    // $lookBack = 14 => Last 2 weeks
-    // $lookBack = 7 => Last 1 week
-    // $lookBack = 1 => Last 1 day
+    // $lookBack -> n => Last n days
     public static function orderInfo($lookBack)
     {
         $recentorders = new StatisticsChart;
 
-        // TODO: Make this one select statement
-        $normal_data = Transactions::where('created_at', '>=', Carbon::now()->subDays($lookBack)->toDateTimeString())->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
-        $returned_data = Transactions::where([['created_at', '>=', Carbon::now()->subDays($lookBack)->toDateTimeString()], ['status', '1']])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
+        $normal_data = Transactions::where([['created_at', '>=', Carbon::now()->subDays($lookBack)->toDateTimeString()], ['status', 0]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
+        $returned_data = Transactions::where([['created_at', '>=', Carbon::now()->subDays($lookBack)->toDateTimeString()], ['status', 1]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
 
-        $labels = array();
         $normal_orders = array();
-
-        foreach ($normal_data as $child) {
-            array_push($labels, $child['date']);
-            array_push($normal_orders, $child['count']);
-        }
         $returned_orders = array();
-        foreach ($returned_data as $child) array_push($returned_orders, $child['count']);
+        $labels = array();
 
+        // Problem:
+        // Returned orders are counted right, but always will go to the front of the chart, instead of being pushed to the right place.
+        // We need to add 0 to the returned orders array when there are no retunred orders on that day, but there were normal orders 
+        foreach (CarbonPeriod::create(Carbon::now()->subDays($lookBack), Carbon::now())->toArray() as $day) {
+            foreach ($normal_data as $row) {
+                if ($row['date'] == $day->toDateString()) {
+                    if (!in_array($row['date'], $labels)) array_push($labels, $row['date']);
+                    array_push($normal_orders, ['count' => $row['count'], 'day' => $day]);
+                    break;
+                }
+            }
+            foreach ($returned_data as $row) {
+                if ($row['date'] == $day->toDateString()) {
+                    echo $row['date'] . ' == ' . $row['count'] . '<br>';
+                    if (!in_array($row['date'], $labels)) array_push($labels, $row['date']);
+                    array_push($returned_orders, ['count' => $row['count'], 'day' => $day]);
+                    break;
+                }
+            }
+        }
         $recentorders->labels($labels);
-        $recentorders->dataset('Normal Orders', 'line', $normal_orders)->color("rgb(0, 255, 0)")->fill(true);
-        $recentorders->dataset('Returned Orders', 'line', array_pad($returned_orders, - (count($normal_orders)), 0))->color("rgb(242, 94, 125)")->fill(false);
+        $recentorders->dataset('Normal Orders', 'line', array_column($normal_orders, 'count'))->fill(true)->lineTension(0)->color("rgb(72, 187, 120)");
+        $recentorders->dataset('Returned Orders', 'line', array_column($returned_orders, 'count'))->fill(true)->lineTension(0)->color("rgb(245, 101, 101)");
         return $recentorders;
     }
 
@@ -46,7 +57,7 @@ class StatisticsChartController extends Controller
 
         foreach (Products::all() as $product) {
             $sold = Products::findSold($product->id, $lookBack);
-            if ($sold == 0) continue;
+            if ($sold < 1) continue;
             array_push($sales, ['name' => $product->name, 'sold' => $sold]);
         }
 
@@ -55,12 +66,7 @@ class StatisticsChartController extends Controller
         });
 
         $popularitems->labels(array_column($sales, 'name'));
-        $popularitems->dataset('Sold', 'bar', array_column($sales, 'sold'))->color("rgb(0, 255, 0)");
+        $popularitems->dataset('Sold', 'bar', array_column($sales, 'sold'))->color("rgb(72, 187, 120)");
         return $popularitems;
-    }
-
-    // TODO: This
-    public static function popularCategories($lookBack)
-    {
     }
 }
