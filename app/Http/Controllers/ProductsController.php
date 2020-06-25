@@ -15,7 +15,8 @@ class ProductsController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|min:3|unique:products,name',
             'price' => 'required|numeric',
-            'category' => 'required'
+            'category' => 'required',
+            'box_size' => 'not_in:0'
         ]);
         if ($validator->fails()) {
             return redirect()->back()
@@ -26,14 +27,16 @@ class ProductsController extends Controller
         $pst = false;
         if ($request->has('pst')) $pst = true;
 
-        $stock = 0;
-        if (!empty($request->stock)) $stock = $request->stock;
         // Box size of -1 means they cannot receive stock via box. Instead must use normal stock
         $box_size = -1;
         if (!empty($request->box_size)) $box_size = $request->box_size;
 
         $unlimited_stock = false;
         if ($request->has('unlimited_stock')) $unlimited_stock = true;
+
+        $stock = 0;
+        if ($request->stock == null) $unlimited_stock = true;
+        else $stock = $request->stock;
 
         $stock_override = false;
         if ($request->has('stock_override')) $stock_override = true;
@@ -58,7 +61,8 @@ class ProductsController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|min:3',
             'price' => 'required|numeric',
-            'category' => 'required'
+            'category' => 'required',
+            'box_size' => 'not_in:0'
         ]);
         if ($validator->fails()) {
             return redirect()->back()
@@ -72,12 +76,16 @@ class ProductsController extends Controller
         $unlimited_stock = false;
         if ($request->has('unlimited_stock')) $unlimited_stock = true;
 
+        $stock = 0;
+        if ($request->stock == null) $unlimited_stock = true;
+        else $stock = $request->stock;
+
         $stock_override = false;
         if ($request->has('stock_override')) $stock_override = true;
 
         DB::table('products')
             ->where('id', $request->product_id)
-            ->update(['name' => $request->name, 'price' => $request->price, 'category' => $request->category, 'stock' => $request->stock, 'box_size' => $request->box_size, 'unlimited_stock' => $unlimited_stock, 'stock_override' => $stock_override, 'pst' => $pst, 'editor_id' => $request->editor_id]);
+            ->update(['name' => $request->name, 'price' => $request->price, 'category' => $request->category, 'stock' => $stock, 'box_size' => $request->box_size ?? -1, 'unlimited_stock' => $unlimited_stock, 'stock_override' => $stock_override, 'pst' => $pst, 'editor_id' => $request->id]);
         return redirect('/products')->with('success', 'Successfully edited ' . $request->name . '.');
     }
 

@@ -126,7 +126,6 @@ if (!is_null($user) && $user->deleted) return redirect('/users')->with('error', 
         if (role !== undefined) {
             let fields = document.getElementsByClassName('password_hidable');
             for (var i = 0; i < fields.length; i++) { 
-                if (role == 'camper') $(fields[i]).val('');
                 fields[i].readOnly = role != 'camper' ? false : true; 
             }
         }
