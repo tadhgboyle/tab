@@ -52,22 +52,22 @@ Documentation (in the form of a printable user handbook) is being written.
 ![First Cashier Page](https://images.tadhgboyle.dev/scrn135552.png)
 
 #### Second Cashier Page
-![Second Cashier Page](https://images.tadhgboyle.dev/scrn135623.png)
+![Second Cashier Page](https://i.imgur.com/D373Qwt.png)
 
 #### User Information Page
-![User Info Page](https://images.tadhgboyle.dev/scrn193710.png)
+![User Info Page](https://i.imgur.com/iOHUU4U.png)
 
 #### Order List Page
-![Order List Page](https://images.tadhgboyle.dev/scrn172322.png)
+![Order List Page](https://i.imgur.com/rLcKxDx.png)
 
 #### Order Information Page
-![Order Info Page](https://images.tadhgboyle.dev/scrn185343.png)
+![Order Info Page](https://i.imgur.com/rrlUtO4.png)
 
 #### Chart.js Statistics Page
-![Chart.js Statistics Page](https://i.imgur.com/5hCGf3i.png)
+![Chart.js Statistics Page](https://i.imgur.com/E4IG9Hr.png)
 
 #### Stock Adjustment Page
-![Stock Adjustment Page](https://i.imgur.com/L6cAMWo.png)
+![Stock Adjustment Page](https://i.imgur.com/kkwQgHy.png)
 
 ## Roadmap:
 
@@ -77,7 +77,7 @@ Documentation (in the form of a printable user handbook) is being written.
     - Remaining: 
         - "Set stock" in adjust page as well as add/subtract.
         - Add product option if stock should be added back upon return or not.
-- Change user list to display deleted users & add an undelete function. (All for products as well).
+- Change user list to display deleted users (with toggle) & add an undelete function. (All for products as well).
 - Create user "pay out" page, which will be used to mark how much a user has paid off of their owing amount.
     - Track what payment method was used, as well as the transaction # + more details (depending on how they pay)
 - Staff Discount: check if purchaser is staff role and give % off (per item basis) 
