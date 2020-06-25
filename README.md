@@ -14,6 +14,7 @@ Documentation (in the form of a printable user handbook) is being written.
     - Three different access levels to choose from (Camper, Cashier and Administrator). Change each user's role anytime.
         - Cashiers can ring up orders
         - Administrators can create/edit/delete users, products, categories and settings. They can also view user history and see detailed information about every order.
+        - Setting to control if Cashiers can ring up themselves or not.
     - Users can be edited anytime, with an easy to use interface.
     - Users can be (soft) deleted anytime.
 - Parental control

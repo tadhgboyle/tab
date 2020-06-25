@@ -1,16 +1,15 @@
 @extends('layouts.default')
 @section('content')
+@php
+use App\Http\Controllers\SettingsController;
+@endphp
 <h2>Settings</h2>
 <div class="row">
-    <div class="col-md-2"></div>
     <div class="col-md-4">
+        <br>
         @include('includes.messages')
-        <form action="/settings/submit" method="POST">
+        <form action="/settings/submit" id="settings" method="POST">
             @csrf
-            @php
-            use App\Http\Controllers\SettingsController;
-            @endphp
-            <br>
             <span>GST</span>
             <div class="input-group">
                 <div class="input-group-prepend">
@@ -36,13 +35,18 @@
                     placeholder="Staff Discount (Not working yet)" value="{{ SettingsController::getStaffDiscount() }}">
             </div>
             <p></p>
-            <button type="submit" class="btn btn-xs btn-success">Save Settings</button>
+            <button type="submit" class="btn btn-success">Save</button>
+    </div>
+    <div class="col-md-4">
+        <br>
+        <span title="Allow Cashiers + Managers to ring up orders for themselves.">Self Purchases</span>
+        <input type="checkbox" name="self_purchases" @if(SettingsController::getSelfPurchases()) checked @endif>
         </form>
     </div>
     <div class="col-md-4">
         <table id="category_list">
             <thead>
-                <th>Category</th>
+                <th>Categories</th>
                 <th></th>
             </thead>
             <tbody>
@@ -65,10 +69,8 @@
             </tbody>
         </table>
         <p></p>
-        <input type="submit" onclick="window.location='settings/category/new';" value="New Category"
+        <input type="submit" onclick="window.location='settings/category/new';" value="New"
             class="btn btn-xs btn-success">
-    </div>
-    <div class="col-md-2">
     </div>
 </div>
 <div id="DeleteModal" class="modal fade" role="dialog">
@@ -104,7 +106,6 @@
 
     function deleteData(category_name) {
         let name = document.getElementById(category_name).value;
-        console.log(name);
         let url = '{{ route("delete_category", ":name") }}';
         url = url.replace(':name', name);
         $("#deleteForm").attr('action', url);

@@ -25,6 +25,11 @@ class SettingsController extends Controller
         return DB::table('settings')->where('setting', 'staff_discount')->pluck('value')->first();
     }
 
+    public static function getSelfPurchases(): bool
+    {
+        return DB::table('settings')->where('setting', 'self_purchases')->pluck('value')->first() == 'true';
+    }
+
     public static function getLookBack()
     {
         return DB::table('settings')->where('setting', 'lookBack')->pluck('value')->first();
@@ -41,39 +46,28 @@ class SettingsController extends Controller
             'lookback' => 'required'
         ]);
         if ($validator->fails()) {
-            return redirect()->back()
-                ->withInput($request->all())
-                ->withErrors($validator);
+            return redirect()->back()->withErrors($validator);
         }
-        DB::table('settings')
-            ->where('setting', 'lookBack')
-            ->update(['value' => $request->lookback]);
+        DB::table('settings')->where('setting', 'lookBack')->update(['value' => $request->lookback]);
         return redirect('/statistics/graphs')->send();
     }
 
-    public function editTax(Request $request)
+    public function editSettings(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'gst' => 'required|numeric',
             'pst' => 'required|numeric',
-            'staff_discount' => 'required|numeric',
+            'staff_discount' => 'required|numeric'
         ]);
         if ($validator->fails()) {
-            return redirect()->back()
-                ->withInput($request->all())
-                ->withErrors($validator);
+            return redirect()->back()->withInput()->withErrors($validator);
         }
 
         // TODO: This is probably not as efficient as it could be...
-        DB::table('settings')
-            ->where('setting', 'gst')
-            ->update(['value' => $request->gst]);
-        DB::table('settings')
-            ->where('setting', 'pst')
-            ->update(['value' => $request->pst]);
-        DB::table('settings')
-            ->where('setting', 'staff_discount')
-            ->update(['value' => $request->staff_discount]);
+        DB::table('settings')->where('setting', 'gst')->update(['value' => $request->gst]);
+        DB::table('settings')->where('setting', 'pst')->update(['value' => $request->pst]);
+        DB::table('settings')->where('setting', 'staff_discount')->update(['value' => $request->staff_discount]);
+        DB::table('settings')->where('setting', 'self_purchases')->update(['value' => $request->has('self_purchases') ? 'true' : 'false']);
         return redirect('/settings')->with('success', 'Updated settings.');
     }
 

@@ -91,7 +91,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/settings', function () {
             return view('pages.settings.settings');
         });
-        Route::post('/settings/submit', 'SettingsController@editTax');
+        Route::post('/settings/submit', 'SettingsController@editSettings');
         Route::get('/settings/category/new', function () {
             return view('pages.settings.category.new');
         });
