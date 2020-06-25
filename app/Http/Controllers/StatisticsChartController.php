@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Charts\StatisticsChart;
 use App\Products;
 use App\Transactions;
-use Carbon\CarbonPeriod;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 
 class StatisticsChartController extends Controller
@@ -22,27 +20,24 @@ class StatisticsChartController extends Controller
         $normal_orders = array();
         $returned_orders = array();
         $labels = array();
-        
-        foreach (CarbonPeriod::create(Carbon::now()->subDays($lookBack), Carbon::now())->toArray() as $day) {
-            foreach ($normal_data as $row) {
-                if ($row['date'] == $day->toDateString()) {
-                    if (!in_array($row['date'], $labels)) array_push($labels, $row['date']);
-                    array_push($normal_orders, $row['count']);
+
+        foreach ($normal_data as $row) {
+            array_push($labels, Carbon::parse($row['date'])->format('M jS Y'));
+            array_push($normal_orders, $row['count']);
+            $found = false;
+            foreach ($returned_data as $row1) {
+                if ($row['date'] == $row1['date']) {
+                    $found = true;
+                    array_push($returned_orders, $row1['count']);
+                    break;
                 }
-                $found = false;
-                foreach ($returned_data as $row1) {
-                    if ($row['date'] == $row1['date']) {
-                        $found = true;
-                        array_push($returned_orders, $row1['count']);
-                        break;
-                    }
-                }
-                if (!$found) array_push($returned_orders, 0);
             }
+            if (!$found) array_push($returned_orders, 0);
         }
+
         $recentorders->labels($labels);
-        $recentorders->dataset('Normal Orders', 'line', $normal_orders)->fill(true)->lineTension(0)->color("rgb(72, 187, 120)");
-        $recentorders->dataset('Returned Orders', 'line', $returned_orders)->fill(true)->lineTension(0)->color("rgb(245, 101, 101)");
+        $recentorders->dataset('Returned Orders', 'line', $returned_orders)->lineTension(0)->color("rgb(245, 101, 101)");
+        $recentorders->dataset('Normal Orders', 'line', $normal_orders)->lineTension(0)->color("rgb(72, 187, 120)");
         return $recentorders;
     }
 

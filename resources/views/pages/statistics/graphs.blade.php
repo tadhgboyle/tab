@@ -20,7 +20,7 @@ $iteminfo = StatisticsChartController::itemInfo($lookBack);
                 <option value="30" {{ $lookBack == "30" ? "selected" : "" }}>One Month</option>
                 <option value="14" {{ $lookBack == "14" ? "selected" : "" }}>Two Weeks</option>
                 <option value="7" {{ $lookBack == "7" ? "selected" : "" }}>One Week</option>
-                <option value="1" {{ $lookBack == "1" ? "selected" : "" }}>One Day</option>
+                <option value="2" {{ $lookBack == "2" ? "selected" : "" }}>Two Days</option>
             </select>
         </form>
     </div>

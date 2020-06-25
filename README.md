@@ -73,6 +73,14 @@ Documentation (in the form of a printable user handbook) is being written.
 
 *High to Low priority sort*
 - Fix everything in Issues/Bugs
+- Add setting for if staff can ring up themselves.
+    - Cashiers cannot, but Administrators can toggle on/off?
+- Disable submit button when anything goes wrong *(Remaining: Stock, Categories)* 
+    - Then on the backend, if they somehow bypass the disabled submit button: on errors during order, return back with their input + quantities
+- Change how to select items and quantities. Right now it is somewhat not intuitive.
+    - 1. Allow changing quantity after checking box
+    - 2. Remove checkbox entirely, and instead consider all items with > 1 quantity as "selected"
+    - 3. Similar to GBBC tab, click an item to add it to a list of all items. Click more times for more quantity
 - Complete inventory features
     - Remaining: 
         - "Set stock" in adjust page as well as add/subtract.
@@ -105,10 +113,4 @@ Documentation (in the form of a printable user handbook) is being written.
 - Move to Material Design. Bootstrap is ugly
 
 ## Issues/Bugs:
-- Disable submit button when anything goes wrong *(Remaining: Stock, Categories)* 
-    - Then on the backend, if they somehow bypass the disabled submit button: on errors during order, return back with their input + quantities
-- Change how to select items and quantities. Right now it is somewhat not intuitive.
-    - 1. Allow changing quantity after checking box
-    - 2. Remove checkbox entirely, and instead consider all items with > 1 quantity as "selected"
-    - 3. Similar to GBBC tab, click an item to add it to a list of all items. Click more times for more quantity
 - Gracefully handle category deletion.
