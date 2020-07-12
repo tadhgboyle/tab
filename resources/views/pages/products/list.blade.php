@@ -14,13 +14,15 @@ use App\Products;
 </div>
 <table id="product_list">
     <thead>
-        <th>Name</th>
-        <th>Category</th>
-        <th>Price</th>
-        <th>Stock</th>
-        <th>Box Size</th>
-        <th>PST</th>
-        <th></th>
+        <tr>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Box Size</th>
+            <th>PST</th>
+            <th></th>
+        <tr>
     </thead>
     <tbody>
         @foreach (Products::all()->where('deleted', false) as $product)
@@ -35,10 +37,10 @@ use App\Products;
                 <div>${{ number_format($product->price, 2) }}</div>
             </td>
             <td class="table-text">
-                <div>{{ Products::getStock($product->id) }}</div>
+                <div>{!! Products::getStock($product->id) !!}</div>
             </td>
             <td class="table-text">
-                <div>{{ $product->box_size == -1 ? 'N/A' : $product->box_size }}</div>
+                <div>{!! $product->box_size == -1 ? '<i>N/A</i>' : $product->box_size !!}</div>
             </td>
             <td>
                 <div>{!! $product->pst ? "<h5><span class=\"badge badge-success\">Yes</span></h5>" : "<h5><span
@@ -53,12 +55,11 @@ use App\Products;
 </table>
 <script>
     $(document).ready(function() {
-        $('#product_list').DataTable();
-    });
-    $('#product_list').DataTable({
-        paging: false,
-        "scrollY": "340px",
-        "scrollCollapse": true,
+        $('#product_list').DataTable({
+            "paging": false,
+            "scrollY": "50vh",
+            "scrollCollapse": true,
+        });
     });
 </script>
 @endsection

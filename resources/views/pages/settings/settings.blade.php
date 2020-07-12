@@ -46,8 +46,10 @@ use App\Http\Controllers\SettingsController;
     <div class="col-md-4">
         <table id="category_list">
             <thead>
-                <th>Categories</th>
-                <th></th>
+                <tr>
+                    <th>Categories</th>
+                    <th></th>
+                </tr>
             </thead>
             <tbody>
                 @foreach(SettingsController::getCategories() as $category)
@@ -94,14 +96,13 @@ use App\Http\Controllers\SettingsController;
 </div>
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#category_list').DataTable();
-    });
-    $('#category_list').DataTable({
-        "paging": false,
-        "searching": false,
-        "scrollY": "26vw",
-        "scrollCollapse": true,
-        "bInfo": false,
+        $('#category_list').DataTable({
+            "paging": false,
+            "searching": false,
+            "scrollY": "26vw",
+            "scrollCollapse": true,
+            "bInfo": false,
+        });
     });
 
     function deleteData(category_name) {
