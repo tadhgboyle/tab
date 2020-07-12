@@ -12,32 +12,32 @@ class SettingsController extends Controller
 
     public static function getGst()
     {
-        return DB::table('settings')->where('setting', 'gst')->pluck('value')->first();
+        return Settings::where('setting', 'gst')->pluck('value')->first();
     }
 
     public static function getPst()
     {
-        return DB::table('settings')->where('setting', 'pst')->pluck('value')->first();
+        return Settings::where('setting', 'pst')->pluck('value')->first();
     }
 
     public static function getStaffDiscount()
     {
-        return DB::table('settings')->where('setting', 'staff_discount')->pluck('value')->first();
+        return Settings::where('setting', 'staff_discount')->pluck('value')->first();
     }
 
     public static function getSelfPurchases(): bool
     {
-        return DB::table('settings')->where('setting', 'self_purchases')->pluck('value')->first() == 'true';
+        return Settings::where('setting', 'self_purchases')->pluck('value')->first() == 'true';
     }
 
     public static function getLookBack()
     {
-        return DB::table('settings')->where('setting', 'lookBack')->pluck('value')->first();
+        return Settings::where('setting', 'lookBack')->pluck('value')->first();
     }
 
     public static function getCategories()
     {
-        return Settings::all()->where('setting', 'category');
+        return Settings::where('setting', 'category')->orderBy('value')->get();
     }
 
     public static function editLookBack(Request $request)

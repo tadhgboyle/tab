@@ -114,7 +114,7 @@ class ProductsController extends Controller
         }
 
         $adjust_stock = $request->adjust_stock;
-        $adjust_box = $request->adjust_box;
+        $adjust_box = $request->adjust_box ?? 0;
 
         if ($adjust_stock == 0) {
             if (!$request->has('adjust_box')) return redirect()->back()->with('error', 'Please specify how much stock to add to ' . $product->name . '.');

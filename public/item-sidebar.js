@@ -26,6 +26,8 @@ $(document).ready(function () {
 
                 checked.push(info + ' (x' + quantity + ')<br>');
 
+                document.getElementById('quantity[' + input.value + ']').disabled = true;
+
                 updateInfo();
             } else input.prop('checked', false);
         }
