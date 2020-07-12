@@ -7,6 +7,7 @@ use App\Http\Controllers\SettingsController;
 @endphp
 
 <h2>Stock Adjustment</h2>
+<br>
 <div class="row">
     <div class="col-md-1">
         <select id="category_select">
