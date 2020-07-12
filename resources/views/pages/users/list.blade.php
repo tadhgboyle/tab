@@ -15,12 +15,14 @@ use App\User;
 
 <table id="user_list">
     <thead>
-        <th>Full Name</th>
-        <th>Username</th>
-        <th>Balance</th>
-        <th>Role</th>
-        <th></th>
-        <th></th>
+        <tr>
+            <th>Full Name</th>
+            <th>Username</th>
+            <th>Balance</th>
+            <th>Role</th>
+            <th></th>
+            <th></th>
+        </tr>
     </thead>
     <tbody>
         @foreach (User::where('deleted', false)->get() as $user)
@@ -49,12 +51,11 @@ use App\User;
 </table>
 <script>
     $(document).ready(function() {
-        $('#user_list').DataTable();
-    });
-    $('#user_list').DataTable({
-        paging: false,
-        "scrollY": "50vh",
-        "scrollCollapse": true,
+        $('#user_list').DataTable({
+            "paging": false,
+            "scrollY": "50vh",
+            "scrollCollapse": true,
+        });
     });
 </script>
 @endsection

@@ -47,7 +47,7 @@ class StatisticsChartController extends Controller
 
         $sales = array();
 
-        foreach (Products::all() as $product) {
+        foreach (Products::where('deleted', false)->get() as $product) {
             $sold = Products::findSold($product->id, $lookBack);
             if ($sold < 1) continue;
             array_push($sales, ['name' => $product->name, 'sold' => $sold]);

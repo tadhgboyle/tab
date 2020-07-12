@@ -62,7 +62,7 @@ if ($user == null) return redirect('/')->with('error', 'Invalid user.')->send();
                             <div>{{ ucfirst($product->category) }}</div>
                         </td>
                         <td class="table-text">
-                            <div>{{ Products::getStock($product->id) }}</div>
+                            <div>{!! Products::getStock($product->id) !!}</div>
                         </td>
                         <td class="table-text">
                             <div>${{ number_format($product->price, 2) }}</div>
@@ -89,7 +89,7 @@ if ($user == null) return redirect('/')->with('error', 'Invalid user.')->send();
 </div>
 <script>
     $(document).ready(function() {
-        let table = $('#product_list').DataTable({
+        $('#product_list').DataTable({
             "paging": false,
             "scrollY": "23vw",
             "scrollCollapse": true,

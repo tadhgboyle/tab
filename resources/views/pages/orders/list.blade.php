@@ -16,17 +16,18 @@ use App\User;
 </div>
 <table id="order_list">
     <thead>
-        <th>Time</th>
-        <th>Purchaser</th>
-        <th>Cashier</th>
-        <th>Total Price</th>
-        <th>Status</th>
-        <th></th>
+        <tr>
+            <th>Time</th>
+            <th>Purchaser</th>
+            <th>Cashier</th>
+            <th>Total Price</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
     </thead>
     <tbody>
         @foreach (Transactions::orderBy('created_at', 'DESC')->get() as $transaction)
         @php $user = User::find($transaction->purchaser_id) @endphp
-        @if($user == null) @continue @endif
         <tr>
             <td class="table-text">
                 <div>{{ $transaction->created_at->format('M jS Y h:ia') }}</div>
@@ -57,13 +58,11 @@ use App\User;
 </table>
 <script>
     $(document).ready(function() {
-        $('#order_list').DataTable();
-    });
-    $('#order_list').DataTable({
-        "order": [],
-        "paging": false,
-        "scrollY": "26vw",
-        "scrollCollapse": true,
+        $('#order_list').DataTable({
+            "order": [],
+            "paging": false,
+            "scrollY": "26vw",
+        });
     });
 </script>
 @endsection

@@ -106,24 +106,22 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
 </div>
 <script>
     $(document).ready(function() {
-        $('#order_list').DataTable();
-        $('#category_list').DataTable();
-    });
-    $('#order_list').DataTable({
-        order: [],
-        paging: false,
-        searching: false,
-        scrollY: "280px",
-        scrollCollapse: true,
-        language: {
-            emptyTable: "No orders to show.",
-            infoEmpty: ""
-        }
-    });
-    $('#category_list').DataTable({
-        searching: false,
-        paging: false,
-        bInfo: false,
+        $('#order_list').DataTable({
+            order: [],
+            paging: false,
+            searching: false,
+            scrollY: "280px",
+            scrollCollapse: true,
+            language: {
+                emptyTable: "No orders to show.",
+                infoEmpty: ""
+            }
+        });
+        $('#category_list').DataTable({
+            searching: false,
+            paging: false,
+            bInfo: false,
+        });
     });
 </script>
 @endsection

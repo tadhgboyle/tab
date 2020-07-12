@@ -2,7 +2,10 @@
 
 A lightweight, selfhosted web app that camps, resorts and schools can use as a simple POS.
 
-:raised_hands: Thank you to [DataTables](https://datatables.net) for the fast and interactive tables.
+#### Credits
+
+- :page_with_curl: [DataTables](https://datatables.net) for the fast and interactive tables.
+- :bar_chart: [ChartJS](https://www.chartjs.org/) for the beautiful statistics charts, and [ConsoleTVs/Charts](https://github.com/ConsoleTVs/Charts) for the Laravel package.
 
 *Note: Migrations are not up to date. I am manually editing my local MySQL tables and will update migrations when it is more stable.*
 
@@ -38,7 +41,7 @@ Documentation (in the form of a printable user handbook) is being written.
     - Return an individual item from an order. A counter shows how many are left to be returned. Multiple backend checks to verify validity of return.
 - Editable GST and PST percentages.
 - Detailed user history and order list pages with fully interactive and searchable tables.
-- Detailed statistics charts (Thanks to [Laravel Charts](https://charts.erik.cat/)!)
+- Detailed statistics charts
     - View # of orders and returns.
     - View all products and how many times they have sold.
     - More planned charts in the [Roadmap](#roadmap).
@@ -74,8 +77,6 @@ Documentation (in the form of a printable user handbook) is being written.
 
 *High to Low priority sort*
 - Fix everything in Issues/Bugs
-- Add setting for if staff can ring up themselves.
-    - Cashiers cannot, but Administrators can toggle on/off?
 - Disable submit button when anything goes wrong *(Remaining: Stock, Categories)* 
     - Then on the backend, if they somehow bypass the disabled submit button: on errors during order, return back with their input + quantities
 - Change how to select items and quantities. Right now it is somewhat not intuitive.

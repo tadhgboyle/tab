@@ -13,8 +13,10 @@ use Illuminate\Support\Facades\Auth;
         @include('includes.messages')
         <table id="user_list">
             <thead>
-                <th>Full Name</th>
-                <th>Balance</th>
+                <tr>
+                    <th>Full Name</th>
+                    <th>Balance</th>
+                </tr>
             </thead>
             <tbody>
                 @foreach(
@@ -39,12 +41,11 @@ use Illuminate\Support\Facades\Auth;
 </div>
 <script>
     $(document).ready(function() {
-        $('#user_list').DataTable();
-    });
-    $('#user_list').DataTable({
-        "paging": false,
-        "scrollY": "26vw",
-        "scrollCollapse": true,
+        $('#user_list').DataTable({
+            "paging": false,
+            "scrollY": "26vw",
+            "scrollCollapse": true,
+        });
     });
 </script>
 @stop

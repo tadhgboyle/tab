@@ -28,7 +28,7 @@ class Products extends Model
     public static function getStock($productId)
     {
         $product = Products::find($productId);
-        if ($product->unlimited_stock) return 'Unlimited';
+        if ($product->unlimited_stock) return '<i>Unlimited</i>';
         else return $product->stock;
     }
 

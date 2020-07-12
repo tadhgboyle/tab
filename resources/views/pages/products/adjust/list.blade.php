@@ -19,12 +19,14 @@ use App\Http\Controllers\SettingsController;
     <div class="col-md-7">
         <table id="product_list">
             <thead>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Stock</th>
-                <th>Stock Override</th>
-                <th>Box Size</th>
-                <th></th>
+                <tr>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Stock</th>
+                    <th>Stock Override</th>
+                    <th>Box Size</th>
+                    <th></th>
+                </tr>
             </thead>
             <tbody>
                 @foreach(Products::where('deleted', false)->get() as $product)

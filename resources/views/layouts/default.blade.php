@@ -15,7 +15,7 @@
 
         @include('includes.navbar')
 
-        </br>
+        <br>
 
         @yield('content')
 
