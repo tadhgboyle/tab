@@ -38,13 +38,13 @@ use App\Http\Controllers\SettingsController;
                         <div>{{ ucfirst($product->category) }}</div>
                     </td>
                     <td class="table-text">
-                        <div>{{ Products::getStock($product->id) }}</div>
+                        <div>{!! Products::getStock($product->id) !!}</div>
                     </td>
                     <td class="table-text">
                         <div>{{ $product->stock_override ? 'True' : 'False' }}</div>
                     </td>
                     <td class="table-text">
-                        <div>{{ $product->box_size == -1 ? 'N/A' : $product->box_size }}</div>
+                        <div>{!! $product->box_size == -1 ? '<i>N/A</i>' : $product->box_size !!}</div>
                     </td>
                     <td class="table-text">
                         <div><button class="btn btn-info" id="adjust_select" value="{{ $product->id }}">Adjust</button>
