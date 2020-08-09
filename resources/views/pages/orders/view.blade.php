@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<h2>View Order</h2>
+<h2><strong>View Order</strong></h2>
 @php
 use App\Http\Controllers\OrderController;
 use App\Products;

@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<h2>User Info</h2>
+<h2><strong>User Info</strong></h2>
 @php
 use App\Transactions;
 use App\Http\Controllers\OrderController;
@@ -11,13 +11,13 @@ use App\Http\Controllers\UserLimitsController;
 $user = User::find(request()->route('id'));
 if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->send();
 @endphp
-<p>User: {{ $user->full_name }} @if(!$user->deleted)<a href="/users/edit/{{ $user->id }}">(Edit)</a>@endif</p>
-<p>Role: {{ ucfirst($user->role) }}</p>
-<p>Deleted: {{ $user->deleted ? 'True' : 'False' }}</p>
-<span>Balance: ${{ number_format($user->balance, 2) }}, </span>
-<span>Total spent: ${{ User::findSpent($user) }}, </span>
-<span>Total returned: ${{ User::findReturned($user) }}, </span>
-<span>Total owing: ${{ User::findOwing($user) }}</span>
+<p><strong>User:</strong> {{ $user->full_name }} @if(!$user->deleted)<a href="/users/edit/{{ $user->id }}">(Edit)</a>@endif</p>
+<p><strong>Role:</strong> {{ ucfirst($user->role) }}</p>
+<p><strong>Deleted:</strong> {{ $user->deleted ? 'True' : 'False' }}</p>
+<span><strong>Balance:</strong> ${{ number_format($user->balance, 2) }}, </span>
+<span><strong>Total spent:</strong> ${{ User::findSpent($user) }}, </span>
+<span><strong>Total returned:</strong> ${{ User::findReturned($user) }}, </span>
+<span><strong>Total owing:</strong> ${{ User::findOwing($user) }}</span>
 <br>
 <br>
 

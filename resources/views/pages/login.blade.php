@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<h2>Login</h2>
+<h2><strong>Login</strong></h2>
 <div class="row">
     <div class="col-md-4"></div>
     <div class="col-md-4">

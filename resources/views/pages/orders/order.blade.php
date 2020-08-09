@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<h2>Cashier</h2>
+<h2><strong>Cashier</strong></h2>
 @php
 
 use App\Products;
@@ -15,8 +15,7 @@ if ($user == null) return redirect('/')->with('error', 'Invalid user.')->send();
     <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
 </div>
 <div class="row">
-    <div class="col-md-1"></div>
-    <div class="col-md-7" id="cashier" style="display: none">
+    <div class="col-md-8" id="cashier" style="display: none">
         @include('includes.messages')
         <form method="post" id="order" action="/orders/submit">
             @csrf

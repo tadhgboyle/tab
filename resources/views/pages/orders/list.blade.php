@@ -6,7 +6,7 @@ use App\User;
 ?>
 @extends('layouts.default')
 @section('content')
-<h2>Order List</h2>
+<h2><strong>Order List</strong></h2>
 <div class="row">
     <div class="col-md-3"></div>
     <div class="col-md-6">

@@ -5,7 +5,7 @@ use App\Http\Controllers\SettingsController;
 use App\Products;
 $product = Products::find(request()->route('id'));
 @endphp
-<h2>{{ is_null($product) ? 'Create' : 'Edit' }} a Product</h2>
+<h2><strong>{{ is_null($product) ? 'Create' : 'Edit' }} Product</strong></h2>
 <style>
     select:required:invalid {
         color: gray;
