@@ -6,7 +6,7 @@ use App\Http\Controllers\UserLimitsController;
 use App\Http\Controllers\SettingsController;
 @endphp
 
-<h2>Stock Adjustment</h2>
+<h2><strong>Stock Adjustment</strong></h2>
 <br>
 <div class="row">
     <div class="col-md-1">

@@ -7,7 +7,7 @@ use App\User;
 $user = User::find(request()->route('id'));
 if (!is_null($user) && $user->deleted) return redirect('/users')->with('error', 'That user has been deleted.')->send();
 @endphp
-<h2>{{ is_null($user) ? 'Create' : 'Edit' }} a User</h2>
+<h2><strong>{{ is_null($user) ? 'Create' : 'Edit' }} User</strong></h2>
 @if(!is_null($user)) <p>User: {{ $user->full_name }} <a href="/users/info/{{ $user->id }}">(Info)</a></p> @endif
 <div class="row">
     <div class="col-md-2"></div>
@@ -15,12 +15,6 @@ if (!is_null($user) && $user->deleted) return redirect('/users')->with('error', 
         <form action="/users/{{ is_null($user) ? 'new' : 'edit' }}/commit" id="user_form" method="POST">
             @csrf
             <input type="hidden" name="id" id="user_id" value="{{ request()->route('id') }}">
-
-            <!-- 
-                Short hand ternary: 
-                <A> ?? <B> 
-                A will be shown if not null, but if it is null, B will be shown
-            -->
             <span>Full Name<sup style="color: red">*</sup></span>
             <input type="text" name="full_name" class="form-control" placeholder="Full Name"
                 value="{{ $user->full_name ?? old('full_name') }}">

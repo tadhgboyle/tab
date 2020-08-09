@@ -12,9 +12,9 @@
         <input type="number" step="1" name="adjust_stock" class="form-control" value="0">
         <br>
         @if($product->box_size != -1)
-        <span>Add/Subtract Box</span>
-        <input type="number" step="1" name="adjust_box" class="form-control" value="0">
-        <br>
+            <span>Add/Subtract Box</span>
+            <input type="number" step="1" name="adjust_box" class="form-control" value="0">
+            <br>
         @endif
         <button class="btn btn-success">Update</button>
     </form>

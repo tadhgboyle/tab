@@ -77,6 +77,8 @@ Documentation (in the form of a printable user handbook) is being written.
 
 *High to Low priority sort*
 - Fix everything in Issues/Bugs
+- Only allow sorting by certain columns (disable for button columns etc).
+- Move to Bulma. Bootstrap is ugly
 - Disable submit button when anything goes wrong *(Remaining: Stock, Categories)* 
     - Then on the backend, if they somehow bypass the disabled submit button: on errors during order, return back with their input + quantities
 - Change how to select items and quantities. Right now it is somewhat not intuitive.
@@ -112,7 +114,7 @@ Documentation (in the form of a printable user handbook) is being written.
     - In settings page, allow to upload a custom logo to be on invoice
 - Seperate orders, users and stats into weeks (Like Green Bay)
 - Allow user to change light/dark mode
-- Move to Material Design. Bootstrap is ugly
 
 ## Issues/Bugs:
+- Figure out why some tables (Products list page) don't show headers sometimes.
 - Gracefully handle category deletion.

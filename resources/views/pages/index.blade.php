@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<h2>Cashier</h2>
+<h2><strong>Cashier</strong></h2>
 <?php
 
 use App\User;

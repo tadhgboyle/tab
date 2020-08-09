@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<h2>Statistics</h2>
+<h2><strong>Statistics</strong></h2>
 @php
 use App\Http\Controllers\StatisticsChartController;
 use App\Http\Controllers\SettingsController;

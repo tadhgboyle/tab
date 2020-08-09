@@ -3,7 +3,7 @@ use App\User;
 ?>
 @extends('layouts.default')
 @section('content')
-<h2>User List</h2>
+<h2><strong>User List</strong></h2>
 
 <div class="row">
     <div class="col-md-3"></div>
