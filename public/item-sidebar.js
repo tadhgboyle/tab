@@ -34,11 +34,6 @@ $(document).ready(function () {
     });
 })
 
-$(window).on('load', function () {
-    $('#loading').hide();
-    $('#cashier').show();
-});
-
 // Handle clicks on items
 $('.clickable').click(function () {
 
@@ -106,8 +101,8 @@ function updateInfo() {
 
 // Removes the "disabled" attribute from quantity fields. 
 // Without this, no selected items are sent to the controller
-$('form').submit(function (e) {
-    $(':disabled').each(function (e) {
+$('form').submit(function () {
+    $(':disabled').each(function () {
         $(this).removeAttr('disabled');
     })
 });

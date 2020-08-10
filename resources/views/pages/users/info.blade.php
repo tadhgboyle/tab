@@ -1,6 +1,3 @@
-@extends('layouts.default')
-@section('content')
-<h2><strong>User Info</strong></h2>
 @php
 use App\Transactions;
 use App\Http\Controllers\OrderController;
@@ -11,6 +8,9 @@ use App\Http\Controllers\UserLimitsController;
 $user = User::find(request()->route('id'));
 if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->send();
 @endphp
+@extends('layouts.default')
+@section('content')
+<h2 class="title has-text-weight-bold">User Info</h2>
 <p><strong>User:</strong> {{ $user->full_name }} @if(!$user->deleted)<a href="/users/edit/{{ $user->id }}">(Edit)</a>@endif</p>
 <p><strong>Role:</strong> {{ ucfirst($user->role) }}</p>
 <p><strong>Deleted:</strong> {{ $user->deleted ? 'True' : 'False' }}</p>
@@ -24,9 +24,9 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
 <div id="loading" align="center">
     <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
 </div>
-<div class="row" id="table_container" style="visibility: hidden;">
-    <div class="col-md-7">
-        <h3><strong>History</strong></h3>
+<div class="columns" id="table_container" style="visibility: hidden;">
+    <div class="column is-three-fifths">
+    <h4 class="title has-text-weight-bold is-4">History</h4>
         <table id="order_list">
             <thead>
                 <th>Time</th>
@@ -51,8 +51,8 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
                     <td class="table-text">
                         <div>
                             {!! !OrderController::checkReturned($transaction->id)
-                            ? "<h5><span class=\"badge badge-success\">Normal</span></h5>"
-                            : "<h5><span class=\"badge badge-danger\">Returned</span></h5>" !!}
+                            ? "<span class=\"tag is-success is-medium\">Normal</span>"
+                            : "<span class=\"tag is-danger is-medium\">Returned</span>" !!}
                         </div>
                     </td>
                     <td class="table-text">
@@ -63,8 +63,8 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
             </tbody>
         </table>
     </div>
-    <div class="col-md-5">
-        <h3><strong>Limits</strong></h3>
+    <div class="column is-two-fifths">
+    <h4 class="title has-text-weight-bold is-4">Limits</h4>
         <table id="category_list">
             <thead>
                 <th>Category</th>

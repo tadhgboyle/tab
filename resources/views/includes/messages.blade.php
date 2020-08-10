@@ -1,34 +1,32 @@
 @if (Session::has('success'))
-<div class="alert alert-success alert-dismissible fade show">
+<div class="notification is-primary is-light">
     <span>{!! Session::get('success') !!}</span>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
+    <button class="delete"></button>
 </div>
 @endif
 @if (Session::has('error'))
-<div class="alert alert-danger alert-dismissable fade show">
+<div class="notification is-danger is-light">
     <span>{!! Session::get('error') !!}</span>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
+    <button class="delete"></button>
 </div>
 @endif
-<!-- Validation Errors -->
 @foreach ($errors->all() as $error)
-<div class="alert alert-danger alert-dismissable fade show">
+<div class="notification is-danger is-light">
     <span>{!! $error !!}</span>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
+    <button class="delete"></button>
 </div>
 @endforeach
-<!-- Timeout Script -->
 <script>
-    $(document).ready(function() {
-        setTimeout(
-            function() {
-                $(".alert").alert('close')
-            }, 2250);
+    document.addEventListener('DOMContentLoaded', () => {
+        (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+            $notification = $delete.parentNode;
+            $delete.addEventListener('click', () => {
+                $notification.parentNode.removeChild($notification);
+            });
+            setTimeout(
+                function() {
+                    $notification.parentNode.removeChild($notification);
+                }, 2250);
+        });
     });
 </script>

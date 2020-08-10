@@ -4,14 +4,14 @@ use App\Transactions;
 use App\Http\Controllers\OrderController;
 use App\User;
 @endphp
-@extends('layouts.default')
+@extends('layouts.default', ['page' => 'orders'])
 @section('content')
-<h2><strong>Order List</strong></h2>
+<h2 class="title has-text-weight-bold">Order List</h2>
 <div id="loading" align="center">
     <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
 </div>
-<div class="row">
-    <div class="col-md-12" id="order_container" style="visibility: hidden;">
+<div class="columns">
+    <div class="column" id="order_container" style="visibility: hidden;">
         @include('includes.messages')
         <table id="order_list">
             <thead>
@@ -44,8 +44,8 @@ use App\User;
                     </td>
                     <td class="table-text">
                         <div>{!! !OrderController::checkReturned($transaction->id) ?
-                            "<h5><span class=\"badge badge-success\">Normal</span></h5>" :
-                            "<h5><span class=\"badge badge-danger\">Returned</span></h5>"!!}
+                            "<span class=\"tag is-success is-medium\">Normal</span>" :
+                            "<span class=\"tag is-danger is-medium\">Returned</span>"!!}
                         </div>
                     </td>
                     <td>
@@ -61,7 +61,7 @@ use App\User;
 $(document).ready(function() {
     $('#order_list').DataTable({
         "paging": false,
-        "scrollY": "28vw",
+        "scrollY": "27vw",
         "scrollCollapse": true,
         "columnDefs": [
             { 

@@ -5,22 +5,18 @@ use App\Products;
 use App\Http\Controllers\UserLimitsController;
 use App\Http\Controllers\SettingsController;
 @endphp
-
-<h2><strong>Stock Adjustment</strong></h2>
+<h2 class="title has-text-weight-bold">Stock Adjustment</h2>
 <div id="loading" align="center">
     <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
 </div>
-<br>
-<div class="row">
-    <div class="col-md-1">
+<div class="columns">
+    <div class="column is-two-thirds" id="product_container" style="visibility: hidden;">
         <select id="category_select">
             <option value="">Choose a Category</option>
             @foreach(SettingsController::getCategories() as $category)
             <option value="{{ $category->value }}">{{ ucfirst($category->value) }}</option>
             @endforeach
         </select>
-    </div>
-    <div class="col-md-7" id="product_container" style="visibility: hidden;">
         <table id="product_list">
             <thead>
                 <tr>
@@ -51,7 +47,7 @@ use App\Http\Controllers\SettingsController;
                         <div>{!! $product->box_size == -1 ? '<i>N/A</i>' : $product->box_size !!}</div>
                     </td>
                     <td class="table-text">
-                        <div><button class="btn btn-info" id="adjust_select" value="{{ $product->id }}">Adjust</button>
+                        <div><button class="button is-info" id="adjust_select" value="{{ $product->id }}">Adjust</button>
                         </div>
                     </td>
                 </tr>
@@ -59,7 +55,7 @@ use App\Http\Controllers\SettingsController;
             </tbody>
         </table>
     </div>
-    <div class="col-md-4">
+    <div class="column">
         @include('includes.messages')
         <div id="adjust_product">
             @if(session()->has('last_product'))

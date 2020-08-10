@@ -4,12 +4,12 @@ use App\User;
 @endphp
 @extends('layouts.default')
 @section('content')
-<h2><strong>User List</strong></h2>
+<h2 class="title has-text-weight-bold">User List</h2>
 <div id="loading" align="center">
     <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
 </div>
-<div class="row">
-    <div class="col-md-12" id="user_container" style="visibility: hidden;">
+<div class="columns">
+    <div class="column" id="user_container" style="visibility: hidden;">
         @include('includes.messages')
         <table id="user_list">
             <thead>
@@ -53,7 +53,7 @@ use App\User;
     $(document).ready(function() {
         $('#user_list').DataTable({
             "paging": false,
-            "scrollY": "28vw",
+            "scrollY": "27vw",
             "scrollCollapse": true,
             "columnDefs": [
                 { 
