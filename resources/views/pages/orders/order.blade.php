@@ -1,21 +1,20 @@
-@extends('layouts.default')
-@section('content')
-<h2><strong>Cashier</strong></h2>
 @php
 
 use App\Products;
 use App\User;
 use App\Http\Controllers\SettingsController;
-
 $user = User::find(request()->route('id'));
 if ($user == null) return redirect('/')->with('error', 'Invalid user.')->send();
 @endphp
+@extends('layouts.default')
+@section('content')
+<h2><strong>Cashier</strong></h2>
 <p>User: {{ $user->full_name }} <a href="/users/info/{{ request()->route('id') }}">(Info)</a></p>
 <div id="loading" align="center">
     <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
 </div>
 <div class="row">
-    <div class="col-md-8" id="cashier" style="display: none">
+    <div class="col-md-9" id="order_container" style="visibility: hidden;">
         @include('includes.messages')
         <form method="post" id="order" action="/orders/submit">
             @csrf
@@ -72,7 +71,7 @@ if ($user == null) return redirect('/')->with('error', 'Invalid user.')->send();
             </table>
         </form>
     </div>
-    <div class="col-md-4" align="center">
+    <div class="col-md-3" align="center">
         <h3>Items</h3>
         <div id="items"></div>
         <hr>
@@ -90,9 +89,11 @@ if ($user == null) return redirect('/')->with('error', 'Invalid user.')->send();
     $(document).ready(function() {
         $('#product_list').DataTable({
             "paging": false,
-            "scrollY": "23vw",
+            "scrollY": "26vw",
             "scrollCollapse": true,
         });
+        $('#loading').hide();
+        $('#order_container').css('visibility', 'visible');
     });
 </script>
 <script src="{{ url('item-sidebar.js') }}"></script>

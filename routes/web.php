@@ -82,10 +82,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/products/adjust/commit', 'ProductsController@adjustStock');
 
         /* Statistics */
-        Route::get('/statistics/graphs', function () {
-            return view('pages.statistics.graphs');
+        Route::get('/statistics', function () {
+            return view('pages.statistics.statistics');
         });
-        Route::post('/statistics/graphs/update', 'SettingsController@editLookBack');
+        Route::post('/statistics/update', 'SettingsController@editLookBack');
 
         /* Settings */
         Route::get('/settings', function () {
