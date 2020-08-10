@@ -10,7 +10,7 @@ if (!is_null($user) && $user->deleted) return redirect('/users')->with('error', 
 @section('content')
 <h2 class="title has-text-weight-bold">{{ is_null($user) ? 'Create' : 'Edit' }} User</h2>
 @if(!is_null($user)) <p><strong>User:</strong> {{ $user->full_name }} <a href="/users/info/{{ $user->id }}">(Info)</a></p> @endif
-<div class="columns">
+<div class="columns box">
     <div class="column is-1"></div>
 
     <div class="column is-5">

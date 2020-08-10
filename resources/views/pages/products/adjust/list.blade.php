@@ -9,7 +9,7 @@ use App\Http\Controllers\SettingsController;
 <div id="loading" align="center">
     <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
 </div>
-<div class="columns">
+<div class="columns box">
     <div class="column is-two-thirds" id="product_container" style="visibility: hidden;">
         <select id="category_select">
             <option value="">Choose a Category</option>
@@ -47,8 +47,11 @@ use App\Http\Controllers\SettingsController;
                         <div>{!! $product->box_size == -1 ? '<i>N/A</i>' : $product->box_size !!}</div>
                     </td>
                     <td class="table-text">
-                        <div><button class="button is-info" id="adjust_select" value="{{ $product->id }}">Adjust</button>
-                        </div>
+                        <button class="button is-info" id="adjust_select" value="{{ $product->id }}">
+                            <span class="icon">
+                                <i class="fas fa-edit"></i>
+                            </span>
+                        </button>
                     </td>
                 </tr>
                 @endforeach

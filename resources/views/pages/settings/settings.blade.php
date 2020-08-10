@@ -4,46 +4,57 @@
 use App\Http\Controllers\SettingsController;
 @endphp
 <h2 class="title has-text-weight-bold">Settings</h2>
-<div class="row">
-    <div class="col-md-4">
+<div class="columns box">
+    <div class="column is-4">
         <br>
         @include('includes.messages')
         <form action="/settings" id="settings" method="POST">
             @csrf
-            <span>GST</span>
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <div class="input-group-text">%</div>
+
+            <div class="field">
+                <label class="label">GST</label>
+                <div class="control has-icons-left">
+                    <span class="icon is-small is-left">
+                        <i class="fas fa-percent"></i>
+                    </span>
+                    <input type="number" step="0.01" name="gst" class="input" value="{{ SettingsController::getGst() }}">
                 </div>
-                <input type="number" step="0.01" name="gst" class="form-control" placeholder="GST"
-                    value="{{ SettingsController::getGst() }}">
             </div>
-            <span>PST</span>
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <div class="input-group-text">%</div>
+
+            <div class="field">
+                <label class="label">PST</label>
+                <div class="control has-icons-left">
+                    <span class="icon is-small is-left">
+                        <i class="fas fa-percent"></i>
+                    </span>
+                    <input type="number" step="0.01" name="pst" class="input" value="{{ SettingsController::getPst() }}">
                 </div>
-                <input type="number" step="0.01" name="pst" class="form-control" placeholder="PST"
-                    value="{{ SettingsController::getPst() }}">
             </div>
-            <span>Staff Discount</span>
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <div class="input-group-text">%</div>
+
+            <div class="field">
+                <label class="label">Staff Discount</label>
+                <div class="control has-icons-left">
+                    <span class="icon is-small is-left">
+                        <i class="fas fa-percent"></i>
+                    </span>
+                    <input type="number" step="0.01" name="staff_discount" class="input" value="{{ SettingsController::getStaffDiscount() }}">
                 </div>
-                <input type="number" step="0.01" name="staff_discount" class="form-control"
-                    placeholder="Staff Discount (Not working yet)" value="{{ SettingsController::getStaffDiscount() }}">
             </div>
-            <p></p>
-            <button type="submit" class="button is-success">Save</button>
+
+            <button class="button is-success" type="submit">
+                <span class="icon is-small">
+                    <i class="fas fa-save"></i>
+                </span>
+                <span>Submit</span>
+            </button>
     </div>
-    <div class="col-md-4">
+    <div class="column is-4">
         <br>
         <span title="Allow Cashiers + Managers to ring up orders for themselves.">Self Purchases</span>
         <input type="checkbox" name="self_purchases" @if(SettingsController::getSelfPurchases()) checked @endif>
         </form>
     </div>
-    <div class="col-md-4">
+    <div class="column is-4">
         <table id="category_list">
             <thead>
                 <tr>
@@ -70,9 +81,12 @@ use App\Http\Controllers\SettingsController;
                 @endforeach
             </tbody>
         </table>
-        <p></p>
-        <input type="submit" onclick="window.location='settings/category/new';" value="New"
-            class="button is-success">
+            <a class="button is-success" onclick="window.location='settings/category/new';">
+                <span class="icon is-small">
+                    <i class="fas fa-plus"></i>
+                </span>
+                <span>New</span>
+            </a>
     </div>
 </div>
 <div id="DeleteModal" class="modal fade" role="dialog">
