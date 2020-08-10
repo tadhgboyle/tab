@@ -102,6 +102,12 @@ $transaction_returned = OrderController::checkReturned($transaction->id);
             "paging": false,
             "scrollY": "26vw",
             "scrollCollapse": true,
+            "columnDefs": [
+                { 
+                    "orderable": false, 
+                    "targets": [4]
+                }
+            ]
         });
     });
 
