@@ -7,7 +7,7 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 - :page_with_curl: [DataTables](https://datatables.net) for the fast and interactive tables.
 - :bar_chart: [ChartJS](https://www.chartjs.org/) for the beautiful statistics charts, and [ConsoleTVs/Charts](https://github.com/ConsoleTVs/Charts) for the Laravel package.
 
-*Note: Migrations are not up to date. I am manually editing my local MySQL tables and will update migrations when it is more stable.*
+*Note: Some migrations are not up to date. I am manually editing my local MySQL tables and will update migrations when it is more stable.*
 
 Documentation (in the form of a printable user handbook) is being written. 
 
@@ -117,4 +117,5 @@ Documentation (in the form of a printable user handbook) is being written.
 
 ## Issues/Bugs:
 - Figure out why some tables (Products list page) don't show headers sometimes.
+- Dont import classes in views, use controllers to return views instead.
 - Gracefully handle category deletion.

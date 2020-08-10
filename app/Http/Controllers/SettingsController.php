@@ -49,7 +49,7 @@ class SettingsController extends Controller
             return redirect()->back()->withErrors($validator);
         }
         DB::table('settings')->where('setting', 'lookBack')->update(['value' => $request->lookback]);
-        return redirect('/statistics/graphs')->send();
+        return redirect('/statistics')->send();
     }
 
     public function editSettings(Request $request)

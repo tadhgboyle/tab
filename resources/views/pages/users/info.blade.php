@@ -21,9 +21,12 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
 <br>
 <br>
 
-<div class="row">
+<div id="loading" align="center">
+    <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
+</div>
+<div class="row" id="table_container" style="visibility: hidden;">
     <div class="col-md-7">
-        <h3>History</h3>
+        <h3><strong>History</strong></h3>
         <table id="order_list">
             <thead>
                 <th>Time</th>
@@ -61,7 +64,7 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
         </table>
     </div>
     <div class="col-md-5">
-        <h3>Categories</h3>
+        <h3><strong>Limits</strong></h3>
         <table id="category_list">
             <thead>
                 <th>Category</th>
@@ -71,34 +74,29 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
             </thead>
             <tbody>
                 @foreach(SettingsController::getCategories() as $category)
-                @php
-                $category_limit = UserLimitsController::findLimit(request()->route('id'), $category->value);
-                $category_duration = UserLimitsController::findDuration(request()->route('id'), $category->value);
-                $category_spent = UserLimitsController::findSpent(request()->route('id'), $category->value,
-                $category_duration);
-                @endphp
-                <tr>
-                    <td class="table-text">
-                        <div>{{ ucfirst($category->value) }}</div>
-                    </td>
-                    <td class="table-text">
-                        <div>
-                            {!! $category_limit == "-1"
-                            ? "<i>Unlimited</i>"
-                            : "$" . number_format($category_limit, 2) . "/" . $category_duration !!}
-                        </div>
-                    </td>
-                    <td class="table-text">
-                        <div>${{ number_format($category_spent, 2) }}</div>
-                    </td>
-                    <td class="table-text">
-                        <div>
-                            {!! $category_limit == "-1"
-                            ? "<i>Unlimited</i>"
-                            : "$" . number_format($category_limit - $category_spent, 2) !!}
-                        </div>
-                    </td>
-                </tr>
+                    @php
+                    $category_limit = UserLimitsController::findLimit(request()->route('id'), $category->value);
+                    $category_duration = UserLimitsController::findDuration(request()->route('id'), $category->value);
+                    $category_spent = UserLimitsController::findSpent(request()->route('id'), $category->value, $category_duration);
+                    @endphp
+                    <tr>
+                        <td class="table-text">
+                            <div>{{ ucfirst($category->value) }}</div>
+                        </td>
+                        <td class="table-text">
+                            <div>
+                                {!! $category_limit == "-1" ? "<i>Unlimited</i>" : "$" . number_format($category_limit, 2) . "/" . $category_duration !!}
+                            </div>
+                        </td>
+                        <td class="table-text">
+                            <div>${{ number_format($category_spent, 2) }}</div>
+                        </td>
+                        <td class="table-text">
+                            <div>
+                                {!! $category_limit == "-1" ? "<i>Unlimited</i>" : "$" . number_format($category_limit - $category_spent, 2) !!}
+                            </div>
+                        </td>
+                    </tr>
                 @endforeach
             </tbody>
         </table>
@@ -107,21 +105,19 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
 <script>
     $(document).ready(function() {
         $('#order_list').DataTable({
-            order: [],
-            paging: false,
-            searching: false,
-            scrollY: "280px",
-            scrollCollapse: true,
-            language: {
-                emptyTable: "No orders to show.",
-                infoEmpty: ""
-            }
+            "order": [],
+            "paging": false,
+            "searching": false,
+            "scrollY": "28vh",
+            "scrollCollapse": true,
         });
         $('#category_list').DataTable({
-            searching: false,
-            paging: false,
-            bInfo: false,
+            "searching": false,
+            "paging": false,
+            "bInfo": false,
         });
+        $('#loading').hide();
+        $('#table_container').css('visibility', 'visible');
     });
 </script>
 @endsection

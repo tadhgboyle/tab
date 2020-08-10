@@ -44,17 +44,17 @@ $product = Products::find(request()->route('id'));
             <br>
 
             <span>PST</span>
-            <input type="checkbox" name="pst"
-                {{ (isset($product->pst) && $product->pst) || old('pst') ? 'checked' : '' }}>
-            &nbsp;
+            <input type="checkbox" name="pst" {{ (isset($product->pst) && $product->pst) || old('pst') ? 'checked' : '' }}>
+            <br>
+            <br>
             <span>Category<sup style="color: red">*</sup></span>
-            <select name="category">
+            <select name="category" class="form-control">
                 {{!! !isset($product->category) ? "<option value=\"\" disabled selected>Select Category...</option>" : '' !!}}
                 @foreach(SettingsController::getCategories() as $category)
-                <option value="{{ $category->value }}"
-                    {{ (!is_null($product) && $product->category == $category->value) || old('category') == $category->value  ? 'selected' : '' }}>
-                    {{ ucfirst($category->value) }}
-                </option>
+                    <option value="{{ $category->value }}"
+                        {{ (!is_null($product) && $product->category == $category->value) || old('category') == $category->value  ? 'selected' : '' }}>
+                        {{ ucfirst($category->value) }}
+                    </option>
                 @endforeach
             </select>
             <br>
