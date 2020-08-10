@@ -6,21 +6,20 @@ use App\Http\Controllers\SettingsController;
 $user = User::find(request()->route('id'));
 if ($user == null) return redirect('/')->with('error', 'Invalid user.')->send();
 @endphp
-@extends('layouts.default')
+@extends('layouts.default', ['page' => 'cashier'])
 @section('content')
-<h2><strong>Cashier</strong></h2>
+<h2 class="title has-text-weight-bold">Cashier</h2>
 <p>User: {{ $user->full_name }} <a href="/users/info/{{ request()->route('id') }}">(Info)</a></p>
 <div id="loading" align="center">
     <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
 </div>
-<div class="row">
-    <div class="col-md-9" id="order_container" style="visibility: hidden;">
+<div class="columns">
+    <div class="column is-two-thirds" id="order_container" style="visibility: hidden;">
         @include('includes.messages')
         <form method="post" id="order" action="/orders/submit">
             @csrf
             <input type="hidden" name="purchaser_id" value="{{ request()->route('id') }}">
             <input type="hidden" name="cashier_id" value="{{ Auth::user()->id }}">
-            <!-- This is all used by item-sidebar.js to calculate things -->
             <input type="hidden" id="current_gst" value="{{ SettingsController::getGst() }}">
             <input type="hidden" id="current_pst" value="{{ SettingsController::getPst() }}">
             <input type="hidden" id="purchaser_balance" value="{{ $user->balance }}">
@@ -71,25 +70,25 @@ if ($user == null) return redirect('/')->with('error', 'Invalid user.')->send();
             </table>
         </form>
     </div>
-    <div class="col-md-3" align="center">
-        <h3>Items</h3>
+    <div class="column" align="center">
+        <h3 class="title">Items</h3>
         <div id="items"></div>
         <hr>
         <div id="gst"></div>
         <div id="pst"></div>
         <div id="total_price"></div>
         <div id="remaining_balance"></div>
-        <p></p>
-        <input type="submit" form="order" value="Submit" class="disableable btn btn-success" disabled>
+        <br>
+        <input type="submit" form="order" value="Submit" class="disableable button is-success" disabled>
         <span>&nbsp;&nbsp;</span>
-        <input type="submit" onclick="window.location='/';" value="Cancel" class="btn btn-danger">
+        <input type="submit" onclick="window.location='/';" value="Cancel" class="button is-danger">
     </div>
 </div>
 <script>
     $(document).ready(function() {
         $('#product_list').DataTable({
             "paging": false,
-            "scrollY": "26vw",
+            "scrollY": "27vw",
             "scrollCollapse": true,
             "order": [],
             "columnDefs": [

@@ -4,12 +4,12 @@ use App\Products;
 @endphp
 @extends('layouts.default')
 @section('content')
-<h2><strong>Product List</strong></h2>
+<h2 class="title has-text-weight-bold">Product List</h2>
 <div id="loading" align="center">
     <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
 </div>
-<div class="row">
-    <div class="col-md-12" id="product_container" style="visibility: hidden;">
+<div class="columns">
+    <div class="column" id="product_container" style="visibility: hidden;">
         @include('includes.messages')
         <table id="product_list">
             <thead>
@@ -42,8 +42,7 @@ use App\Products;
                             <div>{!! $product->box_size == -1 ? '<i>N/A</i>' : $product->box_size !!}</div>
                         </td>
                         <td>
-                            <div>{!! $product->pst ? "<h5><span class=\"badge badge-success\">Yes</span></h5>" : "<h5><span
-                                        class=\"badge badge-danger\">No</span></h5>" !!}</div>
+                            <div>{!! $product->pst ? "<span class=\"tag is-success is-medium\">Yes</span>" : "<span class=\"tag is-danger is-medium\">No</span>" !!}</div>
                         </td>
                         <td>
                             <div><a href="products/edit/{{ $product->id }}">Edit</a></div>
@@ -58,7 +57,7 @@ use App\Products;
     $(document).ready(function() {
         $('#product_list').DataTable({
             "paging": false,
-            "scrollY": "26vw",
+            "scrollY": "27vw",
             "scrollCollapse": true,
             "columnDefs": [
                 {

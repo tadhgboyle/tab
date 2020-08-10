@@ -16,7 +16,7 @@
             <input type="number" step="1" name="adjust_box" class="form-control" value="0">
             <br>
         @endif
-        <button class="btn btn-success">Update</button>
+        <button class="button is-success">Update</button>
     </form>
     @endif
 </div>

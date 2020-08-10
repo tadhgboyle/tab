@@ -94,14 +94,14 @@ $product = Products::find(request()->route('id'));
     <div class="col-md-2">
         <form>
             <button type="submit" form="product_form"
-                class="btn btn-xs btn-success">{{ is_null($product) ? 'Create' : 'Edit' }} Product</button>
+                class="button is-success">{{ is_null($product) ? 'Create' : 'Edit' }} Product</button>
         </form>
         <br>
         @if(!is_null($product))
-        <form>
-            <a href="javascript:;" data-toggle="modal" onclick="deleteData()" data-target="#DeleteModal"
-                class="btn btn-xs btn-danger">Delete</a>
-        </form>
+            <form>
+                <a href="javascript:;" data-toggle="modal" onclick="deleteData()" data-target="#DeleteModal"
+                    class="button is-danger">Delete</a>
+            </form>
         @endif
     </div>
 </div>
@@ -115,8 +115,8 @@ $product = Products::find(request()->route('id'));
                 </div>
                 <div class="modal-footer">
                     <center>
-                        <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
-                        <button type="submit" name="" class="btn btn-danger" data-dismiss="modal"
+                        <button type="button" class="button is-info" data-dismiss="modal">Cancel</button>
+                        <button type="submit" name="" class="button is-danger" data-dismiss="modal"
                             onclick="formSubmit()">Delete</button>
                     </center>
                 </div>

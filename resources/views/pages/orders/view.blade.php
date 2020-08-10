@@ -11,11 +11,11 @@ if ($transaction == null) return redirect('/orders')->with('error', 'Invalid ord
 $transaction_items = explode(", ", $transaction->products);
 $transaction_returned = OrderController::checkReturned($transaction->id);
 @endphp
-@extends('layouts.default')
+@extends('layouts.default', ['page' => 'orders'])
 @section('content')
-<h2><strong>View Order</strong></h2>
-<div class="row">
-    <div class="col-md-6">
+<h2 class="title has-text-weight-bold">View Order</h2>
+<div class="columns">
+    <div class="column">
         @include('includes.messages')
         <br>
         <h4>Order ID: {{ request()->route('id') }}</h4>
@@ -28,11 +28,11 @@ $transaction_returned = OrderController::checkReturned($transaction->id);
         @if(!$transaction_returned)
             <form>
                 <input type="hidden" id="transaction_id" value="{{ $transaction->id }}">
-                <a href="javascript:;" data-toggle="modal" data-target="#returnModal" class="btn btn-xs btn-danger">Return</a>
+                <a href="javascript:;" data-toggle="modal" data-target="#returnModal" class="button is-danger">Return</a>
             </form>
         @endif
     </div>
-    <div class="col-md-6">
+    <div class="column">
         <h2 align="center">Items</h2>
         <table id="product_list">
             <thead>
@@ -67,7 +67,7 @@ $transaction_returned = OrderController::checkReturned($transaction->id);
                                     <input type="hidden" id="item_id" value="{{ $item_info['id'] }}">
                                     <a href="javascript:;" data-toggle="modal"
                                         onclick="window.location='/orders/return/item/{{ $item_info['id'] }}/{{ $transaction->id }}';"
-                                        class="btn btn-xs btn-danger">Return ({{ $item_info['quantity'] - $item_info['returned'] }})</a>
+                                        class="button is-danger">Return ({{ $item_info['quantity'] - $item_info['returned'] }})</a>
                                 </form>
                             @else
                                 <div>Returned</div>
@@ -89,8 +89,8 @@ $transaction_returned = OrderController::checkReturned($transaction->id);
                     <p class="text-center">Are you sure you want to return this transaction?</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
-                    <button type="submit" name="" class="btn btn-danger" data-dismiss="modal" onclick="returnData()">Return</button>
+                    <button type="button" class="button is-info" data-dismiss="modal">Cancel</button>
+                    <button type="submit" name="" class="button is-danger" data-dismiss="modal" onclick="returnData()">Return</button>
                 </div>
             </div>
         </form>
@@ -100,7 +100,7 @@ $transaction_returned = OrderController::checkReturned($transaction->id);
     $(document).ready(function() {
         $('#product_list').DataTable({
             "paging": false,
-            "scrollY": "26vw",
+            "scrollY": "27vw",
             "scrollCollapse": true,
             "columnDefs": [
                 { 

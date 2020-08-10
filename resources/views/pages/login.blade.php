@@ -13,7 +13,7 @@
             <span>Password<sup style="color: red">*</sup></span>
             <input type="password" name="password" class="form-control" placeholder="Password">
             <br>
-            <button type="submit" class="btn btn-xs btn-success">Login</button>
+            <button type="submit" class="button is-success">Login</button>
         </form>
     </div>
     <div class="col-md-4"></div>

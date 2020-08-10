@@ -78,13 +78,13 @@ if (!is_null($user) && $user->deleted) return redirect('/users')->with('error', 
     </form>
     <div class="col-md-2">
         <form>
-            <button type="submit" form="user_form" class="btn btn-xs btn-success">Submit</button>
+            <button type="submit" form="user_form" class="button is-success">Submit</button>
         </form>
         <br>
         @if(!is_null($user))
         <form>
             <a href="javascript:;" data-toggle="modal" onclick="deleteData()" data-target="#DeleteModal"
-                class="btn btn-xs btn-danger">Delete</a>
+                class="button is-danger">Delete</a>
         </form>
         @endif
     </div>
@@ -99,8 +99,8 @@ if (!is_null($user) && $user->deleted) return redirect('/users')->with('error', 
                 </div>
                 <div class="modal-footer">
                     <center>
-                        <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
-                        <button type="submit" name="" class="btn btn-danger" data-dismiss="modal"
+                        <button type="button" class="button is-success" data-dismiss="modal">Cancel</button>
+                        <button type="submit" name="" class="button is-danger" data-dismiss="modal"
                             onclick="formSubmit()">Delete</button>
                     </center>
                 </div>

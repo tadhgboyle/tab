@@ -35,7 +35,7 @@ use App\Http\Controllers\SettingsController;
                     placeholder="Staff Discount (Not working yet)" value="{{ SettingsController::getStaffDiscount() }}">
             </div>
             <p></p>
-            <button type="submit" class="btn btn-success">Save</button>
+            <button type="submit" class="button is-success">Save</button>
     </div>
     <div class="col-md-4">
         <br>
@@ -72,7 +72,7 @@ use App\Http\Controllers\SettingsController;
         </table>
         <p></p>
         <input type="submit" onclick="window.location='settings/category/new';" value="New"
-            class="btn btn-xs btn-success">
+            class="button is-success">
     </div>
 </div>
 <div id="DeleteModal" class="modal fade" role="dialog">
@@ -85,8 +85,8 @@ use App\Http\Controllers\SettingsController;
                 </div>
                 <div class="modal-footer">
                     <center>
-                        <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
-                        <button type="submit" name="" class="btn btn-danger" data-dismiss="modal"
+                        <button type="button" class="button is-success" data-dismiss="modal">Cancel</button>
+                        <button type="submit" name="" class="button is-success" data-dismiss="modal"
                             onclick="formSubmit()">Delete</button>
                     </center>
                 </div>
@@ -99,7 +99,7 @@ use App\Http\Controllers\SettingsController;
         $('#category_list').DataTable({
             "paging": false,
             "searching": false,
-            "scrollY": "26vw",
+            "scrollY": "27vw",
             "scrollCollapse": true,
             "bInfo": false,
             "columnDefs": [

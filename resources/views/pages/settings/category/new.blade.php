@@ -11,7 +11,7 @@
             <span>Name<sup style="color: red">*</sup></span>
             <input type="text" name="name" class="form-control" placeholder="Category Name" value={{ old('name') }}>
             <br>
-            <button type="submit" class="btn btn-xs btn-success">Submit</button>
+            <button type="submit" class="button is-success">Submit</button>
         </form>
     </div>
     <div class="col-md-4">

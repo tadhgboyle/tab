@@ -6,11 +6,11 @@ $lookBack = SettingsController::getLookBack();
 $orderinfo = StatisticsChartController::orderInfo($lookBack);
 $iteminfo = StatisticsChartController::itemInfo($lookBack);
 @endphp
-@extends('layouts.default')
+@extends('layouts.default', ['page' => 'statistics'])
 @section('content')
-<h2><strong>Statistics</strong></h2>
-<div class="row">
-    <div class="col-md-2">
+<h2 class="title has-text-weight-bold">Statistics</h2>
+<div class="columns">
+    <div class="column">
         @include('includes.messages')
         <form action="/statistics" id="edit_loopback" method="POST">
             @csrf
@@ -26,14 +26,14 @@ $iteminfo = StatisticsChartController::itemInfo($lookBack);
     </div>
 </div>
 <br>
-<div class="row">
-    <div class="col-md-6">
+<div class="columns">
+    <div class="column is-half">
         <h3>Order Info</h3>
         <div>
             {!! $orderinfo->container() !!}
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="column is-half">
         <h3>Item Info</h3>
         <div>
             {!! $iteminfo->container() !!}

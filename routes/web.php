@@ -23,13 +23,13 @@ Route::post('/login/auth', 'LoginController@auth');
 Route::middleware('auth')->group(function () {
     Route::get('/', function () {
         return view('pages.index');
-    });
-    Route::get('/logout', 'LoginController@logout');
+    })->name('index');
+    Route::get('/logout', 'LoginController@logout')->name('logout');
 
     /* Cashier */
     Route::get('/orders', function () {
         return view('pages.orders.list');
-    });
+    })->name('orders');
     Route::get('/orders/view/{id}', function () {
         return view('pages.orders.view');
     })->where('id', '[0-9]+');
@@ -48,10 +48,10 @@ Route::middleware('auth')->group(function () {
         /* Users */
         Route::get('/users', function () {
             return view('pages.users.list');
-        });
+        })->name('users');
         Route::get('/users/new', function () {
             return view('pages.users.form');
-        });
+        })->name('users_new');
         Route::post('/users/new', 'UsersController@new');
         Route::get('/users/edit/{id}', function () {
             return view('pages.users.form');
@@ -65,10 +65,10 @@ Route::middleware('auth')->group(function () {
         /* Products */
         Route::get('/products', function () {
             return view('pages.products.list');
-        });
+        })->name('products');
         Route::get('/products/new', function () {
             return view('pages.products.form');
-        });
+        })->name('products_new');
         Route::post('/products/new', 'ProductsController@new');
         Route::get('/products/edit/{id}', function () {
             return view('pages.products.form');
@@ -77,20 +77,20 @@ Route::middleware('auth')->group(function () {
         Route::get('/products/delete/{id}', 'ProductsController@delete')->where('id', '[0-9]+')->name('delete_product');
         Route::get('/products/adjust', function () {
             return view('pages.products.adjust.list');
-        })->where('id', '[0-9]+');
+        })->where('id', '[0-9]+')->name('products_adjust');
         Route::post('/products/adjust/ajax', 'ProductsController@ajaxInit')->name('adjust_ajax');
         Route::post('/products/adjust', 'ProductsController@adjustStock');
 
         /* Statistics */
         Route::get('/statistics', function () {
             return view('pages.statistics.statistics');
-        });
+        })->name('statistics');
         Route::post('/statistics', 'SettingsController@editLookBack');
 
         /* Settings */
         Route::get('/settings', function () {
             return view('pages.settings.settings');
-        });
+        })->name('settings');
         Route::post('/settings', 'SettingsController@editSettings');
         Route::get('/settings/category/new', function () {
             return view('pages.settings.category.new');
