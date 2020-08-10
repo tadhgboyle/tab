@@ -21,7 +21,7 @@ $product = Products::find(request()->route('id'));
         color: black;
     }
 </style>
-<div class="columns">
+<div class="columns box">
     <div class="column is-1"></div>
 
     <div class="column is-5">

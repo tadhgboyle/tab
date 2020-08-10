@@ -14,7 +14,7 @@ $transaction_returned = OrderController::checkReturned($transaction->id);
 @extends('layouts.default', ['page' => 'orders'])
 @section('content')
 <h2 class="title has-text-weight-bold">View Order</h2>
-<div class="columns">
+<div class="columns box">
     <div class="column">
         @include('includes.messages')
         <br>

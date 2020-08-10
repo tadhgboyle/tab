@@ -9,7 +9,7 @@ $iteminfo = StatisticsChartController::itemInfo($lookBack);
 @extends('layouts.default', ['page' => 'statistics'])
 @section('content')
 <h2 class="title has-text-weight-bold">Statistics</h2>
-<div class="columns">
+<div class="columns box">
     <div class="column">
         @include('includes.messages')
         <form action="/statistics" id="edit_loopback" method="POST">
@@ -26,7 +26,7 @@ $iteminfo = StatisticsChartController::itemInfo($lookBack);
     </div>
 </div>
 <br>
-<div class="columns">
+<div class="columns box">
     <div class="column is-half">
         <h3>Order Info</h3>
         <div>

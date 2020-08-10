@@ -24,7 +24,7 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
 <div id="loading" align="center">
     <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
 </div>
-<div class="columns" id="table_container" style="visibility: hidden;">
+<div class="columns box" id="table_container" style="visibility: hidden;">
     <div class="column is-three-fifths">
     <h4 class="title has-text-weight-bold is-4">History</h4>
         <table id="order_list">

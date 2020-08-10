@@ -10,7 +10,7 @@ use App\User;
 <div id="loading" align="center">
     <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
 </div>
-<div class="columns">
+<div class="columns box">
     <div class="column" id="order_container" style="visibility: hidden;">
         @include('includes.messages')
         <table id="order_list">
@@ -26,32 +26,32 @@ use App\User;
             </thead>
             <tbody>
                 @foreach (Transactions::orderBy('created_at', 'DESC')->get() as $transaction)
-                @php $user = User::find($transaction->purchaser_id) @endphp
-                <tr>
-                    <td class="table-text">
-                        <div>{{ $transaction->created_at->format('M jS Y h:ia') }}</div>
-                    </td>
-                    <td class="table-text">
-                        <div>
-                            <a href="users/info/{{ $user->id }}">{{ $user->full_name }}</a>
-                        </div>
-                    </td>
-                    <td class="table-text">
-                        <div>{{ User::find($transaction->cashier_id)->full_name }}</div>
-                    </td>
-                    <td class="table-text">
-                        <div>${{ number_format($transaction->total_price, 2) }}</div>
-                    </td>
-                    <td class="table-text">
-                        <div>{!! !OrderController::checkReturned($transaction->id) ?
-                            "<span class=\"tag is-success is-medium\">Normal</span>" :
-                            "<span class=\"tag is-danger is-medium\">Returned</span>"!!}
-                        </div>
-                    </td>
-                    <td>
-                        <div><a href="orders/view/{{ $transaction->id }}">View</a></div>
-                    </td>
-                </tr>
+                    @php $user = User::find($transaction->purchaser_id) @endphp
+                    <tr>
+                        <td class="table-text">
+                            <div>{{ $transaction->created_at->format('M jS Y h:ia') }}</div>
+                        </td>
+                        <td class="table-text">
+                            <div>
+                                <a href="users/info/{{ $user->id }}">{{ $user->full_name }}</a>
+                            </div>
+                        </td>
+                        <td class="table-text">
+                            <div>{{ User::find($transaction->cashier_id)->full_name }}</div>
+                        </td>
+                        <td class="table-text">
+                            <div>${{ number_format($transaction->total_price, 2) }}</div>
+                        </td>
+                        <td class="table-text">
+                            <div>{!! !OrderController::checkReturned($transaction->id) ?
+                                "<span class=\"tag is-success is-medium\">Normal</span>" :
+                                "<span class=\"tag is-danger is-medium\">Returned</span>"!!}
+                            </div>
+                        </td>
+                        <td>
+                            <div><a href="orders/view/{{ $transaction->id }}">View</a></div>
+                        </td>
+                    </tr>
                 @endforeach
             </tbody>
         </table>
@@ -63,6 +63,7 @@ $(document).ready(function() {
         "paging": false,
         "scrollY": "27vw",
         "scrollCollapse": true,
+        "order": [],
         "columnDefs": [
             { 
                 "orderable": false, 

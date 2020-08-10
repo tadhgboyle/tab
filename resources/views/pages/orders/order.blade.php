@@ -9,11 +9,11 @@ if ($user == null) return redirect('/')->with('error', 'Invalid user.')->send();
 @extends('layouts.default', ['page' => 'cashier'])
 @section('content')
 <h2 class="title has-text-weight-bold">Cashier</h2>
-<p>User: {{ $user->full_name }} <a href="/users/info/{{ request()->route('id') }}">(Info)</a></p>
+<p><strong>User:</strong> {{ $user->full_name }} <a href="/users/info/{{ request()->route('id') }}">(Info)</a></p>
 <div id="loading" align="center">
     <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
 </div>
-<div class="columns">
+<div class="columns box">
     <div class="column is-two-thirds" id="order_container" style="visibility: hidden;">
         @include('includes.messages')
         <form method="post" id="order" action="/orders/submit">
@@ -80,8 +80,12 @@ if ($user == null) return redirect('/')->with('error', 'Invalid user.')->send();
         <div id="remaining_balance"></div>
         <br>
         <input type="submit" form="order" value="Submit" class="disableable button is-success" disabled>
-        <span>&nbsp;&nbsp;</span>
-        <input type="submit" onclick="window.location='/';" value="Cancel" class="button is-danger">
+        <a class="button is-danger is-outlined" href="/">
+            <span>Cancel</span>
+            <span class="icon is-small">
+                <i class="fas fa-times"></i>
+            </span>
+        </a>
     </div>
 </div>
 <script>
