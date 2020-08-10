@@ -63,7 +63,7 @@ $(document).ready(function() {
         "paging": false,
         "scrollY": "28vw",
         "scrollCollapse": true,
-        });
+    });
     $('#loading').hide();
     $('#order_container').css('visibility', 'visible');
 });

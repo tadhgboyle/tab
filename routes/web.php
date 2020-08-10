@@ -52,11 +52,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/users/new', function () {
             return view('pages.users.form');
         });
-        Route::post('/users/new/commit', 'UsersController@new');
+        Route::post('/users/new', 'UsersController@new');
         Route::get('/users/edit/{id}', function () {
             return view('pages.users.form');
         })->where('id', '[0-9]+');
-        Route::post('/users/edit/commit', 'UsersController@edit')->where('id', '[0-9]+');
+        Route::post('/users/edit', 'UsersController@edit')->where('id', '[0-9]+');
         Route::get('/users/info/{id}', function () {
             return view('pages.users.info');
         })->where('id', '[0-9]+');
@@ -69,29 +69,29 @@ Route::middleware('auth')->group(function () {
         Route::get('/products/new', function () {
             return view('pages.products.form');
         });
-        Route::post('/products/new/commit', 'ProductsController@new');
+        Route::post('/products/new', 'ProductsController@new');
         Route::get('/products/edit/{id}', function () {
             return view('pages.products.form');
         })->where('id', '[0-9]+');
-        Route::post('/products/edit/commit', 'ProductsController@edit')->where('id', '[0-9]+');
+        Route::post('/products/edit', 'ProductsController@edit')->where('id', '[0-9]+');
         Route::get('/products/delete/{id}', 'ProductsController@delete')->where('id', '[0-9]+')->name('delete_product');
         Route::get('/products/adjust', function () {
             return view('pages.products.adjust.list');
         })->where('id', '[0-9]+');
-        Route::post('/products/adjust/ajax', 'ProductsController@ajaxInit')->name('adjustAjax');
-        Route::post('/products/adjust/commit', 'ProductsController@adjustStock');
+        Route::post('/products/adjust/ajax', 'ProductsController@ajaxInit')->name('adjust_ajax');
+        Route::post('/products/adjust', 'ProductsController@adjustStock');
 
         /* Statistics */
         Route::get('/statistics', function () {
             return view('pages.statistics.statistics');
         });
-        Route::post('/statistics/update', 'SettingsController@editLookBack');
+        Route::post('/statistics', 'SettingsController@editLookBack');
 
         /* Settings */
         Route::get('/settings', function () {
             return view('pages.settings.settings');
         });
-        Route::post('/settings/submit', 'SettingsController@editSettings');
+        Route::post('/settings', 'SettingsController@editSettings');
         Route::get('/settings/category/new', function () {
             return view('pages.settings.category.new');
         });

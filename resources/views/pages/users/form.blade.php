@@ -1,18 +1,19 @@
-@extends('layouts.default')
-@section('content')
 @php
+
 use App\Http\Controllers\UserLimitsController;
 use App\Http\Controllers\SettingsController;
 use App\User;
 $user = User::find(request()->route('id'));
 if (!is_null($user) && $user->deleted) return redirect('/users')->with('error', 'That user has been deleted.')->send();
 @endphp
+@extends('layouts.default')
+@section('content')
 <h2><strong>{{ is_null($user) ? 'Create' : 'Edit' }} User</strong></h2>
 @if(!is_null($user)) <p>User: {{ $user->full_name }} <a href="/users/info/{{ $user->id }}">(Info)</a></p> @endif
 <div class="row">
     <div class="col-md-2"></div>
     <div class="col-md-4">
-        <form action="/users/{{ is_null($user) ? 'new' : 'edit' }}/commit" id="user_form" method="POST">
+        <form action="/users/{{ is_null($user) ? 'new' : 'edit' }}" id="user_form" method="POST">
             @csrf
             <input type="hidden" name="id" id="user_id" value="{{ request()->route('id') }}">
             <span>Full Name<sup style="color: red">*</sup></span>

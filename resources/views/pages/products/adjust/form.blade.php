@@ -5,7 +5,7 @@
     @if($product->unlimited_stock)
     <i>No available options</i>
     @else
-    <form method="POST" action="/products/adjust/commit">
+    <form method="POST" action="/products/adjust">
         @csrf
         <input type="hidden" name="product_id" value="{{ $product->id }}">
         <span>Add/Subtract Stock</span>
