@@ -21,14 +21,14 @@ class StatisticsChartController extends Controller
         $returned_orders = array();
         $labels = array();
 
-        foreach ($normal_data as $row) {
-            array_push($labels, Carbon::parse($row['date'])->format('M jS Y'));
-            array_push($normal_orders, $row['count']);
+        foreach ($normal_data as $normal_order) {
+            array_push($labels, Carbon::parse($normal_order['date'])->format('M jS Y'));
+            array_push($normal_orders, $normal_order['count']);
             $found = false;
-            foreach ($returned_data as $row1) {
-                if ($row['date'] == $row1['date']) {
+            foreach ($returned_data as $returned_order) {
+                if ($normal_order['date'] == $returned_order['date']) {
                     $found = true;
-                    array_push($returned_orders, $row1['count']);
+                    array_push($returned_orders, $returned_order['count']);
                     break;
                 }
             }

@@ -35,7 +35,7 @@ if ($user == null) return redirect('/')->with('error', 'Invalid user.')->send();
                     <th>Price</th>
                 </thead>
                 <tbody>
-                    @foreach(Products::all()->where('deleted', false) as $product)
+                    @foreach(Products::orderBy('name', 'ASC')->where('deleted', false)->get() as $product)
                     <tr>
                         <td class="table-text">
                             <center>
@@ -91,6 +91,13 @@ if ($user == null) return redirect('/')->with('error', 'Invalid user.')->send();
             "paging": false,
             "scrollY": "26vw",
             "scrollCollapse": true,
+            "order": [],
+            "columnDefs": [
+                { 
+                    "orderable": false, 
+                    "targets": [0, 1]
+                }
+            ]
         });
         $('#loading').hide();
         $('#order_container').css('visibility', 'visible');

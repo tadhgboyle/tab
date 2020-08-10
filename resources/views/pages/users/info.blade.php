@@ -110,6 +110,12 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
             "searching": false,
             "scrollY": "28vh",
             "scrollCollapse": true,
+            "columnDefs": [
+                { 
+                    "orderable": false, 
+                    "targets": [3, 4]
+                }
+            ]
         });
         $('#category_list').DataTable({
             "searching": false,

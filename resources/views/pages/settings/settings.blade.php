@@ -102,6 +102,12 @@ use App\Http\Controllers\SettingsController;
             "scrollY": "26vw",
             "scrollCollapse": true,
             "bInfo": false,
+            "columnDefs": [
+                { 
+                    "orderable": false, 
+                    "targets": 1
+                }
+            ]
         });
     });
 
