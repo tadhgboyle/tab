@@ -44,6 +44,12 @@ use Illuminate\Support\Facades\Auth;
             "paging": false,
             "scrollY": "28vw",
             "scrollCollapse": true,
+            "columnDefs": [
+                { 
+                    "orderable": false, 
+                    "targets": 1
+                }
+            ]
         });
         $('#loading').hide();
         $('#user_container').css('visibility', 'visible');

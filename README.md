@@ -77,13 +77,12 @@ Documentation (in the form of a printable user handbook) is being written.
 
 *High to Low priority sort*
 - Fix everything in Issues/Bugs
-- Only allow sorting by certain columns (disable for button columns etc).
 - Move to Bulma. Bootstrap is ugly
 - Disable submit button when anything goes wrong *(Remaining: Stock, Categories)* 
     - Then on the backend, if they somehow bypass the disabled submit button: on errors during order, return back with their input + quantities
-- Change how to select items and quantities. Right now it is somewhat not intuitive.
+- Change how to select items and quantities. Right now it is somewhat not intuitive. Options:
     - 1. Allow changing quantity after checking box
-    - 2. Remove checkbox entirely, and instead consider all items with > 1 quantity as "selected"
+    - 2. Remove checkbox entirely, and instead consider all items with >= 1 quantity as "selected"
     - 3. Similar to GBBC tab, click an item to add it to a list of all items. Click more times for more quantity
 - Complete inventory features
     - Remaining: 
@@ -116,6 +115,5 @@ Documentation (in the form of a printable user handbook) is being written.
 - Allow user to change light/dark mode
 
 ## Issues/Bugs:
-- Figure out why some tables (Products list page) don't show headers sometimes.
 - Dont import classes in views, use controllers to return views instead.
 - Gracefully handle category deletion.

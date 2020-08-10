@@ -76,6 +76,12 @@ use App\Http\Controllers\SettingsController;
             "paging": false,
             "scrollY": "24vw",
             "scrollCollapse": true,
+            "columnDefs": [
+                { 
+                    "orderable": false, 
+                    "targets": 5
+                }
+            ]
         });
         $('#loading').hide();
         $('#product_container').css('visibility', 'visible');

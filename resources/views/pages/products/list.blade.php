@@ -60,6 +60,12 @@ use App\Products;
             "paging": false,
             "scrollY": "26vw",
             "scrollCollapse": true,
+            "columnDefs": [
+                {
+                    "orderable": false,
+                    "targets": [5, 6]
+                }
+            ]
         });
         $('#loading').hide();
         $('#product_container').css('visibility', 'visible');

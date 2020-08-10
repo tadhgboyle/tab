@@ -1,6 +1,3 @@
-@extends('layouts.default')
-@section('content')
-<h2><strong>Statistics</strong></h2>
 @php
 use App\Http\Controllers\StatisticsChartController;
 use App\Http\Controllers\SettingsController;
@@ -9,6 +6,9 @@ $lookBack = SettingsController::getLookBack();
 $orderinfo = StatisticsChartController::orderInfo($lookBack);
 $iteminfo = StatisticsChartController::itemInfo($lookBack);
 @endphp
+@extends('layouts.default')
+@section('content')
+<h2><strong>Statistics</strong></h2>
 <div class="row">
     <div class="col-md-2">
         @include('includes.messages')
@@ -47,9 +47,9 @@ $iteminfo = StatisticsChartController::itemInfo($lookBack);
 <!-- Handle changing the lookBack dropdown -->
 <script>
     $('#lookback').change(function () {
-        this.form.submit();
-    }
-)
+            this.form.submit();
+        }
+    )
 </script>
 
 @endsection
