@@ -115,5 +115,6 @@ Documentation (in the form of a printable user handbook) is being written.
 - Allow user to change light/dark mode
 
 ## Issues/Bugs:
+- Use `route()` helper incase we need to easily change routes.
 - Dont import classes in views, use controllers to return views instead.
 - Gracefully handle category deletion.

@@ -3,7 +3,7 @@
 @php
 use App\Http\Controllers\SettingsController;
 @endphp
-<h2><strong>Settings</strong></h2>
+<h2 class="title has-text-weight-bold">Settings</h2>
 <div class="row">
     <div class="col-md-4">
         <br>
