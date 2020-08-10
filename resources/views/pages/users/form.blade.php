@@ -9,7 +9,7 @@ if (!is_null($user) && $user->deleted) return redirect('/users')->with('error', 
 @extends('layouts.default')
 @section('content')
 <h2 class="title has-text-weight-bold">{{ is_null($user) ? 'Create' : 'Edit' }} User</h2>
-@if(!is_null($user)) <p>User: {{ $user->full_name }} <a href="/users/info/{{ $user->id }}">(Info)</a></p> @endif
+@if(!is_null($user)) <p><strong>User:</strong> {{ $user->full_name }} <a href="/users/info/{{ $user->id }}">(Info)</a></p> @endif
 <div class="columns">
     <div class="column is-1"></div>
 
@@ -19,7 +19,7 @@ if (!is_null($user) && $user->deleted) return redirect('/users')->with('error', 
             <input type="hidden" name="id" id="user_id" value="{{ request()->route('id') }}">
 
             <div class="field">
-                <label class="label">Full Name</label>
+                <label class="label">Full Name<sup style="color: red">*</sup></label>
                 <div class="control">
                     <input type="text" name="full_name" class="input" placeholder="Full Name" value="{{ $user->full_name ?? old('full_name') }}">
                 </div>
@@ -47,17 +47,17 @@ if (!is_null($user) && $user->deleted) return redirect('/users')->with('error', 
 
             <div class="field">
                 <div class="control">
-                    <label class="label">Role</label>
-                    <label class="radio">
+                    <label class="label">Role<sup style="color: red">*</sup></label>
+                        <label class="radio">
                         <input type="radio" name="role" value="camper" @if((isset($user->role) && $user->role ==  "camper") || old('role') == "camper") checked @endif>
                         Camper
                     </label>
                     <label class="radio">
-                    <input type="radio" name="role" value="cashier" @if((isset($user->role) && $user->role == "cashier") || old('role') == "cashier") checked @endif>
+                        <input type="radio" name="role" value="cashier" @if((isset($user->role) && $user->role == "cashier") || old('role') == "cashier") checked @endif>
                         Cashier
                     </label>
                     <label class="radio">
-                    <input type="radio" name="role" value="administrator" @if((isset($user->role) && $user->role == "administrator") || old('role') == "administrator") checked @endif>
+                        <input type="radio" name="role" value="administrator" @if((isset($user->role) && $user->role == "administrator") || old('role') == "administrator") checked @endif>
                         Administrator
                     </label>
                 </div>
@@ -97,11 +97,11 @@ if (!is_null($user) && $user->deleted) return redirect('/users')->with('error', 
                     <input type="number" step="0.01" name="limit[{{ $category->value }}]" class="input" placeholder="Limit" value="{{ isset($user->id) ? number_format(UserLimitsController::findLimit($user->id, $category->value), 2) : '' }}">
                 </div>
                 <div class="control">
-                    <label class="label">
+                    <label class="radio">
                         <input type="radio" name="duration[{{ $category->value }}]" value="0" @if(isset($user->id) && UserLimitsController::findDuration($user->id, $category->value) == "day") checked @endif>
                         Day
                     </label>
-                    <label class="label"">
+                    <label class="radio">
                         <input type="radio" name="duration[{{ $category->value }}]" value="1" @if(isset($user->id) && UserLimitsController::findDuration($user->id, $category->value) == "week") checked @endif>
                         Week
                     </label>
