@@ -12,7 +12,7 @@ $iteminfo = StatisticsChartController::itemInfo($lookBack);
 <div class="row">
     <div class="col-md-2">
         @include('includes.messages')
-        <form action="/statistics/update" id="edit_loopback" method="POST">
+        <form action="/statistics" id="edit_loopback" method="POST">
             @csrf
             <select name="lookback" class="form-control" id="lookback">
                 <option value="9999" {{ $lookBack == "9999" ? "selected" : "" }}>All Time</option>

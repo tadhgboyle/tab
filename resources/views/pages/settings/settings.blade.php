@@ -8,7 +8,7 @@ use App\Http\Controllers\SettingsController;
     <div class="col-md-4">
         <br>
         @include('includes.messages')
-        <form action="/settings/submit" id="settings" method="POST">
+        <form action="/settings" id="settings" method="POST">
             @csrf
             <span>GST</span>
             <div class="input-group">

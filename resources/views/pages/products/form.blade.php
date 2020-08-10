@@ -1,10 +1,11 @@
-@extends('layouts.default')
-@section('content')
 @php
+
 use App\Http\Controllers\SettingsController;
 use App\Products;
 $product = Products::find(request()->route('id'));
 @endphp
+@extends('layouts.default')
+@section('content')
 <h2><strong>{{ is_null($product) ? 'Create' : 'Edit' }} Product</strong></h2>
 <style>
     select:required:invalid {
@@ -23,7 +24,7 @@ $product = Products::find(request()->route('id'));
     <div class="col-md-2"></div>
     <div class="col-md-4">
         @include('includes.messages')
-        <form action="/products/{{ is_null($product) ? 'new' : 'edit' }}/commit" id="product_form" method="POST"
+        <form action="/products/{{ is_null($product) ? 'new' : 'edit' }}" id="product_form" method="POST"
             class="form-horizontal">
             @csrf
             <input type="hidden" name="id" value="{{ Auth::user()->id }}">

@@ -7,6 +7,9 @@ use App\Http\Controllers\SettingsController;
 @endphp
 
 <h2><strong>Stock Adjustment</strong></h2>
+<div id="loading" align="center">
+    <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
+</div>
 <br>
 <div class="row">
     <div class="col-md-1">
@@ -17,7 +20,7 @@ use App\Http\Controllers\SettingsController;
             @endforeach
         </select>
     </div>
-    <div class="col-md-7">
+    <div class="col-md-7" id="product_container" style="visibility: hidden;">
         <table id="product_list">
             <thead>
                 <tr>
@@ -71,9 +74,11 @@ use App\Http\Controllers\SettingsController;
     $(document).ready(function() {
         table = $('#product_list').DataTable({
             "paging": false,
-            "scrollY": "23vw",
+            "scrollY": "24vw",
             "scrollCollapse": true,
         });
+        $('#loading').hide();
+        $('#product_container').css('visibility', 'visible');
     });
 
     $('#category_select').on('change',function(){
@@ -83,8 +88,7 @@ use App\Http\Controllers\SettingsController;
    $(document).on("click", "#adjust_select", function() {
         $.ajax({
             type : "POST",
-            // TODO: use route()
-            url : "https://tab.tadhgboyle.dev/products/adjust/ajax",
+            url : "{{ route('adjust_ajax') }}",
             data: {
                 "_token": "{{ csrf_token() }}",
                 "id": $(this).attr("value")
