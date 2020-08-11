@@ -132,36 +132,37 @@ $product = Products::find(request()->route('id'));
         @if(!is_null($product))
             <div class="control">
                 <form>
-                    <a class="button is-danger is-outlined" href="javascript:;" data-toggle="modal" onclick="deleteData()" data-target="#DeleteModal">
+                    <button class="button is-danger is-outlined" type="button" onclick="openModal();">
                         <span>Delete</span>
                         <span class="icon is-small">
                             <i class="fas fa-times"></i>
                         </span>
-                    </a>
+                    </button>
                 </form>
             </div>
         @endif
     </div>
 </div>
-<div id="DeleteModal" class="modal fade" role="dialog">
-    <div class="modal-dialog ">
-        <form action="" id="deleteForm" method="get">
-            <div class="modal-content">
-                <div class="modal-body">
-                    @csrf
-                    <p class="text-center">Are you sure you want to delete this product?</p>
-                </div>
-                <div class="modal-footer">
-                    <center>
-                        <button type="button" class="button is-info" data-dismiss="modal">Cancel</button>
-                        <button type="submit" name="" class="button is-danger" data-dismiss="modal"
-                            onclick="formSubmit()">Delete</button>
-                    </center>
-                </div>
-            </div>
-        </form>
+
+<div class="modal">
+    <div class="modal-background" onclick="closeModal();"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Confirmation</p>
+        </header>
+        <section class="modal-card-body">
+            <p>Are you sure you want to delete the product {{ $product->name }}?</p>
+            <form action="" id="deleteForm" method="GET">
+                @csrf
+            </form>
+        </section>
+        <footer class="modal-card-foot">
+            <button class="button is-success" type="submit" onclick="deleteData();">Confirm</button>
+            <button class="button" onclick="closeModal();">Cancel</button>
+        </footer>
     </div>
 </div>
+
 <script type="text/javascript">
     $(document).ready(function() {
         updateUnlimitedAttr($('input[type=checkbox][name=unlimited_stock]').prop('checked'));
@@ -183,10 +184,17 @@ $product = Products::find(request()->route('id'));
         var url = '{{ route("delete_product", ":id") }}';
         url = url.replace(':id', id);
         $("#deleteForm").attr('action', url);
+        $("#deleteForm").submit();
     }
 
-    function formSubmit() {
-        $("#deleteForm").submit();
+    const modal = document.querySelector('.modal');
+
+    function openModal() {
+        modal.classList.add('is-active');
+    }
+
+    function closeModal() {
+        modal.classList.remove('is-active');
     }
 </script>
 @endsection
