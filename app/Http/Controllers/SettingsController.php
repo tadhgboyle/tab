@@ -20,11 +20,6 @@ class SettingsController extends Controller
         return Settings::where('setting', 'pst')->pluck('value')->first();
     }
 
-    public static function getStaffDiscount()
-    {
-        return Settings::where('setting', 'staff_discount')->pluck('value')->first();
-    }
-
     public static function getSelfPurchases(): bool
     {
         return Settings::where('setting', 'self_purchases')->pluck('value')->first() == 'true';
@@ -57,7 +52,6 @@ class SettingsController extends Controller
         $validator = Validator::make($request->all(), [
             'gst' => 'required|numeric',
             'pst' => 'required|numeric',
-            'staff_discount' => 'required|numeric'
         ]);
         if ($validator->fails()) {
             return redirect()->back()->withInput()->withErrors($validator);
@@ -66,7 +60,6 @@ class SettingsController extends Controller
         // TODO: This is probably not as efficient as it could be...
         DB::table('settings')->where('setting', 'gst')->update(['value' => $request->gst]);
         DB::table('settings')->where('setting', 'pst')->update(['value' => $request->pst]);
-        DB::table('settings')->where('setting', 'staff_discount')->update(['value' => $request->staff_discount]);
         DB::table('settings')->where('setting', 'self_purchases')->update(['value' => $request->has('self_purchases') ? 'true' : 'false']);
         return redirect('/settings')->with('success', 'Updated settings.');
     }
