@@ -66,9 +66,7 @@ $transaction_returned = OrderController::checkReturned($transaction->id);
                                     @if($transaction->status == 0 && $item_info['returned'] < $item_info['quantity']) 
                                         <form>
                                             <input type="hidden" id="item_id" value="{{ $item_info['id'] }}">
-                                            <a href="javascript:;" data-toggle="modal"
-                                                onclick="window.location='/orders/return/item/{{ $item_info['id'] }}/{{ $transaction->id }}';"
-                                                class="button is-danger">Return ({{ $item_info['quantity'] - $item_info['returned'] }})</a>
+                                            <a href="javascript:;" data-toggle="modal" onclick="window.location='/orders/return/item/{{ $item_info['id'] }}/{{ $transaction->id }}';" class="button is-danger is-small">Return ({{ $item_info['quantity'] - $item_info['returned'] }})</a>
                                         </form>
                                     @else
                                         <div>Returned</div>

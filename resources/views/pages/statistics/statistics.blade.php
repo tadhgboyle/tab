@@ -31,13 +31,13 @@ $iteminfo = StatisticsChartController::itemInfo($lookBack);
         </div>
     </div>
     <div class="column is-half">
-        <h3>Order Info</h3>
+        <h4 class="title has-text-weight-bold is-4">Order Info</h4>
         <div>
             {!! $orderinfo->container() !!}
         </div>
     </div>
     <div class="column is-half">
-        <h3>Item Info</h3>
+        <h4 class="title has-text-weight-bold is-4">Item Info</h4>
         <div>
             {!! $iteminfo->container() !!}
         </div>

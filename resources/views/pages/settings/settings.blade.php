@@ -6,7 +6,6 @@ use App\Http\Controllers\SettingsController;
 <h2 class="title has-text-weight-bold">Settings</h2>
 <div class="columns box">
     <div class="column is-4">
-        <br>
         @include('includes.messages')
         <form action="/settings" id="settings" method="POST">
             @csrf
@@ -49,7 +48,6 @@ use App\Http\Controllers\SettingsController;
             </button>
     </div>
     <div class="column is-4">
-        <br>
         <div class="field">
             <div class="control">
                 <label class="checkbox label" title="Allow Cashiers + Managers to ring up orders for themselves.">
@@ -87,12 +85,13 @@ use App\Http\Controllers\SettingsController;
                 @endforeach
             </tbody>
         </table>
-            <a class="button is-success" onclick="window.location='settings/category/new';">
-                <span class="icon is-small">
-                    <i class="fas fa-plus"></i>
-                </span>
-                <span>New</span>
-            </a>
+        <br>
+        <a class="button is-success" onclick="window.location='settings/category/new';">
+            <span class="icon is-small">
+                <i class="fas fa-plus"></i>
+            </span>
+            <span>New</span>
+        </a>
     </div>
 </div>
 <div id="DeleteModal" class="modal fade" role="dialog">
