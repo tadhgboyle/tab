@@ -1,22 +1,16 @@
-@extends('layouts.default')
-@section('content')
 @php
+
 use App\Products;
 use App\Http\Controllers\UserLimitsController;
-use App\Http\Controllers\SettingsController;
 @endphp
+@extends('layouts.default')
+@section('content')
 <h2 class="title has-text-weight-bold">Stock Adjustment</h2>
 <div id="loading" align="center">
     <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
 </div>
 <div class="columns box">
     <div class="column is-two-thirds" id="product_container" style="visibility: hidden;">
-        <select id="category_select">
-            <option value="">Choose a Category</option>
-            @foreach(SettingsController::getCategories() as $category)
-            <option value="{{ $category->value }}">{{ ucfirst($category->value) }}</option>
-            @endforeach
-        </select>
         <table id="product_list">
             <thead>
                 <tr>
@@ -62,7 +56,7 @@ use App\Http\Controllers\SettingsController;
         @include('includes.messages')
         <div id="adjust_product">
             @if(session()->has('last_product'))
-            @include('pages.products.adjust.form', ['product' => session('last_product')])
+                @include('pages.products.adjust.form', ['product' => session('last_product')])
             @endif
         </div>
     </div>
@@ -73,7 +67,7 @@ use App\Http\Controllers\SettingsController;
     $(document).ready(function() {
         table = $('#product_list').DataTable({
             "paging": false,
-            "scrollY": "24vw",
+            "scrollY": "49vh",
             "scrollCollapse": true,
             "columnDefs": [
                 { 
@@ -84,10 +78,6 @@ use App\Http\Controllers\SettingsController;
         });
         $('#loading').hide();
         $('#product_container').css('visibility', 'visible');
-    });
-
-    $('#category_select').on('change',function(){
-        table.search($(this).val()).draw();
     });
 
    $(document).on("click", "#adjust_select", function() {

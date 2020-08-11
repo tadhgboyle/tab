@@ -61,7 +61,7 @@ use App\User;
 $(document).ready(function() {
     $('#order_list').DataTable({
         "paging": false,
-        "scrollY": "27vw",
+        "scrollY": "49vh",
         "scrollCollapse": true,
         "order": [],
         "columnDefs": [

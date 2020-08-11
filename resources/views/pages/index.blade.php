@@ -41,7 +41,7 @@ use Illuminate\Support\Facades\Auth;
     $(document).ready(function() {
         $('#user_list').DataTable({
             "paging": false,
-            "scrollY": "27vw",
+            "scrollY": "49vh",
             "scrollCollapse": true,
             "columnDefs": [
                 { 

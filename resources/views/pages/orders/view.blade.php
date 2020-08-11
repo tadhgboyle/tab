@@ -17,13 +17,12 @@ $transaction_returned = OrderController::checkReturned($transaction->id);
 <div class="columns box">
     <div class="column">
         @include('includes.messages')
-        <br>
-        <h4>Order ID: {{ request()->route('id') }}</h4>
-        <h4>Date: {{ $transaction->created_at->format('M jS Y h:ia') }}</h4>
-        <h4>Purchaser: <a href="/users/info/{{ $transaction->purchaser_id }}">{{ User::find($transaction->purchaser_id)->full_name }}</a></h4>
-        <h4>Cashier: <a href="/users/info/{{ $transaction->cashier_id }}">{{ User::find($transaction->cashier_id)->full_name }}</a></h4>
-        <h4>Total Price: ${{ number_format($transaction->total_price, 2) }}</h4>
-        <h4>Status: {{ $transaction_returned ? "" : "Not" }} Returned</h4>
+        <p><strong>Order ID:</strong> {{ request()->route('id') }}</p>
+        <p><strong>Date:</strong> {{ $transaction->created_at->format('M jS Y h:ia') }}</p>
+        <p><strong>Purchaser:</strong> <a href="/users/info/{{ $transaction->purchaser_id }}">{{ User::find($transaction->purchaser_id)->full_name }}</a></p>
+        <p><strong>Cashier:</strong> <a href="/users/info/{{ $transaction->cashier_id }}">{{ User::find($transaction->cashier_id)->full_name }}</a></p>
+        <p><strong>Total Price:</strong> ${{ number_format($transaction->total_price, 2) }}</p>
+        <p><strong>Status:</strong> {{ $transaction_returned ? "" : "Not" }} Returned</p>
         <br>
         @if(!$transaction_returned)
             <form>
@@ -103,7 +102,7 @@ $transaction_returned = OrderController::checkReturned($transaction->id);
     $(document).ready(function() {
         $('#product_list').DataTable({
             "paging": false,
-            "scrollY": "27vw",
+            "scrollY": "49vh",
             "scrollCollapse": true,
             "columnDefs": [
                 { 
