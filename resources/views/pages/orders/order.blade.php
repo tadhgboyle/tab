@@ -80,11 +80,8 @@ if ($user == null) return redirect('/')->with('error', 'Invalid user.')->send();
         <div id="remaining_balance"></div>
         <br>
         <input type="submit" form="order" value="Submit" class="disableable button is-success" disabled>
-        <a class="button is-danger is-outlined" href="/">
+        <a class="button is-outlined" href="/">
             <span>Cancel</span>
-            <span class="icon is-small">
-                <i class="fas fa-times"></i>
-            </span>
         </a>
     </div>
 </div>
