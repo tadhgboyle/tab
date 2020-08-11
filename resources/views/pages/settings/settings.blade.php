@@ -69,10 +69,10 @@ use App\Http\Controllers\SettingsController;
             <tbody>
                 @foreach(SettingsController::getCategories() as $category)
                 <tr>
-                    <td class="table-text">
+                    <td>
                         <div>{{ ucfirst($category->value) }}</div>
                     </td>
-                    <td class="table-text">
+                    <td>
                         <div>
                             <form>
                                 <input type="hidden" id="{{ $category->value }}" value="{{ $category->value }}">

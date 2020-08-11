@@ -137,24 +137,26 @@ if (!is_null($user) && $user->deleted) return redirect('/users')->with('error', 
     </div>
 </div>
 
-<div class="modal">
-    <div class="modal-background" onclick="closeModal();"></div>
-    <div class="modal-card">
-        <header class="modal-card-head">
-            <p class="modal-card-title">Confirmation</p>
-        </header>
-        <section class="modal-card-body">
-            <p>Are you sure you want to delete the user {{ $user->full_name }}?</p>
-            <form action="" id="deleteForm" method="GET">
-                @csrf
-            </form>
-        </section>
-        <footer class="modal-card-foot">
-            <button class="button is-success" type="submit" onclick="deleteData();">Confirm</button>
-            <button class="button" onclick="closeModal();">Cancel</button>
-        </footer>
+@if(!is_null($user))
+    <div class="modal">
+        <div class="modal-background" onclick="closeModal();"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Confirmation</p>
+            </header>
+            <section class="modal-card-body">
+                <p>Are you sure you want to delete the user {{ $user->full_name }}?</p>
+                <form action="" id="deleteForm" method="GET">
+                    @csrf
+                </form>
+            </section>
+            <footer class="modal-card-foot">
+                <button class="button is-success" type="submit" onclick="deleteData();">Confirm</button>
+                <button class="button" onclick="closeModal();">Cancel</button>
+            </footer>
+        </div>
     </div>
-</div>
+@endif
 
 <script type="text/javascript">
     $(document).ready(function() {

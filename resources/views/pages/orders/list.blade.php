@@ -28,21 +28,21 @@ use App\User;
                 @foreach (Transactions::orderBy('created_at', 'DESC')->get() as $transaction)
                     @php $user = User::find($transaction->purchaser_id) @endphp
                     <tr>
-                        <td class="table-text">
+                        <td>
                             <div>{{ $transaction->created_at->format('M jS Y h:ia') }}</div>
                         </td>
-                        <td class="table-text">
+                        <td>
                             <div>
                                 <a href="users/info/{{ $user->id }}">{{ $user->full_name }}</a>
                             </div>
                         </td>
-                        <td class="table-text">
+                        <td>
                             <div>{{ User::find($transaction->cashier_id)->full_name }}</div>
                         </td>
-                        <td class="table-text">
+                        <td>
                             <div>${{ number_format($transaction->total_price, 2) }}</div>
                         </td>
-                        <td class="table-text">
+                        <td>
                             <div>{!! !OrderController::checkReturned($transaction->id) ?
                                 "<span class=\"tag is-success is-medium\">Normal</span>" :
                                 "<span class=\"tag is-danger is-medium\">Returned</span>"!!}

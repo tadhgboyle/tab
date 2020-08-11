@@ -26,19 +26,19 @@ use App\Products;
             <tbody>
                 @foreach (Products::all()->where('deleted', false) as $product)
                     <tr>
-                        <td class="table-text">
+                        <td>
                             <div>{{ $product->name }}</div>
                         </td>
-                        <td class="table-text">
+                        <td>
                             <div>{{ ucfirst($product->category) }}</div>
                         </td>
-                        <td class="table-text">
+                        <td>
                             <div>${{ number_format($product->price, 2) }}</div>
                         </td>
-                        <td class="table-text">
+                        <td>
                             <div>{!! Products::getStock($product->id) !!}</div>
                         </td>
-                        <td class="table-text">
+                        <td>
                             <div>{!! $product->box_size == -1 ? '<i>N/A</i>' : $product->box_size !!}</div>
                         </td>
                         <td>
