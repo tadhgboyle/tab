@@ -50,8 +50,14 @@ use App\Http\Controllers\SettingsController;
     </div>
     <div class="column is-4">
         <br>
-        <span title="Allow Cashiers + Managers to ring up orders for themselves.">Self Purchases</span>
-        <input type="checkbox" name="self_purchases" @if(SettingsController::getSelfPurchases()) checked @endif>
+        <div class="field">
+            <div class="control">
+                <label class="checkbox label" title="Allow Cashiers + Managers to ring up orders for themselves.">
+                    Self Purchases
+                    <input type="checkbox" name="self_purchases" @if(SettingsController::getSelfPurchases()) checked @endif>
+                </label>
+            </div>
+        </div>
         </form>
     </div>
     <div class="column is-4">
