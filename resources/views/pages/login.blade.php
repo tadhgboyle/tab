@@ -1,21 +1,34 @@
 @extends('layouts.default')
 @section('content')
-<h2><strong>Login</strong></h2>
-<div class="row">
-    <div class="col-md-4"></div>
-    <div class="col-md-4">
+<h2 class="title has-text-weight-bold">Login</h2>
+<div class="columns box">
+    <div class="column"></div>
+    <div class="column">
         @include('includes.messages')
         <form action="/login/auth" method="post">
             @csrf
-            <span>Username<sup style="color: red">*</sup></span>
-            <input type="text" name="username" class="form-control" placeholder="Username" value="{{ old('username') }}">
-            <br>
-            <span>Password<sup style="color: red">*</sup></span>
-            <input type="password" name="password" class="form-control" placeholder="Password">
-            <br>
-            <button type="submit" class="button is-success">Login</button>
+            <div class="field">
+                <label class="label">Username</label>
+                <div class="control">
+                    <input type="text" name="username" class="input" placeholder="Username" value="{{ old('username') }}">
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Password</label>
+                <div class="control">
+                    <input type="password" name="password" class="input" placeholder="Password">
+                </div>
+            </div>
+            <div class="control">
+                <button class="button is-success" type="submit">
+                    <span class="icon is-small">
+                        <i class="fas fa-sign-in-alt"></i>
+                    </span>
+                    <span>Login</span>
+                </button>
+            </div>
         </form>
     </div>
-    <div class="col-md-4"></div>
+    <div class="column"></div>
 </div>
 @stop
