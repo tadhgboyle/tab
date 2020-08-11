@@ -113,7 +113,7 @@ use App\Http\Controllers\SettingsController;
         $('#category_list').DataTable({
             "paging": false,
             "searching": false,
-            "scrollY": "27vw",
+            "scrollY": "49vh",
             "scrollCollapse": true,
             "bInfo": false,
             "columnDefs": [

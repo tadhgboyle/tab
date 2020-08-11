@@ -108,7 +108,7 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
             "order": [],
             "paging": false,
             "searching": false,
-            "scrollY": "28vh",
+            "scrollY": "33vh",
             "scrollCollapse": true,
             "columnDefs": [
                 { 

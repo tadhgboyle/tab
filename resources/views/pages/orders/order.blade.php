@@ -92,7 +92,7 @@ if ($user == null) return redirect('/')->with('error', 'Invalid user.')->send();
     $(document).ready(function() {
         $('#product_list').DataTable({
             "paging": false,
-            "scrollY": "27vw",
+            "scrollY": "49vh",
             "scrollCollapse": true,
             "order": [],
             "columnDefs": [
