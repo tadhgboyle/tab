@@ -12,15 +12,13 @@
 
 <body>
     
-    <div class="container">
+@include('includes.navbar')
 
-        @include('includes.navbar')
+    <div class="container">
 
         <br>
 
         @yield('content')
-
-        <hr>
 
         @include('includes.footer')
 
