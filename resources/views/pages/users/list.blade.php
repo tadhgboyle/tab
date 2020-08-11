@@ -25,16 +25,16 @@ use App\User;
             <tbody>
                 @foreach (User::where('deleted', false)->get() as $user)
                 <tr>
-                    <td class="table-text">
+                    <td>
                         <div>{{ $user->full_name }}</div>
                     </td>
-                    <td class="table-text">
+                    <td>
                         <div>{{ $user->username }}</div>
                     </td>
-                    <td class="table-text">
+                    <td>
                         <div>${{ number_format($user->balance, 2) }}</div>
                     </td>
-                    <td class="table-text">
+                    <td>
                         <div>{{ ucfirst($user->role) }}</div>
                     </td>
                     <td>

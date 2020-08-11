@@ -39,23 +39,23 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
                 @foreach (Transactions::where('purchaser_id', $user->id)->orderBy('created_at', 'DESC')->get() as
                 $transaction)
                 <tr>
-                    <td class="table-text">
+                    <td>
                         <div>{{ $transaction->created_at->format('M jS Y h:ia') }}</div>
                     </td>
-                    <td class="table-text">
+                    <td>
                         <div>{{ User::find($transaction->cashier_id)->full_name }}</div>
                     </td>
-                    <td class="table-text">
+                    <td>
                         <div>${{ number_format($transaction->total_price, 2) }}</div>
                     </td>
-                    <td class="table-text">
+                    <td>
                         <div>
                             {!! !OrderController::checkReturned($transaction->id)
                             ? "<span class=\"tag is-success is-medium\">Normal</span>"
                             : "<span class=\"tag is-danger is-medium\">Returned</span>" !!}
                         </div>
                     </td>
-                    <td class="table-text">
+                    <td>
                         <div><a href="/orders/view/{{ $transaction->id }}">View</a></div>
                     </td>
                 </tr>
@@ -80,18 +80,18 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
                     $category_spent = UserLimitsController::findSpent(request()->route('id'), $category->value, $category_duration);
                     @endphp
                     <tr>
-                        <td class="table-text">
+                        <td>
                             <div>{{ ucfirst($category->value) }}</div>
                         </td>
-                        <td class="table-text">
+                        <td>
                             <div>
                                 {!! $category_limit == "-1" ? "<i>Unlimited</i>" : "$" . number_format($category_limit, 2) . "/" . $category_duration !!}
                             </div>
                         </td>
-                        <td class="table-text">
+                        <td>
                             <div>${{ number_format($category_spent, 2) }}</div>
                         </td>
-                        <td class="table-text">
+                        <td>
                             <div>
                                 {!! $category_limit == "-1" ? "<i>Unlimited</i>" : "$" . number_format($category_limit - $category_spent, 2) !!}
                             </div>

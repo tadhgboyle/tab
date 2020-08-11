@@ -49,19 +49,19 @@ $transaction_returned = OrderController::checkReturned($transaction->id);
                     @foreach($transaction_items as $product)
                         @php $item_info = OrderController::deserializeProduct($product); @endphp
                         <tr>
-                            <td class="table-text">
+                            <td>
                                 <div>{{ $item_info['name'] }}</div>
                             </td>
-                            <td class="table-text">
+                            <td>
                                 <div>${{ number_format($item_info['price'], 2) }}</div>
                             </td>
-                            <td class="table-text">
+                            <td>
                                 <div>{{ $item_info['quantity'] }}</div>
                             </td>
-                            <td class="table-text">
+                            <td>
                                 <div>${{ number_format($item_info['price'] * $item_info['quantity'], 2) }}</div>
                             </td>
-                            <td class="table-text">
+                            <td>
                                 <div>
                                     @if($transaction->status == 0 && $item_info['returned'] < $item_info['quantity']) 
                                         <form>

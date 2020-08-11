@@ -25,22 +25,22 @@ use App\Http\Controllers\UserLimitsController;
             <tbody>
                 @foreach(Products::where('deleted', false)->get() as $product)
                 <tr>
-                    <td class="table-text">
+                    <td>
                         <div>{{ $product->name }}</div>
                     </td>
-                    <td class="table-text">
+                    <td>
                         <div>{{ ucfirst($product->category) }}</div>
                     </td>
-                    <td class="table-text">
+                    <td>
                         <div>{!! Products::getStock($product->id) !!}</div>
                     </td>
-                    <td class="table-text">
+                    <td>
                         <div>{{ $product->stock_override ? 'True' : 'False' }}</div>
                     </td>
-                    <td class="table-text">
+                    <td>
                         <div>{!! $product->box_size == -1 ? '<i>N/A</i>' : $product->box_size !!}</div>
                     </td>
-                    <td class="table-text">
+                    <td>
                         <button class="button is-info" id="adjust_select" value="{{ $product->id }}">
                             <span class="icon">
                                 <i class="fas fa-edit"></i>
