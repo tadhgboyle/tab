@@ -4,14 +4,14 @@
 use App\Http\Controllers\SettingsController;
 @endphp
 <h2 class="title has-text-weight-bold">Settings</h2>
-<div class="columns box">
-    <div class="column is-4">
+<div class="columns">
+    <div class="column box">
         @include('includes.messages')
         <form action="/settings" id="settings" method="POST">
             @csrf
 
             <div class="field">
-                <label class="label">GST</label>
+                <label class="label">GST<sup style="color: red">*</sup></label>
                 <div class="control has-icons-left">
                     <span class="icon is-small is-left">
                         <i class="fas fa-percent"></i>
@@ -21,7 +21,7 @@ use App\Http\Controllers\SettingsController;
             </div>
 
             <div class="field">
-                <label class="label">PST</label>
+                <label class="label">PST<sup style="color: red">*</sup></label>
                 <div class="control has-icons-left">
                     <span class="icon is-small is-left">
                         <i class="fas fa-percent"></i>
@@ -31,34 +31,30 @@ use App\Http\Controllers\SettingsController;
             </div>
 
             <div class="field">
-                <label class="label">Staff Discount</label>
-                <div class="control has-icons-left">
-                    <span class="icon is-small is-left">
-                        <i class="fas fa-percent"></i>
-                    </span>
-                    <input type="number" step="0.01" name="staff_discount" class="input" value="{{ SettingsController::getStaffDiscount() }}">
+                <div class="control">
+                    <label class="checkbox label" title="Allow Cashiers + Managers to ring up orders for themselves.">
+                        Self Purchases
+                        <input type="checkbox" name="self_purchases" @if(SettingsController::getSelfPurchases()) checked @endif>
+                    </label>
                 </div>
             </div>
 
-            <button class="button is-success" type="submit">
-                <span class="icon is-small">
-                    <i class="fas fa-save"></i>
-                </span>
-                <span>Submit</span>
-            </button>
-    </div>
-    <div class="column is-4">
-        <div class="field">
+            <br>
+            
             <div class="control">
-                <label class="checkbox label" title="Allow Cashiers + Managers to ring up orders for themselves.">
-                    Self Purchases
-                    <input type="checkbox" name="self_purchases" @if(SettingsController::getSelfPurchases()) checked @endif>
-                </label>
+                <button class="button is-success" type="submit">
+                    <span class="icon is-small">
+                        <i class="fas fa-save"></i>
+                    </span>
+                    <span>Save</span>
+                </button>
             </div>
-        </div>
         </form>
     </div>
-    <div class="column is-4">
+
+    <div class="column"></div>
+
+    <div class="column box">
         <table id="category_list">
             <thead>
                 <tr>

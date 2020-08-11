@@ -1,9 +1,9 @@
 @extends('layouts.default')
 @section('content')
 <h2 class="title has-text-weight-bold">Create Category</h2>
-<div class="columns box">
+<div class="columns">
     <div class="column"></div>
-    <div class="column">
+    <div class="column box">
         @include('includes.messages')
         <form action="/settings/category/new" method="POST">
             @csrf
@@ -19,7 +19,7 @@
                     <span class="icon is-small">
                         <i class="fas fa-save"></i>
                     </span>
-                    <span>Submit</span>
+                    <span>Save</span>
                 </button>
             </div>
         </form>

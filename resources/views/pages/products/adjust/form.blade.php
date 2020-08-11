@@ -31,9 +31,9 @@
         <div class="control">
             <button class="button is-success" type="submit">
                 <span class="icon is-small">
-                    <i class="fas fa-check"></i>
+                    <i class="fas fa-save"></i>
                 </span>
-                <span>Submit</span>
+                <span>Save</span>
             </button>
         </div>
     </form>
