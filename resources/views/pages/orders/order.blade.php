@@ -9,7 +9,7 @@ if ($user == null) return redirect('/')->with('error', 'Invalid user.')->send();
 @extends('layouts.default', ['page' => 'cashier'])
 @section('content')
 <h2 class="title has-text-weight-bold">Cashier</h2>
-<p><strong>User:</strong> {{ $user->full_name }} <a href="/users/info/{{ request()->route('id') }}">(Info)</a></p>
+<h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} <a href="/users/info/{{ request()->route('id') }}">(Info)</a></h4>
 <div class="columns box">
     <div class="column is-two-thirds">
         @include('includes.messages')

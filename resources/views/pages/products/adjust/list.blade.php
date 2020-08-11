@@ -62,10 +62,8 @@ use App\Http\Controllers\UserLimitsController;
     </div>
 </div>
 <script type="text/javascript">
-    let table = null;
-
     $(document).ready(function() {
-        table = $('#product_list').DataTable({
+        $('#product_list').DataTable({
             "paging": false,
             "scrollY": "49vh",
             "scrollCollapse": true,

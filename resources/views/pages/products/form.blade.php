@@ -7,7 +7,7 @@ $product = Products::find(request()->route('id'));
 @extends('layouts.default')
 @section('content')
 <h2 class="title has-text-weight-bold">{{ is_null($product) ? 'Create' : 'Edit' }} Product</h2>
-@if(!is_null($product)) <p><strong>Product:</strong> {{ $product->name }}</p> @endif
+@if(!is_null($product)) <h4 class="subtitle"><strong>Product:</strong> {{ $product->name }}</h4> @endif
 <style>
     select:required:invalid {
         color: gray;
