@@ -5,7 +5,8 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 #### Credits
 
 - :page_with_curl: [DataTables](https://datatables.net) for the fast and interactive tables.
-- :bar_chart: [ChartJS](https://www.chartjs.org/) for the beautiful statistics charts, and [ConsoleTVs/Charts](https://github.com/ConsoleTVs/Charts) for the Laravel package.
+- :bar_chart: [ChartJS](https://www.chartjs.org) for the beautiful statistics charts, and [ConsoleTVs/Charts](https://github.com/ConsoleTVs/Charts) for the Laravel package.
+- :art: [Bulma](https://bulma.io) for their lightweight, easy to use and great-looking CSS framework.
 
 *Note: Some migrations are not up to date. I am manually editing my local MySQL tables and will update migrations when it is more stable.*
 
@@ -77,7 +78,6 @@ Documentation (in the form of a printable user handbook) is being written.
 
 *High to Low priority sort*
 - Fix everything in Issues/Bugs
-- Move to Bulma. Bootstrap is ugly
 - Disable submit button when anything goes wrong *(Remaining: Stock, Categories)* 
     - Then on the backend, if they somehow bypass the disabled submit button: on errors during order, return back with their input + quantities
 - Change how to select items and quantities. Right now it is somewhat not intuitive. Options:
@@ -119,3 +119,7 @@ Documentation (in the form of a printable user handbook) is being written.
 - Use `route()` helper incase we need to easily change routes.
 - Dont import classes in views, use controllers to return views instead.
 - Gracefully handle category deletion.
+
+## Contributors:
+- nuKeMan4
+- Locus

@@ -33,51 +33,54 @@ $transaction_returned = OrderController::checkReturned($transaction->id);
         @endif
     </div>
     <div class="column">
-        <h2 align="center">Items</h2>
-        <table id="product_list">
-            <thead>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Item Price</th>
-                <th></th>
-            </thead>
-            <tbody>
-                @foreach($transaction_items as $product)
-                @php
-                $item_info = OrderController::deserializeProduct($product);
-                @endphp
-                <tr>
-                    <td class="table-text">
-                        <div>{{ $item_info['name'] }}</div>
-                    </td>
-                    <td class="table-text">
-                        <div>${{ number_format($item_info['price'], 2) }}</div>
-                    </td>
-                    <td class="table-text">
-                        <div>{{ $item_info['quantity'] }}</div>
-                    </td>
-                    <td class="table-text">
-                        <div>${{ number_format($item_info['price'] * $item_info['quantity'], 2) }}</div>
-                    </td>
-                    <td class="table-text">
-                        <div>
-                            @if($transaction->status == 0 && $item_info['returned'] < $item_info['quantity']) 
-                                <form>
-                                    <input type="hidden" id="item_id" value="{{ $item_info['id'] }}">
-                                    <a href="javascript:;" data-toggle="modal"
-                                        onclick="window.location='/orders/return/item/{{ $item_info['id'] }}/{{ $transaction->id }}';"
-                                        class="button is-danger">Return ({{ $item_info['quantity'] - $item_info['returned'] }})</a>
-                                </form>
-                            @else
-                                <div>Returned</div>
-                            @endif
-                        </div>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+        <h4 class="title has-text-weight-bold is-4">Items</h4>
+        <div id="loading" align="center">
+                <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
+        </div>
+        <div id="table_container" style="visibility: hidden;">
+            <table id="product_list">
+                <thead>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Item Price</th>
+                    <th></th>
+                </thead>
+                <tbody>
+                    @foreach($transaction_items as $product)
+                        @php $item_info = OrderController::deserializeProduct($product); @endphp
+                        <tr>
+                            <td class="table-text">
+                                <div>{{ $item_info['name'] }}</div>
+                            </td>
+                            <td class="table-text">
+                                <div>${{ number_format($item_info['price'], 2) }}</div>
+                            </td>
+                            <td class="table-text">
+                                <div>{{ $item_info['quantity'] }}</div>
+                            </td>
+                            <td class="table-text">
+                                <div>${{ number_format($item_info['price'] * $item_info['quantity'], 2) }}</div>
+                            </td>
+                            <td class="table-text">
+                                <div>
+                                    @if($transaction->status == 0 && $item_info['returned'] < $item_info['quantity']) 
+                                        <form>
+                                            <input type="hidden" id="item_id" value="{{ $item_info['id'] }}">
+                                            <a href="javascript:;" data-toggle="modal"
+                                                onclick="window.location='/orders/return/item/{{ $item_info['id'] }}/{{ $transaction->id }}';"
+                                                class="button is-danger">Return ({{ $item_info['quantity'] - $item_info['returned'] }})</a>
+                                        </form>
+                                    @else
+                                        <div>Returned</div>
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 <div id="returnModal" class="modal fade" role="dialog">
@@ -109,6 +112,8 @@ $transaction_returned = OrderController::checkReturned($transaction->id);
                 }
             ]
         });
+        $('#loading').hide();
+        $('#table_container').css('visibility', 'visible');
     });
 
     function returnData() {

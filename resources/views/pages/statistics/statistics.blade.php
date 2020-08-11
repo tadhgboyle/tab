@@ -9,8 +9,8 @@ $iteminfo = StatisticsChartController::itemInfo($lookBack);
 @extends('layouts.default', ['page' => 'statistics'])
 @section('content')
 <h2 class="title has-text-weight-bold">Statistics</h2>
-<div class="columns box">
-    <div class="column">
+<div class="columns is-multiline box">
+    <div class="column is-12">
         @include('includes.messages')
         <form action="/statistics" id="edit_loopback" method="POST">
             @csrf
@@ -24,9 +24,6 @@ $iteminfo = StatisticsChartController::itemInfo($lookBack);
             </select>
         </form>
     </div>
-</div>
-<br>
-<div class="columns box">
     <div class="column is-half">
         <h3>Order Info</h3>
         <div>
