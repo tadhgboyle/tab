@@ -2,6 +2,7 @@
 @section('content')
 @php
 use App\Http\Controllers\SettingsController;
+use App\Roles;
 @endphp
 <h2 class="title has-text-weight-bold">Settings</h2>
 <div class="columns">
@@ -57,7 +58,35 @@ use App\Http\Controllers\SettingsController;
 
     <div class="column box is-4">
         <h4 class="title has-text-weight-bold is-4">Roles</h4>
-        
+        <table id="role_list">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(Roles::getRoles() as $role)
+                    <tr>
+                        <td>
+                            <div>{{ ucfirst($role->name) }}</div>
+                        </td>
+                        <td>
+                            <div>
+                                <a href="javascript:;" data-toggle="modal" onclick="deleteData('{{ $role->name }}')" data-target="#DeleteModal">Edit</a>
+                            </div>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+        <br>
+        <a class="button is-success" onclick="window.location='settings/category/new';">
+            <span class="icon is-small">
+                <i class="fas fa-plus"></i>
+            </span>
+            <span>New</span>
+        </a>
     </div>
 
     <div class="column"></div>
@@ -99,6 +128,7 @@ use App\Http\Controllers\SettingsController;
         </a>
     </div>
 </div>
+
 <div id="DeleteModal" class="modal fade" role="dialog">
     <div class="modal-dialog ">
         <form action="" id="deleteForm" method="get">
@@ -118,8 +148,23 @@ use App\Http\Controllers\SettingsController;
         </form>
     </div>
 </div>
+
 <script type="text/javascript">
     $(document).ready(function() {
+        $('#role_list').DataTable({
+            "order": [],
+            "paging": false,
+            "searching": false,
+            "scrollY": "49vh",
+            "scrollCollapse": true,
+            "bInfo": false,
+            "columnDefs": [
+                { 
+                    "orderable": false, 
+                    "targets": 1
+                }
+            ]
+        });
         $('#category_list').DataTable({
             "paging": false,
             "searching": false,
