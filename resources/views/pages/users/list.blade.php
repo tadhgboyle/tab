@@ -42,7 +42,7 @@ $users_edit = Roles::canViewPage(Auth::user()->role, 'users_edit');
                         <div>${{ number_format($user->balance, 2) }}</div>
                     </td>
                     <td>
-                        <div>{{ ucfirst($user->role) }}</div>
+                        <div>{{ ucfirst(Roles::idToName($user->role)) }}</div>
                     </td>
                     @if ($users_view)
                         <td>
