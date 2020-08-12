@@ -53,7 +53,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/users/new', function () {
             return view('pages.users.form');
         })->name('users_new');
-        Route::post('/users/new', 'UsersController@new');
+        Route::post('/users/new', 'UsersController@new')->name('users_new_form');
         Route::get('/users/edit/{id}', function () {
             return view('pages.users.form');
         })->where('id', '[0-9]+')->name('users_edit');
@@ -79,8 +79,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/products/adjust', function () {
             return view('pages.products.adjust.list');
         })->where('id', '[0-9]+')->name('products_adjust');
-        // TODO: think of better way to allow products_adjust + products_adjust_ajax in one checkbox so they dont need to click both
-        Route::post('/products/adjust/ajax', 'ProductsController@ajaxInit')->name('products_adjust_ajax');
+        Route::post('/products/adjust/ajax', 'ProductsController@ajaxInit')->name('products_adjust_ajax')->withoutMiddleware(CheckRole::class);
         Route::post('/products/adjust', 'ProductsController@adjustStock')->name('products_adjust_form');
 
         /* Statistics */
