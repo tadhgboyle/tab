@@ -117,6 +117,7 @@ Documentation (in the form of a printable user handbook) is being written.
 
 ## Issues/Bugs:
 - Categories should use an ID, and be serialized into each order product incase they are deleted.
+- When an error happens on order screen, it returns back with selection, but when you unselect a box it all gets NaN
 - Fix alerts close button + auto fading.
 - Use `route()` helper incase we need to easily change routes.
 - Dont import classes in views, use controllers to return views instead.

@@ -2,17 +2,20 @@
 use App\Transactions;
 use App\Http\Controllers\OrderController;
 use App\User;
+use App\Roles;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserLimitsController;
 
 $user = User::find(request()->route('id'));
+$users_edit = Roles::canViewPage(Auth::user()->role, 'users_edit');
+$orders_view = Roles::canViewPage(Auth::user()->role, 'orders_view');
 if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->send();
 @endphp
 @extends('layouts.default')
 @section('content')
 <h2 class="title has-text-weight-bold">User Info</h2>
-<h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if(!$user->deleted)<a href="/users/edit/{{ $user->id }}">(Edit)</a>@endif</h4>
-<p><strong>Role:</strong> {{ ucfirst($user->role) }}</p>
+<h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if(!$user->deleted && $users_edit)<a href="/users/edit/{{ $user->id }}">(Edit)</a>@endif</h4>
+<p><strong>Role:</strong> {{ ucfirst(Roles::idToName($user->role)) }}</p>
 <p><strong>Deleted:</strong> {{ $user->deleted ? 'True' : 'False' }}</p>
 <span><strong>Balance:</strong> ${{ number_format($user->balance, 2) }}, </span>
 <span><strong>Total spent:</strong> ${{ User::findSpent($user) }}, </span>
@@ -33,7 +36,9 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
                 <th>Cashier</th>
                 <th>Price</th>
                 <th>Status</th>
-                <th></th>
+                @if($orders_view)
+                    <th></th>
+                @endif
             </thead>
             <tbody>
                 @foreach (Transactions::where('purchaser_id', $user->id)->orderBy('created_at', 'DESC')->get() as
@@ -55,9 +60,11 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
                             : "<span class=\"tag is-danger is-medium\">Returned</span>" !!}
                         </div>
                     </td>
-                    <td>
-                        <div><a href="/orders/view/{{ $transaction->id }}">View</a></div>
-                    </td>
+                    @if($orders_view)
+                        <td>
+                            <div><a href="/orders/view/{{ $transaction->id }}">View</a></div>
+                        </td>
+                    @endif
                 </tr>
                 @endforeach
             </tbody>
@@ -113,7 +120,12 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
             "columnDefs": [
                 { 
                     "orderable": false, 
-                    "targets": [3, 4]
+                    "targets": [
+                        3, 
+                        @if($orders_view)
+                            4
+                        @endif
+                    ]
                 }
             ]
         });

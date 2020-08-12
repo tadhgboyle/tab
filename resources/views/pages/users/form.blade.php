@@ -3,13 +3,15 @@
 use App\Http\Controllers\UserLimitsController;
 use App\Http\Controllers\SettingsController;
 use App\User;
+use App\Roles;
 $user = User::find(request()->route('id'));
 if (!is_null($user) && $user->deleted) return redirect('/users')->with('error', 'That user has been deleted.')->send();
+$users_view = Roles::canViewPage(Auth::user()->role, 'users_view');
 @endphp
 @extends('layouts.default')
 @section('content')
 <h2 class="title has-text-weight-bold">{{ is_null($user) ? 'Create' : 'Edit' }} User</h2>
-@if(!is_null($user)) <h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} <a href="/users/info/{{ $user->id }}">(Info)</a></h4> @endif
+@if(!is_null($user)) <h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if($users_view)<a href="/users/info/{{ $user->id }}">(Info)</a>@endif</h4>@endif
 <div class="columns box">
     <div class="column is-1"></div>
 
