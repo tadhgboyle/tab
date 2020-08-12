@@ -1,6 +1,8 @@
 @php
 
 use App\Products;
+use App\Roles;
+$products_edit = Roles::canViewPage(Auth::user()->role, 'products_edit');
 @endphp
 @extends('layouts.default')
 @section('content')
@@ -20,7 +22,9 @@ use App\Products;
                     <th>Stock</th>
                     <th>Box Size</th>
                     <th>PST</th>
-                    <th></th>
+                    @if ($products_edit)
+                        <th></th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
@@ -44,9 +48,11 @@ use App\Products;
                         <td>
                             <div>{!! $product->pst ? "<span class=\"tag is-success is-medium\">Yes</span>" : "<span class=\"tag is-danger is-medium\">No</span>" !!}</div>
                         </td>
-                        <td>
-                            <div><a href="products/edit/{{ $product->id }}">Edit</a></div>
-                        </td>
+                        @if ($products_edit)
+                            <td>
+                                <div><a href="products/edit/{{ $product->id }}">Edit</a></div>
+                            </td>
+                        @endif
                     </tr>
                 @endforeach
             </tbody>
@@ -62,7 +68,12 @@ use App\Products;
             "columnDefs": [
                 {
                     "orderable": false,
-                    "targets": [5, 6]
+                    "targets": [
+                        5, 
+                        @if ($products_edit)
+                            6
+                        @endif
+                    ]
                 }
             ]
         });

@@ -37,7 +37,7 @@ class StatisticsChartController extends Controller
 
         $recentorders->labels($labels);
         $recentorders->dataset('Returned Orders', 'line', $returned_orders)->lineTension(0)->color("rgb(245, 101, 101)");
-        $recentorders->dataset('Normal Orders', 'line', $normal_orders)->lineTension(0)->color("rgb(72, 187, 120)");
+        $recentorders->dataset('Orders', 'line', $normal_orders)->lineTension(0)->color("rgb(72, 187, 120)");
         return $recentorders;
     }
 
@@ -60,5 +60,11 @@ class StatisticsChartController extends Controller
         $popularitems->labels(array_column($sales, 'name'));
         $popularitems->dataset('Sold', 'bar', array_column($sales, 'sold'))->color("rgb(72, 187, 120)");
         return $popularitems;
+    }
+
+    // TODO
+    public static function profit($statsTime)
+    {
+        // Add graph for day by day and text for total in the $statsTime
     }
 }

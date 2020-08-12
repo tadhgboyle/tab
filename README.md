@@ -116,10 +116,10 @@ Documentation (in the form of a printable user handbook) is being written.
     - Serialize so if it gets returned they get the discount back
 
 ## Issues/Bugs:
+- Categories should use an ID, and be serialized into each order product incase they are deleted.
 - Fix alerts close button + auto fading.
 - Use `route()` helper incase we need to easily change routes.
 - Dont import classes in views, use controllers to return views instead.
-- Gracefully handle category deletion.
 
 ## Contributors:
 - nuKeMan4

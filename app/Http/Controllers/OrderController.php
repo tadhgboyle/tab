@@ -16,7 +16,7 @@ class OrderController extends Controller
         $order_info = Transactions::select('products', 'status')->where('id', $order)->get();
         $products_returned = 0;
         $order_products = 0;
-        if ($order_info['0']['status'] == "1") return true;
+        if ($order_info['0']['status']) return true;
         else {
             foreach (explode(", ", $order_info) as $product) {
                 $product_info = OrderController::deserializeProduct($product);

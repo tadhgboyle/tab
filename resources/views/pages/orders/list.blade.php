@@ -3,6 +3,9 @@
 use App\Transactions;
 use App\Http\Controllers\OrderController;
 use App\User;
+use App\Roles;
+$orders_view = Roles::canViewPage(Auth::user()->role, 'orders_view');
+$users_view = Roles::canViewPage(Auth::user()->role, 'users_view');
 @endphp
 @extends('layouts.default', ['page' => 'orders'])
 @section('content')
@@ -21,7 +24,9 @@ use App\User;
                     <th>Cashier</th>
                     <th>Total Price</th>
                     <th>Status</th>
-                    <th></th>
+                    @if ($orders_view)
+                        <th></th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
@@ -33,7 +38,11 @@ use App\User;
                         </td>
                         <td>
                             <div>
-                                <a href="users/info/{{ $user->id }}">{{ $user->full_name }}</a>
+                                @if ($users_view)
+                                    <a href="users/info/{{ $user->id }}">{{ $user->full_name }}</a>
+                                @else
+                                    {{ $user->full_name }}
+                                @endif
                             </div>
                         </td>
                         <td>
@@ -48,9 +57,11 @@ use App\User;
                                 "<span class=\"tag is-danger is-medium\">Returned</span>"!!}
                             </div>
                         </td>
-                        <td>
-                            <div><a href="orders/view/{{ $transaction->id }}">View</a></div>
-                        </td>
+                        @if ($orders_view)
+                            <td>
+                                <div><a href="orders/view/{{ $transaction->id }}">View</a></div>
+                            </td>
+                        @endif
                     </tr>
                 @endforeach
             </tbody>
@@ -67,7 +78,12 @@ $(document).ready(function() {
         "columnDefs": [
             { 
                 "orderable": false, 
-                "targets": [4, 5]
+                "targets": [
+                    4, 
+                    @if ($orders_view)
+                        5
+                    @endif
+                ]
             }
         ]
     });

@@ -81,7 +81,7 @@ use App\Http\Controllers\UserLimitsController;
    $(document).on("click", "#adjust_select", function() {
         $.ajax({
             type : "POST",
-            url : "{{ route('adjust_ajax') }}",
+            url : "{{ route('products_adjust_ajax') }}",
             data: {
                 "_token": "{{ csrf_token() }}",
                 "id": $(this).attr("value")
