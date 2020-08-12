@@ -52,9 +52,4 @@ class User extends Authenticatable
     {
         return number_format(User::findSpent($user) - User::findReturned($user), 2);
     }
-
-    public static function canViewPage($group, $page)
-    {
-        return true;
-    }
 }

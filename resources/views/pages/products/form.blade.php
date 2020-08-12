@@ -183,7 +183,7 @@ $product = Products::find(request()->route('id'));
 
     function deleteData() {
         var id = document.getElementById('product_id').value;
-        var url = '{{ route("delete_product", ":id") }}';
+        var url = '{{ route("products_delete", ":id") }}';
         url = url.replace(':id', id);
         $("#deleteForm").attr('action', url);
         $("#deleteForm").submit();
