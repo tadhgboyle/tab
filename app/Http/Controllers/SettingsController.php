@@ -25,9 +25,9 @@ class SettingsController extends Controller
         return Settings::where('setting', 'self_purchases')->pluck('value')->first() == 'true';
     }
 
-    public static function getLookBack()
+    public static function getStatsTime()
     {
-        return Settings::where('setting', 'lookBack')->pluck('value')->first();
+        return Settings::where('setting', 'stats_time')->pluck('value')->first();
     }
 
     public static function getCategories()
@@ -35,15 +35,15 @@ class SettingsController extends Controller
         return Settings::where('setting', 'category')->orderBy('value')->get();
     }
 
-    public static function editLookBack(Request $request)
+    public static function editStatsTime(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'lookback' => 'required'
+            'stats_time' => 'required'
         ]);
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator);
         }
-        DB::table('settings')->where('setting', 'lookBack')->update(['value' => $request->lookback]);
+        DB::table('settings')->where('setting', 'stats_time')->update(['value' => $request->stats_time]);
         return redirect('/statistics')->send();
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\User;
 use Closure;
 
 class CheckRole
@@ -13,12 +14,10 @@ class CheckRole
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(\Illuminate\Http\Request $request, Closure $next)
     {
-        if ($request->user()->role != "administrator") {
+        if (!User::canViewPage($request->user()->group, $request->route()->getName())) {
             return redirect('/')->with('error', 'You do not have permission to view this page.');
-        } else {
-            return $next($request);
-        }
+        } else return $next($request);
     }
 }

@@ -12,6 +12,7 @@
 */
 
 use App\Http\Middleware\CheckRole;
+use App\User;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', function () {
@@ -26,21 +27,22 @@ Route::middleware('auth')->group(function () {
     })->name('index');
     Route::get('/logout', 'LoginController@logout')->name('logout');
 
-    /* Cashier */
-    Route::get('/orders', function () {
-        return view('pages.orders.list');
-    })->name('orders');
-    Route::get('/orders/view/{id}', function () {
-        return view('pages.orders.view');
-    })->where('id', '[0-9]+');
-    Route::get('/orders/{id}', function () {
-        return view('pages.orders.order');
-    })->where('id', '[0-9]+');
-    Route::post('/orders/submit', 'OrderController@submit')->where('id', '[0-9]+');
-
-    // Admin Only
+    // Check their role can access the page
     Route::middleware(CheckRole::class)->group(function () {
 
+        /* Cashier */
+        Route::get('/orders/{id}', function () {
+            return view('pages.orders.order');
+        })->where('id', '[0-9]+');
+
+        /* Orders */
+        Route::get('/orders', function () {
+            return view('pages.orders.list');
+        })->name('orders');
+        Route::get('/orders/view/{id}', function () {
+            return view('pages.orders.view');
+        })->where('id', '[0-9]+');
+        Route::post('/orders/submit', 'OrderController@submit');
         /* Orders */
         Route::get('/orders/return/order/{id}', 'OrderController@returnOrder')->where('id', '[0-9]+')->name('return_order');
         Route::get('/orders/return/item/{item}/{order}', 'OrderController@returnItem')->where(['id', '[0-9]+'], ['order', '[0-9]+'])->name('return_item');
@@ -56,7 +58,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/users/edit/{id}', function () {
             return view('pages.users.form');
         })->where('id', '[0-9]+');
-        Route::post('/users/edit', 'UsersController@edit')->where('id', '[0-9]+');
+        Route::post('/users/edit', 'UsersController@edit');
         Route::get('/users/info/{id}', function () {
             return view('pages.users.info');
         })->where('id', '[0-9]+');
@@ -73,7 +75,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/products/edit/{id}', function () {
             return view('pages.products.form');
         })->where('id', '[0-9]+');
-        Route::post('/products/edit', 'ProductsController@edit')->where('id', '[0-9]+');
+        Route::post('/products/edit', 'ProductsController@edit');
         Route::get('/products/delete/{id}', 'ProductsController@delete')->where('id', '[0-9]+')->name('delete_product');
         Route::get('/products/adjust', function () {
             return view('pages.products.adjust.list');
@@ -85,7 +87,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/statistics', function () {
             return view('pages.statistics.statistics');
         })->name('statistics');
-        Route::post('/statistics', 'SettingsController@editLookBack');
+        Route::post('/statistics', 'SettingsController@editStatsTime');
 
         /* Settings */
         Route::get('/settings', function () {
@@ -96,6 +98,6 @@ Route::middleware('auth')->group(function () {
             return view('pages.settings.category.new');
         });
         Route::post('/settings/category/new', 'SettingsController@newCat');
-        Route::get('/settings/category/delete/{name}', 'SettingsController@deleteCat')->where('id', '[0-9]+')->name('delete_category');
+        Route::get('/settings/category/delete/{name}', 'SettingsController@deleteCat')->name('delete_category');
     });
 });
