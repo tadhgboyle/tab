@@ -5,7 +5,8 @@ use App\Http\Controllers\SettingsController;
 @endphp
 <h2 class="title has-text-weight-bold">Settings</h2>
 <div class="columns">
-    <div class="column box">
+    <div class="column box is-3">
+        <h4 class="title has-text-weight-bold is-4">General</h4>
         @include('includes.messages')
         <form action="/settings" id="settings" method="POST">
             @csrf
@@ -54,11 +55,19 @@ use App\Http\Controllers\SettingsController;
 
     <div class="column"></div>
 
-    <div class="column box">
+    <div class="column box is-4">
+        <h4 class="title has-text-weight-bold is-4">Roles</h4>
+        
+    </div>
+
+    <div class="column"></div>
+
+    <div class="column box is-3">
+        <h4 class="title has-text-weight-bold is-4">Categories</h4>
         <table id="category_list">
             <thead>
                 <tr>
-                    <th>Categories</th>
+                    <th>Name</th>
                     <th></th>
                 </tr>
             </thead>

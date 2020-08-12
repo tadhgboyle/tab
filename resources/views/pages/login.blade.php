@@ -20,7 +20,7 @@
                 </div>
             </div>
             <div class="control">
-                <button class="button is-success" type="submit">
+                <button class="button is-primary" type="submit">
                     <span class="icon is-small">
                         <i class="fas fa-sign-in-alt"></i>
                     </span>

@@ -9,13 +9,13 @@ use Illuminate\Support\Carbon;
 
 class StatisticsChartController extends Controller
 {
-    // $lookBack -> n => Last n days
-    public static function orderInfo($lookBack)
+    // $statsTime -> n => Last n days
+    public static function orderInfo($statsTime)
     {
         $recentorders = new StatisticsChart;
 
-        $normal_data = Transactions::where([['created_at', '>=', Carbon::now()->subDays($lookBack)->toDateTimeString()], ['status', 0]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
-        $returned_data = Transactions::where([['created_at', '>=', Carbon::now()->subDays($lookBack)->toDateTimeString()], ['status', 1]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
+        $normal_data = Transactions::where([['created_at', '>=', Carbon::now()->subDays($statsTime)->toDateTimeString()], ['status', 0]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
+        $returned_data = Transactions::where([['created_at', '>=', Carbon::now()->subDays($statsTime)->toDateTimeString()], ['status', 1]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
 
         $normal_orders = array();
         $returned_orders = array();
@@ -41,14 +41,14 @@ class StatisticsChartController extends Controller
         return $recentorders;
     }
 
-    public static function itemInfo($lookBack)
+    public static function itemInfo($statsTime)
     {
         $popularitems = new StatisticsChart;
 
         $sales = array();
 
         foreach (Products::where('deleted', false)->get() as $product) {
-            $sold = Products::findSold($product->id, $lookBack);
+            $sold = Products::findSold($product->id, $statsTime);
             if ($sold < 1) continue;
             array_push($sales, ['name' => $product->name, 'sold' => $sold]);
         }

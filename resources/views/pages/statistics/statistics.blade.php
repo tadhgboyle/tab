@@ -2,9 +2,9 @@
 use App\Http\Controllers\StatisticsChartController;
 use App\Http\Controllers\SettingsController;
 
-$lookBack = SettingsController::getLookBack();
-$orderinfo = StatisticsChartController::orderInfo($lookBack);
-$iteminfo = StatisticsChartController::itemInfo($lookBack);
+$statsTime = SettingsController::getStatsTime();
+$orderinfo = StatisticsChartController::orderInfo($statsTime);
+$iteminfo = StatisticsChartController::itemInfo($statsTime);
 @endphp
 @extends('layouts.default', ['page' => 'statistics'])
 @section('content')
@@ -15,15 +15,15 @@ $iteminfo = StatisticsChartController::itemInfo($lookBack);
         <div class="field">
             <div class="control">
                 <div class="select">
-                    <form action="/statistics" id="edit_loopback" method="POST">
+                    <form action="/statistics" method="POST">
                         @csrf
-                        <select name="lookback" class="input" id="lookback">
-                            <option value="9999" {{ $lookBack == "9999" ? "selected" : "" }}>All Time</option>
-                            <option value="90" {{ $lookBack == "90" ? "selected" : "" }}>Three Months</option>
-                            <option value="30" {{ $lookBack == "30" ? "selected" : "" }}>One Month</option>
-                            <option value="14" {{ $lookBack == "14" ? "selected" : "" }}>Two Weeks</option>
-                            <option value="7" {{ $lookBack == "7" ? "selected" : "" }}>One Week</option>
-                            <option value="2" {{ $lookBack == "2" ? "selected" : "" }}>Two Days</option>
+                        <select name="stats_time" class="input" id="stats_time">
+                            <option value="9999" {{ $statsTime == "9999" ? "selected" : "" }}>All Time</option>
+                            <option value="90" {{ $statsTime == "90" ? "selected" : "" }}>Three Months</option>
+                            <option value="30" {{ $statsTime == "30" ? "selected" : "" }}>One Month</option>
+                            <option value="14" {{ $statsTime == "14" ? "selected" : "" }}>Two Weeks</option>
+                            <option value="7" {{ $statsTime == "7" ? "selected" : "" }}>One Week</option>
+                            <option value="2" {{ $statsTime == "2" ? "selected" : "" }}>Two Days</option>
                         </select>
                     </form>
                 </div>
@@ -47,9 +47,8 @@ $iteminfo = StatisticsChartController::itemInfo($lookBack);
 {!! $orderinfo->script() !!}
 {!! $iteminfo->script() !!}
 
-<!-- Handle changing the lookBack dropdown -->
 <script>
-    $('#lookback').change(function () {
+    $('#stats_time').change(function () {
             this.form.submit();
         }
     )
