@@ -6,12 +6,12 @@ use App\Roles;
 use App\Http\Controllers\SettingsController;
 $user = User::find(request()->route('id'));
 if ($user == null) return redirect('/')->with('error', 'Invalid user.')->send();
-$users_view = Roles::canViewPage(Auth::user()->role, 'users_view');
+$users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
 @endphp
 @extends('layouts.default', ['page' => 'cashier'])
 @section('content')
 <h2 class="title has-text-weight-bold">Cashier</h2>
-<h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if($users_view)<a href="/users/info/{{ request()->route('id') }}">(Info)</a>@endif</h4>
+<h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if($users_view)<a href="/users/view/{{ request()->route('id') }}">(View)</a>@endif</h4>
 <div class="columns box">
     <div class="column is-two-thirds">
         @include('includes.messages')

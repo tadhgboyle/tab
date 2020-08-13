@@ -7,32 +7,34 @@ use Rennokki\QueryCache\Traits\QueryCacheable;
 
 class Roles extends Model
 {
+
+    protected $primaryKey = 'role_id';
+
     use QueryCacheable;
 
     protected $cacheFor = 180;
 
-    public static function getRoles()
+    public static function getRoles(): object
     {
         return Roles::orderBy('order', 'ASC')->get();
     }
 
-    public static function idToName($id)
+    public static function idToName(int $id): string
     {
-        return Roles::where('role_id', $id)->pluck('name')->first();
+        return Roles::find($id)->pluck('name')->first();
     }
 
-    public static function canViewPage($role, $page)
+    public static function canInteract(int $caller, int $subject): bool
     {
-        $pages_allowed = json_decode(Roles::where('role_id', $role)->pluck('pages_allowed')->first(), true);
-        if (in_array($page, $pages_allowed)) return true;
-        // For easier use of post routes, their names will always end in _form, so if they have "products_new" they will also have "products_new_form"
-        else if (substr_compare($page, '_form', -strlen('_form')) === 0 && in_array(str_replacE('_form', '', $page), $pages_allowed)) return true;
-        else return false; 
+        if (Roles::where('role_id', $caller)->pluck('superuser')->first()) return true;
+        $caller_order = Roles::where('role_id', $caller)->pluck('order')->first();
+        $subject_order = Roles::where('role_id', $subject)->pluck('order')->first();
+        return $caller_order < $subject_order;
     }
 
-    // TODO: Use for fine-tuning (ie: they can view settings page, but not create new roles)
-    public static function hasPermission($role, $permission)
+    public static function hasPermission(int $role, string $permission): bool
     {
+        if (Roles::where('role_id', $role)->pluck('superuser')->first()) return true;
         return in_array($permission, json_decode(Roles::where('role_id', $role)->pluck('permissions')->first(), true));
     }
 }

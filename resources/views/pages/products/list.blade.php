@@ -2,7 +2,7 @@
 
 use App\Products;
 use App\Roles;
-$products_edit = Roles::canViewPage(Auth::user()->role, 'products_edit');
+$products_edit = Roles::hasPermission(Auth::user()->role, 'products_edit');
 @endphp
 @extends('layouts.default')
 @section('content')

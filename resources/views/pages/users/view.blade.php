@@ -7,15 +7,15 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserLimitsController;
 
 $user = User::find(request()->route('id'));
-$users_edit = Roles::canViewPage(Auth::user()->role, 'users_edit');
-$orders_view = Roles::canViewPage(Auth::user()->role, 'orders_view');
+$users_edit = Roles::hasPermission(Auth::user()->role, 'users_edit');
+$orders_view = Roles::hasPermission(Auth::user()->role, 'orders_view');
 if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->send();
 @endphp
 @extends('layouts.default')
 @section('content')
-<h2 class="title has-text-weight-bold">User Info</h2>
+<h2 class="title has-text-weight-bold">View User</h2>
 <h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if(!$user->deleted && $users_edit)<a href="/users/edit/{{ $user->id }}">(Edit)</a>@endif</h4>
-<p><strong>Role:</strong> {{ ucfirst(Roles::idToName($user->role)) }}</p>
+<p><strong>Role:</strong> {{ Roles::idToName($user->role) }}</p>
 <p><strong>Deleted:</strong> {{ $user->deleted ? 'True' : 'False' }}</p>
 <span><strong>Balance:</strong> ${{ number_format($user->balance, 2) }}, </span>
 <span><strong>Total spent:</strong> ${{ User::findSpent($user) }}, </span>
@@ -71,7 +71,7 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
         </table>
     </div>
     <div class="column is-two-fifths">
-    <h4 class="title has-text-weight-bold is-4">Limits</h4>
+        <h4 class="title has-text-weight-bold is-4">Limits</h4>
         <table id="category_list">
             <thead>
                 <th>Category</th>

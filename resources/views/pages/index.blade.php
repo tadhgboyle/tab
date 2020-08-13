@@ -22,7 +22,8 @@ use Illuminate\Support\Facades\Auth;
                 </tr>
             </thead>
             <tbody>
-                @foreach(User::where('deleted', false)->when(!SettingsController::getSelfPurchases(), function ($query) { if (Auth::user()->role != 'administrator') return $query->where('id', '<>', Auth::user()->id); })->get() as $result)
+                <!-- TODO: Self purchases permission -->
+                @foreach(User::where('deleted', false)->get() as $result)
                     <tr>
                         <td>
                             <div><a href="orders/{{ $result->id }}">{{ $result->full_name }}</a></div>

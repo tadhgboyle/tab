@@ -10,19 +10,21 @@ use \App\Roles;
         <div class="navbar-menu">
             <div class="navbar-start">
                 @auth
-                    @if (Roles::canViewPage(Auth::user()->role, 'cashier'))
+                    @if (Roles::hasPermission(Auth::user()->role, 'cashier'))
                         <a class="navbar-item @if(isset($page) && $page == 'cashier') is-active @endif" href="{{ route('index') }}">
                             <i class="fas fa-money-bill-wave-alt"></i>&nbsp;Cashier
                         </a>
                     @endif
-                    @if (Roles::canViewPage(Auth::user()->role, 'users_list'))
+                    @if (Roles::hasPermission(Auth::user()->role, 'users'))
                         <div class="navbar-item has-dropdown is-hoverable">
                             <p class="navbar-link"><i class="fas fa-users"></i>&nbsp;Users</p>
                             <div class="navbar-dropdown is-boxed">
-                                <a class="navbar-item" href="{{ route('users_list') }}">
-                                    List
-                                </a>
-                                @if (Roles::canViewPage(Auth::user()->role, 'users_new'))
+                                @if (Roles::hasPermission(Auth::user()->role, 'users_list'))
+                                    <a class="navbar-item" href="{{ route('users_list') }}">
+                                        List
+                                    </a>
+                                @endif
+                                @if (Roles::hasPermission(Auth::user()->role, 'users_new'))
                                     <a class="navbar-item" href="{{ route('users_new') }}">
                                         Create
                                     </a>
@@ -30,19 +32,21 @@ use \App\Roles;
                             </div>
                         </div>
                     @endif
-                    @if (Roles::canViewPage(Auth::user()->role, 'products_list'))
+                    @if (Roles::hasPermission(Auth::user()->role, 'products'))
                         <div class="navbar-item has-dropdown is-hoverable">
                             <p class="navbar-link"><i class="fas fa-tag"></i>&nbsp;Products</p>
                             <div class="navbar-dropdown is-boxed">
-                                <a class="navbar-item" href="{{ route('products_list') }}">
-                                    List
-                                </a>
-                                @if (Roles::canViewPage(Auth::user()->role, 'products_new'))
+                                @if (Roles::hasPermission(Auth::user()->role, 'products_new'))
+                                    <a class="navbar-item" href="{{ route('products_list') }}">
+                                        List
+                                    </a>
+                                @endif
+                                @if (Roles::hasPermission(Auth::user()->role, 'products_new'))
                                     <a class="navbar-item" href="{{ route('products_new') }}">
                                         Create
                                     </a>
                                 @endif
-                                @if (Roles::canViewPage(Auth::user()->role, 'products_adjust'))
+                                @if (Roles::hasPermission(Auth::user()->role, 'products_adjust'))
                                     <a class="navbar-item" href="{{ route('products_adjust') }}">
                                         Adjust
                                     </a>
@@ -50,12 +54,12 @@ use \App\Roles;
                             </div>
                         </div>
                     @endif
-                    @if (Roles::canViewPage(Auth::user()->role, 'orders_list'))
+                    @if (Roles::hasPermission(Auth::user()->role, 'orders_list'))
                         <a class="navbar-item @if(isset($page) && $page == 'orders') is-active @endif" href="{{ route('orders_list') }}">
                             <i class="fas fa-shopping-basket"></i>&nbsp;Orders
                         </a>
                     @endif
-                    @if (Roles::canViewPage(Auth::user()->role, 'statistics'))
+                    @if (Roles::hasPermission(Auth::user()->role, 'statistics'))
                         <a class="navbar-item @if(isset($page) && $page == 'statistics') is-active @endif" href="{{ route('statistics') }}">
                             <i class="fas fa-chart-pie"></i>&nbsp;Statistics
                         </a>     
@@ -67,22 +71,22 @@ use \App\Roles;
                 @auth
                     <div class="navbar-item">
                         <div class="field is-grouped">
-                            @if (Roles::canViewPage(Auth::user()->role, 'settings'))
-                                <p class="control">
+                            @if (Roles::hasPermission(Auth::user()->role, 'settings'))
+                                <div class="control">
                                     <a class="button is-warning" href="{{ route('settings') }}">
                                         <span class="icon">
                                             <i class="fas fa-cogs"></i>
                                         </span>
                                     </a>
-                                </p>
+                                </div>
                             @endif
-                            <p class="control">
+                            <div class="control">
                                 <a class="button is-primary" href="{{ route('logout') }}">
                                     <span class="icon">
                                         <i class="fas fa-sign-out-alt"></i>
                                     </span>
                                 </a>
-                            </p>
+                            </div>
                         </div>
                     </div>
                 @endauth

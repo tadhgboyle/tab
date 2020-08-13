@@ -1,3 +1,4 @@
+
 @extends('layouts.default')
 @section('content')
 <h2 class="title has-text-weight-bold">Create Category</h2>
@@ -5,13 +6,13 @@
     <div class="column"></div>
     <div class="column box">
         @include('includes.messages')
-        <form action="/settings/category/new" method="POST">
+        <form action="/settings/categories/new" method="POST">
             @csrf
             <input type="hidden" name="editor_id" value="{{ Auth::user()->id }}">
             <div class="field">
                 <label class="label">Name<sup style="color: red">*</sup></label>
                 <div class="control">
-                    <input type="text" name="name" class="input" placeholder="Category Name" value={{ old('name') }}>
+                    <input type="text" name="name" class="input" placeholder="Category Name" value="{{ old('name') }}">
                 </div>
             </div>
             <div class="control">
@@ -21,6 +22,9 @@
                     </span>
                     <span>Save</span>
                 </button>
+                <a class="button is-outlined" href="/settings">
+                    <span>Cancel</span>
+                </a>
             </div>
         </form>
     </div>

@@ -6,12 +6,12 @@ use App\User;
 use App\Roles;
 $user = User::find(request()->route('id'));
 if (!is_null($user) && $user->deleted) return redirect('/users')->with('error', 'That user has been deleted.')->send();
-$users_view = Roles::canViewPage(Auth::user()->role, 'users_view');
+$users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
 @endphp
 @extends('layouts.default')
 @section('content')
 <h2 class="title has-text-weight-bold">{{ is_null($user) ? 'Create' : 'Edit' }} User</h2>
-@if(!is_null($user)) <h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if($users_view)<a href="/users/info/{{ $user->id }}">(Info)</a>@endif</h4>@endif
+@if(!is_null($user)) <h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if($users_view)<a href="/users/view/{{ $user->id }}">(View)</a>@endif</h4>@endif
 <div class="columns box">
     <div class="column is-1"></div>
 
@@ -180,7 +180,7 @@ $users_view = Roles::canViewPage(Auth::user()->role, 'users_view');
 
     function deleteData() {
         var id = document.getElementById('user_id').value;
-        var url = '{{ route("delete_user", ":id") }}';
+        var url = '{{ route("users_delete", ":id") }}';
         url = url.replace(':id', id);
         $("#deleteForm").attr('action', url);
         $("#deleteForm").submit();
