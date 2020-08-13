@@ -22,10 +22,6 @@ Route::post('/login/auth', 'LoginController@auth');
 // Middleware('auth') requires the user to be signed in to view the page
 Route::middleware('auth')->group(function () {
 
-    /*
-     * Permission is equal to the route name (if there is a GET and POST, use the GET & and POST is equal to GET + "_form").
-     */
-
     Route::get('/', function () {
         return view('pages.index');
     })->name('index');
@@ -62,9 +58,6 @@ Route::middleware('auth')->group(function () {
 
         Route::group(['permission' => 'orders_return'], function() {
             Route::get('/orders/return/order/{id}', 'OrderController@returnOrder')->where('id', '[0-9]+')->name('orders_return');
-        });
-
-        Route::group(['permission' => 'orders_return_item'], function() {
             Route::get('/orders/return/item/{item}/{order}', 'OrderController@returnItem')->where(['id', '[0-9]+'], ['order', '[0-9]+'])->name('orders_return_item');
         });
 
@@ -84,21 +77,17 @@ Route::middleware('auth')->group(function () {
                 })->where('id', '[0-9]+')->name('users_view');
             });
 
-            Route::group(['permission' => 'users_new'], function () {
+            Route::group(['permission' => 'users_manage'], function () {
                 Route::get('/users/new', function () {
                     return view('pages.users.form');
                 })->name('users_new');
                 Route::post('/users/new', 'UsersController@new')->name('users_new_form');
-            });
 
-            Route::group(['permission' => 'users_edit'], function () {
                 Route::get('/users/edit/{id}', function () {
                     return view('pages.users.form');
                 })->where('id', '[0-9]+')->name('users_edit');
                 Route::post('/users/edit', 'UsersController@edit')->name('users_edit_form');
-            });
 
-            Route::group(['permission' => 'users_delete'], function () {
                 Route::get('/users/delete/{id}', 'UsersController@delete')->where('id', '[0-9]+')->name('users_delete');
             });
         });
@@ -113,21 +102,17 @@ Route::middleware('auth')->group(function () {
                 })->name('products_list');
             });
 
-            Route::group(['permission' => 'products_new'], function () {
+            Route::group(['permission' => 'products_manage'], function () {
                 Route::get('/products/new', function () {
                     return view('pages.products.form');
                 })->name('products_new');
                 Route::post('/products/new', 'ProductsController@new');
-            });
 
-            Route::group(['permission' => 'products_new'], function () {
                 Route::get('/products/edit/{id}', function () {
                     return view('pages.products.form');
                 })->where('id', '[0-9]+')->name('products_edit');
                 Route::post('/products/edit', 'ProductsController@edit')->name('products_edit_form');
-            });
 
-            Route::group(['permission' => 'products_delete'], function () {
                 Route::get('/products/delete/{id}', 'ProductsController@delete')->where('id', '[0-9]+')->name('products_delete');
             });
 

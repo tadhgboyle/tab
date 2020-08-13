@@ -3,7 +3,7 @@
 use App\User;
 use App\Roles;
 $users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
-$users_edit = Roles::hasPermission(Auth::user()->role, 'users_edit');
+$users_manage = Roles::hasPermission(Auth::user()->role, 'users_manage');
 @endphp
 @extends('layouts.default')
 @section('content')
@@ -24,7 +24,7 @@ $users_edit = Roles::hasPermission(Auth::user()->role, 'users_edit');
                     @if ($users_view)
                         <th></th>
                     @endif
-                    @if ($users_edit)
+                    @if ($users_manage)
                         <th></th>
                     @endif
                 </tr>
@@ -49,7 +49,7 @@ $users_edit = Roles::hasPermission(Auth::user()->role, 'users_edit');
                             <div><a href="/users/view/{{ $user->id }}">View</a></div>
                         </td>
                     @endif
-                    @if ($users_edit)
+                    @if ($users_manage)
                         <td>
                             <div><a href="/users/edit/{{ $user->id }}">Edit</a></div>
                         </td>
@@ -70,12 +70,12 @@ $users_edit = Roles::hasPermission(Auth::user()->role, 'users_edit');
                 { 
                     "orderable": false, 
                     "targets": [
-                        @if ($users_view && $users_edit)
+                        @if ($users_view && $users_manage)
                             4,
                             5
-                        @elseif ($users_view && !$users_edit)
+                        @elseif ($users_view && !$users_manage)
                             4
-                        @elseif (!$users_view && $users_edit)
+                        @elseif (!$users_view && $users_manage)
                             4
                         @endif
                     ]

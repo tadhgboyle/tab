@@ -55,53 +55,6 @@ $manage_categories = Roles::hasPermission(Auth::user()->role, 'settings_categori
 
     <div class="column"></div>
 
-    @if($manage_roles)
-        <div class="column box is-4">
-            <h4 class="title has-text-weight-bold is-4">Roles</h4>
-            <table id="role_list">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach(Roles::getRoles() as $role)
-                        <tr>
-                            <td>
-                                <div>{{ $role->name }} @if($role->superuser)<strong>[Superuser]</strong>@endif</div>
-                            </td>
-                            <td>
-                                <div>
-                                @if (Roles::canInteract(Auth::user()->role, $role->role_id))
-                                    <a href="{{ route('settings_roles_edit', $role->role_id) }}">Edit</a>
-                                @else 
-                                    <div class="control">
-                                        <button class="button is-warning" disabled>
-                                            <span class="icon">
-                                                <i class="fas fa-lock"></i>
-                                            </span>
-                                        </button>
-                                    </div>
-                                @endif
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-            <br>
-            <a class="button is-success" href="{{ route('settings_roles_new') }}">
-                <span class="icon is-small">
-                    <i class="fas fa-plus"></i>
-                </span>
-                <span>New</span>
-            </a>
-        </div>
-    @endif
-
-    <div class="column"></div>
-    
     @if($manage_categories)
         <div class="column box is-3">
             <h4 class="title has-text-weight-bold is-4">Categories</h4>
@@ -139,6 +92,57 @@ $manage_categories = Roles::hasPermission(Auth::user()->role, 'settings_categori
             </a>
         </div>
     @endif
+
+    <div class="column"></div>
+
+    @if($manage_roles)
+        <div class="column box is-4">
+            <h4 class="title has-text-weight-bold is-4">Roles</h4>
+            <table id="role_list">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Staff</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(Roles::getRoles() as $role)
+                        <tr>
+                            <td>
+                                <div>{{ $role->name }}</div>
+                            </td>
+                            <td>
+                                <div>{!! $role->staff ? "<span class=\"tag is-success is-medium\">Yes</span>" : "<span class=\"tag is-danger is-medium\">No</span>" !!}</div>
+                            </td>
+                            <td>
+                                <div>
+                                @if (Roles::canInteract(Auth::user()->role, $role->id))
+                                    <a href="{{ route('settings_roles_edit', $role->id) }}">Edit</a>
+                                @else 
+                                    <div class="control">
+                                        <button class="button is-warning" disabled>
+                                            <span class="icon">
+                                                <i class="fas fa-lock"></i>
+                                            </span>
+                                        </button>
+                                    </div>
+                                @endif
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            <br>
+            <a class="button is-success" href="{{ route('settings_roles_new') }}">
+                <span class="icon is-small">
+                    <i class="fas fa-plus"></i>
+                </span>
+                <span>New</span>
+            </a>
+        </div>
+    @endif    
 </div>
 
 <script type="text/javascript">
@@ -154,7 +158,7 @@ $manage_categories = Roles::hasPermission(Auth::user()->role, 'settings_categori
                 "columnDefs": [
                     { 
                         "orderable": false, 
-                        "targets": 1
+                        "targets": [1, 2]
                     }
                 ]
             });

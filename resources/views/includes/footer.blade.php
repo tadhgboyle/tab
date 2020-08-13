@@ -4,7 +4,7 @@ $greetings = ['Welcome back', 'Greetings', 'Good day', 'Hello', 'Howdy', 'Bonjou
 'Salutations', 'Peek-a-boo', 'Ahoy', 'Top of the morning', 'G\'day'];
 @endphp
 <hr>
-<footer>
+<footer style="margin-bottom: 20px;">
     @auth
         <p>{{ $greetings[rand(0, count($greetings) - 1)] }}, <b>{{ Auth::user()->full_name }}</b> ({{ Roles::idToName(Auth::user()->role) }})</p>
     @endauth
