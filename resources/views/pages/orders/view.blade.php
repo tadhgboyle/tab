@@ -12,8 +12,7 @@ if ($transaction == null) return redirect('/orders')->with('error', 'Invalid ord
 $transaction_items = explode(", ", $transaction->products);
 $transaction_returned = OrderController::checkReturned($transaction->id);
 $users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
-$return_item = Roles::hasPermission(Auth::user()->role, 'orders_return_item');
-$return_order = Roles::hasPermission(Auth::user()->role, 'orders_return_order');
+$return_order = Roles::hasPermission(Auth::user()->role, 'orders_return');
 @endphp
 @extends('layouts.default', ['page' => 'orders'])
 @section('content')
@@ -47,7 +46,7 @@ $return_order = Roles::hasPermission(Auth::user()->role, 'orders_return_order');
                     <th>Price</th>
                     <th>Quantity</th>
                     <th>Item Price</th>
-                    @if($return_item)
+                    @if($return_order)
                         <th></th>
                     @endif
                 </thead>
@@ -67,7 +66,7 @@ $return_order = Roles::hasPermission(Auth::user()->role, 'orders_return_order');
                             <td>
                                 <div>${{ number_format($item_info['price'] * $item_info['quantity'], 2) }}</div>
                             </td>
-                            @if($return_item)
+                            @if($return_order)
                                 <td>
                                     <div>
                                         @if($transaction->status == 0 && $item_info['returned'] < $item_info['quantity']) 

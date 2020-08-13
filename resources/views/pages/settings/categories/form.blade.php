@@ -22,7 +22,7 @@
                     </span>
                     <span>Save</span>
                 </button>
-                <a class="button is-outlined" href="/settings">
+                <a class="button is-outlined" href="{{ route('settings') }}">
                     <span>Cancel</span>
                 </a>
             </div>

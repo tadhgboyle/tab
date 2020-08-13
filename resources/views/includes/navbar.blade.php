@@ -24,7 +24,7 @@ use \App\Roles;
                                         List
                                     </a>
                                 @endif
-                                @if (Roles::hasPermission(Auth::user()->role, 'users_new'))
+                                @if (Roles::hasPermission(Auth::user()->role, 'users_manage'))
                                     <a class="navbar-item" href="{{ route('users_new') }}">
                                         Create
                                     </a>
@@ -36,12 +36,12 @@ use \App\Roles;
                         <div class="navbar-item has-dropdown is-hoverable">
                             <p class="navbar-link"><i class="fas fa-tag"></i>&nbsp;Products</p>
                             <div class="navbar-dropdown is-boxed">
-                                @if (Roles::hasPermission(Auth::user()->role, 'products_new'))
+                                @if (Roles::hasPermission(Auth::user()->role, 'products_list'))
                                     <a class="navbar-item" href="{{ route('products_list') }}">
                                         List
                                     </a>
                                 @endif
-                                @if (Roles::hasPermission(Auth::user()->role, 'products_new'))
+                                @if (Roles::hasPermission(Auth::user()->role, 'products_manage'))
                                     <a class="navbar-item" href="{{ route('products_new') }}">
                                         Create
                                     </a>
