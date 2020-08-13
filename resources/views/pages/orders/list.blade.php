@@ -4,8 +4,8 @@ use App\Transactions;
 use App\Http\Controllers\OrderController;
 use App\User;
 use App\Roles;
-$orders_view = Roles::canViewPage(Auth::user()->role, 'orders_view');
-$users_view = Roles::canViewPage(Auth::user()->role, 'users_view');
+$orders_view = Roles::hasPermission(Auth::user()->role, 'orders_view');
+$users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
 @endphp
 @extends('layouts.default', ['page' => 'orders'])
 @section('content')
@@ -39,7 +39,7 @@ $users_view = Roles::canViewPage(Auth::user()->role, 'users_view');
                         <td>
                             <div>
                                 @if ($users_view)
-                                    <a href="users/info/{{ $user->id }}">{{ $user->full_name }}</a>
+                                    <a href="/users/view/{{ $user->id }}">{{ $user->full_name }}</a>
                                 @else
                                     {{ $user->full_name }}
                                 @endif

@@ -41,11 +41,13 @@ use App\Http\Controllers\UserLimitsController;
                         <div>{!! $product->box_size == -1 ? '<i>N/A</i>' : $product->box_size !!}</div>
                     </td>
                     <td>
-                        <button class="button is-info" id="adjust_select" value="{{ $product->id }}">
-                            <span class="icon">
-                                <i class="fas fa-edit"></i>
-                            </span>
-                        </button>
+                        <div class="control">
+                            <button class="button is-info" id="adjust_select" value="{{ $product->id }}">
+                                <span class="icon">
+                                    <i class="fas fa-edit"></i>
+                                </span>
+                            </button>
+                        </div>
                     </td>
                 </tr>
                 @endforeach

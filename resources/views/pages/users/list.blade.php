@@ -2,8 +2,8 @@
 
 use App\User;
 use App\Roles;
-$users_view = Roles::canViewPage(Auth::user()->role, 'users_view');
-$users_edit = Roles::canViewPage(Auth::user()->role, 'users_edit');
+$users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
+$users_edit = Roles::hasPermission(Auth::user()->role, 'users_edit');
 @endphp
 @extends('layouts.default')
 @section('content')
@@ -42,16 +42,16 @@ $users_edit = Roles::canViewPage(Auth::user()->role, 'users_edit');
                         <div>${{ number_format($user->balance, 2) }}</div>
                     </td>
                     <td>
-                        <div>{{ ucfirst(Roles::idToName($user->role)) }}</div>
+                        <div>{{ Roles::idToName($user->role) }}</div>
                     </td>
                     @if ($users_view)
                         <td>
-                            <div><a href="users/info/{{ $user->id }}">Info</a></div>
+                            <div><a href="/users/view/{{ $user->id }}">View</a></div>
                         </td>
                     @endif
                     @if ($users_edit)
                         <td>
-                            <div><a href="users/edit/{{ $user->id }}">Edit</a></div>
+                            <div><a href="/users/edit/{{ $user->id }}">Edit</a></div>
                         </td>
                     @endif
                 </tr>

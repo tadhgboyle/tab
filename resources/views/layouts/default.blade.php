@@ -4,15 +4,17 @@
     <head>
         <meta charset="utf-8">
         <title>tabReborn | Version: {{ env('APP_VERSION') }}</title>
+        <script src="{{ url('fontawesome.js') }}"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
         <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
         <link rel="stylesheet" href="{{ url('styles.css') }}" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
     </head>
 
     <body>
         
-    @include('includes.navbar')
+        @include('includes.navbar')
 
         <div class="container">
 
@@ -23,9 +25,6 @@
             @include('includes.footer')
 
         </div>
-
-        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
-        <script src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 
     </body>
 

@@ -98,9 +98,10 @@ class OrderController extends Controller
 
     public function submit(Request $request)
     {
-        if (SettingsController::getSelfPurchases() && $request->cashier_id == $request->purchaser_id && User::find($request->cashier_id)->role != 'administrator') {
-            return redirect('/')->with('error', 'You cannot make purchases for yourself.');
-        }
+        // TODO: Make this a permission
+        // if (SettingsController::getSelfPurchases() && $request->cashier_id == $request->purchaser_id && User::find($request->cashier_id)->role != 'administrator') {
+        //     return redirect('/')->with('error', 'You cannot make purchases for yourself.');
+        // }
 
         if (isset($request->product)) {
 

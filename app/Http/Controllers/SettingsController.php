@@ -20,11 +20,6 @@ class SettingsController extends Controller
         return Settings::where('setting', 'pst')->pluck('value')->first();
     }
 
-    public static function getSelfPurchases(): bool
-    {
-        return Settings::where('setting', 'self_purchases')->pluck('value')->first() == 'true';
-    }
-
     public static function getStatsTime()
     {
         return Settings::where('setting', 'stats_time')->pluck('value')->first();
@@ -60,7 +55,6 @@ class SettingsController extends Controller
         // TODO: This is probably not as efficient as it could be...
         DB::table('settings')->where('setting', 'gst')->update(['value' => $request->gst]);
         DB::table('settings')->where('setting', 'pst')->update(['value' => $request->pst]);
-        DB::table('settings')->where('setting', 'self_purchases')->update(['value' => $request->has('self_purchases') ? 'true' : 'false']);
         return redirect('/settings')->with('success', 'Updated settings.');
     }
 

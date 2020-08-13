@@ -16,8 +16,8 @@ class CreateRolesTable extends Migration
         Schema::create('roles', function (Blueprint $table) {
             $table->id('role_id');
             $table->string('name')->unique();
-            $table->integer('order')->unique();
-            $table->string('pages_allowed')->default('[]');
+            $table->boolean('superuser')->default(false);
+            $table->integer('priority')->unique();
             $table->string('permissions')->default('[]');
             $table->nullableTimestamps();
         });

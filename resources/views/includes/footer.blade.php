@@ -6,7 +6,7 @@ $greetings = ['Welcome back', 'Greetings', 'Good day', 'Hello', 'Howdy', 'Bonjou
 <hr>
 <footer>
     @auth
-        <p>{{ $greetings[rand(0, count($greetings) - 1)] }}, <b>{{ Auth::user()->username }}</b> ({{ ucfirst(Roles::idToName(Auth::user()->role)) }})</p>
+        <p>{{ $greetings[rand(0, count($greetings) - 1)] }}, <b>{{ Auth::user()->full_name }}</b> ({{ Roles::idToName(Auth::user()->role) }})</p>
     @endauth
     <p><i>tabReborn</i> | Version: {{ env('APP_VERSION') }}</p>
 </footer>
