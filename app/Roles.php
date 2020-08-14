@@ -17,9 +17,18 @@ class Roles extends Model
         return Roles::orderBy('order', $order)->get();
     }
 
-    public static function getStaffRoles(): object
+    public static function getStaffRoles()
     {
-        return Roles::select('id', 'name', 'staff')->orderBy('order', 'ASC')->where('staff', true)->get();
+        return Roles::select('id', 'name', 'staff')->orderBy('order', 'ASC')->where('staff', true)->get()->toArray();
+    }
+
+    public static function getRolesAvailable(int $caller)
+    {
+        $roles = array();
+        foreach (Roles::getRoles('DESC') as $role) {
+            if (self::canInteract($caller, $role->id)) $roles[] = $role;
+        }
+        return $roles;
     }
 
     public static function idToName(int $id): string

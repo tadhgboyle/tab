@@ -50,9 +50,21 @@ $users_manage = Roles::hasPermission(Auth::user()->role, 'users_manage');
                         </td>
                     @endif
                     @if ($users_manage)
-                        <td>
-                            <div><a href="/users/edit/{{ $user->id }}">Edit</a></div>
-                        </td>
+                        @if (Roles::canInteract(Auth::user()->role, $user->role))
+                            <td>
+                                <div><a href="/users/edit/{{ $user->id }}">Edit</a></div>
+                            </td>
+                        @else
+                            <td>
+                                <div class="control">
+                                    <button class="button is-warning" disabled>
+                                        <span class="icon">
+                                            <i class="fas fa-lock"></i>
+                                        </span>
+                                    </button>
+                                </div>
+                            </td>
+                        @endif
                     @endif
                 </tr>
                 @endforeach

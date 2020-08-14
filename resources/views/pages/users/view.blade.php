@@ -14,9 +14,9 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
 @extends('layouts.default')
 @section('content')
 <h2 class="title has-text-weight-bold">View User</h2>
-<h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if(!$user->deleted && $users_manage)<a href="/users/edit/{{ $user->id }}">(Edit)</a>@endif</h4>
+<h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if(!$user->deleted && $users_manage && Roles::canInteract(Auth::user()->role, $user->role))<a href="/users/edit/{{ $user->id }}">(Edit)</a>@endif</h4>
 <p><strong>Role:</strong> {{ Roles::idToName($user->role) }}</p>
-<p><strong>Deleted:</strong> {{ $user->deleted ? 'True' : 'False' }}</p>
+<p><strong>Deleted:</strong> {{ $user->deleted ? 'Yes' : 'No' }}</p>
 <span><strong>Balance:</strong> ${{ number_format($user->balance, 2) }}, </span>
 <span><strong>Total spent:</strong> ${{ User::findSpent($user) }}, </span>
 <span><strong>Total returned:</strong> ${{ User::findReturned($user) }}, </span>
