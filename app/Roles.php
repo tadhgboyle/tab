@@ -12,14 +12,14 @@ class Roles extends Model
 
     protected $cacheFor = 180;
 
-    public static function getRoles(): object
+    public static function getRoles(string $order): object
     {
-        return Roles::orderBy('order', 'ASC')->get();
+        return Roles::orderBy('order', $order)->get();
     }
 
     public static function getStaffRoles(): object
     {
-        return Roles::where('staff', true)->pluck(['id', 'name'])->get();
+        return Roles::select('id', 'name', 'staff')->orderBy('order', 'ASC')->where('staff', true)->get();
     }
 
     public static function idToName(int $id): string
