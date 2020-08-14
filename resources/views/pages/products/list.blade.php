@@ -2,7 +2,7 @@
 
 use App\Products;
 use App\Roles;
-$products_edit = Roles::hasPermission(Auth::user()->role, 'products_edit');
+$products_manage = Roles::hasPermission(Auth::user()->role, 'products_manage');
 @endphp
 @extends('layouts.default')
 @section('content')
@@ -22,7 +22,7 @@ $products_edit = Roles::hasPermission(Auth::user()->role, 'products_edit');
                     <th>Stock</th>
                     <th>Box Size</th>
                     <th>PST</th>
-                    @if ($products_edit)
+                    @if ($products_manage)
                         <th></th>
                     @endif
                 </tr>
@@ -48,7 +48,7 @@ $products_edit = Roles::hasPermission(Auth::user()->role, 'products_edit');
                         <td>
                             <div>{!! $product->pst ? "<span class=\"tag is-success is-medium\">Yes</span>" : "<span class=\"tag is-danger is-medium\">No</span>" !!}</div>
                         </td>
-                        @if ($products_edit)
+                        @if ($products_manage)
                             <td>
                                 <div><a href="products/edit/{{ $product->id }}">Edit</a></div>
                             </td>
@@ -70,7 +70,7 @@ $products_edit = Roles::hasPermission(Auth::user()->role, 'products_edit');
                     "orderable": false,
                     "targets": [
                         5, 
-                        @if ($products_edit)
+                        @if ($products_manage)
                             6
                         @endif
                     ]

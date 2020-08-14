@@ -129,7 +129,7 @@ $return_order = Roles::hasPermission(Auth::user()->role, 'orders_return');
             "paging": false,
             "scrollY": "49vh",
             "scrollCollapse": true,
-            @if($return_item)
+            @if($return_order)
                 "columnDefs": [
                     { 
                         "orderable": false, 

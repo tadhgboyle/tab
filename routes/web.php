@@ -44,22 +44,24 @@ Route::middleware('auth')->group(function () {
         /* 
          * Orders 
          */
-        Route::group(['permission' => 'orders_list'], function() {
-            Route::get('/orders', function () {
-                return view('pages.orders.list');
-            })->name('orders_list');
-        });
+        Route::group(['permission' => 'orders'], function () {
+            Route::group(['permission' => 'orders_list'], function() {
+                Route::get('/orders', function () {
+                    return view('pages.orders.list');
+                })->name('orders_list');
+            });
 
-        Route::group(['permission' => 'orders_view'], function() {
-            Route::get('/orders/view/{id}', function () {
-                return view('pages.orders.view');
-            })->where('id', '[0-9]+')->name('orders_view');
-        });
+            Route::group(['permission' => 'orders_view'], function() {
+                Route::get('/orders/view/{id}', function () {
+                    return view('pages.orders.view');
+                })->where('id', '[0-9]+')->name('orders_view');
+            });
 
-        Route::group(['permission' => 'orders_return'], function() {
-            Route::get('/orders/return/order/{id}', 'OrderController@returnOrder')->where('id', '[0-9]+')->name('orders_return');
-            Route::get('/orders/return/item/{item}/{order}', 'OrderController@returnItem')->where(['id', '[0-9]+'], ['order', '[0-9]+'])->name('orders_return_item');
-        });
+            Route::group(['permission' => 'orders_return'], function() {
+                Route::get('/orders/return/order/{id}', 'OrderController@returnOrder')->where('id', '[0-9]+')->name('orders_return');
+                Route::get('/orders/return/item/{item}/{order}', 'OrderController@returnItem')->where(['id', '[0-9]+'], ['order', '[0-9]+'])->name('orders_return_item');
+            });
+            });
 
         /* 
          * Users 

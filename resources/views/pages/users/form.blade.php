@@ -48,25 +48,20 @@ $users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
             </div>
 
             <div class="field">
+                <label class="label">Role<sup style="color: red">*</sup></label>
                 <div class="control">
-                    <label class="label">Role<sup style="color: red">*</sup></label>
-                        <label class="radio">
-                        <input type="radio" name="role" value="camper" @if((isset($user->role) && $user->role ==  "camper") || old('role') == "camper") checked @endif>
-                        Camper
-                    </label>
-                    <label class="radio">
-                        <input type="radio" name="role" value="cashier" @if((isset($user->role) && $user->role == "cashier") || old('role') == "cashier") checked @endif>
-                        Cashier
-                    </label>
-                    <label class="radio">
-                        <input type="radio" name="role" value="administrator" @if((isset($user->role) && $user->role == "administrator") || old('role') == "administrator") checked @endif>
-                        Administrator
-                    </label>
+                    <div class="select" id="role">
+                        <select name="role" class="input">
+                            @foreach(Roles::getRoles('DESC') as $role)
+                                <option value="{{ $role->id }}" data-staff="{{ $role->staff ? 1 : 0 }}" {{ isset($user->role) && $user->role == $role->id ? "selected" : "" }}>{{ $role->name }}</option>
+                            @endforeach
+                        </select>      
+                    </div>          
                 </div>
             </div>
-
-            <label class="label">Password</label>
+            
             <div class="field">
+                <label class="label">Password</label>
                 <div class="control has-icons-left">
                     <span class="icon is-small is-left">
                         <i class="fas fa-lock"></i>
@@ -162,18 +157,18 @@ $users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
 
 <script type="text/javascript">
     $(document).ready(function() {
-        updatePassword($("input[name=role]:checked").val());
+        updatePassword($("option:selected", document.getElementById('role')).data('staff'));
     });
 
-    $('input[type=radio][name=role]').change(function() {
-        updatePassword(this.value)
+    $('select').on('change', function() {
+        updatePassword($("option:selected", this).data('staff'))
     });
 
-    function updatePassword(role) {
-        if (role !== undefined) {
+    function updatePassword(staff) {
+        if (staff !== undefined) {
             let fields = document.getElementsByClassName('password_hidable');
             for (var i = 0; i < fields.length; i++) { 
-                fields[i].readOnly = role != 'camper' ? false : true; 
+                fields[i].readOnly = !staff;
             }
         }
     }

@@ -102,15 +102,19 @@ $manage_categories = Roles::hasPermission(Auth::user()->role, 'settings_categori
                 <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Order</th>
                         <th>Staff</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach(Roles::getRoles() as $role)
+                    @foreach(Roles::getRoles('ASC') as $role)
                         <tr>
                             <td>
                                 <div>{{ $role->name }}</div>
+                            </td>
+                            <td>
+                                <div>{{ $role->order }}</div>
                             </td>
                             <td>
                                 <div>{!! $role->staff ? "<span class=\"tag is-success is-medium\">Yes</span>" : "<span class=\"tag is-danger is-medium\">No</span>" !!}</div>
@@ -147,22 +151,6 @@ $manage_categories = Roles::hasPermission(Auth::user()->role, 'settings_categori
 
 <script type="text/javascript">
     $(document).ready(function() {
-        @if($manage_roles)
-            $('#role_list').DataTable({
-                "order": [],
-                "paging": false,
-                "searching": false,
-                "scrollY": "49vh",
-                "scrollCollapse": true,
-                "bInfo": false,
-                "columnDefs": [
-                    { 
-                        "orderable": false, 
-                        "targets": [1, 2]
-                    }
-                ]
-            });
-        @endif
         @if($manage_categories)
             $('#category_list').DataTable({
                 "paging": false,
@@ -174,6 +162,23 @@ $manage_categories = Roles::hasPermission(Auth::user()->role, 'settings_categori
                     { 
                         "orderable": false, 
                         "targets": 1
+                    }
+                ]
+            });
+        @endif
+
+        @if($manage_roles)
+            $('#role_list').DataTable({
+                "order": [],
+                "paging": false,
+                "searching": false,
+                "scrollY": "49vh",
+                "scrollCollapse": true,
+                "bInfo": false,
+                "columnDefs": [
+                    { 
+                        "orderable": false, 
+                        "targets": [1, 2, 3]
                     }
                 ]
             });
