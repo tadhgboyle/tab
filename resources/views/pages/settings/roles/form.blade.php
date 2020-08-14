@@ -36,7 +36,7 @@ if (!is_null($role)) $role_permissions = json_decode($role->permissions);
                         </label>
                     </div>
                 </div>
-                <div class="field" id="superuser">
+                <div class="field" id="superuser" style="display: none;">
                     <div class="control">
                         <label class="checkbox label">
                             Superuser
@@ -54,10 +54,16 @@ if (!is_null($role)) $role_permissions = json_decode($role->permissions);
                     <a class="button is-outlined" href="{{ route('settings') }}">
                         <span>Cancel</span>
                     </a>
+                    <button class="button is-danger is-outlined is-pulled-right" type="button" onclick="openModal();">
+                        <span>Delete</span>
+                        <span class="icon is-small">
+                            <i class="fas fa-times"></i>
+                        </span>
+                    </button>
                 </div>
         </div>
     </div>
-    <div class="column box is-8">
+    <div class="column box is-8" id="permissions_box" style="visibility: hidden;">
         <h4 class="title has-text-weight-bold is-4">Permissions</h4>
         <hr>
         <h4 class="subtitle"><strong>Cashier</strong></h4>
@@ -150,7 +156,65 @@ if (!is_null($role)) $role_permissions = json_decode($role->permissions);
         </form>
     </div>
 </div>
+
+@if(!is_null($role))
+<div class="modal">
+    <div class="modal-background" onclick="closeModal();"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Confirmation</p>
+        </header>
+        <section class="modal-card-body">
+            <p>Are you sure you want to delete the role {{ $role->name }}?</p>
+            <form action="" id="deleteForm" method="GET">
+                @csrf
+            </form>
+        </section>
+        <footer class="modal-card-foot">
+            <button class="button is-success" type="submit" onclick="deleteData();">Confirm</button>
+            <button class="button" onclick="closeModal();">Cancel</button>
+        </footer>
+    </div>
+</div>
+@endif
+
 <script>
-    // TODO: Hide superuser checkbox if staff is not selected
+    // TODO: Hide superuser checkbox & permissions if staff is not selected
+
+    $(document).ready(function() {
+        updateStaffInfo($('input[type=checkbox][name=staff]').prop('checked'));
+    });
+        
+    $('input[type=checkbox][name=staff]').change(function() {
+        updateStaffInfo($(this).prop('checked'))
+    });
+
+    function updateStaffInfo(staff) {
+        if (staff) {
+            $(document.getElementById('superuser')).css('display', 'block')
+            $(document.getElementById('permissions_box')).css('visibility', 'visible')
+        } else {
+            $(document.getElementById('superuser')).css('display', 'none')
+            $(document.getElementById('permissions_box')).css('visibility', 'hidden')
+        }
+    }
+
+    const modal = document.querySelector('.modal');
+
+    function openModal() {
+        modal.classList.add('is-active');
+    }
+
+    function closeModal() {
+        modal.classList.remove('is-active');
+    }
+
+    function deleteData() {
+        var id = document.getElementById('user_id').value;
+        var url = '{{ route("settings_roles_delete", ":id") }}';
+        url = url.replace(':id', id);
+        $("#deleteForm").attr('action', url);
+        $("#deleteForm").submit();
+    }
 </script>
 @stop

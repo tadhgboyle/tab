@@ -52,8 +52,8 @@ $users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
                 <div class="control">
                     <div class="select" id="role">
                         <select name="role" class="input">
-                            @foreach(Roles::getRoles('DESC') as $role)
-                                <option value="{{ $role->id }}" data-staff="{{ $role->staff ? 1 : 0 }}" {{ isset($user->role) && $user->role == $role->id ? "selected" : "" }}>{{ $role->name }}</option>
+                            @foreach(Roles::getRolesAvailable(Auth::user()->role) as $role)
+                                <option value="{{ $role->id }}" data-staff="{{ $role->staff ? 1 : 0 }}" {{ (isset($user->role) && $user->role == $role->id) || old('role') == $role->id ? "selected" : "" }}>{{ $role->name }}</option>
                             @endforeach
                         </select>      
                     </div>          
@@ -173,14 +173,6 @@ $users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
         }
     }
 
-    function deleteData() {
-        var id = document.getElementById('user_id').value;
-        var url = '{{ route("users_delete", ":id") }}';
-        url = url.replace(':id', id);
-        $("#deleteForm").attr('action', url);
-        $("#deleteForm").submit();
-    }
-
     const modal = document.querySelector('.modal');
 
     function openModal() {
@@ -189,6 +181,14 @@ $users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
 
     function closeModal() {
         modal.classList.remove('is-active');
+    }
+
+    function deleteData() {
+        var id = document.getElementById('user_id').value;
+        var url = '{{ route("users_delete", ":id") }}';
+        url = url.replace(':id', id);
+        $("#deleteForm").attr('action', url);
+        $("#deleteForm").submit();
     }
 </script>
 @endsection

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Roles;
 use Validator;
 use App\User;
 use App\UserLimits;
@@ -21,9 +22,7 @@ class UsersController extends Controller
             'password' => 'required_unless:role,camper|nullable|confirmed|min:6',
         ]);
         if ($validator->fails()) {
-            return redirect('/users/new')
-                ->withInput()
-                ->withErrors($validator);
+            return redirect()->route('users_new')->withInput()->withErrors($validator);
         }
 
         // Create a new User object and hash it's password if required by their role
@@ -46,7 +45,8 @@ class UsersController extends Controller
         $user->balance = $balance;
         $user->role = $request->role;
 
-        if ($request->role != "camper") $user->password = bcrypt($request->password);
+        $staff_roles = array_column(Roles::getStaffRoles(), 'name');
+        if (in_array($request->role, $staff_roles)) $user->password = bcrypt($request->password);
 
         $user->save();
 
@@ -57,18 +57,15 @@ class UsersController extends Controller
             empty($request->duration[$category]) ? $duration = 0 : $duration = $request->duration[$category];
             // Default to unlimited limit if not specified
             if (empty($limit)) $limit = -1;
-            if ($limit < -1) {
-                return redirect()
-                    ->back()
-                    ->with('error', 'Limit must be -1 or above for ' . ucfirst($category) . '. (-1 means no limit, 0 means not allowed.)')
-                    ->withInput($request->all());
+            else if ($limit < -1) {
+                return redirect()>back()->with('error', 'Limit must be -1 or above for ' . ucfirst($category) . '. (-1 means no limit)')->withInput($request->all());
             }
             UserLimits::updateOrCreate(
                 ['user_id' => $user->id, 'category' => $category],
                 ['limit_per' => $limit, 'duration' => $duration, 'editor_id' => $request->editor_id]
             );
         }
-        return redirect('/users')->with('success', 'Created user ' . $request->full_name . '.');
+        return redirect()->route('users_list')->with('success', 'Created user ' . $request->full_name . '.');
     }
 
     public function edit(Request $request)
@@ -81,22 +78,26 @@ class UsersController extends Controller
             'role' => 'required',
         ]);
         if ($validator->fails()) {
-            return redirect()->back()
-                ->withInput($request->all())
-                ->withErrors($validator);
+            return redirect()->back()->withInput()->withErrors($validator);
         }
 
         $password = null;
-        $old_role = strtolower(User::find($request->id)->role);
-        $new_role = strtolower($request->role);
-        $staff_roles = ['cashier', 'administrator'];
+        $old_role = Roles::idToName(User::find($request->id)->role);
+
+        if (!in_array($request->role, array_column(Roles::getRolesAvailable($request->user()->role), 'id'))) {
+            return redirect()->back()->with('error', 'You cannot manage that role.')->withInput();
+        }
+
+        $new_role = Roles::idToName($request->role);
+        $staff_roles = array_column(Roles::getStaffRoles(), 'name');
+
         // Update their category limits
         foreach ($request->limit as $category => $limit) {
             $duration = 0;
             empty($request->duration[$category]) ? $duration = 0 : $duration = $request->duration[$category];
             if (empty($limit)) $limit = -1;
-            if ($limit < -1) {
-                return redirect()->back()->with('error', 'Limit must be above -1 for ' . ucfirst($category) . '. (-1 means no limit, 0 means not allowed.)')->withInput($request->all());
+            else if ($limit < -1) {
+                return redirect()->back()->with('error', 'Limit must be above -1 for ' . ucfirst($category) . '. (-1 means no limit)')->withInput($request->all());
             }
             UserLimits::updateOrCreate(
                 ['user_id' => $request->id, 'category' => $category],
@@ -118,10 +119,10 @@ class UsersController extends Controller
                 if ($request->password == $request->password_confirmation) {
                     $password = bcrypt($request->password);
                 } else {
-                    return redirect()->back()->with('error', 'Please confirm the password.')->withInput($request->all());
+                    return redirect()->back()->with('error', 'Please confirm the password.')->withInput();
                 }
             } else {
-                return redirect()->back()->with('error', 'Please enter a password.')->withInput($request->all());
+                return redirect()->back()->with('error', 'Please enter a password.')->withInput();
             }
         }
         // If new role is camper
@@ -130,12 +131,12 @@ class UsersController extends Controller
         DB::table('users')
             ->where('id', $request->id)
             ->update(['full_name' => $request->full_name, 'username' => $request->username, 'balance' => $request->balance, 'role' => $request->role, 'password' => $password]);
-        return redirect('/users')->with('success', 'Updated user ' . $request->full_name . '.');
+        return redirect()->route('users_list')->with('success', 'Updated user ' . $request->full_name . '.');
     }
 
     public function delete($id)
     {
         User::where('id', $id)->update(['deleted' => true]);
-        return redirect('/users')->with('success', 'Deleted user ' . User::find($id)->full_name . '.');
+        return redirect()->route('users_list')->with('success', 'Deleted user ' . User::find($id)->full_name . '.');
     }
 }
