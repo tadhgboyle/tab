@@ -181,7 +181,6 @@ if (!is_null($role)) $role_permissions = json_decode($role->permissions);
 <script>
     $(document).ready(function() {
         updateStaffInfo($('input[type=checkbox][name=staff]').prop('checked'));
-        updatePermissionSU($('input[type=checkbox][name=superuser]').prop('checked'));
     });
         
     $('input[type=checkbox][name=staff]').change(function() {
@@ -194,11 +193,11 @@ if (!is_null($role)) $role_permissions = json_decode($role->permissions);
 
     function updateStaffInfo(staff) {
         if (staff) {
-            $(document.getElementById('superuser')).css('display', 'block')
-            $(document.getElementById('permissions_box')).css('visibility', 'visible')
+            $(document.getElementById('superuser')).show();
+            $(document.getElementById('permissions_box')).css({opacity: 0.0, visibility: 'visible'}).animate({opacity: 1.0});
         } else {
-            $(document.getElementById('superuser')).css('display', 'none')
-            $(document.getElementById('permissions_box')).css('visibility', 'hidden')
+            $(document.getElementById('superuser')).hide();
+            $(document.getElementById('permissions_box')).show().animate({opacity: 0.0});
         }
     }
 
