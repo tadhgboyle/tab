@@ -25,7 +25,7 @@ class UserLimitsController extends Controller
     public static function findSpent($user, $category, $duration)
     {
         // First, if they have unlimited money for this category, let's grab all their transactions
-        if (UserLimitsController::findLimit($user, $category) == -1) $transactions = Transactions::where([['purchaser_id', $user], ['status', 0]])->get();
+        if (self::findLimit($user, $category) == -1) $transactions = Transactions::where([['purchaser_id', $user], ['status', 0]])->get();
         // Determine how far back to grab transactions from
         else ($transactions = Transactions::where([['created_at', '>=', Carbon::now()->subDays($duration == "day" ? 1 : 7)->toDateTimeString()], ['purchaser_id', $user], ['status', 0]])->get());
 

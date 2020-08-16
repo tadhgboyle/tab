@@ -83,7 +83,6 @@ Documentation (in the form of a printable user handbook) is being written.
 *High to Low priority sort*
 - Fix everything in Issues/Bugs
 - Categories should use an ID, and be serialized into each order product incase they are deleted.
-- Order status between "Normal" and "Returned" for when some items (but not all) are returned.
 - Disable submit button when anything goes wrong *(Remaining: Stock, Categories)* 
     - Then on the backend, if they somehow bypass the disabled submit button: on errors during order, return back with their input + quantities
 - Rework how to select items and quantities. Right now it is somewhat not intuitive. Options:

@@ -55,9 +55,17 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
                     </td>
                     <td>
                         <div>
-                            {!! !OrderController::checkReturned($transaction->id)
-                            ? "<span class=\"tag is-success is-medium\">Normal</span>"
-                            : "<span class=\"tag is-danger is-medium\">Returned</span>" !!}
+                            @switch(OrderController::checkReturned($transaction->id))
+                                @case(0)
+                                    <span class="tag is-success is-medium">Normal</span>
+                                    @break
+                                @case(1)
+                                    <span class="tag is-danger is-medium">Returned</span>
+                                    @break
+                                @case(2)
+                                    <span class="tag is-warning is-medium">Semi Returned</span>
+                                    @break
+                            @endswitch
                         </div>
                     </td>
                     @if($orders_view)
