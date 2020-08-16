@@ -72,6 +72,7 @@ use App\Http\Controllers\UserLimitsController;
             "columnDefs": [
                 { 
                     "orderable": false, 
+                    "searchable": false,
                     "targets": 5
                 }
             ]

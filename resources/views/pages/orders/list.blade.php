@@ -87,6 +87,7 @@ $(document).ready(function() {
         "columnDefs": [
             { 
                 "orderable": false, 
+                "searchable": false,
                 "targets": [
                     4, 
                     @if ($orders_view)
