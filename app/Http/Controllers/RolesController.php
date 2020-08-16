@@ -58,18 +58,20 @@ class RolesController extends Controller
         if ($request->has('staff')) $staff = true;
 
         $superuser = false;
-        if ($request->has('superuser')) $superuser = true;
 
-        $permissions = array();
-        if (is_array($request->permissions)) {
-            foreach ($request->permissions as $permission => $value) {
-                if ($value) $permissions[] = $permission;
-                echo $permission;
+        if ($staff) {
+            $permissions = array();
+            if (is_array($request->permissions)) {
+                foreach ($request->permissions as $permission => $value) {
+                    if ($value) $permissions[] = $permission;
+                    echo $permission;
+                }
             }
-        }
-        $permissions = json_encode($permissions);
+            $permissions = json_encode($permissions);
+            if ($request->has('superuser')) $superuser = true;
+        } else $permissions = '[]';
 
-        // WHEN BACK: add "users" permissions automatically
+        // TODO: add "users" (etc) permissions automatically so they dont need to select another checkbox on form
 
         DB::table('roles')
             ->where('id', $request->id)
@@ -79,6 +81,6 @@ class RolesController extends Controller
 
     public function delete(Request $request)
     {
-        // TODO
+        // TODO: Figure out what to do with users whos role was deleted....
     }
 }

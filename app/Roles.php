@@ -17,18 +17,23 @@ class Roles extends Model
         return Roles::orderBy('order', $order)->get();
     }
 
-    public static function getStaffRoles()
+    public static function getStaffRoles():array
     {
-        return Roles::select('id', 'name', 'staff')->orderBy('order', 'ASC')->where('staff', true)->get()->toArray();
+        return Roles::select('id', 'name')->orderBy('order', 'ASC')->where('staff', true)->get()->toArray();
     }
 
-    public static function getRolesAvailable(int $caller)
+    public static function getRolesAvailable(int $caller):array
     {
         $roles = array();
         foreach (Roles::getRoles('DESC') as $role) {
             if (self::canInteract($caller, $role->id)) $roles[] = $role;
         }
         return $roles;
+    }
+
+    public static function getPermissions(int $role): array
+    {
+        return json_decode(Roles::where('id', $role)->pluck('permissions')->first(), true);
     }
 
     public static function idToName(int $id): string
@@ -47,6 +52,6 @@ class Roles extends Model
     public static function hasPermission(int $role, string $permission): bool
     {
         if (Roles::where('id', $role)->pluck('superuser')->first()) return true;
-        return in_array($permission, json_decode(Roles::where('id', $role)->pluck('permissions')->first(), true));
+        return in_array($permission, self::getPermissions($role));
     }
 }

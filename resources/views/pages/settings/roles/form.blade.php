@@ -1,7 +1,7 @@
 @php
 use App\Roles;
 $role = Roles::find(request()->route('id'));
-if (!is_null($role) && !Roles::canInteract(Auth::user()->role, request()->route('id'))) return redirect('settings')->with('error', 'You cannot interact with that group.')->send();
+if (!is_null($role) && !Roles::canInteract(Auth::user()->role, request()->route('id'))) return redirect()->route('settings')->with('error', 'You cannot interact with that role.')->send();
 if (!is_null($role)) $role_permissions = json_decode($role->permissions);
 @endphp
 @extends('layouts.default')
@@ -54,12 +54,14 @@ if (!is_null($role)) $role_permissions = json_decode($role->permissions);
                     <a class="button is-outlined" href="{{ route('settings') }}">
                         <span>Cancel</span>
                     </a>
-                    <button class="button is-danger is-outlined is-pulled-right" type="button" onclick="openModal();">
-                        <span>Delete</span>
-                        <span class="icon is-small">
-                            <i class="fas fa-times"></i>
-                        </span>
-                    </button>
+                    @if(!is_null($role))
+                        <button class="button is-danger is-outlined is-pulled-right" type="button" onclick="openModal();">
+                            <span>Delete</span>
+                            <span class="icon is-small">
+                                <i class="fas fa-times"></i>
+                            </span>
+                        </button>
+                    @endif
                 </div>
         </div>
     </div>
@@ -181,6 +183,9 @@ if (!is_null($role)) $role_permissions = json_decode($role->permissions);
 <script>
     $(document).ready(function() {
         updateStaffInfo($('input[type=checkbox][name=staff]').prop('checked'));
+        if ($('input[type=checkbox][name=superuser]').prop('checked')) {
+            updatePermissionSU(true);
+        }
     });
         
     $('input[type=checkbox][name=staff]').change(function() {
@@ -193,10 +198,10 @@ if (!is_null($role)) $role_permissions = json_decode($role->permissions);
 
     function updateStaffInfo(staff) {
         if (staff) {
-            $(document.getElementById('superuser')).show();
+            $(document.getElementById('superuser')).show(100);
             $(document.getElementById('permissions_box')).css({opacity: 0.0, visibility: 'visible'}).animate({opacity: 1.0});
         } else {
-            $(document.getElementById('superuser')).hide();
+            $(document.getElementById('superuser')).hide(100);
             $(document.getElementById('permissions_box')).show().animate({opacity: 0.0});
         }
     }
