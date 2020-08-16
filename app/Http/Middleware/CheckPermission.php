@@ -19,12 +19,12 @@ class CheckPermission
         $permissions = $request->route()->action['permission'];
         if (!is_array($permissions)) {
             if (!Roles::hasPermission($request->user()->role, $permissions)) {
-                return redirect()->route('403');
+                return redirect()->route('index')->with('error', "You do not have permission to access that page.");
             }
         } else {
             foreach ($permissions as $permission) {
                 if (!Roles::hasPermission($request->user()->role, $permission)) {
-                    return redirect()->route('403');
+                    return redirect()->route('index')->with('error', "You do not have permission to access that page.");
                 }
             }
         }
