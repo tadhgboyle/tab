@@ -61,9 +61,9 @@ Route::middleware('auth')->group(function () {
 
             Route::group(['permission' => 'orders_return'], function() {
                 Route::get('/orders/return/order/{id}', 'OrderController@returnOrder')->where('id', '[0-9]+')->name('orders_return');
-                Route::get('/orders/return/item/{item}/{order}', 'OrderController@returnItem')->where(['id', '[0-9]+'], ['order', '[0-9]+'])->name('orders_return_item');
+                Route::get('/orders/return/item/{item}/{order}', 'OrderController@returnItem')->where(['item', '[0-9]+'], ['order', '[0-9]+'])->name('orders_return_item');
             });
-            });
+        });
 
         /* 
          * Users 

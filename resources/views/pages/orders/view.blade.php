@@ -28,10 +28,12 @@ $return_order = Roles::hasPermission(Auth::user()->role, 'orders_return');
         <p><strong>Status:</strong> @switch($transaction_returned) @case(0) Not Returned @break @case(1) Returned @break @case(2) Semi Returned @break @endswitch</p>
         <br>
         @if($transaction_returned != 1 && $return_order)
-            <form>
-                <input type="hidden" id="transaction_id" value="{{ $transaction->id }}">
-                <a href="javascript:;" data-toggle="modal" data-target="#returnModal" class="button is-danger">Return</a>
-            </form>
+            <button class="button is-danger is-outlined" type="button" onclick="openModal();">
+                <span>Return</span>
+                <span class="icon is-small">
+                    <i class="fas fa-undo"></i>
+                </span>
+            </button>
         @endif
     </div>
     <div class="column">
@@ -70,10 +72,7 @@ $return_order = Roles::hasPermission(Auth::user()->role, 'orders_return');
                                 <td>
                                     <div>
                                         @if($transaction->status == 0 && $item_info['returned'] < $item_info['quantity']) 
-                                            <form>
-                                                <input type="hidden" id="item_id" value="{{ $item_info['id'] }}">
-                                                <a href="javascript:;" data-toggle="modal" onclick="window.location='/orders/return/item/{{ $item_info['id'] }}/{{ $transaction->id }}';" class="button is-danger is-small">Return ({{ $item_info['quantity'] - $item_info['returned'] }})</a>
-                                            </form>
+                                            <button class="button is-danger is-small" onclick="openProductModal({{ $item_info['id'] }});">Return ({{ $item_info['quantity'] - $item_info['returned'] }})</button>
                                         @else
                                             <div>Returned</div>
                                         @endif
@@ -88,38 +87,43 @@ $return_order = Roles::hasPermission(Auth::user()->role, 'orders_return');
     </div>
 </div>
 
-<div id="returnModal" class="modal fade" role="dialog">
-    <div class="modal-dialog ">
-        <form action="" id="returnForm" method="get">
-            <div class="modal-content">
-                <div class="modal-body">
-                    @csrf
-                    <p class="text-center">Are you sure you want to return this transaction?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="button is-info" data-dismiss="modal">Cancel</button>
-                    <button type="submit" name="" class="button is-danger" data-dismiss="modal" onclick="returnData()">Return</button>
-                </div>
-            </div>
-        </form>
+@if(!is_null($transaction))
+<div class="modal modal-order">
+    <div class="modal-background" onclick="closeModal();"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Confirmation</p>
+        </header>
+        <section class="modal-card-body">
+            <p>Are you sure you want to return this transaction?</p>
+            <form action="" id="returnForm" method="GET">
+                @csrf
+            </form>
+        </section>
+        <footer class="modal-card-foot">
+            <button class="button is-success" type="submit" onclick="returnData();">Confirm</button>
+            <button class="button" onclick="closeModal();">Cancel</button>
+        </footer>
     </div>
 </div>
+@endif
 
-<div id="returnModal" class="modal fade" role="dialog">
-    <div class="modal-dialog ">
-        <form action="" id="returnForm" method="get">
-            <div class="modal-content">
-                <div class="modal-body">
-                    @csrf
-                    <p class="text-center">Are you sure you want to return this item?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="button is-info" data-dismiss="modal">Cancel</button>
-                    <button type="submit" name="" class="button is-danger" data-dismiss="modal"
-                        onclick="returnData()">Return</button>
-                </div>
-            </div>
-        </form>
+<div class="modal modal-product">
+    <div class="modal-background" onclick="closeModal();"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Confirmation</p>
+        </header>
+        <section class="modal-card-body">
+            <p>Are you sure you want to return this product?</p>
+            <form action="" id="returnItemForm" method="GET">
+                @csrf
+            </form>
+        </section>
+        <footer class="modal-card-foot">
+            <button class="button is-success" type="submit" onclick="returnProductData();">Confirm</button>
+            <button class="button" onclick="closeModal();">Cancel</button>
+        </footer>
     </div>
 </div>
 
@@ -142,11 +146,36 @@ $return_order = Roles::hasPermission(Auth::user()->role, 'orders_return');
         $('#table_container').css('visibility', 'visible');
     });
 
+    const modal_order = document.querySelector('.modal-order');
+    function openModal() {
+        modal_order.classList.add('is-active');
+    }
+    function closeModal() {
+        modal_order.classList.remove('is-active');
+    }
     function returnData() {
         let url = '{{ route("orders_return", ":id") }}';
-        url = url.replace(':id', document.getElementById('transaction_id').value);
+        url = url.replace(':id', {{ $transaction->id }});
         $("#returnForm").attr('action', url);
         $("#returnForm").submit();
+    }
+
+    let product = null;
+    const modal_product = document.querySelector('.modal-product');
+    function openProductModal(return_product) {
+        product = return_product;
+        modal_product.classList.add('is-active');
+    }
+    function closeProductModal() {
+        product = null;
+        modal_product.classList.remove('is-active');
+    }
+    function returnProductData() {
+        let url = '{{ route("orders_return_item", [":item", ":order"]) }}';
+        url = url.replace(':item', product);
+        url = url.replace(':order', {{ $transaction->id }});
+        $("#returnItemForm").attr('action', url);
+        $("#returnItemForm").submit();
     }
 </script>
 @endsection
