@@ -53,7 +53,7 @@ $product = Products::find(request()->route('id'));
                 <div class="control">
                     <label class="checkbox label">
                         PST
-                        <input type="checkbox" name="pst" {{ (isset($product->pst) && $product->pst) || old('pst') ? 'checked' : '' }}>
+                        <input type="checkbox" class="js-switch" name="pst" {{ (isset($product->pst) && $product->pst) || old('pst') ? 'checked' : '' }}>
                     </label>
                 </div>
             </div>
@@ -101,7 +101,7 @@ $product = Products::find(request()->route('id'));
             <div class="control">
                 <label class="checkbox label">
                     Unlimited Stock
-                    <input type="checkbox" name="unlimited_stock" {{ (isset($product->unlimited_stock) && $product->unlimited_stock) || old('unlimited_stock') ? 'checked' : '' }}>
+                    <input type="checkbox" class="js-switch" name="unlimited_stock" {{ (isset($product->unlimited_stock) && $product->unlimited_stock) || old('unlimited_stock') ? 'checked' : '' }}>
                 </label>
             </div>
         </div>
@@ -110,7 +110,7 @@ $product = Products::find(request()->route('id'));
             <div class="control">
                 <label class="checkbox label">
                     Stock Override
-                    <input type="checkbox" name="stock_override" {{ (isset($product->stock_override) && $product->stock_override) || old('stock_override') ? 'checked' : '' }}>
+                    <input type="checkbox" class="js-switch" name="stock_override" {{ (isset($product->stock_override) && $product->stock_override) || old('stock_override') ? 'checked' : '' }}>
                 </label>
             </div>
         </div>
@@ -198,5 +198,8 @@ $product = Products::find(request()->route('id'));
     function closeModal() {
         modal.classList.remove('is-active');
     }
+
+    const switches = document.getElementsByClassName("js-switch");
+    for (var i = 0; i < switches.length; i++) { new Switchery(switches.item(i), {color: '#48C774', secondaryColor: '#F56D71'}) }
 </script>
 @endsection
