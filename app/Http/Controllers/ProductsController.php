@@ -19,9 +19,7 @@ class ProductsController extends Controller
             'box_size' => 'not_in:0'
         ]);
         if ($validator->fails()) {
-            return redirect()->back()
-                ->withInput()
-                ->withErrors($validator);
+            return redirect()->back()->withInput()->withErrors($validator);
         }
 
         $pst = false;
@@ -52,22 +50,24 @@ class ProductsController extends Controller
         $product->pst = $pst;
         $product->creator_id = $request->id;
         $product->save();
-        return redirect('/products')->with('success', 'Successfully created ' . $request->name . '.');
+        return redirect()->route('products_list')->with('success', 'Successfully created ' . $request->name . '.');
     }
 
     public function edit(Request $request)
     {
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|min:3',
+            'name' => [
+                'required',
+                'min:2',
+                ValidationRule::unique('productss')->ignore($request->product_id, 'id')
+            ],
             'price' => 'required|numeric',
             'category' => 'required',
             'box_size' => 'not_in:0'
         ]);
         if ($validator->fails()) {
-            return redirect()->back()
-                ->withInput()
-                ->withErrors($validator);
+            return redirect()->back()->withInput()->withErrors($validator);
         }
 
         $pst = false;
@@ -86,22 +86,21 @@ class ProductsController extends Controller
         DB::table('products')
             ->where('id', $request->product_id)
             ->update(['name' => $request->name, 'price' => $request->price, 'category' => $request->category, 'stock' => $stock, 'box_size' => $request->box_size ?? -1, 'unlimited_stock' => $unlimited_stock, 'stock_override' => $stock_override, 'pst' => $pst, 'editor_id' => $request->id]);
-        return redirect('/products')->with('success', 'Successfully edited ' . $request->name . '.');
+        return redirect()->route('products_list')->with('success', 'Successfully edited ' . $request->name . '.');
     }
 
     public function delete($id)
     {
         Products::where('id', $id)->update(['deleted' => true]);
-        return redirect('/products')->with('success', 'Successfully deleted ' . Products::find($id)->name . '.');
+        return redirect()->route('products_list')->with('success', 'Successfully deleted ' . Products::find($id)->name . '.');
     }
 
     public function adjustStock(Request $request)
     {
         $productId = $request->product_id;
         $product = Products::find($productId);
-        if ($product == null) return redirect('/products/adjust')->with('error', 'Invalid Product.');
+        if ($product == null) return redirect()->route('products_adjust')->with('error', 'Invalid Product.');
 
-        // We only flash() not put() so if they go to adjust page later, nothing shows up by default
         session()->flash('last_product', $product);
 
         $validator = Validator::make($request->all(), [
@@ -109,8 +108,7 @@ class ProductsController extends Controller
             'adjust_box' => 'numeric',
         ]);
         if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator);
+            return redirect()->back()->withErrors($validator);
         }
 
         $adjust_stock = $request->adjust_stock;
