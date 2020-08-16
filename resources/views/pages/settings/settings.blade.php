@@ -37,9 +37,6 @@ $manage_categories = Roles::hasPermission(Auth::user()->role, 'settings_categori
                         <input type="number" step="0.01" name="pst" class="input" value="{{ SettingsController::getPst() }}">
                     </div>
                 </div>
-
-                <br>
-                <br>
                                 
                 <div class="control">
                     <button class="button is-success" type="submit">

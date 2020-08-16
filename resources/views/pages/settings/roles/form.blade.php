@@ -32,7 +32,7 @@ if (!is_null($role)) $role_permissions = json_decode($role->permissions);
                     <div class="control">
                         <label class="checkbox label">
                             Staff
-                            <input type="checkbox" name="staff" @if(isset($role->staff) && $role->staff) checked @endif>
+                            <input type="checkbox" class="js-switch" name="staff" @if(isset($role->staff) && $role->staff) checked @endif>
                         </label>
                     </div>
                 </div>
@@ -40,7 +40,7 @@ if (!is_null($role)) $role_permissions = json_decode($role->permissions);
                     <div class="control">
                         <label class="checkbox label">
                             Superuser
-                            <input type="checkbox" name="superuser" @if(isset($role->superuser) && $role->superuser) checked @endif>
+                            <input type="checkbox" class="js-switch" name="superuser" @if(isset($role->superuser) && $role->superuser) checked @endif>
                         </label>
                     </div>
                 </div>
@@ -198,10 +198,10 @@ if (!is_null($role)) $role_permissions = json_decode($role->permissions);
 
     function updateStaffInfo(staff) {
         if (staff) {
-            $(document.getElementById('superuser')).show(100);
+            $(document.getElementById('superuser')).show(200);
             $(document.getElementById('permissions_box')).css({opacity: 0.0, visibility: 'visible'}).animate({opacity: 1.0});
         } else {
-            $(document.getElementById('superuser')).hide(100);
+            $(document.getElementById('superuser')).hide(200);
             $(document.getElementById('permissions_box')).show().animate({opacity: 0.0});
         }
     }
@@ -237,5 +237,8 @@ if (!is_null($role)) $role_permissions = json_decode($role->permissions);
         $("#deleteForm").attr('action', url);
         $("#deleteForm").submit();
     }
+
+    const switches = document.getElementsByClassName("js-switch");
+    for (var i = 0; i < switches.length; i++) { new Switchery(switches.item(i), {color: '#48C774', secondaryColor: '#F56D71'}) }
 </script>
 @stop
