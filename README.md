@@ -7,6 +7,7 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 - :page_with_curl: [DataTables](https://datatables.net) for the fast and interactive tables.
 - :bar_chart: [ChartJS](https://www.chartjs.org) for the beautiful statistics charts, and [ConsoleTVs/Charts](https://github.com/ConsoleTVs/Charts) for the Laravel package.
 - :art: [Bulma](https://bulma.io) for their lightweight, easy to use and great-looking CSS framework.
+- :white_check_mark::x: [Switchery](https://github.com/abpetkov/switchery) for the simple to use & nice looking Switches replacement for ugly HTML checkboxes.
 
 *Note: Some migrations are not up to date. I am manually editing my local MySQL tables and will update migrations when it is more stable.*
 
@@ -15,10 +16,13 @@ Documentation (in the form of a printable user handbook) is being written.
 ## Features (so far):
 
 - User control
-    - Three different access levels to choose from (Camper, Cashier and Administrator). Change each user's role anytime.
-        - Cashiers can ring up orders
-        - Administrators can create/edit/delete users, products, categories and settings. They can also view user history and see detailed information about every order.
-        - Setting to control if Cashiers can ring up themselves or not.
+    - Superusers can create as many roles as they want, and grant them specific permissions as well as hierarchy.
+        - Some permissions include: 
+            - `users_list`: This role can view the user list.
+            - `users_manage`: This role can edit/create users (but only edit users which have a role lower than theirs in terms of hierarchy).
+            - `products_adjust`: This role can adjust product stock, but they will need `products_list` and `products_manage` in order to list or create products.
+            - `settings_categories_manage`: This role can create/edit product categories in the Settings page.
+            - And many more! I try to add as much customizability as possible for permissions.
     - Users can be edited anytime, with an easy to use interface.
     - Users can be (soft) deleted anytime.
 - Parental control
@@ -78,13 +82,14 @@ Documentation (in the form of a printable user handbook) is being written.
 
 *High to Low priority sort*
 - Fix everything in Issues/Bugs
+- Categories should use an ID, and be serialized into each order product incase they are deleted.
 - Order status between "Normal" and "Returned" for when some items (but not all) are returned.
 - Disable submit button when anything goes wrong *(Remaining: Stock, Categories)* 
     - Then on the backend, if they somehow bypass the disabled submit button: on errors during order, return back with their input + quantities
-- Change how to select items and quantities. Right now it is somewhat not intuitive. Options:
+- Rework how to select items and quantities. Right now it is somewhat not intuitive. Options:
     - 1. Allow changing quantity after checking box
     - 2. Remove checkbox entirely, and instead consider all items with >= 1 quantity as "selected"
-    - 3. Similar to GBBC tab, click an item to add it to a list of all items. Click more times for more quantity
+    - 3. **Similar to GBBC tab, click an item to add it to a list of all items. Click more times for more quantity** (Priority)
 - Complete inventory features
     - Remaining: 
         - "Set stock" in adjust page as well as add/subtract.
@@ -106,8 +111,6 @@ Documentation (in the form of a printable user handbook) is being written.
     - Price changes
     - Etc
 - Bulk change prices of items (Everything 10% *off* or everything 20% *more* etc)
-- Add Manager role (Or let them make all their own roles with permissions?).
-    - All Cashier permissions + adding/editing products
 - Add PDF printing of all users transactions
     - In settings page, allow to upload a custom logo to be on invoice
 - Seperate orders, users and stats into weeks (Like Green Bay)
@@ -116,9 +119,7 @@ Documentation (in the form of a printable user handbook) is being written.
     - Serialize so if it gets returned they get the discount back
 
 ## Issues/Bugs:
-- Categories should use an ID, and be serialized into each order product incase they are deleted.
 - When an error happens on order screen, it returns back with selection, but when you unselect a box it all gets NaN
-- Fix alerts close button + auto fading.
 - Use `route()` helper incase we need to easily change routes.
 - Dont import classes in views, use controllers to return views instead.
 
