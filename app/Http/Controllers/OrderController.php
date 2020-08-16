@@ -202,7 +202,7 @@ class OrderController extends Controller
     public function returnOrder($id)
     {
         // This should never happen, but a good security measure
-        if (self::checkReturned($id)) return redirect()->back()->with('error', 'That order has already been fully returned.');
+        if (self::checkReturned($id) == 1) return redirect()->back()->with('error', 'That order has already been fully returned.');
 
         $total_tax = $total_price = 0;
         $order_info = Transactions::find($id);
@@ -229,7 +229,7 @@ class OrderController extends Controller
     public function returnItem($item, $order)
     {
         // this shouldnt happen, but worth a check.
-        if (self::checkReturned($order)) return redirect()->back()->with('error', 'That order has already been returned, so you cannot return an item from it.');
+        if (self::checkReturned($order) == 1) return redirect()->back()->with('error', 'That order has already been returned, so you cannot return an item from it.');
 
         $order_info = Transactions::find($order);
         $user = User::find($order_info->purchaser_id);
