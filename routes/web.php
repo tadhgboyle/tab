@@ -12,6 +12,7 @@
 */
 
 use App\Http\Middleware\CheckPermission;
+use App\Roles;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', function () {
@@ -23,7 +24,8 @@ Route::post('/login/auth', 'LoginController@auth');
 Route::middleware('auth')->group(function () {
 
     Route::get('/', function () {
-        return view('pages.index');
+        if (Roles::hasPermission(Auth::user()->role, 'cashier')) return view('pages.index');
+        else return view('pages.403');
     })->name('index');
     Route::get('/logout', 'LoginController@logout')->name('logout');
 
