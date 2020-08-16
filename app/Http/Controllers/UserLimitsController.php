@@ -38,8 +38,10 @@ class UserLimitsController extends Controller
             foreach (explode(", ", $transaction['products']) as $transaction_product) {
                 if (strtolower($category) == Products::find(strtok($transaction_product, "*"))->category) {
                     $item_info = OrderController::deserializeProduct($transaction_product);
+                    $tax_percent = $item_info['gst'];
+                    if ($item_info['pst'] != "null") $tax_percent += $item_info['pst'] - 1;
                     $quantity_available = $item_info['quantity'] - $item_info['returned'];
-                    $category_spent += $item_info['price'] * $quantity_available;
+                    $category_spent += ($item_info['price'] * $quantity_available) * $tax_percent;
                 }
             }
         }
