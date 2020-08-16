@@ -167,7 +167,9 @@ class OrderController extends Controller
                 foreach ($products as $product) {
                     $product_metadata = OrderController::deserializeProduct($product);
                     if ($product_metadata['category'] == $category) {
-                        $category_spent += ($product_metadata['price'] * $product_metadata['quantity']);
+                        $tax_percent = $product_metadata['gst'];
+                        if ($product_metadata['pst'] != "null") $tax_percent += $product_metadata['pst'] - 1;
+                        $category_spent += ($product_metadata['price'] * $product_metadata['quantity']) * $tax_percent;
                     }
                 }
                 // Break loop if we exceed their limit
