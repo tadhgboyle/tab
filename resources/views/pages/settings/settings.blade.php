@@ -158,6 +158,7 @@ $manage_categories = Roles::hasPermission(Auth::user()->role, 'settings_categori
                 "columnDefs": [
                     { 
                         "orderable": false, 
+                        "searchable": false,
                         "targets": 1
                     }
                 ]
@@ -175,6 +176,7 @@ $manage_categories = Roles::hasPermission(Auth::user()->role, 'settings_categori
                 "columnDefs": [
                     { 
                         "orderable": false, 
+                        "searchable": false,
                         "targets": [1, 2, 3]
                     }
                 ]

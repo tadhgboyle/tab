@@ -87,7 +87,7 @@ $return_order = Roles::hasPermission(Auth::user()->role, 'orders_return');
     </div>
 </div>
 
-@if(!is_null($transaction))
+@if(!is_null($transaction) && $return_order)
 <div class="modal modal-order">
     <div class="modal-background" onclick="closeModal();"></div>
     <div class="modal-card">
@@ -108,6 +108,7 @@ $return_order = Roles::hasPermission(Auth::user()->role, 'orders_return');
 </div>
 @endif
 
+@if($return_order)
 <div class="modal modal-product">
     <div class="modal-background" onclick="closeModal();"></div>
     <div class="modal-card">
@@ -126,6 +127,7 @@ $return_order = Roles::hasPermission(Auth::user()->role, 'orders_return');
         </footer>
     </div>
 </div>
+@endif
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -137,6 +139,7 @@ $return_order = Roles::hasPermission(Auth::user()->role, 'orders_return');
                 "columnDefs": [
                     { 
                         "orderable": false, 
+                        "searchable": false,
                         "targets": [4]
                     }
                 ]
@@ -146,36 +149,38 @@ $return_order = Roles::hasPermission(Auth::user()->role, 'orders_return');
         $('#table_container').css('visibility', 'visible');
     });
 
-    const modal_order = document.querySelector('.modal-order');
-    function openModal() {
-        modal_order.classList.add('is-active');
-    }
-    function closeModal() {
-        modal_order.classList.remove('is-active');
-    }
-    function returnData() {
-        let url = '{{ route("orders_return", ":id") }}';
-        url = url.replace(':id', {{ $transaction->id }});
-        $("#returnForm").attr('action', url);
-        $("#returnForm").submit();
-    }
+    @if($return_order)
+        const modal_order = document.querySelector('.modal-order');
+        function openModal() {
+            modal_order.classList.add('is-active');
+        }
+        function closeModal() {
+            modal_order.classList.remove('is-active');
+        }
+        function returnData() {
+            let url = '{{ route("orders_return", ":id") }}';
+            url = url.replace(':id', {{ $transaction->id }});
+            $("#returnForm").attr('action', url);
+            $("#returnForm").submit();
+        }
 
-    let product = null;
-    const modal_product = document.querySelector('.modal-product');
-    function openProductModal(return_product) {
-        product = return_product;
-        modal_product.classList.add('is-active');
-    }
-    function closeProductModal() {
-        product = null;
-        modal_product.classList.remove('is-active');
-    }
-    function returnProductData() {
-        let url = '{{ route("orders_return_item", [":item", ":order"]) }}';
-        url = url.replace(':item', product);
-        url = url.replace(':order', {{ $transaction->id }});
-        $("#returnItemForm").attr('action', url);
-        $("#returnItemForm").submit();
-    }
+        let product = null;
+        const modal_product = document.querySelector('.modal-product');
+        function openProductModal(return_product) {
+            product = return_product;
+            modal_product.classList.add('is-active');
+        }
+        function closeProductModal() {
+            product = null;
+            modal_product.classList.remove('is-active');
+        }
+        function returnProductData() {
+            let url = '{{ route("orders_return_item", [":item", ":order"]) }}';
+            url = url.replace(':item', product);
+            url = url.replace(':order', {{ $transaction->id }});
+            $("#returnItemForm").attr('action', url);
+            $("#returnItemForm").submit();
+        }
+    @endif
 </script>
 @endsection

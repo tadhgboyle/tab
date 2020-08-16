@@ -128,6 +128,7 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
             "columnDefs": [
                 { 
                     "orderable": false, 
+                    "searchable": false,
                     "targets": [
                         3, 
                         @if($orders_view)

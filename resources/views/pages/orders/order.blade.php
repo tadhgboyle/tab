@@ -90,6 +90,7 @@ $users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
             "columnDefs": [
                 { 
                     "orderable": false, 
+                    "searchable": false,
                     "targets": [0, 1]
                 }
             ]

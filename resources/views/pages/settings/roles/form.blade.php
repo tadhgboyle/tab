@@ -196,14 +196,13 @@ if (!is_null($role)) $role_permissions = json_decode($role->permissions);
         updatePermissionSU($(this).prop('checked'))
     });
 
-    // TODO: This is sort of glitchy looking sometimes when toggled on
     function updateStaffInfo(staff) {
         if (staff) {
             $(document.getElementById('superuser')).show(200);
             $(document.getElementById('permissions_box')).css({opacity: 0.0, visibility: 'visible'}).animate({opacity: 1.0});
         } else {
             $(document.getElementById('superuser')).hide(200);
-            $(document.getElementById('permissions_box')).show().animate({opacity: 0.0});
+            $(document.getElementById('permissions_box')).css('visibility', 'hidden');
         }
     }
 

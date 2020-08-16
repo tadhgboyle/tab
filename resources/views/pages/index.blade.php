@@ -47,6 +47,7 @@ use Illuminate\Support\Facades\Auth;
             "columnDefs": [
                 { 
                     "orderable": false, 
+                    "searchable": false,
                     "targets": 1
                 }
             ]

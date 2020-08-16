@@ -68,6 +68,7 @@ $products_manage = Roles::hasPermission(Auth::user()->role, 'products_manage');
             "columnDefs": [
                 {
                     "orderable": false,
+                    "searchable": false,
                     "targets": [
                         5, 
                         @if ($products_manage)
