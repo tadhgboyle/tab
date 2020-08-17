@@ -23,12 +23,12 @@
     $(document).ready(function() {
         setTimeout(function() {
             $('.notification').each(function() {
-                $(this).hide(200);
+                $(this).fadeOut(200);
             });
         }, 2250);
     });
 
     $('.delete').click(function() {
-        $(this.parentNode).hide(100);
+        $(this.parentNode).fadeOut(100);
     });
 </script>

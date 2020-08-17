@@ -110,7 +110,7 @@ $return_order = Roles::hasPermission(Auth::user()->role, 'orders_return');
 
 @if($return_order)
 <div class="modal modal-product">
-    <div class="modal-background" onclick="closeModal();"></div>
+    <div class="modal-background" onclick="closeProductModal();"></div>
     <div class="modal-card">
         <header class="modal-card-head">
             <p class="modal-card-title">Confirmation</p>
@@ -123,7 +123,7 @@ $return_order = Roles::hasPermission(Auth::user()->role, 'orders_return');
         </section>
         <footer class="modal-card-foot">
             <button class="button is-success" type="submit" onclick="returnProductData();">Confirm</button>
-            <button class="button" onclick="closeModal();">Cancel</button>
+            <button class="button" onclick="closeProductModal();">Cancel</button>
         </footer>
     </div>
 </div>

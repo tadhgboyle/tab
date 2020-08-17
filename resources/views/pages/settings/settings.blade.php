@@ -12,81 +12,85 @@ $manage_categories = Roles::hasPermission(Auth::user()->role, 'settings_categori
 <h2 class="title has-text-weight-bold">Settings</h2>
 <div class="columns">
     @if($manage_general)
-        <div class="column box is-3">
-            <h4 class="title has-text-weight-bold is-4">General</h4>
-            @include('includes.messages')
-            <form action="/settings" id="settings" method="POST">
-                @csrf
+        <div class="column is-3">
+            <div class="box">
+                <h4 class="title has-text-weight-bold is-4">General</h4>
+                @include('includes.messages')
+                <form action="/settings" id="settings" method="POST">
+                    @csrf
 
-                <div class="field">
-                    <label class="label">GST<sup style="color: red">*</sup></label>
-                    <div class="control has-icons-left">
-                        <span class="icon is-small is-left">
-                            <i class="fas fa-percent"></i>
-                        </span>
-                        <input type="number" step="0.01" name="gst" class="input" value="{{ SettingsController::getGst() }}">
+                    <div class="field">
+                        <label class="label">GST<sup style="color: red">*</sup></label>
+                        <div class="control has-icons-left">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-percent"></i>
+                            </span>
+                            <input type="number" step="0.01" name="gst" class="input" value="{{ SettingsController::getGst() }}">
+                        </div>
                     </div>
-                </div>
 
-                <div class="field">
-                    <label class="label">PST<sup style="color: red">*</sup></label>
-                    <div class="control has-icons-left">
-                        <span class="icon is-small is-left">
-                            <i class="fas fa-percent"></i>
-                        </span>
-                        <input type="number" step="0.01" name="pst" class="input" value="{{ SettingsController::getPst() }}">
+                    <div class="field">
+                        <label class="label">PST<sup style="color: red">*</sup></label>
+                        <div class="control has-icons-left">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-percent"></i>
+                            </span>
+                            <input type="number" step="0.01" name="pst" class="input" value="{{ SettingsController::getPst() }}">
+                        </div>
                     </div>
-                </div>
-                                
-                <div class="control">
-                    <button class="button is-success" type="submit">
-                        <span class="icon is-small">
-                            <i class="fas fa-save"></i>
-                        </span>
-                        <span>Save</span>
-                    </button>
-                </div>
-            </form>
+                                    
+                    <div class="control">
+                        <button class="button is-success" type="submit">
+                            <span class="icon is-small">
+                                <i class="fas fa-save"></i>
+                            </span>
+                            <span>Save</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     @endif
 
     <div class="column"></div>
 
     @if($manage_categories)
-        <div class="column box is-3">
-            <h4 class="title has-text-weight-bold is-4">Categories</h4>
-            <table id="category_list">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach(SettingsController::getCategories() as $category)
-                    <tr>
-                        <td>
-                            <div>{{ ucfirst($category->value) }}</div>
-                        </td>
-                        <td>
-                            <div>
-                                <form>
-                                    <input type="hidden" id="{{ $category->value }}" value="{{ $category->value }}">
-                                    <a href="javascript:;">Edit</a>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-            <br>
-            <a class="button is-success" href="/settings/categories/new">
-                <span class="icon is-small">
-                    <i class="fas fa-plus"></i>
-                </span>
-                <span>New</span>
-            </a>
+        <div class="column is-3">
+            <div class="box">
+                <h4 class="title has-text-weight-bold is-4">Categories</h4>
+                <table id="category_list">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach(SettingsController::getCategories() as $category)
+                        <tr>
+                            <td>
+                                <div>{{ ucfirst($category->value) }}</div>
+                            </td>
+                            <td>
+                                <div>
+                                    <form>
+                                        <input type="hidden" id="{{ $category->value }}" value="{{ $category->value }}">
+                                        <a href="javascript:;">Edit</a>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                <br>
+                <a class="button is-success" href="/settings/categories/new">
+                    <span class="icon is-small">
+                        <i class="fas fa-plus"></i>
+                    </span>
+                    <span>New</span>
+                </a>
+            </div>
         </div>
     @endif
 

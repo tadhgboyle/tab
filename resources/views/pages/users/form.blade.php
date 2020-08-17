@@ -13,75 +13,81 @@ $users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
 @section('content')
 <h2 class="title has-text-weight-bold">{{ is_null($user) ? 'Create' : 'Edit' }} User</h2>
 @if(!is_null($user)) <h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if($users_view)<a href="/users/view/{{ $user->id }}">(View)</a>@endif</h4>@endif
-<div class="columns box">
-    <div class="column is-1"></div>
-
+<div class="columns">
     <div class="column is-5">
-        <form action="/users/{{ is_null($user) ? 'new' : 'edit' }}" id="user_form" method="POST">
-            @csrf
-            <input type="hidden" name="id" id="user_id" value="{{ request()->route('id') }}">
+        <div class="box">
+            <form action="/users/{{ is_null($user) ? 'new' : 'edit' }}" id="user_form" method="POST">
+                @csrf
+                <input type="hidden" name="id" id="user_id" value="{{ request()->route('id') }}">
 
-            <div class="field">
-                <label class="label">Full Name<sup style="color: red">*</sup></label>
-                <div class="control">
-                    <input type="text" name="full_name" class="input" placeholder="Full Name" value="{{ $user->full_name ?? old('full_name') }}">
+                <div class="field">
+                    <label class="label">Full Name<sup style="color: red">*</sup></label>
+                    <div class="control">
+                        <input type="text" name="full_name" class="input" placeholder="Full Name" value="{{ $user->full_name ?? old('full_name') }}">
+                    </div>
                 </div>
-            </div>
-            
-            <div class="field">
-                <label class="label">Username</label>
-                <div class="control has-icons-left">
-                    <span class="icon is-small is-left">
-                        <i class="fas fa-user"></i>
-                    </span>
-                    <input type="text" name="username" class="input" placeholder="Username (Optional)" value="{{ $user->username ?? old('username') }}">
+                
+                <div class="field">
+                    <label class="label">Username</label>
+                    <div class="control has-icons-left">
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        <input type="text" name="username" class="input" placeholder="Username (Optional)" value="{{ $user->username ?? old('username') }}">
+                    </div>
                 </div>
-            </div>
 
-            <div class="field">
-                <label class="label">Balance</label>
-                <div class="control has-icons-left">
-                    <span class="icon is-small is-left">
-                        <i class="fas fa-dollar-sign"></i>
-                    </span>
-                    <input type="number" step="0.01" name="balance" class="input" value="{{ isset($user->balance) ? number_format($user->balance, 2) : number_format(old('balance'), 2) }}">
+                <div class="field">
+                    <label class="label">Balance</label>
+                    <div class="control has-icons-left">
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-dollar-sign"></i>
+                        </span>
+                        <input type="number" step="0.01" name="balance" class="input" value="{{ isset($user->balance) ? number_format($user->balance, 2) : number_format(old('balance'), 2) }}">
+                    </div>
                 </div>
-            </div>
 
-            <div class="field">
-                <label class="label">Role<sup style="color: red">*</sup></label>
-                <div class="control">
-                    <div class="select" id="role">
-                        <select name="role" class="input">
-                            @foreach(Roles::getRolesAvailable(Auth::user()->role) as $role)
-                                <option value="{{ $role->id }}" data-staff="{{ $role->staff ? 1 : 0 }}" {{ (isset($user->role) && $user->role == $role->id) || old('role') == $role->id ? "selected" : "" }}>{{ $role->name }}</option>
-                            @endforeach
-                        </select>      
-                    </div>          
+                <div class="field">
+                    <label class="label">Role<sup style="color: red">*</sup></label>
+                    <div class="control">
+                        <div class="select" id="role">
+                            <select name="role" class="input">
+                                @foreach(Roles::getRolesAvailable(Auth::user()->role) as $role)
+                                    <option value="{{ $role->id }}" data-staff="{{ $role->staff ? 1 : 0 }}" {{ (isset($user->role) && $user->role == $role->id) || old('role') == $role->id ? "selected" : "" }}>{{ $role->name }}</option>
+                                @endforeach
+                            </select>      
+                        </div>          
+                    </div>
                 </div>
-            </div>
-            
-            <div class="field">
-                <label class="label">Password</label>
-                <div class="control has-icons-left">
-                    <span class="icon is-small is-left">
-                        <i class="fas fa-lock"></i>
-                    </span>
-                    <input type="password" name="password" class="input password_hidable" placeholder="Password" autocomplete="new-password" readonly>
+                
+                <div id="password_hidable" style="display: none;">
+                    <div class="field">
+                        <label class="label">Password</label>
+                        <div class="control has-icons-left">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                            <input type="password" name="password" class="input" placeholder="Password" autocomplete="new-password">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="control has-icons-left">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                            <input type="password" name="password_confirmation" class="input" placeholder="Confirm Password" autocomplete="new-password">
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="field">
-                <div class="control has-icons-left">
-                    <span class="icon is-small is-left">
-                        <i class="fas fa-lock"></i>
-                    </span>
-                    <input type="password" name="password_confirmation" class="input password_hidable" placeholder="Confirm Password" autocomplete="new-password" readonly>
-                </div>
-            </div>
+
+        </div>
     </div>
 
-    <div class="column is-4">
+    <div class="column"></div>
+
+    <div class="column is-5 box">
         @include('includes.messages')
+        <h4 class="title has-text-weight-bold is-4">Category Limits</h4>
 
         <input type="hidden" name="editor_id" value="{{ Auth::user()->id }}">
 
@@ -167,29 +173,30 @@ $users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
 
     function updatePassword(staff) {
         if (staff !== undefined) {
-            let fields = document.getElementsByClassName('password_hidable');
-            for (var i = 0; i < fields.length; i++) { 
-                fields[i].readOnly = !staff;
-            }
+            let div = $('#password_hidable');
+            if (staff) div.fadeIn(200);
+            else div.fadeOut(200);
         }
     }
 
-    const modal = document.querySelector('.modal');
+    @if(!is_null($user))
+        const modal = document.querySelector('.modal');
 
-    function openModal() {
-        modal.classList.add('is-active');
-    }
+        function openModal() {
+            modal.classList.add('is-active');
+        }
 
-    function closeModal() {
-        modal.classList.remove('is-active');
-    }
+        function closeModal() {
+            modal.classList.remove('is-active');
+        }
 
-    function deleteData() {
-        var id = document.getElementById('user_id').value;
-        var url = '{{ route("users_delete", ":id") }}';
-        url = url.replace(':id', id);
-        $("#deleteForm").attr('action', url);
-        $("#deleteForm").submit();
-    }
+        function deleteData() {
+            var id = document.getElementById('user_id').value;
+            var url = '{{ route("users_delete", ":id") }}';
+            url = url.replace(':id', id);
+            $("#deleteForm").attr('action', url);
+            $("#deleteForm").submit();
+        }
+    @endif
 </script>
 @endsection
