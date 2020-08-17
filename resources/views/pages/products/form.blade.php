@@ -78,40 +78,45 @@ $product = Products::find(request()->route('id'));
     <div class="column is-4">
 
         <div class="field">
-            <label class="label">Stock</label>
-            <div class="control has-icons-left">
-                <span class="icon is-small is-left">
-                    <i class="fas fa-hashtag"></i>
-                </span>
-                <input type="number" step="1" name="stock" class="input unlimited_stock_attr" placeholder="Stock" value="{{ $product->stock ?? old('stock') }}" readonly>
-            </div>
-        </div>
-
-        <div class="field">
-            <label class="label">Box Size</label>
-            <div class="control has-icons-left">
-                <span class="icon is-small is-left">
-                    <i class="fas fa-hashtag"></i>
-                </span>
-                <input type="number" step="1" name="box_size" class="input unlimited_stock_attr" placeholder="Box Size" value="{{ $product->box_size ?? old('stock') }}" readonly>
-            </div>
-        </div>
-
-        <div class="field">
             <div class="control">
                 <label class="checkbox label">
                     Unlimited Stock
-                    <input type="checkbox" class="js-switch" name="unlimited_stock" {{ (isset($product->unlimited_stock) && $product->unlimited_stock) || old('unlimited_stock') ? 'checked' : '' }}>
+                    <input type="checkbox" class="js-switch" name="unlimited_stock"
+                        {{ (isset($product->unlimited_stock) && $product->unlimited_stock) || old('unlimited_stock') ? 'checked' : '' }}>
                 </label>
             </div>
         </div>
 
-        <div class="field">
-            <div class="control">
-                <label class="checkbox label">
-                    Stock Override
-                    <input type="checkbox" class="js-switch" name="stock_override" {{ (isset($product->stock_override) && $product->stock_override) || old('stock_override') ? 'checked' : '' }}>
-                </label>
+        <div id="stock_attr" style="display: none;">
+
+            <div class="field">
+                <div class="control">
+                    <label class="checkbox label">
+                        Stock Override
+                        <input type="checkbox" class="js-switch" name="stock_override"
+                            {{ (isset($product->stock_override) && $product->stock_override) || old('stock_override') ? 'checked' : '' }}>
+                    </label>
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">Stock</label>
+                <div class="control has-icons-left">
+                    <span class="icon is-small is-left">
+                        <i class="fas fa-hashtag"></i>
+                    </span>
+                    <input type="number" step="1" name="stock" class="input" placeholder="Stock" value="{{ $product->stock ?? old('stock') }}">
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">Box Size</label>
+                <div class="control has-icons-left">
+                    <span class="icon is-small is-left">
+                        <i class="fas fa-hashtag"></i>
+                    </span>
+                    <input type="number" step="1" name="box_size" class="input" placeholder="Box Size" value="{{ $product->box_size ?? old('stock') }}">
+                </div>
             </div>
         </div>
 
@@ -166,6 +171,10 @@ $product = Products::find(request()->route('id'));
 @endif
 
 <script type="text/javascript">
+
+    const switches = document.getElementsByClassName("js-switch");
+    for (var i = 0; i < switches.length; i++) { new Switchery(switches.item(i), {color: '#48C774', secondaryColor: '#F56D71'}) }
+
     $(document).ready(function() {
         updateUnlimitedAttr($('input[type=checkbox][name=unlimited_stock]').prop('checked'));
     });
@@ -175,31 +184,29 @@ $product = Products::find(request()->route('id'));
     });
         
     function updateUnlimitedAttr(checked) {
-        let fields = document.getElementsByClassName('unlimited_stock_attr');
-        for (var i = 0; i < fields.length; i++) { 
-            fields[i].readOnly = checked; 
-        } 
+        let div = $('#stock_attr');
+        if (checked) div.fadeOut(200);
+        else div.fadeIn(200);
     }
 
-    function deleteData() {
-        var id = document.getElementById('product_id').value;
-        var url = '{{ route("products_delete", ":id") }}';
-        url = url.replace(':id', id);
-        $("#deleteForm").attr('action', url);
-        $("#deleteForm").submit();
-    }
+    @if(!is_null($product))
+        const modal = document.querySelector('.modal');
 
-    const modal = document.querySelector('.modal');
+        function openModal() {
+            modal.classList.add('is-active');
+        }
 
-    function openModal() {
-        modal.classList.add('is-active');
-    }
+        function closeModal() {
+            modal.classList.remove('is-active');
+        }
 
-    function closeModal() {
-        modal.classList.remove('is-active');
-    }
-
-    const switches = document.getElementsByClassName("js-switch");
-    for (var i = 0; i < switches.length; i++) { new Switchery(switches.item(i), {color: '#48C774', secondaryColor: '#F56D71'}) }
+        function deleteData() {
+            var id = document.getElementById('product_id').value;
+            var url = '{{ route("products_delete", ":id") }}';
+            url = url.replace(':id', id);
+            $("#deleteForm").attr('action', url);
+            $("#deleteForm").submit();
+        }
+    @endif
 </script>
 @endsection

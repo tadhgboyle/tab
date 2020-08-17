@@ -1,12 +1,4 @@
 /*
- * readonly attribute colouring
- */
-
-input[readonly] {
-    background-color: rgb(253, 171, 171) !important;
-}
-
-/*
  * Spinner on cashier and product adjust pages
  */
 
