@@ -111,7 +111,7 @@ class UsersController extends Controller
             DB::table('users')
                 ->where('id', $request->id)
                 ->update(['full_name' => $request->full_name, 'username' => $request->username, 'balance' => $request->balance, 'role' => $request->role]);
-            return redirect('/users')->with('success', 'Updated user ' . $request->full_name . '.');
+            return redirect()->route('users_list')->with('success', 'Updated user ' . $request->full_name . '.');
         }
         // If old role is camper and new role is staff
         else if (!in_array($old_role, $staff_roles) && in_array($new_role, $staff_roles)) {

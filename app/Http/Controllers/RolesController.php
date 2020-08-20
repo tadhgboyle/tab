@@ -20,20 +20,27 @@ class RolesController extends Controller
             return redirect()->back()->withInput()->withErrors($validator);
         }
 
-        $permissions = array();
-        if (is_array($request->permissions)) {
-            foreach ($request->permissions as $permission => $value) {
-                if ($value) $permissions[] = $permission;
-                echo $permission;
+        $staff = false;
+        if ($request->has('staff')) $staff = true;
+
+        $superuser = false;
+
+        if ($staff) {
+            $permissions = array();
+            if (is_array($request->permissions)) {
+                foreach ($request->permissions as $permission => $value) {
+                    if ($value) $permissions[] = $permission;
+                }
             }
-        }
-        $permissions = json_encode($permissions);
+            $permissions = json_encode($permissions);
+            if ($request->has('superuser')) $superuser = true;
+        } else $permissions = '[]';
 
         $role = new Roles();
         $role->name = $request->name;
         $role->order = $request->order;
-        $role->staff = $request->has('staff');
-        $role->superuser = $request->has('superuser');
+        $role->staff = $staff;
+        $role->superuser = $superuser;
         $role->permissions = $permissions;
         $role->save();
 
@@ -61,17 +68,15 @@ class RolesController extends Controller
 
         if ($staff) {
             $permissions = array();
+            // TODO: if they dont have "users" permission checked, ignore "users_list" etc
             if (is_array($request->permissions)) {
                 foreach ($request->permissions as $permission => $value) {
                     if ($value) $permissions[] = $permission;
-                    echo $permission;
                 }
             }
             $permissions = json_encode($permissions);
             if ($request->has('superuser')) $superuser = true;
         } else $permissions = '[]';
-
-        // TODO: add "users" (etc) permissions automatically so they dont need to select another checkbox on form
 
         DB::table('roles')
             ->where('id', $request->id)

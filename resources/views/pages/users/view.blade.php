@@ -9,7 +9,7 @@ use App\Http\Controllers\UserLimitsController;
 $user = User::find(request()->route('id'));
 $users_manage = Roles::hasPermission(Auth::user()->role, 'users_manage');
 $orders_view = Roles::hasPermission(Auth::user()->role, 'orders_view');
-if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->send();
+if ($user == null) return redirect()->route('users_list')->with('error', 'Invalid user.')->send();
 @endphp
 @extends('layouts.default')
 @section('content')

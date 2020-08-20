@@ -7,7 +7,7 @@ use App\User;
 use App\Roles;
 
 $transaction = Transactions::find(request()->route('id'));
-if ($transaction == null) return redirect('/orders')->with('error', 'Invalid order.')->send();
+if ($transaction == null) return redirect()->route('orders_list')->with('error', 'Invalid order.')->send();
 
 $transaction_items = explode(", ", $transaction->products);
 $transaction_returned = OrderController::checkReturned($transaction->id);

@@ -5,7 +5,7 @@ use App\User;
 use App\Roles;
 use App\Http\Controllers\SettingsController;
 $user = User::find(request()->route('id'));
-if ($user == null) return redirect('/')->with('error', 'Invalid user.')->send();
+if ($user == null) return redirect()->route('index')->with('error', 'Invalid user.')->send();
 $users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
 @endphp
 @extends('layouts.default', ['page' => 'cashier'])
