@@ -80,7 +80,6 @@ class UsersController extends Controller
 
     public function edit(Request $request)
     {
-        // TODO: Apply new validation logic from above
         $validator = Validator::make($request->all(), [
             'full_name' => [
                 'required',
