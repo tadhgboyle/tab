@@ -12,7 +12,9 @@ class Roles extends Model
 
     protected $cacheFor = 180;
 
-    public static function getRoles(string $order): object
+    private static $permissions_cache = array();
+
+    public static function getRoles(string $order = 'DESC'): object
     {
         return Roles::orderBy('order', $order)->get();
     }
@@ -25,7 +27,7 @@ class Roles extends Model
     public static function getRolesAvailable(int $caller):array
     {
         $roles = array();
-        foreach (Roles::getRoles('DESC') as $role) {
+        foreach (self::getRoles() as $role) {
             if (self::canInteract($caller, $role->id)) $roles[] = $role;
         }
         return $roles;

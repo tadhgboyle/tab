@@ -81,6 +81,7 @@ $users_manage = Roles::hasPermission(Auth::user()->role, 'users_manage');
             "columnDefs": [
                 { 
                     "orderable": false, 
+                    "searchable": false,
                     "targets": [
                         @if ($users_view && $users_manage)
                             4,

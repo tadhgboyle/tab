@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Roles;
 use Validator;
+use Auth;
 use App\User;
 use App\UserLimits;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule as ValidationRule;
 
 class UsersController extends Controller
 {
@@ -18,8 +20,16 @@ class UsersController extends Controller
             'full_name' => 'required|min:4|unique:users,full_name',
             'username' => 'nullable|min:3|unique:users,username',
             'balance' => 'nullable',
-            'role' => 'required|in:camper,cashier,administrator',
-            'password' => 'required_unless:role,camper|nullable|confirmed|min:6',
+            'role' => [
+                'required',
+                ValidationRule::in(array_column(Roles::getRolesAvailable(Auth::user()->role), 'id'))
+            ],
+            'password' => [
+                'nullable',
+                'confirmed',
+                'min:6',
+                ValidationRule::requiredIf(in_array($request->role, array_column(Roles::getStaffRoles(), 'id'))),
+            ]
         ]);
         if ($validator->fails()) {
             return redirect()->route('users_new')->withInput()->withErrors($validator);
@@ -72,10 +82,21 @@ class UsersController extends Controller
     {
         // TODO: Apply new validation logic from above
         $validator = Validator::make($request->all(), [
-            'full_name' => 'required|min:4',
-            'username' => 'required',
+            'full_name' => [
+                'required',
+                'min:4',
+                ValidationRule::unique('users')->ignore($request->id, 'id')
+            ],
+            'username' => [
+                'required',
+                'min:3',
+                ValidationRule::unique('users')->ignore($request->id, 'id')
+            ],
             'balance' => 'required|numeric',
-            'role' => 'required',
+            'role' => [
+                'required',
+                ValidationRule::in(array_column(Roles::getRolesAvailable(Auth::user()->role), 'id'))
+            ],
         ]);
         if ($validator->fails()) {
             return redirect()->back()->withInput()->withErrors($validator);
