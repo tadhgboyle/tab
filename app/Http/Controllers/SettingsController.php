@@ -39,7 +39,7 @@ class SettingsController extends Controller
             return redirect()->back()->withErrors($validator);
         }
         DB::table('settings')->where('setting', 'stats_time')->update(['value' => $request->stats_time]);
-        return redirect('/statistics')->send();
+        return redirect()->route('statistics')->send();
     }
 
     public function editSettings(Request $request)
@@ -55,7 +55,7 @@ class SettingsController extends Controller
         // TODO: This is probably not as efficient as it could be...
         DB::table('settings')->where('setting', 'gst')->update(['value' => $request->gst]);
         DB::table('settings')->where('setting', 'pst')->update(['value' => $request->pst]);
-        return redirect('/settings')->with('success', 'Updated settings.');
+        return redirect()->route('settings')->with('success', 'Updated settings.');
     }
 
     public function newCat(Request $request)
@@ -76,13 +76,13 @@ class SettingsController extends Controller
         $settings->editor_id = $request->editor_id;
         $settings->save();
 
-        return redirect('/settings')->with('success', 'Created new category ' . $request->name . '.');
+        return redirect()->route('settings')->with('success', 'Created new category ' . $request->name . '.');
     }
 
     public function deleteCat(Request $request)
     {
         // TODO: Fallback "default" category for items whose categories were deleted?
         Settings::where([['setting', 'category'], ['value', $request->name]])->delete();
-        return redirect('/settings')->with('success', 'Deleted category ' . ucfirst($request->name) . '.');
+        return redirect()->route('settings')->with('success', 'Deleted category ' . ucfirst($request->name) . '.');
     }
 }

@@ -6,7 +6,7 @@
     <div class="column"></div>
     <div class="column box">
         @include('includes.messages')
-        <form action="/settings/categories/new" method="POST">
+        <form action="{{ route('settings_categories_new_form') }}" method="POST">
             @csrf
             <input type="hidden" name="editor_id" value="{{ Auth::user()->id }}">
             <div class="field">

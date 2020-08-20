@@ -8,7 +8,7 @@ use App\Roles;
     @if($product->unlimited_stock)
         <i>No available options</i>
     @else
-    <form method="POST" action="/products/adjust">
+    <form method="POST" action="{{ route('products_adjust_form') }}">
         @csrf
         <input type="hidden" name="product_id" value="{{ $product->id }}">
         <div class="field">

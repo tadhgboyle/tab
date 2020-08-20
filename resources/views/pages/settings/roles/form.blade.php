@@ -76,8 +76,8 @@ if (!is_null($role)) $role_permissions = json_decode($role->permissions);
             </label>
         </div>
         <hr>
-        <h4 class="subtitle"><strong>Users</strong>&nbsp;<input type="checkbox" class="permission" name="permissions[users]" value="1" @if(!is_null($role) && (in_array('users', $role_permissions) || $role->superuser)) checked @endif></h4>
-        <div class="control">
+        <h4 class="subtitle"><strong>Users</strong>&nbsp;<input type="checkbox" class="permission" id="permission-users-checkbox" name="permissions[users]" onclick="updateSections();" value="1" @if(!is_null($role) && (in_array('users', $role_permissions) || $role->superuser)) checked @endif></h4>
+        <div class="control" id="permission-users" style="display: none;">
             <label class="checkbox">
                 <input type="checkbox" class="permission" name="permissions[users_list]" value="1" @if(!is_null($role) && (in_array('users_list', $role_permissions) || $role->superuser)) checked @endif>
                 List Users
@@ -94,8 +94,8 @@ if (!is_null($role)) $role_permissions = json_decode($role->permissions);
             </label>
         </div>
         <hr>
-        <h4 class="subtitle"><strong>Products</strong>&nbsp;<input type="checkbox" class="permission" name="permissions[products]" value="1" @if(!is_null($role) && (in_array('products', $role_permissions) || $role->superuser)) checked @endif></h4>
-        <div class="control">
+        <h4 class="subtitle"><strong>Products</strong>&nbsp;<input type="checkbox" class="permission" id="permission-products-checkbox" name="permissions[products]" onclick="updateSections();" value="1" @if(!is_null($role) && (in_array('products', $role_permissions) || $role->superuser)) checked @endif></h4>
+        <div class="control" id="permission-products" style="display: none;">
             <label class="checkbox">
                 <input type="checkbox" class="permission" name="permissions[products_list]" value="1" @if(!is_null($role) && (in_array('products_list', $role_permissions) || $role->superuser)) checked @endif>
                 List Products
@@ -112,8 +112,8 @@ if (!is_null($role)) $role_permissions = json_decode($role->permissions);
             </label>
         </div>
         <hr>
-        <h4 class="subtitle"><strong>Orders</strong>&nbsp;<input type="checkbox" class="permission" name="permissions[orders]" value="1" @if(!is_null($role) && (in_array('orders', $role_permissions) || $role->superuser)) checked @endif></h4>
-        <div class="control">
+        <h4 class="subtitle"><strong>Orders</strong>&nbsp;<input type="checkbox" class="permission" id="permission-orders-checkbox" name="permissions[orders]" onclick="updateSections();" value="1" @if(!is_null($role) && (in_array('orders', $role_permissions) || $role->superuser)) checked @endif></h4>
+        <div class="control" id="permission-orders" style="display: none;">
             <label class="checkbox">
                 <input type="checkbox" class="permission" name="permissions[orders_list]" value="1" @if(!is_null($role) && (in_array('orders_list', $role_permissions) || $role->superuser)) checked @endif>
                 List Orders
@@ -138,8 +138,8 @@ if (!is_null($role)) $role_permissions = json_decode($role->permissions);
             </label>
         </div>
         <hr>
-        <h4 class="subtitle"><strong>Settings</strong>&nbsp;<input type="checkbox" class="permission" name="permissions[settings]" value="1" @if(!is_null($role) && (in_array('settings', $role_permissions) || $role->superuser)) checked @endif></h4>
-        <div class="control">
+        <h4 class="subtitle"><strong>Settings</strong>&nbsp;<input type="checkbox" class="permission" id="permission-settings-checkbox" name="permissions[settings]" onclick="updateSections();" value="1" @if(!is_null($role) && (in_array('settings', $role_permissions) || $role->superuser)) checked @endif></h4>
+        <div class="control" id="permission-settings" style="display: none;">
             <label class="checkbox">
                 <input type="checkbox" class="permission" name="permissions[settings_general]" value="1" @if(!is_null($role) && (in_array('settings_general', $role_permissions) || $role->superuser)) checked @endif>
                 Manage General Settings
@@ -186,6 +186,7 @@ if (!is_null($role)) $role_permissions = json_decode($role->permissions);
         if ($('input[type=checkbox][name=superuser]').prop('checked')) {
             updatePermissionSU(true);
         }
+        updateSections();
     });
         
     $('input[type=checkbox][name=staff]').change(function() {
@@ -212,12 +213,20 @@ if (!is_null($role)) $role_permissions = json_decode($role->permissions);
             checkbox.prop('checked', superuser);
             checkbox.prop('disabled', superuser)
         });
+        updateSections();
+    }
+    
+    function updateSections() {
+        ['users', 'products', 'orders', 'settings'].forEach(element => {
+            if ($(`#permission-${element}-checkbox`).prop('checked')) $(`#permission-${element}`).show(200);
+            else $(`#permission-${element}`).hide(200);
+        });
     }
 
     $('form').submit(function () {
         $(':disabled').each(function () {
             $(this).removeAttr('disabled');
-        })
+        });
     });
 
     const modal = document.querySelector('.modal');

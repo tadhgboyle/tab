@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/login', function () {
     return view('pages.login');
 })->name('login');
-Route::post('/login/auth', 'LoginController@auth');
+Route::post('/login/auth', 'LoginController@auth')->name('login_auth');
 
 // Middleware('auth') requires the user to be signed in to view the page
 Route::middleware('auth')->group(function () {
@@ -174,7 +174,7 @@ Route::middleware('auth')->group(function () {
             Route::group(['permission' => 'settings_categories_manage'], function () {
                 Route::get('/settings/categories/new', function () {
                     return view('pages.settings.categories.form');
-                })->name('settings_category_new');
+                })->name('settings_categories_new');
                 Route::post('/settings/categories/new',
                     'SettingsController@newCat'
                 )->name('settings_categories_new_form');

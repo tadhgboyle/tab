@@ -16,7 +16,7 @@ $manage_categories = Roles::hasPermission(Auth::user()->role, 'settings_categori
             <div class="box">
                 <h4 class="title has-text-weight-bold is-4">General</h4>
                 @include('includes.messages')
-                <form action="/settings" id="settings" method="POST">
+                <form action="{{ route('settings_form') }}" id="settings" method="POST">
                     @csrf
 
                     <div class="field">
@@ -84,7 +84,7 @@ $manage_categories = Roles::hasPermission(Auth::user()->role, 'settings_categori
                     </tbody>
                 </table>
                 <br>
-                <a class="button is-success" href="{{ route('settings_category_new') }}">
+                <a class="button is-success" href="{{ route('settings_categories_new') }}">
                     <span class="icon is-small">
                         <i class="fas fa-plus"></i>
                     </span>

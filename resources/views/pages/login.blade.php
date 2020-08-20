@@ -1,11 +1,11 @@
 @extends('layouts.default')
 @section('content')
-<h2 class="title has-text-weight-bold">Login</h2>
-<div class="columns box">
+<h2 class="title has-text-weight-bold is-1">Login</h2>
+<div class="columns">
     <div class="column"></div>
-    <div class="column">
+    <div class="column box">
         @include('includes.messages')
-        <form action="/login/auth" method="post">
+        <form action="{{ route('login_auth') }}" method="post">
             @csrf
             <div class="field">
                 <label class="label">Username</label>
