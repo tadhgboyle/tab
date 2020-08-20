@@ -50,7 +50,7 @@ $products_manage = Roles::hasPermission(Auth::user()->role, 'products_manage');
                         </td>
                         @if ($products_manage)
                             <td>
-                                <div><a href="products/edit/{{ $product->id }}">Edit</a></div>
+                                <div><a href="{{ route('products_edit', $product->id) }}">Edit</a></div>
                             </td>
                         @endif
                     </tr>

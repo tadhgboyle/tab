@@ -84,7 +84,7 @@ $manage_categories = Roles::hasPermission(Auth::user()->role, 'settings_categori
                     </tbody>
                 </table>
                 <br>
-                <a class="button is-success" href="/settings/categories/new">
+                <a class="button is-success" href="{{ route('settings_category_new') }}">
                     <span class="icon is-small">
                         <i class="fas fa-plus"></i>
                     </span>

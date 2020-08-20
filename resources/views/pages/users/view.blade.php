@@ -14,7 +14,7 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
 @extends('layouts.default')
 @section('content')
 <h2 class="title has-text-weight-bold">View User</h2>
-<h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if(!$user->deleted && $users_manage && Roles::canInteract(Auth::user()->role, $user->role))<a href="/users/edit/{{ $user->id }}">(Edit)</a>@endif</h4>
+<h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if(!$user->deleted && $users_manage && Roles::canInteract(Auth::user()->role, $user->role))<a href="{{ route('users_edit', $user->id) }}">(Edit)</a>@endif</h4>
 <p><strong>Role:</strong> {{ Roles::idToName($user->role) }}</p>
 <p><strong>Deleted:</strong> {{ $user->deleted ? 'Yes' : 'No' }}</p>
 <span><strong>Balance:</strong> ${{ number_format($user->balance, 2) }}, </span>
@@ -70,7 +70,7 @@ if ($user == null) return redirect('/users')->with('error', 'Invalid user.')->se
                     </td>
                     @if($orders_view)
                         <td>
-                            <div><a href="/orders/view/{{ $transaction->id }}">View</a></div>
+                            <div><a href="{{ route('orders_view', $transaction->id) }}">View</a></div>
                         </td>
                     @endif
                 </tr>

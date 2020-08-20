@@ -11,7 +11,7 @@ $users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
 @extends('layouts.default', ['page' => 'cashier'])
 @section('content')
 <h2 class="title has-text-weight-bold">Cashier</h2>
-<h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if($users_view)<a href="/users/view/{{ request()->route('id') }}">(View)</a>@endif</h4>
+<h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if($users_view)<a href="{{ route('users_view',request()->route('id')) }}">(View)</a>@endif</h4>
 <div class="columns box">
     <div class="column is-two-thirds">
         @include('includes.messages')
@@ -19,7 +19,7 @@ $users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
             <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
         </div>
         <div id="order_container" style="visibility: hidden;">
-            <form method="post" id="order" action="/orders/submit">
+            <form method="post" id="order" action="{{ route('orders_new_form') }}">
                 @csrf
                 <input type="hidden" name="purchaser_id" value="{{ request()->route('id') }}">
                 <input type="hidden" name="cashier_id" value="{{ Auth::user()->id }}">
@@ -75,8 +75,8 @@ $users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
         <div id="remaining_balance"></div>
         <br>
         <input type="submit" form="order" value="Submit" class="disableable button is-success" disabled>
-        <a class="button is-outlined" href="/">
-            <span>Cancel</span>
+        <a class="button is-outlined" href="{{ route('index') }}">
+            <span>Cancel</span> 
         </a>
     </div>
 </div>
