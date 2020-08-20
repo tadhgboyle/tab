@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Auth;
                 @foreach(User::where('deleted', false)->get() as $result)
                     <tr>
                         <td>
-                            <div><a href="orders/{{ $result->id }}">{{ $result->full_name }}</a></div>
+                            <div><a href="{{ route('orders_new', $result->id) }}">{{ $result->full_name }}</a></div>
                         </td>
                         <td>
                             <div>${{ number_format($result->balance, 2) }}</div>

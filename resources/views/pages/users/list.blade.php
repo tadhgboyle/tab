@@ -46,13 +46,13 @@ $users_manage = Roles::hasPermission(Auth::user()->role, 'users_manage');
                     </td>
                     @if ($users_view)
                         <td>
-                            <div><a href="/users/view/{{ $user->id }}">View</a></div>
+                            <div><a href="{{ route('users_view', $user->id) }}">View</a></div>
                         </td>
                     @endif
                     @if ($users_manage)
                         @if (Roles::canInteract(Auth::user()->role, $user->role))
                             <td>
-                                <div><a href="/users/edit/{{ $user->id }}">Edit</a></div>
+                                <div><a href="{{ route('users_edit', $user->id) }}">Edit</a></div>
                             </td>
                         @else
                             <td>

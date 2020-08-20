@@ -39,7 +39,7 @@ $users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
                         <td>
                             <div>
                                 @if ($users_view)
-                                    <a href="/users/view/{{ $user->id }}">{{ $user->full_name }}</a>
+                                    <a href="{{ route('users_view', $user->id) }}">{{ $user->full_name }}</a>
                                 @else
                                     {{ $user->full_name }}
                                 @endif
@@ -68,7 +68,7 @@ $users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
                         </td>
                         @if ($orders_view)
                             <td>
-                                <div><a href="orders/view/{{ $transaction->id }}">View</a></div>
+                                <div><a href="{{ route('orders_view', $transaction->id) }}">View</a></div>
                             </td>
                         @endif
                     </tr>

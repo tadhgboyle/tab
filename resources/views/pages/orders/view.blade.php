@@ -22,8 +22,8 @@ $return_order = Roles::hasPermission(Auth::user()->role, 'orders_return');
         @include('includes.messages')
         <p><strong>Order ID:</strong> {{ request()->route('id') }}</p>
         <p><strong>Date:</strong> {{ $transaction->created_at->format('M jS Y h:ia') }}</p>
-        <p><strong>Purchaser:</strong> @if($users_view) <a href="/users/view/{{ $transaction->purchaser_id }}">{{ User::find($transaction->purchaser_id)->full_name }}</a> @else {{ User::find($transaction->purchaser_id)->full_name }} @endif</p>
-        <p><strong>Cashier:</strong> @if($users_view) <a href="/users/view/{{ $transaction->cashier_id }}">{{ User::find($transaction->cashier_id)->full_name }}</a> @else {{ User::find($transaction->cashier_id)->full_name }} @endif</p>
+        <p><strong>Purchaser:</strong> @if($users_view) <a href="{{ route('users_view', $transaction->purchaser_id) }}">{{ User::find($transaction->purchaser_id)->full_name }}</a> @else {{ User::find($transaction->purchaser_id)->full_name }} @endif</p>
+        <p><strong>Cashier:</strong> @if($users_view) <a href="{{ route('users_view', $transaction->cashier_id) }}">{{ User::find($transaction->cashier_id)->full_name }}</a> @else {{ User::find($transaction->cashier_id)->full_name }} @endif</p>
         <p><strong>Total Price:</strong> ${{ number_format($transaction->total_price, 2) }}</p>
         <p><strong>Status:</strong> @switch($transaction_returned) @case(0) Not Returned @break @case(1) Returned @break @case(2) Semi Returned @break @endswitch</p>
         <br>
