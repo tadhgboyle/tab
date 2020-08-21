@@ -163,9 +163,8 @@ Route::middleware('auth')->group(function () {
                 Route::get('/settings/roles/edit/{id}', function () {
                     return view('pages.settings.roles.form');
                 })->where('id', '[0-9]+')->name('settings_roles_edit');
-                Route::post('/settings/roles/edit',
-                    'RolesController@edit'
-                )->name('settings_roles_edit_form');
+                Route::post('/settings/roles/edit', 'RolesController@edit')->name('settings_roles_edit_form');
+                Route::get('/settings/roles/order', 'RolesController@order')->name('settings_roles_order_ajax');
 
                 Route::get('/settings/roles/delete/{id}', 'RolesController@delete')->name('settings_roles_delete');
 

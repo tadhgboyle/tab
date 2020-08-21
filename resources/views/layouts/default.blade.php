@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="{{ url('switchery.css') }}">
         <script src="{{ url('switchery.js') }}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
         <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
     </head>
 
