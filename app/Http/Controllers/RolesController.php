@@ -87,5 +87,19 @@ class RolesController extends Controller
     public function delete(Request $request)
     {
         // TODO: Figure out what to do with users whos role was deleted....
+        // Option: when deleting role, ask what role to place all users in this role to
+    }
+
+    public function order() {
+
+        $roles = json_decode(\Request::get('roles'))->roles;
+
+        $i = 1;
+        foreach ($roles as $role) {
+            Roles::find($role)->update(['order' => $i]);
+            $i++;
+        }
+
+        return $roles;
     }
 }

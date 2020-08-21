@@ -12,7 +12,7 @@ class Roles extends Model
 
     protected $cacheFor = 180;
 
-    private static $permissions_cache = array();
+    protected $fillable = ['order'];
 
     public static function getRoles(string $order = 'DESC'): object
     {

@@ -66,5 +66,15 @@ class StatisticsChartController extends Controller
     public static function profit($statsTime)
     {
         // Add graph for day by day and text for total in the $statsTime
+        $profitchart = new StatisticsChart;
+
+        $labels = array();
+        $profit = array();
+
+        // Loop all carbon dates in statsTime, get transactinos on that day, check if returned. add price if not
+
+        $profitchart->labels($labels);
+        $profitchart->dataset('Profit', 'line', $profit)->lineTension(0)->color("rgb(72, 187, 120)");
+        return $profitchart;
     }
 }
