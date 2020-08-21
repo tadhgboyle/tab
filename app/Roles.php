@@ -46,6 +46,7 @@ class Roles extends Model
     public static function canInteract(int $caller, int $subject): bool
     {
         if (Roles::where('id', $caller)->pluck('superuser')->first()) return true;
+        else if (Roles::where('id', $subject)->pluck('superuser')->first()) return false;
         $caller_order = Roles::where('id', $caller)->pluck('order')->first();
         $subject_order = Roles::where('id', $subject)->pluck('order')->first();
         return $caller_order < $subject_order;

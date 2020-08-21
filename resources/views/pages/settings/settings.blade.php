@@ -182,34 +182,36 @@ $manage_categories = Roles::hasPermission(Auth::user()->role, 'settings_categori
                 ]
             });
 
-            $("#sortable").sortable({
-                start: function(event, ui) {
-                    let start_pos = ui.item.index();
-                    ui.item.data('startPos', start_pos);
-                },
-                update: function(event, ui){
-                    let roles = $("#sortable").children();
-                    let toSubmit = [];
-                    roles.each(function(){
-                        toSubmit.push($(this).data().id);
-                    });
+            @if(Roles::find(Auth::user()->role)->superuser)
+                $("#sortable").sortable({
+                    start: function(event, ui) {
+                        let start_pos = ui.item.index();
+                        ui.item.data('startPos', start_pos);
+                    },
+                    update: function(event, ui){
+                        let roles = $("#sortable").children();
+                        let toSubmit = [];
+                        roles.each(function(){
+                            toSubmit.push($(this).data().id);
+                        });
 
-                    $.ajax({
-                        url: "{{ route('settings_roles_order_ajax') }}",
-                        type: "GET",
-                        data: {
-                            roles: JSON.stringify({"roles": toSubmit})
-                        },
-                        success: function(response) {
-                            // Success
-                        },
-                        error: function(xhr) {
-                            // Error
-                            console.log(xhr);
-                        }
-                    });
-                }
-            });
+                        $.ajax({
+                            url: "{{ route('settings_roles_order_ajax') }}",
+                            type: "GET",
+                            data: {
+                                roles: JSON.stringify({"roles": toSubmit})
+                            },
+                            success: function(response) {
+                                // Success
+                            },
+                            error: function(xhr) {
+                                // Error
+                                console.log(xhr);
+                            }
+                        });
+                    }
+                });
+            @endif
         @endif
     });
 </script>
