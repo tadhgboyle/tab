@@ -58,25 +58,31 @@ Documentation (in the form of a printable user handbook) is being written.
 ## Screenshots:
 
 #### First Cashier Page
-![First Cashier Page](https://images.tadhgboyle.dev/scrn135552.png)
+![First Cashier Page](https://i.imgur.com/8DQ9LN2.png)
 
 #### Second Cashier Page
-![Second Cashier Page](https://i.imgur.com/D373Qwt.png)
+![Second Cashier Page](https://i.imgur.com/e8upEMU.png)
 
 #### User Information Page
-![User Info Page](https://i.imgur.com/iOHUU4U.png)
+![User Info Page](https://i.imgur.com/7qMsy2E.png)
 
 #### Order List Page
-![Order List Page](https://i.imgur.com/rLcKxDx.png)
+![Order List Page](https://i.imgur.com/UIDVpjB.png)
 
 #### Order Information Page
-![Order Info Page](https://i.imgur.com/rrlUtO4.png)
+![Order Info Page](https://i.imgur.com/SZkOOmn.png)
 
 #### Chart.js Statistics Page
-![Chart.js Statistics Page](https://i.imgur.com/E4IG9Hr.png)
+![Chart.js Statistics Page](https://i.imgur.com/Qqhmj5z.png)
 
 #### Stock Adjustment Page
-![Stock Adjustment Page](https://i.imgur.com/kkwQgHy.png)
+![Stock Adjustment Page](https://i.imgur.com/inUoVcl.png)
+
+#### Settings Page
+![Settings Page](https://i.imgur.com/nY7jMg9.png)
+
+#### Role Editing Page
+![Role Editing Page](https://i.imgur.com/n6H2hWQ.png)
 
 ## Roadmap:
 
@@ -119,7 +125,6 @@ Documentation (in the form of a printable user handbook) is being written.
 
 ## Issues/Bugs:
 - When an error happens on order screen, it returns back with selection, but when you unselect a box it all gets NaN
-- Use `route()` helper incase we need to easily change routes.
 - Dont import classes in views, use controllers to return views instead.
 
 ## Contributors:
