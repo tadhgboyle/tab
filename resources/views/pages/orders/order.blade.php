@@ -38,27 +38,27 @@ $users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
                     </thead>
                     <tbody>
                         @foreach(Products::orderBy('name', 'ASC')->where('deleted', false)->get() as $product)
-                        <tr>
-                            <td>
-                                <input type="checkbox" name="product[{{ $product->id }}]" value="{{ $product->id }}" id="{{ $product->name . ' $' . $product->price }}" class="clickable" @if(session('product[' . $product->id . ']')) checked @endif />
-                                <input type="hidden" id="pst[{{ $product->id }}]" name="pst[{{ $product->id }}]" value="{{ $product->pst }}" />
-                            </td>
-                            <td>
-                                <input type="number" name="quantity[{{ $product->id }}]" id="quantity[{{ $product->id }}]" value="{{ session('quantity[' . $product->id . ']', 1) }}" min="1" class="input is-small" style="width: 80%"/>
-                            </td>
-                            <td>
-                                <div>{{ $product->name }}</div>
-                            </td>
-                            <td>
-                                <div>{{ ucfirst($product->category) }}</div>
-                            </td>
-                            <td>
-                                <div>{!! Products::getStock($product->id) !!}</div>
-                            </td>
-                            <td>
-                                <div>${{ number_format($product->price, 2) }}</div>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="product[{{ $product->id }}]" value="{{ $product->id }}" id="{{ $product->name . ' $' . $product->price }}" class="clickable" @if(session('product[' . $product->id . ']')) checked @endif />
+                                    <input type="hidden" id="pst[{{ $product->id }}]" name="pst[{{ $product->id }}]" value="{{ $product->pst }}" />
+                                </td>
+                                <td>
+                                    <input type="number" name="quantity[{{ $product->id }}]" id="quantity[{{ $product->id }}]" value="{{ session('quantity[' . $product->id . ']', 1) }}" min="1" class="input is-small" style="width: 80%"/>
+                                </td>
+                                <td>
+                                    <div>{{ $product->name }}</div>
+                                </td>
+                                <td>
+                                    <div>{{ ucfirst($product->category) }}</div>
+                                </td>
+                                <td>
+                                    <div>{!! Products::getStock($product->id) !!}</div>
+                                </td>
+                                <td>
+                                    <div>${{ number_format($product->price, 2) }}</div>
+                                </td>
+                            </tr>
                         @endforeach
                     </tbody>
                 </table>

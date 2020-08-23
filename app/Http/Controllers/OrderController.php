@@ -48,7 +48,7 @@ class OrderController extends Controller
         return $id . "*" . $quantity . "$" . $price . "G" . $gst . "P" . $pst . "R" . $returned;
     }
 
-    public static function deserializeProduct($product)
+    public static function deserializeProduct($product): array
     {
         /**
          * Example serialized product:
@@ -173,7 +173,7 @@ class OrderController extends Controller
                 }
                 // Break loop if we exceed their limit
                 if ($category_spent >= $category_limit) {
-                    return redirect()->back()->withInput()->with('error', 'Not enough balance in that category: ' . ucfirst($category) . ' (Limit: $' . $category_limit . ', Remaining: $' . ($category_limit - number_format($category_spent_orig, 2)) . ').');
+                    return redirect()->back()->withInput()->with('error', 'Not enough balance in that category: ' . ucfirst($category) . ' (Limit: $' . $category_limit . ', Remaining: $' . number_format($category_limit - $category_spent_orig, 2) . ').');
                 }
             }
 
