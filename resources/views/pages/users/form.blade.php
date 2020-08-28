@@ -15,6 +15,7 @@ $users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
 @if(!is_null($user)) <h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if($users_view)<a href="{{ route('users_view', $user->id) }}">(View)</a>@endif</h4>@endif
 <div class="columns">
     <div class="column is-5">
+        @include('includes.messages')
         <div class="box">
             <form action="/users/{{ is_null($user) ? 'new' : 'edit' }}" id="user_form" method="POST">
                 @csrf
@@ -86,7 +87,6 @@ $users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
     <div class="column"></div>
 
     <div class="column is-5 box">
-        @include('includes.messages')
         <h4 class="title has-text-weight-bold is-4">Category Limits</h4>
 
         <input type="hidden" name="editor_id" value="{{ Auth::user()->id }}">
