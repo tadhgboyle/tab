@@ -91,10 +91,8 @@ Documentation (in the form of a printable user handbook) is being written.
 - Categories should use an ID, and be serialized into each order product incase they are deleted.
 - Disable submit button when anything goes wrong *(Remaining: Stock, Categories)* 
     - Then on the backend, if they somehow bypass the disabled submit button: on errors during order, return back with their input + quantities
-- Rework how to select items and quantities. Right now it is somewhat not intuitive. Options:
-    - 1. Allow changing quantity after checking box
-    - 2. Remove checkbox entirely, and instead consider all items with >= 1 quantity as "selected"
-    - 3. **Similar to GBBC tab, click an item to add it to a list of all items. Click more times for more quantity** (Priority)
+- Rework how to select items and quantities. Right now it is somewhat not intuitive. New system:
+    - **Similar to GBBC tab, click an item to add it to a list of all items. Click more times for more quantity**
 - Complete inventory features
     - Remaining: 
         - "Set stock" in adjust page as well as add/subtract.
@@ -124,9 +122,9 @@ Documentation (in the form of a printable user handbook) is being written.
     - Serialize so if it gets returned they get the discount back
 
 ## Issues/Bugs:
-- When an error happens on order screen, it returns back with selection, but when you unselect a box it all gets NaN
+- (Intermittent) When an error happens on order screen, it returns back with selection, but when you unselect a box it all gets NaN
 - Dont import classes in views, use controllers to return views instead.
 
 ## Contributors:
-- nuKeMan4
+- @nUKEmAN4
 - Locus
