@@ -130,6 +130,31 @@ Route::middleware('auth')->group(function () {
         });
 
         /* 
+         * Activities
+         */
+        Route::group(['permission' => 'activities'], function () {
+            Route::group(['permission' => 'activities_list'], function () {
+                Route::get('/activities', function () {
+                    return view('pages.activities.list');
+                })->name('activities_list');
+            });
+
+            Route::group(['permission' => 'activities_manage'], function () {
+                Route::get('/activities/new/{date?}', function ($date = null) {
+                    return view('pages.activities.form', compact($date));
+                })->name('activities_new');
+                Route::post('/activities/new', 'ActivitiesController@new');
+
+                Route::get('/activities/edit/{id}', function () {
+                    return view('pages.activities.form');
+                })->where('id', '[0-9]+')->name('activities_edit');
+                Route::post('/activities/edit', 'ProductsController@edit')->name('activities_edit_form');
+
+                Route::get('/activities/delete/{id}', 'ProductsController@delete')->where('id', '[0-9]+')->name('activities_delete');
+            });
+        });
+
+        /* 
          * Statistics 
          */
         Route::group(['permission' => 'statistics'], function() {

@@ -122,6 +122,7 @@ Documentation (in the form of a printable user handbook) is being written.
     - Serialize so if it gets returned they get the discount back
 
 ## Issues/Bugs:
+- Add custom casts for Role, User, etc Models with CastsAttributes interface. This will remove some extra queries and static functions.
 - (Intermittent) When an error happens on order screen, it returns back with selection, but when you unselect a box it all gets NaN
 - Dont import classes in views, use controllers to return views instead.
 

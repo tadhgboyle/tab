@@ -1,5 +1,4 @@
 @php
-
 use \App\Roles;
 @endphp
 <nav class="navbar has-shadow">
@@ -49,6 +48,23 @@ use \App\Roles;
                                 @if (Roles::hasPermission(Auth::user()->role, 'products_adjust'))
                                     <a class="navbar-item" href="{{ route('products_adjust') }}">
                                         Adjust
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+                    @endif
+                    @if (Roles::hasPermission(Auth::user()->role, 'activites'))
+                        <div class="navbar-item has-dropdown is-hoverable">
+                            <p class="navbar-link"><i class="fas fa-calendar-alt"></i>&nbsp;Activities</p>
+                            <div class="navbar-dropdown is-boxed">
+                                @if (Roles::hasPermission(Auth::user()->role, 'activities_list'))
+                                    <a class="navbar-item" href="{{ route('activities_list') }}">
+                                        List
+                                    </a>
+                                @endif
+                                @if (Roles::hasPermission(Auth::user()->role, 'activities_manage'))
+                                    <a class="navbar-item" href="{{ route('activities_new') }}">
+                                        Create
                                     </a>
                                 @endif
                             </div>

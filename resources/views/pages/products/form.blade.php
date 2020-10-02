@@ -35,7 +35,7 @@ $product = Products::find(request()->route('id'));
             <div class="field">
                 <label class="label">Name<sup style="color: red">*</sup></label>
                 <div class="control">
-                    <input type="text" name="name" class="input" placeholder="Name" value="{{ $product->name ?? old('name') }}">
+                    <input type="text" name="name" class="input" placeholder="Name" required value="{{ $product->name ?? old('name') }}">
                 </div>
             </div>
 
@@ -45,7 +45,7 @@ $product = Products::find(request()->route('id'));
                     <span class="icon is-small is-left">
                         <i class="fas fa-dollar-sign"></i>
                     </span>
-                    <input type="number" step="0.01" name="price" class="input" value="{{ isset($product->price) ? number_format($product->price, 2) : number_format(old('price'), 2) }}">
+                    <input type="number" step="0.01" name="price" class="input" required value="{{ isset($product->price) ? number_format($product->price, 2) : number_format(old('price'), 2) }}">
                 </div>
             </div>
 
@@ -62,7 +62,7 @@ $product = Products::find(request()->route('id'));
                 <label class="label">Category<sup style="color: red">*</sup></label>
                 <div class="control">
                     <div class="select">
-                        <select name="category">
+                        <select name="category" required>
                             {{!! !isset($product->category) ? "<option value=\"\" disabled selected>Select Category...</option>" : '' !!}}
                             @foreach(SettingsController::getCategories() as $category)
                                 <option value="{{ $category->value }}"

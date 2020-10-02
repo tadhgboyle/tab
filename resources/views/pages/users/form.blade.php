@@ -24,7 +24,7 @@ $users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
                 <div class="field">
                     <label class="label">Full Name<sup style="color: red">*</sup></label>
                     <div class="control">
-                        <input type="text" name="full_name" class="input" placeholder="Full Name" value="{{ $user->full_name ?? old('full_name') }}">
+                        <input type="text" name="full_name" class="input" required placeholder="Full Name" value="{{ $user->full_name ?? old('full_name') }}">
                     </div>
                 </div>
                 
@@ -52,7 +52,7 @@ $users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
                     <label class="label">Role<sup style="color: red">*</sup></label>
                     <div class="control">
                         <div class="select" id="role">
-                            <select name="role" class="input">
+                            <select name="role" class="input" required>
                                 @foreach(Roles::getRolesAvailable(Auth::user()->role) as $role)
                                     <option value="{{ $role->id }}" data-staff="{{ $role->staff ? 1 : 0 }}" {{ (isset($user->role) && $user->role == $role->id) || old('role') == $role->id ? "selected" : "" }}>{{ $role->name }}</option>
                                 @endforeach
