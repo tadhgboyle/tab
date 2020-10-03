@@ -134,16 +134,19 @@ Route::middleware('auth')->group(function () {
          */
         Route::group(['permission' => 'activities'], function () {
             Route::group(['permission' => 'activities_list'], function () {
-                Route::get('/activities', function () {
-                    return view('pages.activities.list');
-                })->name('activities_list');
+                Route::get('/activities', 'ActivityController@list')->name('activities_list');
+            });
+            Route::group(['permission' => 'activities_view'], function () {
+                Route::get('/activities/view/{id}', function () {
+                    return view('pages.activities.view');
+                })->where('id', '[0-9]+')->name('activities_view');
             });
 
             Route::group(['permission' => 'activities_manage'], function () {
                 Route::get('/activities/new/{date?}', function ($date = null) {
-                    return view('pages.activities.form', compact($date));
+                    return view('pages.activities.form', ['start' => $date]);
                 })->name('activities_new');
-                Route::post('/activities/new', 'ActivitiesController@new');
+                Route::post('/activities/new', 'ActivityController@new');
 
                 Route::get('/activities/edit/{id}', function () {
                     return view('pages.activities.form');

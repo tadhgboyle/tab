@@ -13,6 +13,10 @@ class User extends Authenticatable
     protected $cacheFor = 180;
     protected $fillable = ['balance'];
 
+    // protected $casts = [
+    //     'role' => Roles::class
+    // ];
+
     // Find how much a user has spent in total. 
     // Does not factor in returned items/orders.
     public static function findSpent(User $user): float

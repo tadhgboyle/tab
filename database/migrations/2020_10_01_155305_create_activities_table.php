@@ -18,13 +18,14 @@ class CreateActivitiesTable extends Migration
             $table->string('name', 36);
             $table->string('location', 36)->nullable();
             $table->string('description', 255)->nullable();
+            $table->boolean('unlimited_slots')->default(false);
             $table->integer('slots');
+            $table->string('attendees', 1024)->default('[]');
             $table->float('price');
             $table->boolean('pst')->default(false);
             $table->boolean('deleted')->default(false);
-            $table->dateTime('start');
+            $table->dateTime('start')->nullable();
             $table->dateTime('end')->nullable();
-            $table->boolean('all_day')->default(false);
             $table->timestamps();
         });
     }
