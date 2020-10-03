@@ -2,7 +2,8 @@
 
 use App\Activity;
 $activity = Activity::find(request()->route('id'));
-$start = request()->route('date');
+if ($activity == null) $start = request()->route('date') ?? (time() * 1000);
+else $start = $activity->start;
 @endphp
 @extends('layouts.default')
 @section('content')
@@ -16,8 +17,7 @@ $start = request()->route('date');
         <form action="/activities/{{ is_null($activity) ? 'new' : 'edit' }}" id="product_form" method="POST"
             class="form-horizontal">
             @csrf
-            <input type="hidden" name="id" value="{{ Auth::user()->id }}">
-            <input type="hidden" name="product_id" id="product_id" value="{{ $activity->id ?? null }}">
+            <input type="hidden" name="id" value="{{ Auth::id() }}">
 
             <div class="field">
                 <label class="label">Name<sup style="color: red">*</sup></label>
@@ -37,9 +37,18 @@ $start = request()->route('date');
             </div>
 
             <div class="field">
-                <label class="label">Slots<sup style="color: red">*</sup></label>
                 <div class="control">
-                    <input type="number" step="1.00" name="slots" min="-1" class="input" value="{{ isset($activity->slots) ? $activity->slots : old('slots') }}">
+                    <label class="checkbox label">
+                        Unlimited Slots
+                        <input type="checkbox" class="js-switch" name="unlimited_slots" {{ (isset($activity->unlimited_slots) && $activity->unlimited_slots) || old('unlimited_slots') ? 'checked' : '' }}>
+                    </label>
+                </div>
+            </div>
+
+            <div class="field" id="slots_div" style="display: none;">
+                <label class="label">Slots</label>
+                <div class="control">
+                    <input type="number" step="1.00" name="slots" min="1" class="input" required value="{{ isset($activity->slots) ? $activity->slots : old('slots') }}">
                 </div>
             </div>
 
@@ -55,31 +64,16 @@ $start = request()->route('date');
     <div class="column is-4">
 
             <div class="field">
+                <label class="label">Start Time<sup style="color: red">*</sup></label>
                 <div class="control">
-                    <label class="checkbox label">
-                        Start Date
-                        
-                    </label>
+                    <input type="text" name="start" id="start" class="input" required>
                 </div>
             </div>
 
-        <div class="field">
-            <div class="control">
-                <label class="checkbox label">
-                    All Day
-                    <input type="checkbox" class="js-switch" name="all_day" {{ (isset($activity->all_day) && $activity->all_day) || old('all_day') ? 'checked' : '' }}>
-                </label>
-            </div>
-        </div>
-
-        <div id="all_day_attr" style="display: none;">
-
             <div class="field">
+                <label class="label">End Time<sup style="color: red">*</sup></label>
                 <div class="control">
-                    <label class="checkbox label">
-                        End Date
-                        
-                    </label>
+                    <input type="text" name="end" id="end" class="input" required value="{{ (isset($activity->end)) ? $activity->end : '' }}">
                 </div>
             </div>
 
@@ -137,16 +131,27 @@ $start = request()->route('date');
     const switches = document.getElementsByClassName("js-switch");
     for (var i = 0; i < switches.length; i++) { new Switchery(switches.item(i), {color: '#48C774', secondaryColor: '#F56D71'}) }
 
+    let endMinDate = null;
+
+    flatpickr('#start', { onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: 'today', defaultDate: {{ $start }} });
+
+    function startChange(e) {
+        endMinDate = new Date(e);
+        flatpickr('#end', { enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: endMinDate });
+    }
+
     $(document).ready(function() {
-        updateAllDay($('input[type=checkbox][name=all_day]').prop('checked'));
+        endMinDate = new Date({{ $start }});
+        flatpickr('#end', { enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: endMinDate });
+        updatedUnlimitedSlots($('input[type=checkbox][name=unlimited_slots]').prop('checked'));
     });
         
-    $('input[type=checkbox][name=all_day]').change(function() {
-        updateAllDay($(this).prop('checked'))
+    $('input[type=checkbox][name=unlimited_slots]').change(function() {
+        updatedUnlimitedSlots($(this).prop('checked'))
     });
-        
-    function updateAllDay(checked) {
-        let div = $('#all_day_attr');
+
+    function updatedUnlimitedSlots(checked) {
+        let div = $('#slots_div');
         if (checked) div.fadeOut(200);
         else div.fadeIn(200);
     }

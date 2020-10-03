@@ -112,6 +112,19 @@ if (!is_null($role)) $role_permissions = json_decode($role->permissions);
             </label>
         </div>
         <hr>
+        <h4 class="subtitle"><strong>Activities</strong>&nbsp;<input type="checkbox" class="permission" id="permission-activities-checkbox" name="permissions[activities]" onclick="updateSections();" value="1" @if(!is_null($role) && (in_array('activities', $role_permissions) || $role->superuser)) checked @endif></h4>
+        <div class="control" id="permission-activities" style="display: none;">
+            <label class="checkbox">
+                <input type="checkbox" class="permission" name="permissions[activities_list]" value="1" @if(!is_null($role) && (in_array('activities_list', $role_permissions) || $role->superuser)) checked @endif>
+                List Activities
+            </label>
+            &nbsp;
+            <label class="checkbox">
+                <input type="checkbox" class="permission" name="permissions[activities_manage]" value="1" @if(!is_null($role) && (in_array('activities_manage', $role_permissions) || $role->superuser)) checked @endif>
+                Manage Activities
+            </label>
+        </div>
+        <hr>
         <h4 class="subtitle"><strong>Orders</strong>&nbsp;<input type="checkbox" class="permission" id="permission-orders-checkbox" name="permissions[orders]" onclick="updateSections();" value="1" @if(!is_null($role) && (in_array('orders', $role_permissions) || $role->superuser)) checked @endif></h4>
         <div class="control" id="permission-orders" style="display: none;">
             <label class="checkbox">
@@ -217,7 +230,7 @@ if (!is_null($role)) $role_permissions = json_decode($role->permissions);
     }
     
     function updateSections() {
-        ['users', 'products', 'orders', 'settings'].forEach(element => {
+        ['users', 'products', 'activities', 'orders', 'settings'].forEach(element => {
             if ($(`#permission-${element}-checkbox`).prop('checked')) $(`#permission-${element}`).show(200);
             else $(`#permission-${element}`).hide(200);
         });
