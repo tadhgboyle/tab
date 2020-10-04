@@ -24,6 +24,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 window.open(event.event.url, '_blank');
             }
         },
+        dateClick: function(day) {
+            if (day.dateStr < new Date().toISOString().split('T')[0]) return;
+            let url = '{{ route('activities_new', ':id') }}';
+            url = url.replace(':id', day.dateStr);
+            location.href = url;
+        },
         allDaySlot: false,
     });
 

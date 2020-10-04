@@ -79,7 +79,7 @@ class ActivityController extends Controller
                 '<tr>' .
                     '<td>' . $user->full_name . '</td>' . 
                     '<td>$' . number_format($user->balance, 2) . '</td>' .
-                    (($user->balance < $activity->getPrice()) ?
+                    (($user->balance < $activity->getPrice() || $activity->isAttending($user)) ?
                     '<td><button class="button is-success is-small" disabled>Add</button></td>' :
                     '<td><a href="' . route('activities_user_add', [$activity->id, $user->id]) . '" class="button is-success is-small">Add</a></td>') . 
                 '</tr>';
