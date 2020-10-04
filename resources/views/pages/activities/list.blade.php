@@ -1,6 +1,7 @@
 @extends('layouts.default', ['page' => 'activities'])
 @section('content')
 <h2 class="title has-text-weight-bold">Activities</h2>
+@include('includes.messages')
 <div class="columns box">
     <div class="column">
         <div id="calendar"></div>

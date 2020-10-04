@@ -89,6 +89,7 @@ Documentation (in the form of a printable user handbook) is being written.
 
 *High to Low priority sort*
 - Fix everything in Issues/Bugs
+- Built in Activity category
 - Repeating activities. When they create activity, ask if repeated daily, weekly, monthly. Create more Activity rows for each day in the duration
     - If repeating activity, add a column (nullable), for root activity, the ID of the original activity it is duplicating
 - Categories should use an ID, and be serialized into each order product incase they are deleted.
