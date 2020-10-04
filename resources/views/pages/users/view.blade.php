@@ -3,8 +3,10 @@ use App\Transactions;
 use App\Http\Controllers\OrderController;
 use App\User;
 use App\Roles;
+use App\Activity;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserLimitsController;
+use Carbon\Carbon;
 
 $user = User::find(request()->route('id'));
 $users_manage = Roles::hasPermission(Auth::user()->role, 'users_manage');
@@ -123,6 +125,32 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
     </div>
     <div class="column is-half">
         <h4 class="title has-text-weight-bold is-4">Activity History</h4>
+        <table id="activity_list">
+            <thead>
+                <th>Time</th>
+                <th>Cashier</th>
+                <th>Activity</th>
+                <th>Price</th>
+            </thead>
+            <tbody>
+                @foreach (DB::table('activity_transactions')->where('user_id', $user->id)->orderBy('created_at', 'DESC')->get() as $transaction)
+                <tr>
+                    <td>
+                        <div>{{ Carbon::parse($transaction->created_at)->format('M jS Y h:ia') }}</div>
+                    </td>
+                    <td>
+                        <div>{{ User::find($transaction->cashier_id)->full_name }}</div>
+                    </td>
+                    <td>
+                        <div>{{ Activity::find($transaction->activity_id)->name }}</div>
+                    </td>
+                    <td>
+                        <div>${{ number_format($transaction->activity_price, 2) }}</div>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 </div>
 <script>
@@ -143,6 +171,20 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
                             4
                         @endif
                     ]
+                }
+            ]
+        });
+        $('#activity_list').DataTable({
+            "order": [],
+            "paging": false,
+            "searching": false,
+            "scrollY": "33vh",
+            "scrollCollapse": true,
+            "columnDefs": [
+                { 
+                    "orderable": false, 
+                    "searchable": false,
+                    "targets": [0, 1, 2, 3]
                 }
             ]
         });

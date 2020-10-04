@@ -1,8 +1,9 @@
 @php
 
 use App\Activity;
+use Carbon\Carbon;
 $activity = Activity::find(request()->route('id'));
-if ($activity == null) $start = request()->route('date') ?? (time() * 1000);
+if ($activity == null) $start = request()->route('date') ?? Carbon::now();
 else $start = $activity->start;
 @endphp
 @extends('layouts.default')
@@ -29,14 +30,14 @@ else $start = $activity->start;
             <div class="field">
                 <label class="label">Location</label>
                 <div class="control">
-                    <input type="text" name="location" class="input" placeholder="Location" required value="{{ $activity->location ?? old('location') }}">
+                    <input type="text" name="location" class="input" placeholder="Location" value="{{ $activity->location ?? old('location') }}">
                 </div>
             </div>
 
             <div class="field">
                 <label class="label">Description</label>
                 <div class="control">
-                    <input type="text" name="description" class="input" placeholder="Description" required value="{{ $activity->description ?? old('description') }}">
+                    <input type="text" name="description" class="input" placeholder="Description" value="{{ $activity->description ?? old('description') }}">
                 </div>
             </div>
 
@@ -138,16 +139,16 @@ else $start = $activity->start;
 
     let endMinDate = null;
 
-    flatpickr('#start', { onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: 'today', defaultDate: {{ $start }} });
-
     function startChange(e) {
         endMinDate = new Date(e);
         flatpickr('#end', { enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: endMinDate });
     }
 
     $(document).ready(function() {
-        endMinDate = new Date({{ $start }});
-        flatpickr('#end', { enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: endMinDate });
+        const date = new Date('{{ $start }}');
+        date.setDate(date.getDate() + 1);
+        flatpickr('#start', { defaultDate: date, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: 'today' });
+        flatpickr('#end', { enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: date });
         updatedUnlimitedSlots($('input[type=checkbox][name=unlimited_slots]').prop('checked'));
     });
         
