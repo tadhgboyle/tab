@@ -19,12 +19,12 @@ class Roles extends Model
         return Roles::orderBy('order', $order)->get();
     }
 
-    public static function getStaffRoles():array
+    public static function getStaffRoles(): array
     {
         return Roles::select('id', 'name')->orderBy('order', 'ASC')->where('staff', true)->get()->toArray();
     }
 
-    public static function getRolesAvailable(int $caller):array
+    public static function getRolesAvailable(int $caller): array
     {
         $roles = array();
         foreach (self::getRoles() as $role) {

@@ -37,7 +37,7 @@ $products_manage = Roles::hasPermission(Auth::user()->role, 'products_manage');
                             <div>{{ ucfirst($product->category) }}</div>
                         </td>
                         <td>
-                            <div>${{ number_format($product->price, 2) }}</div>
+                            <div>{!! $product->price > 0 ? '$' . number_format($product->price, 2) : '<i>Free</i>' !!}</div>
                         </td>
                         <td>
                             <div>{!! Products::getStock($product->id) !!}</div>

@@ -15,21 +15,64 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
 @section('content')
 <h2 class="title has-text-weight-bold">View User</h2>
 <h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if(!$user->deleted && $users_manage && Roles::canInteract(Auth::user()->role, $user->role))<a href="{{ route('users_edit', $user->id) }}">(Edit)</a>@endif</h4>
-<p><strong>Role:</strong> {{ Roles::idToName($user->role) }}</p>
-<p><strong>Deleted:</strong> {{ $user->deleted ? 'Yes' : 'No' }}</p>
-<span><strong>Balance:</strong> ${{ number_format($user->balance, 2) }}, </span>
-<span><strong>Total spent:</strong> ${{ User::findSpent($user) }}, </span>
-<span><strong>Total returned:</strong> ${{ User::findReturned($user) }}, </span>
-<span><strong>Total owing:</strong> ${{ User::findOwing($user) }}</span>
-<br>
+
+<div class="columns">
+    <div class="column is-half">
+        <p><strong>Role:</strong> {{ Roles::idToName($user->role) }}</p>
+        <p><strong>Deleted:</strong> {{ $user->deleted ? 'Yes' : 'No' }}</p>
+        <span><strong>Balance:</strong> ${{ number_format($user->balance, 2) }}, </span>
+        <span><strong>Total spent:</strong> ${{ User::findSpent($user) }}, </span>
+        <span><strong>Total returned:</strong> ${{ User::findReturned($user) }}, </span>
+        <span><strong>Total owing:</strong> ${{ User::findOwing($user) }}</span>
+    </div>
+    <div class="column is-half box">
+        <h4 class="title has-text-weight-bold is-4">Category Limits</h4>
+        <table id="category_list">
+            <thead>
+                <th>Category</th>
+                <th>Limit</th>
+                <th>Spent</th>
+                <th>Remaining</th>
+            </thead>
+            <tbody>
+                @foreach(SettingsController::getCategories() as $category)
+                @php
+                $category_limit = UserLimitsController::findLimit($user->id, $category->value);
+                $category_duration = UserLimitsController::findDuration($user->id, $category->value);
+                $category_spent = UserLimitsController::findSpent($user->id, $category->value, $category_duration);
+                @endphp
+                <tr>
+                    <td>
+                        <div>{{ ucfirst($category->value) }}</div>
+                    </td>
+                    <td>
+                        <div>
+                            {!! $category_limit == -1 ? "<i>Unlimited</i>" : "$" . number_format($category_limit, 2) . "/" . $category_duration !!}
+                        </div>
+                    </td>
+                    <td>
+                        <div>${{ number_format($category_spent, 2) }}</div>
+                    </td>
+                    <td>
+                        <div>
+                            {!! $category_limit == -1 ? "<i>Unlimited</i>" : "$" . number_format($category_limit - $category_spent, 2) !!}
+                        </div>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+
 <br>
 
 <div id="loading" align="center">
     <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
 </div>
 <div class="columns box" id="table_container" style="visibility: hidden;">
-    <div class="column is-three-fifths">
-    <h4 class="title has-text-weight-bold is-4">History</h4>
+    <div class="column">
+        <h4 class="title has-text-weight-bold is-4">Order History</h4>
         <table id="order_list">
             <thead>
                 <th>Time</th>
@@ -78,43 +121,8 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
             </tbody>
         </table>
     </div>
-    <div class="column is-two-fifths">
-        <h4 class="title has-text-weight-bold is-4">Limits</h4>
-        <table id="category_list">
-            <thead>
-                <th>Category</th>
-                <th>Limit</th>
-                <th>Spent</th>
-                <th>Remaining</th>
-            </thead>
-            <tbody>
-                @foreach(SettingsController::getCategories() as $category)
-                    @php
-                    $category_limit = UserLimitsController::findLimit(request()->route('id'), $category->value);
-                    $category_duration = UserLimitsController::findDuration(request()->route('id'), $category->value);
-                    $category_spent = UserLimitsController::findSpent(request()->route('id'), $category->value, $category_duration);
-                    @endphp
-                    <tr>
-                        <td>
-                            <div>{{ ucfirst($category->value) }}</div>
-                        </td>
-                        <td>
-                            <div>
-                                {!! $category_limit == "-1" ? "<i>Unlimited</i>" : "$" . number_format($category_limit, 2) . "/" . $category_duration !!}
-                            </div>
-                        </td>
-                        <td>
-                            <div>${{ number_format($category_spent, 2) }}</div>
-                        </td>
-                        <td>
-                            <div>
-                                {!! $category_limit == "-1" ? "<i>Unlimited</i>" : "$" . number_format($category_limit - $category_spent, 2) !!}
-                            </div>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+    <div class="column is-half">
+        <h4 class="title has-text-weight-bold is-4">Activity History</h4>
     </div>
 </div>
 <script>

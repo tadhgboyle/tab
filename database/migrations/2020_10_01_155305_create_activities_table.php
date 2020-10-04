@@ -22,7 +22,6 @@ class CreateActivitiesTable extends Migration
             $table->integer('slots');
             $table->string('attendees', 1024)->default('[]');
             $table->float('price');
-            $table->boolean('pst')->default(false);
             $table->boolean('deleted')->default(false);
             $table->dateTime('start')->nullable();
             $table->dateTime('end')->nullable();

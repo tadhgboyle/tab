@@ -27,6 +27,20 @@ else $start = $activity->start;
             </div>
 
             <div class="field">
+                <label class="label">Location</label>
+                <div class="control">
+                    <input type="text" name="location" class="input" placeholder="Location" required value="{{ $activity->location ?? old('location') }}">
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">Description</label>
+                <div class="control">
+                    <input type="text" name="description" class="input" placeholder="Description" required value="{{ $activity->description ?? old('description') }}">
+                </div>
+            </div>
+
+            <div class="field">
                 <label class="label">Price<sup style="color: red">*</sup></label>
                 <div class="control has-icons-left">
                     <span class="icon is-small is-left">
@@ -45,21 +59,6 @@ else $start = $activity->start;
                 </div>
             </div>
 
-            <div class="field" id="slots_div" style="display: none;">
-                <label class="label">Slots</label>
-                <div class="control">
-                    <input type="number" step="1.00" name="slots" min="1" class="input" required value="{{ isset($activity->slots) ? $activity->slots : old('slots') }}">
-                </div>
-            </div>
-
-            <div class="field">
-                <div class="control">
-                    <label class="checkbox label">
-                        PST
-                        <input type="checkbox" class="js-switch" name="pst" {{ (isset($activity->pst) && $activity->pst) || old('pst') ? 'checked' : '' }}>
-                    </label>
-                </div>
-            </div>
     </div>
     <div class="column is-4">
 
@@ -77,6 +76,12 @@ else $start = $activity->start;
                 </div>
             </div>
 
+            <div class="field" id="slots_div" style="display: none;">
+                <label class="label">Slots</label>
+                <div class="control">
+                    <input type="number" step="1.00" name="slots" min="1" class="input" value="{{ isset($activity->slots) ? $activity->slots : old('slots') }}">
+                </div>
+            </div>
         </form>
     </div>
     <div class="column is-2">
@@ -152,8 +157,8 @@ else $start = $activity->start;
 
     function updatedUnlimitedSlots(checked) {
         let div = $('#slots_div');
-        if (checked) div.fadeOut(200);
-        else div.fadeIn(200);
+        if (checked) div.hide(200);
+        else div.show(200);
     }
 
     @if(!is_null($activity))

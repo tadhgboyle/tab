@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Activity;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Route;
 
 class ActivityController extends Controller
 {
@@ -25,7 +27,7 @@ class ActivityController extends Controller
         }
 
         if (Carbon::parse($request->get('start'))->gte($request->get('end'))) {
-            return redirect()->route('activities_new')->withInput()->with(['error', 'The end time must be after the start time.']);
+            return redirect()->route('activities_new')->withInput()->with('error', 'The end time must be after the start time.');
         }
 
         $activity = new Activity();
@@ -38,7 +40,6 @@ class ActivityController extends Controller
             $activity->slots = -1;
         } else $activity->slots = $request->slots;
         $activity->price = $request->price;
-        $activity->pst = $request->has('pst');
         $activity->start = $request->start;
         $activity->end = $request->end;
         $activity->save();
@@ -65,5 +66,34 @@ class ActivityController extends Controller
         }
 
         return $json ? json_encode($return) : $return;
+    }
+
+    public static function ajaxInit() {
+        $activity = Activity::find(\Request::get('activity'));
+        $users = User::where([['full_name', 'LIKE', '%' . \Request::get('search') . '%'], ['deleted', false]])->limit(5)->get();
+        $output = '';
+
+        if ($users) {
+            foreach ($users as $key => $user) {
+                $output .= 
+                '<tr>' .
+                    '<td>' . $user->full_name . '</td>' . 
+                    '<td>$' . number_format($user->balance, 2) . '</td>' .
+                    (($user->balance < $activity->getPrice()) ?
+                    '<td><button class="button is-success is-small" disabled>Add</button></td>' :
+                    '<td><a href="' . route('activities_user_add', [$activity->id, $user->id]) . '" class="button is-success is-small">Add</a></td>') . 
+                '</tr>';
+            }
+        }
+
+        return $output;
+    }
+
+    public static function registerUser() {
+        $activity = Activity::find(Route::current()->parameter('id'));
+        $user = User::find(Route::current()->parameter('user'));
+        if ($activity->registerUser($user)) {
+            return redirect()->back()->with('success', 'Successfully registered ' . $user->full_name . ' to ' . $activity->name . '.');
+        } else return redirect()->back()->with('error', 'Could not register ' . $user->full_name . ' for ' . $activity->name . '. Is it out of slots?');
     }
 }

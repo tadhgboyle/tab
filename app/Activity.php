@@ -4,14 +4,22 @@ namespace App;
 
 use App\Http\Controllers\SettingsController;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Activity extends Model
 {
+
+    protected $fillable = ['attendees'];
+
     protected $casts = [
         'unlimited_slots' => 'boolean',
-        'slots' => 'integer',
-        'pst' => 'boolean'
+        'slots' => 'integer'
+    ];
+
+    protected $dates = [
+        'start',
+        'end'
     ];
 
     public function slotsAvailable(): int 
@@ -31,9 +39,6 @@ class Activity extends Model
     public function getPrice(): float 
     {
         $price = $this->price;
-        if ($this->pst) {
-            $price = $price * SettingsController::getPst();
-        }
         $price = $price * SettingsController::getGst();
         return $price;
     }
@@ -46,6 +51,15 @@ class Activity extends Model
             $users[] = User::find($attendee);
         }
         return $users;
+    }
+
+    public function getStatus(): string
+    {
+        if (Carbon::parse($this->end)->isPast()) {
+            return "<span class=\"tag is-danger is-medium\">Over</span>";
+        } else if (Carbon::parse($this->start)->isPast()) {
+            return "<span class=\"tag is-warning is-medium\">In Progress</span>";
+        } else return "<span class=\"tag is-success is-medium\">Waiting</span>";;
     }
 
     public function registerUser(User $user): bool 

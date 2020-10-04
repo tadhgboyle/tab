@@ -136,6 +136,7 @@ Route::middleware('auth')->group(function () {
             Route::group(['permission' => 'activities_list'], function () {
                 Route::get('/activities', 'ActivityController@list')->name('activities_list');
             });
+
             Route::group(['permission' => 'activities_view'], function () {
                 Route::get('/activities/view/{id}', function () {
                     return view('pages.activities.view');
@@ -152,6 +153,9 @@ Route::middleware('auth')->group(function () {
                     return view('pages.activities.form');
                 })->where('id', '[0-9]+')->name('activities_edit');
                 Route::post('/activities/edit', 'ProductsController@edit')->name('activities_edit_form');
+
+                Route::post('/activities/view/search', 'ActivityController@ajaxInit')->name('activities_user_search');
+                Route::get('/activities/view/{id}/add/{user}', 'ActivityController@registerUser')->name('activities_user_add');
 
                 Route::get('/activities/delete/{id}', 'ProductsController@delete')->where('id', '[0-9]+')->name('activities_delete');
             });

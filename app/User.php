@@ -16,6 +16,8 @@ class User extends Authenticatable
     // protected $casts = [
     //     'role' => Roles::class
     // ];
+    
+    // TODO: getViewUrl and getEditUrl
 
     // Find how much a user has spent in total. 
     // Does not factor in returned items/orders.
