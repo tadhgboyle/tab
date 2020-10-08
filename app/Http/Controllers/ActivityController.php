@@ -64,7 +64,7 @@ class ActivityController extends Controller
         }
 
         if (Carbon::parse($request->get('start'))->gte($request->get('end'))) {
-            return redirect()->route('activities_view', $request->activity_id)->withInput()->with('error', 'The end time must be after the start time.');
+            return redirect()->route('activities_edit', $request->activity_id)->withInput()->with('error', 'The end time must be after the start time.');
         }
 
         $activity = Activity::find($request->activity_id);
