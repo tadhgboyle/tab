@@ -6,6 +6,7 @@ use Validator;
 use App\Products;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class ProductsController extends Controller
 {
@@ -60,7 +61,7 @@ class ProductsController extends Controller
             'name' => [
                 'required',
                 'min:2',
-                ValidationRule::unique('productss')->ignore($request->product_id, 'id')
+                Rule::unique('products')->ignore($request->product_id, 'id')
             ],
             'price' => 'required|numeric',
             'category' => 'required',

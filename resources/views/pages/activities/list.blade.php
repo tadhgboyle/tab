@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
         eventClick: function(event) {
             if (event.event.url) {
                 event.jsEvent.preventDefault();
-                window.open(event.event.url, '_blank');
+                location.href = event.event.url;
             }
         },
         dateClick: function(day) {

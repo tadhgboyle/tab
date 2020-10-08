@@ -5,6 +5,7 @@ namespace App;
 use App\Http\Controllers\OrderController;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Rennokki\QueryCache\Traits\QueryCacheable;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -23,7 +24,15 @@ class User extends Authenticatable
     // Does not factor in returned items/orders.
     public static function findSpent(User $user): float
     {
-        return number_format(Transactions::where('purchaser_id', $user->id)->sum('total_price'), 2);
+        $spent = 0.00;
+
+        $spent += Transactions::where('purchaser_id', $user->id)->sum('total_price');
+
+        $activities = DB::table('activity_transactions')->where('user_id', $user->id)->get();
+        foreach ($activities as $activity) {
+            $spent += ($activity->activity_price * $activity->activity_gst); 
+        }
+        return number_format($spent, 2);
     }
 
     // Find how much a user has returned in total.
@@ -31,8 +40,8 @@ class User extends Authenticatable
     public static function findReturned(User $user): float
     {
         $returned = 0.00;
-        $transactions = Transactions::where('purchaser_id', $user->id)->get();
 
+        $transactions = Transactions::where('purchaser_id', $user->id)->get();
         foreach ($transactions as $transaction) {
             if ($transaction->status == 1) {
                 $returned += $transaction->total_price;
@@ -44,9 +53,14 @@ class User extends Authenticatable
                 if ($product['returned'] > 0) {
                     $tax = $product['gst'];
                     if ($product['pst'] != "null") $tax += ($product['pst'] - 1);
-                    $returned += $product['returned'] * $product['price'] * $tax;
+                    $returned += ($product['returned'] * $product['price'] * $tax);
                 }
             }
+        }
+
+        $activity_transactions = DB::table('activity_transactions')->where([['user_id', $user->id], ['status', true]])->get();
+        foreach($activity_transactions as $transaction) {
+            $returned += ($transaction->activity_price * $transaction->activity_gst);
         }
 
         return number_format($returned, 2);
@@ -56,6 +70,6 @@ class User extends Authenticatable
     // Taking their amount spent and subtracting the amount they have returned.
     public static function findOwing(User $user): float
     {
-        return number_format(User::findSpent($user) - User::findReturned($user), 2);
+        return number_format(self::findSpent($user) - self::findReturned($user), 2);
     }
 }

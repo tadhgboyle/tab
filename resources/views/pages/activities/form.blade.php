@@ -19,6 +19,7 @@ else $start = $activity->start;
             class="form-horizontal">
             @csrf
             <input type="hidden" name="id" value="{{ Auth::id() }}">
+            <input type="hidden" name="id" id="activity_id" value="{{ request()->route('id') }}">
 
             <div class="field">
                 <label class="label">Name<sup style="color: red">*</sup></label>
@@ -147,7 +148,11 @@ else $start = $activity->start;
     $(document).ready(function() {
         const date = new Date('{{ $start }}');
         date.setDate(date.getDate() + 1);
-        flatpickr('#start', { defaultDate: date, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: 'today' });
+        @if(is_null($activity))
+            flatpickr('#start', { defaultDate: date, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: 'today' });
+        @else
+            flatpickr('#start', { defaultDate: date, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K' });
+        @endif
         flatpickr('#end', { enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: date });
         updatedUnlimitedSlots($('input[type=checkbox][name=unlimited_slots]').prop('checked'));
     });
@@ -174,8 +179,8 @@ else $start = $activity->start;
         }
 
         function deleteData() {
-            var id = document.getElementById('product_id').value;
-            var url = '{{ route("products_delete", ":id") }}';
+            var id = '{{ $activity->id }}';
+            var url = '{{ route("activities_delete", ":id") }}';
             url = url.replace(':id', id);
             $("#deleteForm").attr('action', url);
             $("#deleteForm").submit();
