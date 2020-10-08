@@ -157,7 +157,7 @@ Route::middleware('auth')->group(function () {
                 Route::post('/activities/view/search', 'ActivityController@ajaxInit')->name('activities_user_search');
                 Route::get('/activities/view/{id}/add/{user}', 'ActivityController@registerUser')->name('activities_user_add');
 
-                Route::get('/activities/delete/{id}', 'ProductsController@delete')->where('id', '[0-9]+')->name('activities_delete');
+                Route::get('/activities/delete/{id}', 'ActivityController@delete')->where('id', '[0-9]+')->name('activities_delete');
             });
         });
 

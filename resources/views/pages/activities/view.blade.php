@@ -4,13 +4,13 @@ use App\Activity;
 use App\Roles;
 $activity = Activity::find(request()->route('id'));
 if ($activity == null) return redirect()->route('activities_list')->with('error', 'Invalid activity.')->send();
-$can_register = strpos($activity->getStatus(), 'Waiting');
 $activities_manage = Roles::hasPermission(Auth::user()->role, 'activities_manage');
+$can_register = !strpos($activity->getStatus(), 'Over') && $activities_manage;
 @endphp
 @extends('layouts.default', ['page' => 'activities'])
 @section('content')
 <h2 class="title has-text-weight-bold">View Activity</h2>
-<h4 class="subtitle"><strong>Name:</strong> {{ $activity->name }} @if(!$activity->deleted && $activities_manage)<a href="{{ route('activities_edit', $activity->id) }}">(Edit)</a>@endif</h4>
+<h4 class="subtitle"><strong>Activity:</strong> {{ $activity->name }} @if(!$activity->deleted && $activities_manage)<a href="{{ route('activities_edit', $activity->id) }}">(Edit)</a>@endif</h4>
 <div class="columns box">
     <div class="column">
         @include('includes.messages')

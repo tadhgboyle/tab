@@ -7,6 +7,7 @@ use App\Activity;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserLimitsController;
 use Carbon\Carbon;
+use App\Http\Controllers\ActivityController;
 
 $user = User::find(request()->route('id'));
 $users_manage = Roles::hasPermission(Auth::user()->role, 'users_manage');
@@ -17,63 +18,23 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
 @section('content')
 <h2 class="title has-text-weight-bold">View User</h2>
 <h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if(!$user->deleted && $users_manage && Roles::canInteract(Auth::user()->role, $user->role))<a href="{{ route('users_edit', $user->id) }}">(Edit)</a>@endif</h4>
+<p><strong>Role:</strong> {{ Roles::idToName($user->role) }}</p>
+<p><strong>Deleted:</strong> {{ $user->deleted ? 'Yes' : 'No' }}</p>
+<span><strong>Balance:</strong> ${{ number_format($user->balance, 2) }}, </span>
+<span><strong>Total spent:</strong> ${{ User::findSpent($user) }}, </span>
+<span><strong>Total returned:</strong> ${{ User::findReturned($user) }}, </span>
+<span><strong>Total owing:</strong> ${{ User::findOwing($user) }}</span>
 
-<div class="columns">
-    <div class="column is-half">
-        <p><strong>Role:</strong> {{ Roles::idToName($user->role) }}</p>
-        <p><strong>Deleted:</strong> {{ $user->deleted ? 'Yes' : 'No' }}</p>
-        <span><strong>Balance:</strong> ${{ number_format($user->balance, 2) }}, </span>
-        <span><strong>Total spent:</strong> ${{ User::findSpent($user) }}, </span>
-        <span><strong>Total returned:</strong> ${{ User::findReturned($user) }}, </span>
-        <span><strong>Total owing:</strong> ${{ User::findOwing($user) }}</span>
-    </div>
-    <div class="column is-half box">
-        <h4 class="title has-text-weight-bold is-4">Category Limits</h4>
-        <table id="category_list">
-            <thead>
-                <th>Category</th>
-                <th>Limit</th>
-                <th>Spent</th>
-                <th>Remaining</th>
-            </thead>
-            <tbody>
-                @foreach(SettingsController::getCategories() as $category)
-                @php
-                $category_limit = UserLimitsController::findLimit($user->id, $category->value);
-                $category_duration = UserLimitsController::findDuration($user->id, $category->value);
-                $category_spent = UserLimitsController::findSpent($user->id, $category->value, $category_duration);
-                @endphp
-                <tr>
-                    <td>
-                        <div>{{ ucfirst($category->value) }}</div>
-                    </td>
-                    <td>
-                        <div>
-                            {!! $category_limit == -1 ? "<i>Unlimited</i>" : "$" . number_format($category_limit, 2) . "/" . $category_duration !!}
-                        </div>
-                    </td>
-                    <td>
-                        <div>${{ number_format($category_spent, 2) }}</div>
-                    </td>
-                    <td>
-                        <div>
-                            {!! $category_limit == -1 ? "<i>Unlimited</i>" : "$" . number_format($category_limit - $category_spent, 2) !!}
-                        </div>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-</div>
-
+<br>
 <br>
 
 <div id="loading" align="center">
     <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
 </div>
-<div class="columns box" id="table_container" style="visibility: hidden;">
-    <div class="column">
+
+<div class="columns" id="table_container" style="visibility: hidden;">
+
+    <div class="column is-6 box">
         <h4 class="title has-text-weight-bold is-4">Order History</h4>
         <table id="order_list">
             <thead>
@@ -82,12 +43,11 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
                 <th>Price</th>
                 <th>Status</th>
                 @if($orders_view)
-                    <th></th>
+                <th></th>
                 @endif
             </thead>
             <tbody>
-                @foreach (Transactions::where('purchaser_id', $user->id)->orderBy('created_at', 'DESC')->get() as
-                $transaction)
+                @foreach (Transactions::where('purchaser_id', $user->id)->orderBy('created_at', 'DESC')->get() as $transaction)
                 <tr>
                     <td>
                         <div>{{ $transaction->created_at->format('M jS Y h:ia') }}</div>
@@ -114,52 +74,113 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
                         </div>
                     </td>
                     @if($orders_view)
-                        <td>
-                            <div><a href="{{ route('orders_view', $transaction->id) }}">View</a></div>
-                        </td>
+                    <td>
+                        <div><a href="{{ route('orders_view', $transaction->id) }}">View</a></div>
+                    </td>
                     @endif
                 </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
-    <div class="column is-half">
-        <h4 class="title has-text-weight-bold is-4">Activity History</h4>
-        <table id="activity_list">
-            <thead>
-                <th>Time</th>
-                <th>Cashier</th>
-                <th>Activity</th>
-                <th>Price</th>
-            </thead>
-            <tbody>
-                @foreach (DB::table('activity_transactions')->where('user_id', $user->id)->orderBy('created_at', 'DESC')->get() as $transaction)
-                <tr>
-                    <td>
-                        <div>{{ Carbon::parse($transaction->created_at)->format('M jS Y h:ia') }}</div>
-                    </td>
-                    <td>
-                        <div>{{ User::find($transaction->cashier_id)->full_name }}</div>
-                    </td>
-                    <td>
-                        <div>{{ Activity::find($transaction->activity_id)->name }}</div>
-                    </td>
-                    <td>
-                        <div>${{ number_format($transaction->activity_price, 2) }}</div>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+
+    <div class="column is-1"></div>
+
+    <div class="column is-5">
+        <div class="columns is-multiline">
+            <div class="column is-12 box">
+                <h4 class="title has-text-weight-bold is-4">Category Limits</h4>
+                <table id="category_list">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Limit</th>
+                            <th>Spent</th>
+                            <th>Remaining</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach(SettingsController::getCategories() as $category)
+                        @php
+                        $category_limit = UserLimitsController::findLimit($user->id, $category->value);
+                        $category_duration = UserLimitsController::findDuration($user->id, $category->value);
+                        $category_spent = UserLimitsController::findSpent($user->id, $category->value, $category_duration);
+                        @endphp
+                        <tr>
+                            <td>
+                                <div>{{ ucfirst($category->value) }}</div>
+                            </td>
+                            <td>
+                                <div>{!! $category_limit == -1 ? "<i>Unlimited</i>" : "$" . number_format($category_limit, 2) . "/" . $category_duration !!}</div>
+                            </td>
+                            <td>
+                                <div>${{ number_format($category_spent, 2) }}</div>
+                            </td>
+                            <td>
+                                <div>{!! $category_limit == -1 ? "<i>Unlimited</i>" : "$" . number_format($category_limit - $category_spent, 2) !!}</div>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <div class="column box">
+            <h4 class="title has-text-weight-bold is-4">Activity History</h4>
+                <table id="activity_list">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Cashier</th>
+                            <th>Activity</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (ActivityController::getUserActivities($user) as $transaction)
+                        <tr>
+                            <td>
+                                <div>{{ $transaction['created_at']->format('M jS Y h:ia') }}</div>
+                            </td>
+                            <td>
+                                <div>{{ $transaction['cashier']->full_name }}</div>
+                            </td>
+                            <td>
+                                <div><a href="{{ route('activities_view', $transaction['activity']->id) }}">{{ $transaction['activity']->name }}</a></div>
+                            </td>
+                            <td>
+                                <div>{!! $transaction['price'] > 0 ? '$' . number_format($transaction['price'], 2) : '<i>Free</i>' !!}</div>
+                            </td>
+                            <td>
+                                <div>
+                                    @switch($transaction['status'])
+                                        @case(0)
+                                            <span class="tag is-success is-medium">Normal</span>
+                                            @break
+                                        @case(1)
+                                            <span class="tag is-danger is-medium">Returned</span>
+                                            @break
+                                    @endswitch
+                                </div>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
+
+<br>
+
 <script>
     $(document).ready(function() {
         $('#order_list').DataTable({
             "order": [],
             "paging": false,
             "searching": false,
-            "scrollY": "33vh",
+            "scrollY": "49vh",
             "scrollCollapse": true,
             "columnDefs": [
                 { 
@@ -184,14 +205,21 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
                 { 
                     "orderable": false, 
                     "searchable": false,
-                    "targets": [0, 1, 2, 3]
+                    "targets": 4
                 }
             ]
         });
         $('#category_list').DataTable({
             "searching": false,
             "paging": false,
-            "bInfo": false,
+            "bInfo": false,            
+            "columnDefs": [
+                { 
+                    "orderable": false, 
+                    "searchable": false,
+                    "targets": 0
+                }
+            ]
         });
         $('#loading').hide();
         $('#table_container').css('visibility', 'visible');

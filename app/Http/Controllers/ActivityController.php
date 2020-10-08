@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 
 class ActivityController extends Controller
 {
@@ -47,13 +48,55 @@ class ActivityController extends Controller
         return redirect()->route('activities_list')->with('success', 'Created activity ' . $request->name . '.');
     }
 
+    public function edit(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|min:3|max:255|unique:activities',
+            'location' => 'min:3|max:36',
+            'description' => 'min:3|max:255',
+            'slots' => 'required_if:unlimited_slots,0|numeric|min:1',
+            'price' => 'required|numeric',
+            'start' => 'required',
+            'end' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return redirect()->route('activities_edit', $request->activity_id)->withInput()->withErrors($validator);
+        }
+
+        if (Carbon::parse($request->get('start'))->gte($request->get('end'))) {
+            return redirect()->route('activities_view', $request->activity_id)->withInput()->with('error', 'The end time must be after the start time.');
+        }
+
+        $activity = Activity::find($request->activity_id);
+
+        $activity->update([
+            'name' => $request->name,
+            'location' => $request->location,
+            'description' => $request->description,
+            'unlimited_slots' => $request->has('unlimited_slots'),
+            'slots' => $request->has('unlimited_slots') ? -1 : $request->slots,
+            'price' => $request->price,
+            'start' => $request->start,
+            'end' => $request->end
+        ]);
+
+        return redirect()->route('activities_list')->with('success', 'Updated activity ' . $request->name . '.');
+    }
+
+    public function delete(int $id)
+    {
+        $activity = Activity::find($id);
+        $activity->update(['deleted' => true]);
+        return redirect()->route('activities_list')->with('success', 'Deleted activity ' . $activity->name . '.');
+    }
+
     public function list() {
         return view('pages.activities.list', ['activities' => self::getAll(true, ['id', 'name', 'start', 'end'])]);
     }
 
-    public static function getAll($json = false, $columns = ['*']) 
+    public static function getAll(bool $json = false, array $columns = ['*'], bool $deleted = false) 
     {
-        $activities = Activity::all($columns);
+        $activities = Activity::all($columns)->where('deleted', $deleted);
         $return = array();
 
         foreach ($activities as $activity) {
@@ -66,6 +109,23 @@ class ActivityController extends Controller
         }
 
         return $json ? json_encode($return) : $return;
+    }
+
+    public static function getUserActivities(User $user): array
+    {
+        $activities = DB::table('activity_transactions')->where('user_id', $user->id)->orderBy('created_at', 'DESC')->get();
+        $return = array();
+
+        foreach ($activities as $activity) {
+            $return[] = [
+                'created_at' => Carbon::parse($activity->created_at),
+                'cashier' => User::find($activity->cashier_id),
+                'activity' => Activity::find($activity->activity_id),
+                'price' => $activity->activity_price,
+                'status' => $activity->status
+            ];
+        }
+        return $return;
     }
 
     public static function ajaxInit() {
