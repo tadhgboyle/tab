@@ -2,9 +2,9 @@
 
 use App\Http\Controllers\SettingsController;
 use App\Roles;
-$manage_general = Roles::hasPermission(Auth::user()->role, 'settings_general');
-$manage_roles = Roles::hasPermission(Auth::user()->role, 'settings_roles_manage');
-$manage_categories = Roles::hasPermission(Auth::user()->role, 'settings_categories_manage');
+$manage_general = Auth::user()->hasPermission('settings_general');
+$manage_roles = Auth::user()->hasPermission('settings_roles_manage');
+$manage_categories = Auth::user()->hasPermission('settings_categories_manage');
 // TODO: Remove self purchases setting and change to per-group permission
 @endphp
 @extends('layouts.default')
@@ -38,7 +38,7 @@ $manage_categories = Roles::hasPermission(Auth::user()->role, 'settings_categori
                             <input type="number" step="0.01" name="pst" class="input" value="{{ SettingsController::getPst() }}">
                         </div>
                     </div>
-                                    
+
                     <div class="control">
                         <button class="button is-success" type="submit">
                             <span class="icon is-small">
@@ -127,17 +127,17 @@ $manage_categories = Roles::hasPermission(Auth::user()->role, 'settings_categori
                                 </td>
                                 <td>
                                     <div>
-                                    @if (Roles::canInteract(Auth::user()->role, $role->id))
-                                        <a href="{{ route('settings_roles_edit', $role->id) }}">Edit</a>
-                                    @else 
-                                        <div class="control">
-                                            <button class="button is-warning" disabled>
-                                                <span class="icon">z
-                                                    <i class="fas fa-lock"></i>
-                                                </span>
-                                            </button>
-                                        </div>
-                                    @endif
+                                        @if (Auth::user()->role->canInteract($role))
+                                            <a href="{{ route('settings_roles_edit', $role->id) }}">Edit</a>
+                                        @else
+                                            <div class="control">
+                                                <button class="button is-warning" disabled>
+                                                    <span class="icon">
+                                                        <i class="fas fa-lock"></i>
+                                                    </span>
+                                                </button>
+                                            </div>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
@@ -153,7 +153,7 @@ $manage_categories = Roles::hasPermission(Auth::user()->role, 'settings_categori
                 <span>New</span>
             </a>
         </div>
-    @endif    
+    @endif
 </div>
 
 <script type="text/javascript">
@@ -165,13 +165,11 @@ $manage_categories = Roles::hasPermission(Auth::user()->role, 'settings_categori
                 "scrollY": "49vh",
                 "scrollCollapse": true,
                 "bInfo": false,
-                "columnDefs": [
-                    { 
-                        "orderable": false, 
-                        "searchable": false,
-                        "targets": 1
-                    }
-                ]
+                "columnDefs": [{
+                    "orderable": false,
+                    "searchable": false,
+                    "targets": 1
+                }]
             });
         @endif
 
@@ -183,25 +181,23 @@ $manage_categories = Roles::hasPermission(Auth::user()->role, 'settings_categori
                 "scrollY": "49vh",
                 "scrollCollapse": true,
                 "bInfo": false,
-                "columnDefs": [
-                    { 
-                        "orderable": false, 
-                        "searchable": false,
-                        "targets": [1, 2]
-                    }
-                ]
+                "columnDefs": [{
+                    "orderable": false,
+                    "searchable": false,
+                    "targets": [1, 2]
+                }]
             });
 
-            @if(Roles::find(Auth::user()->role)->superuser)
+            @if(Auth::user()->role->superuser)
                 $("#sortable").sortable({
                     start: function(event, ui) {
                         let start_pos = ui.item.index();
                         ui.item.data('startPos', start_pos);
                     },
-                    update: function(event, ui){
+                    update: function(event, ui) {
                         let roles = $("#sortable").children();
                         let toSubmit = [];
-                        roles.each(function(){
+                        roles.each(function() {
                             toSubmit.push($(this).data().id);
                         });
 
@@ -209,7 +205,9 @@ $manage_categories = Roles::hasPermission(Auth::user()->role, 'settings_categori
                             url: "{{ route('settings_roles_order_ajax') }}",
                             type: "GET",
                             data: {
-                                roles: JSON.stringify({"roles": toSubmit})
+                                roles: JSON.stringify({
+                                    "roles": toSubmit
+                                })
                             },
                             success: function(response) {
                                 // Success

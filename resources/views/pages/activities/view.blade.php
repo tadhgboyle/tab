@@ -4,7 +4,7 @@ use App\Activity;
 use App\Roles;
 $activity = Activity::find(request()->route('id'));
 if ($activity == null) return redirect()->route('activities_list')->with('error', 'Invalid activity.')->send();
-$activities_manage = Roles::hasPermission(Auth::user()->role, 'activities_manage');
+$activities_manage = Auth::user()->hasPermission('activities_manage');
 $can_register = !strpos($activity->getStatus(), 'Over') && $activities_manage;
 @endphp
 @extends('layouts.default', ['page' => 'activities'])

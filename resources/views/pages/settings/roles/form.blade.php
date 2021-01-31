@@ -1,7 +1,7 @@
 @php
 use App\Roles;
 $role = Roles::find(request()->route('id'));
-if (!is_null($role) && !Roles::canInteract(Auth::user()->role, request()->route('id'))) return redirect()->route('settings')->with('error', 'You cannot interact with that role.')->send();
+if (!is_null($role) && !Auth::user()->role->canInteract(Roles::find(request()->route('id')))) return redirect()->route('settings')->with('error', 'You cannot interact with that role.')->send();
 if (!is_null($role)) $role_permissions = json_decode($role->permissions);
 @endphp
 @extends('layouts.default')

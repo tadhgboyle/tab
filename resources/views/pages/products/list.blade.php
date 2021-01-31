@@ -2,7 +2,7 @@
 
 use App\Products;
 use App\Roles;
-$products_manage = Roles::hasPermission(Auth::user()->role, 'products_manage');
+$products_manage = Auth::user()->hasPermission('products_manage');
 @endphp
 @extends('layouts.default')
 @section('content')
@@ -23,37 +23,37 @@ $products_manage = Roles::hasPermission(Auth::user()->role, 'products_manage');
                     <th>Box Size</th>
                     <th>PST</th>
                     @if ($products_manage)
-                        <th></th>
+                    <th></th>
                     @endif
                 </tr>
             </thead>
             <tbody>
                 @foreach (Products::all()->where('deleted', false) as $product)
-                    <tr>
-                        <td>
-                            <div>{{ $product->name }}</div>
-                        </td>
-                        <td>
-                            <div>{{ ucfirst($product->category) }}</div>
-                        </td>
-                        <td>
-                            <div>{!! $product->price > 0 ? '$' . number_format($product->price, 2) : '<i>Free</i>' !!}</div>
-                        </td>
-                        <td>
-                            <div>{!! Products::getStock($product->id) !!}</div>
-                        </td>
-                        <td>
-                            <div>{!! $product->box_size == -1 ? '<i>N/A</i>' : $product->box_size !!}</div>
-                        </td>
-                        <td>
-                            <div>{!! $product->pst ? "<span class=\"tag is-success is-medium\">Yes</span>" : "<span class=\"tag is-danger is-medium\">No</span>" !!}</div>
-                        </td>
-                        @if ($products_manage)
-                            <td>
-                                <div><a href="{{ route('products_edit', $product->id) }}">Edit</a></div>
-                            </td>
-                        @endif
-                    </tr>
+                <tr>
+                    <td>
+                        <div>{{ $product->name }}</div>
+                    </td>
+                    <td>
+                        <div>{{ ucfirst($product->category) }}</div>
+                    </td>
+                    <td>
+                        <div>{!! $product->price > 0 ? '$' . number_format($product->price, 2) : '<i>Free</i>' !!}</div>
+                    </td>
+                    <td>
+                        <div>{!! Products::getStock($product->id) !!}</div>
+                    </td>
+                    <td>
+                        <div>{!! $product->box_size == -1 ? '<i>N/A</i>' : $product->box_size !!}</div>
+                    </td>
+                    <td>
+                        <div>{!! $product->pst ? "<span class=\"tag is-success is-medium\">Yes</span>" : "<span class=\"tag is-danger is-medium\">No</span>" !!}</div>
+                    </td>
+                    @if ($products_manage)
+                    <td>
+                        <div><a href="{{ route('products_edit', $product->id) }}">Edit</a></div>
+                    </td>
+                    @endif
+                </tr>
                 @endforeach
             </tbody>
         </table>
@@ -65,18 +65,16 @@ $products_manage = Roles::hasPermission(Auth::user()->role, 'products_manage');
             "paging": false,
             "scrollY": "49vh",
             "scrollCollapse": true,
-            "columnDefs": [
-                {
-                    "orderable": false,
-                    "searchable": false,
-                    "targets": [
-                        5, 
-                        @if ($products_manage)
-                            6
-                        @endif
-                    ]
-                }
-            ]
+            "columnDefs": [{
+                "orderable": false,
+                "searchable": false,
+                "targets": [
+                    5,
+                    @if($products_manage)
+                    6
+                    @endif
+                ]
+            }]
         });
         $('#loading').hide();
         $('#product_container').css('visibility', 'visible');

@@ -24,7 +24,7 @@ Route::post('/login/auth', 'LoginController@auth')->name('login_auth');
 Route::middleware('auth')->group(function () {
 
     Route::get('/', function () {
-        if (Roles::hasPermission(Auth::user()->role, 'cashier')) {
+        if (Auth::user()->role->hasPermission('cashier')) {
             return view('pages.index');
         } else {
             return view('pages.403');
