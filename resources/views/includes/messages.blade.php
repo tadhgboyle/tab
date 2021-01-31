@@ -12,13 +12,6 @@
 </div>
 @endif
 
-@foreach ($errors->all() as $error)
-<div class="notification is-danger is-light">
-    <span>{!! $error !!}</span>
-    <button class="delete close-notification"></button>
-</div>
-@endforeach
-
 <script>
     $(document).ready(function() {
         setTimeout(function() {

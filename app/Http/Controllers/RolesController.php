@@ -61,8 +61,7 @@ class RolesController extends Controller
             return redirect()->back()->withInput()->withErrors($validator);
         }
 
-        $staff = false;
-        if ($request->has('staff')) $staff = true;
+        $staff = $request->has('staff');
 
         $superuser = false;
 
@@ -71,11 +70,13 @@ class RolesController extends Controller
             // TODO: if they dont have "users" permission checked, ignore "users_list" etc
             if (is_array($request->permissions)) {
                 foreach ($request->permissions as $permission => $value) {
-                    if ($value) $permissions[] = $permission;
+                    if ($value) {
+                        $permissions[] = $permission;
+                    }
                 }
             }
             $permissions = json_encode($permissions);
-            if ($request->has('superuser')) $superuser = true;
+            $superuser = $request->has('superuser');
         } else $permissions = '[]';
 
         DB::table('roles')
