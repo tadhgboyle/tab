@@ -10,15 +10,15 @@ use Carbon\Carbon;
 use App\Http\Controllers\ActivityController;
 
 $user = User::find(request()->route('id'));
-$users_manage = Roles::hasPermission(Auth::user()->role, 'users_manage');
-$orders_view = Roles::hasPermission(Auth::user()->role, 'orders_view');
+$users_manage = Auth::user()->hasPermission('users_manage');
+$orders_view = Auth::user()->hasPermission('orders_view');
 if ($user == null) return redirect()->route('users_list')->with('error', 'Invalid user.')->send();
 @endphp
 @extends('layouts.default')
 @section('content')
 <h2 class="title has-text-weight-bold">View User</h2>
-<h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if(!$user->deleted && $users_manage && Roles::canInteract(Auth::user()->role, $user->role))<a href="{{ route('users_edit', $user->id) }}">(Edit)</a>@endif</h4>
-<p><strong>Role:</strong> {{ Roles::idToName($user->role) }}</p>
+<h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if(!$user->deleted && $users_manage && Auth::user()->role->canInteract($user->role))<a href="{{ route('users_edit', $user->id) }}">(Edit)</a>@endif</h4>
+<p><strong>Role:</strong> {{ $user->role->name }}</p>
 <p><strong>Deleted:</strong> {{ $user->deleted ? 'Yes' : 'No' }}</p>
 <span><strong>Balance:</strong> ${{ number_format($user->balance, 2) }}, </span>
 <span><strong>Total spent:</strong> ${{ User::findSpent($user) }}, </span>
@@ -61,15 +61,15 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
                     <td>
                         <div>
                             @switch(OrderController::checkReturned($transaction->id))
-                                @case(0)
-                                    <span class="tag is-success is-medium">Normal</span>
-                                    @break
-                                @case(1)
-                                    <span class="tag is-danger is-medium">Returned</span>
-                                    @break
-                                @case(2)
-                                    <span class="tag is-warning is-medium">Semi Returned</span>
-                                    @break
+                            @case(0)
+                            <span class="tag is-success is-medium">Normal</span>
+                            @break
+                            @case(1)
+                            <span class="tag is-danger is-medium">Returned</span>
+                            @break
+                            @case(2)
+                            <span class="tag is-warning is-medium">Semi Returned</span>
+                            @break
                             @endswitch
                         </div>
                     </td>
@@ -125,7 +125,7 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
                 </table>
             </div>
             <div class="column box">
-            <h4 class="title has-text-weight-bold is-4">Activity History</h4>
+                <h4 class="title has-text-weight-bold is-4">Activity History</h4>
                 <table id="activity_list">
                     <thead>
                         <tr>
@@ -154,12 +154,12 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
                             <td>
                                 <div>
                                     @switch($transaction['status'])
-                                        @case(0)
-                                            <span class="tag is-success is-medium">Normal</span>
-                                            @break
-                                        @case(1)
-                                            <span class="tag is-danger is-medium">Returned</span>
-                                            @break
+                                    @case(0)
+                                    <span class="tag is-success is-medium">Normal</span>
+                                    @break
+                                    @case(1)
+                                    <span class="tag is-danger is-medium">Returned</span>
+                                    @break
                                     @endswitch
                                 </div>
                             </td>
@@ -182,18 +182,16 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
             "searching": false,
             "scrollY": "49vh",
             "scrollCollapse": true,
-            "columnDefs": [
-                { 
-                    "orderable": false, 
-                    "searchable": false,
-                    "targets": [
-                        3, 
-                        @if($orders_view)
-                            4
-                        @endif
-                    ]
-                }
-            ]
+            "columnDefs": [{
+                "orderable": false,
+                "searchable": false,
+                "targets": [
+                    3,
+                    @if($orders_view)
+                    4
+                    @endif
+                ]
+            }]
         });
         $('#activity_list').DataTable({
             "order": [],
@@ -201,25 +199,21 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
             "searching": false,
             "scrollY": "33vh",
             "scrollCollapse": true,
-            "columnDefs": [
-                { 
-                    "orderable": false, 
-                    "searchable": false,
-                    "targets": 4
-                }
-            ]
+            "columnDefs": [{
+                "orderable": false,
+                "searchable": false,
+                "targets": 4
+            }]
         });
         $('#category_list').DataTable({
             "searching": false,
             "paging": false,
-            "bInfo": false,            
-            "columnDefs": [
-                { 
-                    "orderable": false, 
-                    "searchable": false,
-                    "targets": 0
-                }
-            ]
+            "bInfo": false,
+            "columnDefs": [{
+                "orderable": false,
+                "searchable": false,
+                "targets": 0
+            }]
         });
         $('#loading').hide();
         $('#table_container').css('visibility', 'visible');

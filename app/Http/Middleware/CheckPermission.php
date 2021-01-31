@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Roles;
 use Closure;
 
 class CheckPermission
@@ -16,18 +15,10 @@ class CheckPermission
      */
     public function handle(\Illuminate\Http\Request $request, Closure $next)
     {
-        $permissions = $request->route()->action['permission'];
-        if (!is_array($permissions)) {
-            if (!Roles::hasPermission($request->user()->role, $permissions)) {
-                return redirect()->route('index')->with('error', "You do not have permission to access that page.");
-            }
-        } else {
-            foreach ($permissions as $permission) {
-                if (!Roles::hasPermission($request->user()->role, $permission)) {
-                    return redirect()->route('index')->with('error', "You do not have permission to access that page.");
-                }
-            }
+        if (!$request->user()->hasPermission($request->route()->action['permission'])) {
+            return redirect()->route('index')->with('error', "You do not have permission to access that page.");
         }
+
         return $next($request);
     }
 }

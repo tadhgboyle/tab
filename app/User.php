@@ -17,6 +17,11 @@ class User extends Authenticatable
     protected $casts = [
         'role' => Roles::class
     ];
+
+    public function hasPermission($permissions): bool
+    {
+        return $this->role->hasPermission($permissions);
+    }
     
     // TODO: getViewUrl and getEditUrl
 

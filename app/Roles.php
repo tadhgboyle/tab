@@ -2,10 +2,11 @@
 
 namespace App;
 
+use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 
-class Roles extends Model
+class Roles extends Model implements CastsAttributes
 {
 
     use QueryCacheable;
@@ -13,6 +14,16 @@ class Roles extends Model
     protected $cacheFor = 180;
 
     protected $fillable = ['order'];
+
+    public function get($model, string $key, $value, array $attributes)
+    {
+        return Roles::find($value);
+    }
+
+    public function set($model, string $key, $value, array $attributes)
+    {
+        return $this->id;
+    }
 
     public static function getRoles(string $order = 'DESC'): object
     {
@@ -24,20 +35,21 @@ class Roles extends Model
         return Roles::select('id', 'name')->orderBy('order', 'ASC')->where('staff', true)->get()->toArray();
     }
 
-    public static function getRolesAvailable(int $caller): array
+    public function getRolesAvailable(): array
     {
         $roles = array();
         foreach (self::getRoles() as $role) {
-            if (self::canInteract($caller, $role->id)) {
+            if ($this->canInteract($role)) {
                 $roles[] = $role;
             }
         }
+
         return $roles;
     }
 
-    public static function getPermissions(int $role): array
+    public function getPermissions(): array
     {
-        return json_decode(Roles::where('id', $role)->pluck('permissions')->first(), true);
+        return json_decode($this->permissions, true);
     }
 
     public static function idToName(int $id): string
@@ -45,26 +57,33 @@ class Roles extends Model
         return Roles::where('id', $id)->pluck('name')->first();
     }
 
-    public static function canInteract(int $caller, int $subject): bool
+    public function canInteract(Roles $subject): bool
     {
-        if (Roles::where('id', $caller)->pluck('superuser')->first()) {
+        if ($this->superadmin) {
             return true;
-        } else if (Roles::where('id', $subject)->pluck('superuser')->first()) {
+        } else if ($subject->superadmin) {
             return false;
         }
-
-        $caller_order = Roles::where('id', $caller)->pluck('order')->first();
-        $subject_order = Roles::where('id', $subject)->pluck('order')->first();
         
-        return $caller_order < $subject_order;
+        return $this->order <= $subject->order;
     }
 
-    public static function hasPermission(int $role, string $permission): bool
+    public function hasPermission($permissions): bool
     {
-        if (Roles::where('id', $role)->pluck('superuser')->first()) {
+        if ($this->superuser) {
             return true;
         }
 
-        return in_array($permission, self::getPermissions($role));
+        if (is_array($permissions)) {
+            foreach ($permissions as $permission) {
+                if (!in_array($permission, $this->getPermissions())) {
+                    return false;
+                }
+            }
+            
+            return true;
+        } else {
+            return in_array($permissions, $this->getPermissions());
+        }
     }
 }

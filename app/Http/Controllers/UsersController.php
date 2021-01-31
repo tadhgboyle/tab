@@ -22,7 +22,7 @@ class UsersController extends Controller
             'balance' => 'nullable',
             'role' => [
                 'required',
-                ValidationRule::in(array_column(Roles::getRolesAvailable(Auth::user()->role), 'id'))
+                ValidationRule::in(array_column(Auth::user()->role->getRolesAvailable(), 'id'))
             ],
             'password' => [
                 'nullable',
@@ -100,7 +100,7 @@ class UsersController extends Controller
             'balance' => 'required|numeric',
             'role' => [
                 'required',
-                ValidationRule::in(array_column(Roles::getRolesAvailable(Auth::user()->role), 'id'))
+                ValidationRule::in(array_column(Auth::user()->role->getRolesAvailable(), 'id'))
             ],
         ]);
         if ($validator->fails()) {
@@ -108,9 +108,9 @@ class UsersController extends Controller
         }
 
         $password = null;
-        $old_role = Roles::idToName(User::find($request->id)->role);
+        $old_role = User::find($request->id)->role->name;
 
-        if (!in_array($request->role, array_column(Roles::getRolesAvailable($request->user()->role), 'id'))) {
+        if (!in_array($request->role, array_column(Auth::user()->role->getRolesAvailable(), 'id'))) {
             return redirect()->back()->with('error', 'You cannot manage that role.')->withInput();
         }
 
