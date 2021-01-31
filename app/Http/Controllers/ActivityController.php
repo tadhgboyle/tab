@@ -16,8 +16,8 @@ class ActivityController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|min:3|max:255|unique:activities',
-            'location' => 'min:3|max:36',
-            'description' => 'min:3|max:255',
+            'location' => 'min:3|max:36|nullable',
+            'description' => 'min:3|max:255|nullable',
             'slots' => 'required_if:unlimited_slots,0|numeric|min:1',
             'price' => 'required|numeric',
             'start' => 'required',
@@ -52,8 +52,8 @@ class ActivityController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|min:3|max:255|unique:activities',
-            'location' => 'min:3|max:36',
-            'description' => 'min:3|max:255',
+            'location' => 'min:3|max:36|nullable',
+            'description' => 'min:3|max:255|nullable',
             'slots' => 'required_if:unlimited_slots,0|numeric|min:1',
             'price' => 'required|numeric',
             'start' => 'required',
@@ -96,7 +96,7 @@ class ActivityController extends Controller
 
     public static function getAll(bool $json = false, array $columns = ['*'], bool $deleted = false) 
     {
-        $activities = Activity::all($columns)->where('deleted', $deleted);
+        $activities = Activity::where('deleted', $deleted)->get($columns);
         $return = array();
 
         foreach ($activities as $activity) {

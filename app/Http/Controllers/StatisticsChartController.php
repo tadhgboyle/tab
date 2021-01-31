@@ -9,13 +9,10 @@ use Illuminate\Support\Carbon;
 
 class StatisticsChartController extends Controller
 {
-    // $statsTime -> n => Last n days
-    public static function orderInfo($statsTime)
+    public static function orderInfo($days_ago): StatisticsChart
     {
-        $recentorders = new StatisticsChart;
-
-        $normal_data = Transactions::where([['created_at', '>=', Carbon::now()->subDays($statsTime)->toDateTimeString()], ['status', 0]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
-        $returned_data = Transactions::where([['created_at', '>=', Carbon::now()->subDays($statsTime)->toDateTimeString()], ['status', 1]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
+        $normal_data = Transactions::where([['created_at', '>=', Carbon::now()->subDays($days_ago)->toDateTimeString()], ['status', 0]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
+        $returned_data = Transactions::where([['created_at', '>=', Carbon::now()->subDays($days_ago)->toDateTimeString()], ['status', 1]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
 
         $normal_orders = array();
         $returned_orders = array();
@@ -32,24 +29,30 @@ class StatisticsChartController extends Controller
                     break;
                 }
             }
-            if (!$found) array_push($returned_orders, 0);
+
+            if (!$found) {
+                array_push($returned_orders, 0);
+            }
         }
 
-        $recentorders->labels($labels);
-        $recentorders->dataset('Returned Orders', 'line', $returned_orders)->lineTension(0)->color("rgb(245, 101, 101)");
-        $recentorders->dataset('Orders', 'line', $normal_orders)->lineTension(0)->color("rgb(72, 187, 120)");
-        return $recentorders;
+        $recent_orders = new StatisticsChart;
+        $recent_orders->labels($labels);
+        $recent_orders->dataset('Returned Orders', 'line', $returned_orders)->lineTension(0)->color("rgb(245, 101, 101)");
+        $recent_orders->dataset('Orders', 'line', $normal_orders)->lineTension(0)->color("rgb(72, 187, 120)");
+        return $recent_orders;
     }
 
-    public static function itemInfo($statsTime)
+    public static function itemInfo($days_ago): StatisticsChart
     {
-        $popularitems = new StatisticsChart;
-
         $sales = array();
 
-        foreach (Products::where('deleted', false)->get() as $product) {
-            $sold = Products::findSold($product->id, $statsTime);
-            if ($sold < 1) continue;
+        $products = Products::where('deleted', false)->get();
+        foreach ($products as $product) {
+            $sold = Products::findSold($product->id, $days_ago);
+            if ($sold < 1) {
+                continue;
+            }
+
             array_push($sales, ['name' => $product->name, 'sold' => $sold]);
         }
 
@@ -57,8 +60,10 @@ class StatisticsChartController extends Controller
             return ($a['sold'] > $b['sold'] ? -1 : 1);
         });
 
-        $popularitems->labels(array_column($sales, 'name'));
-        $popularitems->dataset('Sold', 'bar', array_column($sales, 'sold'))->color("rgb(72, 187, 120)");
-        return $popularitems;
+        $popular_items = new StatisticsChart;
+        $popular_items->labels(array_column($sales, 'name'));
+        $popular_items->dataset('Sold', 'bar', array_column($sales, 'sold'))->color("rgb(72, 187, 120)");
+        return $popular_items;
     }
+    
 }

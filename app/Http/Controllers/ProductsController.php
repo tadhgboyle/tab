@@ -23,22 +23,18 @@ class ProductsController extends Controller
             return redirect()->back()->withInput()->withErrors($validator);
         }
 
-        $pst = false;
-        if ($request->has('pst')) $pst = true;
-
         // Box size of -1 means they cannot receive stock via box. Instead must use normal stock
         $box_size = -1;
         if (!empty($request->box_size)) $box_size = $request->box_size;
 
-        $unlimited_stock = false;
-        if ($request->has('unlimited_stock')) $unlimited_stock = true;
+        $unlimited_stock = $request->has('unlimited_stock');
 
         $stock = 0;
-        if ($request->stock == null) $unlimited_stock = true;
-        else $stock = $request->stock;
-
-        $stock_override = false;
-        if ($request->has('stock_override')) $stock_override = true;
+        if ($request->stock == null) {
+            $unlimited_stock = true;
+        } else {
+            $stock = $request->stock;
+        }
 
         $product = new Products();
         $product->name = $request->name;
@@ -47,8 +43,8 @@ class ProductsController extends Controller
         $product->stock = $stock;
         $product->box_size = $box_size;
         $product->unlimited_stock = $unlimited_stock;
-        $product->stock_override = $stock_override;
-        $product->pst = $pst;
+        $product->stock_override = $request->has('stock_override');
+        $product->pst = $request->has('pst');
         $product->creator_id = $request->id;
         $product->save();
         return redirect()->route('products_list')->with('success', 'Successfully created ' . $request->name . '.');
@@ -56,7 +52,6 @@ class ProductsController extends Controller
 
     public function edit(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
             'name' => [
                 'required',
@@ -71,18 +66,17 @@ class ProductsController extends Controller
             return redirect()->back()->withInput()->withErrors($validator);
         }
 
-        $pst = false;
-        if ($request->has('pst')) $pst = true;
+        $pst = $request->has('pst');
 
-        $unlimited_stock = false;
-        if ($request->has('unlimited_stock')) $unlimited_stock = true;
+        $unlimited_stock = $request->has('unlimited_stock');
 
-        $stock = 0;
-        if ($request->stock == null) $unlimited_stock = true;
-        else $stock = $request->stock;
+        if ($request->stock == null) {
+            $unlimited_stock = true;
+        } else {
+            $stock = $request->stock;
+        }
 
-        $stock_override = false;
-        if ($request->has('stock_override')) $stock_override = true;
+        $stock_override = $request->has('stock_override');
 
         DB::table('products')
             ->where('id', $request->product_id)
@@ -98,9 +92,12 @@ class ProductsController extends Controller
 
     public function adjustStock(Request $request)
     {
-        $productId = $request->product_id;
-        $product = Products::find($productId);
-        if ($product == null) return redirect()->route('products_adjust')->with('error', 'Invalid Product.');
+        $product_id = $request->product_id;
+        $product = Products::find($product_id);
+        // TODO: do we need this check?
+        if ($product == null) {
+            return redirect()->route('products_adjust')->with('error', 'Invalid Product.');
+        }
 
         session()->flash('last_product', $product);
 
@@ -116,21 +113,24 @@ class ProductsController extends Controller
         $adjust_box = $request->adjust_box ?? 0;
 
         if ($adjust_stock == 0) {
-            if (!$request->has('adjust_box')) return redirect()->back()->with('error', 'Please specify how much stock to add to ' . $product->name . '.');
-            else if ($request->adjust_box == 0) return redirect()->back()->with('error', 'Please specify how many boxes or stock to add to ' . $product->name . '.');
+            if (!$request->has('adjust_box')) {
+                return redirect()->back()->with('error', 'Please specify how much stock to add to ' . $product->name . '.');
+            } else if ($request->adjust_box == 0) {
+                return redirect()->back()->with('error', 'Please specify how many boxes or stock to add to ' . $product->name . '.');
+            } 
         }
 
-        Products::addStock($productId, $adjust_stock);
+        Products::addStock($product_id, $adjust_stock);
 
-        if ($request->has('adjust_box')) Products::addBox($productId, $adjust_box);
+        if ($request->has('adjust_box')) {
+            Products::addBox($product_id, $adjust_box);
+        }
 
         return redirect()->back()->with('success', 'Successfully added ' . $adjust_stock . ' stock and ' . $adjust_box . ' boxes to ' . $product->name . '.');
     }
 
     public function ajaxInit()
     {
-        $product = Products::find(\Request::get('id'));
-
-        return view('pages.products.adjust.form', compact('product', $product));
+        return view('pages.products.adjust.form', compact('product', Products::find(\Request::get('id'))));
     }
 }

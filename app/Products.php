@@ -18,18 +18,21 @@ class Products extends Model
     public static function hasStock($productId, $quantity)
     {
         $product = Products::find($productId);
-        if ($product == null) return false;
         if (!((Products::getStock($productId) >= $quantity || $product->unlimited_stock) || $product->stock_override)) {
             return false;
         }
+
         return true;
     }
 
     public static function getStock($productId)
     {
         $product = Products::find($productId);
-        if ($product->unlimited_stock) return '<i>Unlimited</i>';
-        else return $product->stock;
+        if ($product->unlimited_stock) {
+            return '<i>Unlimited</i>';
+        } else {
+            return $product->stock;
+        }
     }
 
     public static function setStock($product, $stock)
@@ -90,10 +93,13 @@ class Products extends Model
         foreach (Transactions::where('created_at', '>=', Carbon::now()->subDays($statsTime)->toDateTimeString())->get() as $transaction) {
             foreach (explode(", ", $transaction->products) as $transaction_product) {
                 $deserialized_product = OrderController::deserializeProduct($transaction_product);
-                if ($deserialized_product['id'] == $product) $sold += ($deserialized_product['quantity'] - $deserialized_product['returned']);
+                if ($deserialized_product['id'] == $product) {
+                    $sold += ($deserialized_product['quantity'] - $deserialized_product['returned']);
+                }
             }
         }
 
         return $sold;
     }
+
 }

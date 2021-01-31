@@ -11,55 +11,61 @@ use Illuminate\Support\Facades\DB;
 class OrderController extends Controller
 {
 
-    public static function checkReturned($order)
+    public static function checkReturned($order): int
     {
         $order_info = Transactions::find($order);
         $products_returned = 0;
         $order_products = 0;
-        if ($order_info->status) return 1;
-        else {
+        if ($order_info->status) {
+            return 1;
+        } else {
             foreach (explode(", ", $order_info->products) as $product) {
                 $product_info = self::deserializeProduct($product);
                 if ($product_info['returned'] >= $product_info['quantity']) {
                     $products_returned++;
-                } else if ($product_info['returned'] > 0) return 2;
+                } else if ($product_info['returned'] > 0) {
+                    // semi returned if at least one product has a returned value
+                    return 2;
+                }
                 $order_products++;
             }
             if ($products_returned >= $order_products) {
                 $order_info->update(['status' => '1']);
                 return 1;
-            } else return 0;
+            }
+
+            return 0;
         }
     }
 
-    public static function serializeProduct($id, $quantity, $price, $gst, $pst, $returned)
+    /**
+     * Example deserialized input:
+     * ID: 34
+     * Quantity: 2
+     * Price: 1.45 each
+     * GST: 1.08
+     * PST: 1.04
+     * Returned: 1
+     * 
+     * Example Output: 34*2$1.45G1.08P1.04R1
+     */
+    private static function serializeProduct($id, $quantity, $price, $gst, $pst, $returned): string
     {
-        /**
-         * Example deserialized input:
-         * ID: 34
-         * Quantity: 2
-         * Price: 1.45 each
-         * GST: 1.08
-         * PST: 1.04
-         * Returned: 1
-         * 
-         * Example Output: 34*2$1.45G1.08P1.04R1
-         */
         return $id . "*" . $quantity . "$" . $price . "G" . $gst . "P" . $pst . "R" . $returned;
     }
-
+    
+    /**
+     * Example serialized product:
+     * 3*5$1.45G1.07P1.05R0
+     * ID: 3
+     * Quantity: 5
+     * Price: 1.45 each
+     * Gst: 1.07
+     * Pst: 1.05
+     * Returned: Quantity returned -- Default 0
+     */
     public static function deserializeProduct($product): array
     {
-        /**
-         * Example serialized product:
-         * 3*5$1.45G1.07P1.05R0
-         * ID: 3
-         * Quantity: 5
-         * Price: 1.45 each
-         * Gst: 1.07
-         * Pst: 1.05
-         * Returned: Quantity returned -- Default 0
-         * */
         $product_id = strtok($product, "*");
         $product_name = DB::table('products')->where('id', $product_id)->pluck('name')->first();
         $product_category = DB::table('products')->where('id', $product_id)->pluck('category')->first();
@@ -139,8 +145,11 @@ class OrderController extends Controller
                         $pst_metadata = "null";
                     }
 
-                    $product_metadata = $product . "*" . $quantity . "$" . $product_info->price . "G" . SettingsController::getGst() . "P" . $pst_metadata . "R0";
-                    if (!in_array($product_info->category, $transaction_categories)) array_push($transaction_categories, $product_info->category);
+                    if (!in_array($product_info->category, $transaction_categories)) {
+                        array_push($transaction_categories, $product_info->category);
+                    }
+
+                    $product_metadata = self::serializeProduct($product, $quantity, $product_info->price, SettingsController::getGst(), $pst_metadata, 0);
                 }
 
                 array_push($products, $product_metadata);
@@ -228,8 +237,10 @@ class OrderController extends Controller
 
     public function returnItem($item, $order)
     {
-        // this shouldnt happen, but worth a check.
-        if (self::checkReturned($order) == 1) return redirect()->back()->with('error', 'That order has already been returned, so you cannot return an item from it.');
+        // this shouldnt happen, but worth a check
+        if (self::checkReturned($order) == 1) {
+            return redirect()->back()->with('error', 'That order has already been returned, so you cannot return an item from it.');
+        }
 
         $order_info = Transactions::find($order);
         $user = User::find($order_info->purchaser_id);
@@ -250,8 +261,11 @@ class OrderController extends Controller
                     $order_product['returned']++;
 
                     // Check taxes and apply correct %
-                    if ($order_product['pst'] == "null") $total_tax = $order_product['gst'];
-                    else $total_tax = (($order_product['pst'] + $order_product['gst']) - 1);
+                    if ($order_product['pst'] == "null") {
+                        $total_tax = $order_product['gst'];
+                    } else {
+                        $total_tax = (($order_product['pst'] + $order_product['gst']) - 1);
+                    }
 
                     // Gets funky now. find the exact string of the original item from the string of order items and replace with the new string where the R value is ++
                     $updated_products = str_replace(
@@ -269,6 +283,7 @@ class OrderController extends Controller
                 }
             }
         }
+        
         if ($found === false) {
             return redirect()->back()->with('error', 'That item was not in the original order.');
         }

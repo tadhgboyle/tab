@@ -14,9 +14,9 @@ class User extends Authenticatable
     protected $cacheFor = 180;
     protected $fillable = ['balance'];
 
-    // protected $casts = [
-    //     'role' => Roles::class
-    // ];
+    protected $casts = [
+        'role' => Roles::class
+    ];
     
     // TODO: getViewUrl and getEditUrl
 
