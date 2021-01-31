@@ -35,6 +35,11 @@ class Roles extends Model implements CastsAttributes
         return Roles::select('id', 'name')->orderBy('order', 'ASC')->where('staff', true)->get()->toArray();
     }
 
+    public static function idToName(int $id): string
+    {
+        return Roles::where('id', $id)->pluck('name')->first();
+    }
+
     public function getRolesAvailable(): array
     {
         $roles = array();
@@ -47,25 +52,20 @@ class Roles extends Model implements CastsAttributes
         return $roles;
     }
 
-    public function getPermissions(): array
-    {
-        return json_decode($this->permissions, true);
-    }
-
-    public static function idToName(int $id): string
-    {
-        return Roles::where('id', $id)->pluck('name')->first();
-    }
-
     public function canInteract(Roles $subject): bool
     {
-        if ($this->superadmin) {
+        if ($this->superuser) {
             return true;
-        } else if ($subject->superadmin) {
+        } else if ($subject->superuser) {
             return false;
         }
         
-        return $this->order <= $subject->order;
+        return $this->order < $subject->order;
+    }
+
+    public function getPermissions(): array
+    {
+        return json_decode($this->permissions, true);
     }
 
     public function hasPermission($permissions): bool
@@ -74,7 +74,9 @@ class Roles extends Model implements CastsAttributes
             return true;
         }
 
-        if (is_array($permissions)) {
+        if (!is_array($permissions)) {
+            return in_array($permissions, $this->getPermissions());
+        } else {
             foreach ($permissions as $permission) {
                 if (!in_array($permission, $this->getPermissions())) {
                     return false;
@@ -82,8 +84,6 @@ class Roles extends Model implements CastsAttributes
             }
             
             return true;
-        } else {
-            return in_array($permissions, $this->getPermissions());
         }
     }
 }

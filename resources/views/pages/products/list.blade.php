@@ -40,7 +40,7 @@ $products_manage = Auth::user()->hasPermission('products_manage');
                         <div>{!! $product->price > 0 ? '$' . number_format($product->price, 2) : '<i>Free</i>' !!}</div>
                     </td>
                     <td>
-                        <div>{!! Products::getStock($product->id) !!}</div>
+                        <div>{!! $product->getStock() !!}</div>
                     </td>
                     <td>
                         <div>{!! $product->box_size == -1 ? '<i>N/A</i>' : $product->box_size !!}</div>

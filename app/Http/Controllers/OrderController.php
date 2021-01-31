@@ -132,10 +132,10 @@ class OrderController extends Controller
                     }
 
                     // Stock handling
-                    if (!Products::hasStock($product, $quantity)) {
+                    if (!$product_info->hasStock($quantity)) {
                         return redirect()->back()->withInput()->with('error', 'Not enough ' . $product_info->name . ' in stock. Only ' . $product->stock . ' remaining.');
                     } else {
-                        array_push($stock_products, $product);
+                        array_push($stock_products, $product_info);
                     }
 
                     if ($product_info->pst == true) {
@@ -188,7 +188,7 @@ class OrderController extends Controller
 
             // Stock handling
             foreach ($stock_products as $product) {
-                Products::removeStock($product, $request->quantity[$product], false);
+                $product->removeStock($request->quantity[$product->id], false);
             }
 
             // Update their balance

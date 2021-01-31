@@ -12,6 +12,7 @@ class Transactions extends Model
     protected $cacheFor = 180;
     protected $fillable = ['products', 'status'];
 
+    // TODO
     // protected $casts = [
     //     'purchaser_id' => User::class,
     //     'cashier_id' => User::class

@@ -23,7 +23,7 @@ class User extends Authenticatable
         return $this->role->hasPermission($permissions);
     }
     
-    // TODO: getViewUrl and getEditUrl
+    // TODO: getViewUrl and getEditUrl update: why?
 
     // Find how much a user has spent in total. 
     // Does not factor in returned items/orders.

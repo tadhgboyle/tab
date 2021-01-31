@@ -53,7 +53,7 @@ $users_view = Auth::user()->hasPermission('users_view');
                                 <div>{{ ucfirst($product->category) }}</div>
                             </td>
                             <td>
-                                <div>{!! Products::getStock($product->id) !!}</div>
+                                <div>{!! $product->getStock() !!}</div>
                             </td>
                             <td>
                                 <div>${{ number_format($product->price, 2) }}</div>
