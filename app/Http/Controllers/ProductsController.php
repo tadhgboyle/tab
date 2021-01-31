@@ -120,10 +120,10 @@ class ProductsController extends Controller
             } 
         }
 
-        Products::addStock($product_id, $adjust_stock);
+        $product->addStock($adjust_stock);
 
         if ($request->has('adjust_box')) {
-            Products::addBox($product_id, $adjust_box);
+            $product->addBox($adjust_box);
         }
 
         return redirect()->back()->with('success', 'Successfully added ' . $adjust_stock . ' stock and ' . $adjust_box . ' boxes to ' . $product->name . '.');
@@ -131,6 +131,7 @@ class ProductsController extends Controller
 
     public function ajaxInit()
     {
-        return view('pages.products.adjust.form', compact('product', Products::find(\Request::get('id'))));
+        $product = Products::find(\Request::get('id'));
+        return view('pages.products.adjust.form', compact('product', $product));
     }
 }

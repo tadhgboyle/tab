@@ -159,11 +159,7 @@ $return_order = Auth::user()->hasPermission('orders_return');
 
     function returnData() {
         let url = '{{ route("orders_return", ":id") }}';
-        url = url.replace(':id', {
-            {
-                $transaction - > id
-            }
-        });
+        url = url.replace(':id', {{ $transaction->id }});
         $("#returnForm").attr('action', url);
         $("#returnForm").submit();
     }
@@ -184,11 +180,7 @@ $return_order = Auth::user()->hasPermission('orders_return');
     function returnProductData() {
         let url = '{{ route("orders_return_item", [":item", ":order"]) }}';
         url = url.replace(':item', product);
-        url = url.replace(':order', {
-            {
-                $transaction - > id
-            }
-        });
+        url = url.replace(':order', {{ $transaction->id }});
         $("#returnItemForm").attr('action', url);
         $("#returnItemForm").submit();
     }

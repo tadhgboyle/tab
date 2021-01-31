@@ -32,7 +32,7 @@ use App\Http\Controllers\UserLimitsController;
                         <div>{{ ucfirst($product->category) }}</div>
                     </td>
                     <td>
-                        <div>{!! Products::getStock($product->id) !!}</div>
+                        <div>{!! $product->getStock() !!}</div>
                     </td>
                     <td>
                         <div>{{ $product->stock_override ? 'True' : 'False' }}</div>
@@ -42,6 +42,7 @@ use App\Http\Controllers\UserLimitsController;
                     </td>
                     <td>
                         <div class="control">
+                        <!-- TODO: Should we disable button if it has unlimited stock? Makes it harder to edit on the fly... -->
                             <button class="button is-info" id="adjust_select" value="{{ $product->id }}">
                                 <span class="icon">
                                     <i class="fas fa-edit"></i>

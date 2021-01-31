@@ -8,4 +8,5 @@ class UserLimits extends Model
 {    
     protected $primaryKey = 'limit_id';
     protected $fillable = ['user_id', 'category', 'limit_per', 'duration', 'editor_id'];
+    // TODO: Casts?
 }

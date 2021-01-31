@@ -33,8 +33,12 @@ class RolesController extends Controller
                 }
             }
             $permissions = json_encode($permissions);
-            if ($request->has('superuser')) $superuser = true;
-        } else $permissions = '[]';
+            if ($request->has('superuser')) {
+                $superuser = true;
+            }
+        } else {
+            $permissions = '[]';
+        }
 
         $role = new Roles();
         $role->name = $request->name;
@@ -77,11 +81,14 @@ class RolesController extends Controller
             }
             $permissions = json_encode($permissions);
             $superuser = $request->has('superuser');
-        } else $permissions = '[]';
+        } else {
+            $permissions = '[]';
+        }
 
         DB::table('roles')
             ->where('id', $request->id)
             ->update(['name' => $request->name, 'order' => $request->order, 'superuser' => $superuser, 'staff' => $staff, 'permissions' => $permissions]);
+
         return redirect()->route('settings')->with('success', 'Edited role ' . $request->name . '.');
     }
 
