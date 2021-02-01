@@ -6,30 +6,38 @@ use App\Transactions;
 use App\Products;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use stdClass;
 
 class UserLimitsController extends Controller
 {
-    public static function findDuration($user, $category)
+
+    public static function getInfo($user_id, $category)
     {
-        return DB::table('user_limits')->where([['user_id', $user], ['category', $category]])->pluck('duration')->first() == 0 ? "day" : "week";
+        $info = DB::table('user_limits')->where([['user_id', $user_id], ['category', $category]])->get(['duration', 'limit_per']);
+        $object = new stdClass;
+        if (isset($info->duration)) {
+            $object->duration = $info->duration;
+        } else {
+            $object->duration = 'week';
+        }
+        if (isset($info->limit_per)) {
+            $object->limit_per = $info->limit_per;
+        } else {
+            // Usually this will happen when we make a new category after a user was made
+            $object->limit_per = -1;
+        }
+        return $object;
     }
 
-    public static function findLimit($user, $category)
-    {
-        $limit = DB::table('user_limits')->where([['user_id', $user], ['category', $category]])->pluck('limit_per')->first();
-        // Usually this will happen when we make a new category after a user was made
-        return $limit ?? "-1";
-    }
-
-    public static function findSpent($user, $category, $duration)
+    public static function findSpent(int $user_id, string $category, object $info)
     {
         // First, if they have unlimited money for this category, let's grab all their transactions
-        if (self::findLimit($user, $category) == -1) {
-            $transactions = Transactions::where([['purchaser_id', $user], ['status', 0]])->get();
+        if ($info->limit_per == -1) {
+            $transactions = Transactions::where([['purchaser_id', $user_id], ['status', 0]])->get();
         }
         // Determine how far back to grab transactions from
         else {
-            $transactions = Transactions::where([['created_at', '>=', Carbon::now()->subDays($duration == 'day' ? 1 : 7)->toDateTimeString()], ['purchaser_id', $user], ['status', 0]])->get();
+            $transactions = Transactions::where([['created_at', '>=', Carbon::now()->subDays($info->duration == 'day' ? 1 : 7)->toDateTimeString()], ['purchaser_id', $user_id], ['status', 0]])->get();
         }
 
         $category_spent = 0.00;

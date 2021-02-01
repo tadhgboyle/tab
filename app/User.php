@@ -27,7 +27,7 @@ class User extends Authenticatable implements CastsAttributes
 
     public function set($model, string $key, $value, array $attributes)
     {
-        return $this->id;
+        return $value;
     }
 
     public function hasPermission($permissions): bool
@@ -41,9 +41,7 @@ class User extends Authenticatable implements CastsAttributes
     // Does not factor in returned items/orders.
     public function findSpent(): float
     {
-        $spent = 0.00;
-
-        $spent += Transactions::where('purchaser_id', $this->id)->sum('total_price');
+        $spent = Transactions::where('purchaser_id', $this->id)->sum('total_price');
 
         $activities = DB::table('activity_transactions')->where('user_id', $this->id)->get();
         foreach ($activities as $activity) {

@@ -6,20 +6,18 @@ use App\User;
 use App\Products;
 use App\Transactions;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
 
-    public static function checkReturned($order): int
+    public static function checkReturned(Transactions $order): int
     {
-        $order_info = Transactions::find($order);
         $products_returned = 0;
         $order_products = 0;
-        if ($order_info->status) {
+        if ($order->status) {
             return 1;
         } else {
-            foreach (explode(", ", $order_info->products) as $product) {
+            foreach (explode(", ", $order->products) as $product) {
                 $product_info = self::deserializeProduct($product);
                 if ($product_info['returned'] >= $product_info['quantity']) {
                     $products_returned++;
@@ -30,7 +28,7 @@ class OrderController extends Controller
                 $order_products++;
             }
             if ($products_returned >= $order_products) {
-                $order_info->update(['status' => '1']);
+                $order->update(['status' => '1']);
                 return 1;
             }
 
@@ -64,11 +62,12 @@ class OrderController extends Controller
      * Pst: 1.05
      * Returned: Quantity returned -- Default 0
      */
-    public static function deserializeProduct($product): array
+    public static function deserializeProduct(string $product): array
     {
         $product_id = strtok($product, "*");
-        $product_name = DB::table('products')->where('id', $product_id)->pluck('name')->first();
-        $product_category = DB::table('products')->where('id', $product_id)->pluck('category')->first();
+        $product_object = Products::find($product_id);
+        $product_name = $product_object->name;
+        $product_category = $product_object->category;
         $product_quantity = $product_price = $product_gst = $product_pst = $product_returned = 0.00;
         // Quantity
         if (preg_match('/\*(.*?)\$/', $product, $match) == 1) {
@@ -166,10 +165,11 @@ class OrderController extends Controller
             $category_spent = $category_limit = 0.00;
             // Loop categories within this transaction
             foreach ($transaction_categories as $category) {
-                $category_limit = UserLimitsController::findLimit($request->purchaser_id, $category);
+                $limit_info = UserLimitsController::getInfo($request->purchaser_id, $category);
+                $category_limit = $limit_info->limit_per;
                 // Skip this category if they have unlimited. Saves time querying
                 if ($category_limit == -1) continue;
-                $category_spent = $category_spent_orig = UserLimitsController::findSpent($request->purchaser_id, $category, UserLimitsController::findDuration($request->purchaser_id, $category));
+                $category_spent = $category_spent_orig = UserLimitsController::findSpent($request->purchaser_id, $category, $limit_info);
 
                 // Loop all products in this transaction. If the product's category is the current one in the above loop, add it's price to category spent
                 foreach ($products as $product) {
@@ -196,7 +196,7 @@ class OrderController extends Controller
 
             // Save transaction in database
             $transaction = new Transactions();
-            $transaction->purchaser_id = $request->purchaser_id;
+            $transaction->purchaser_id = $purchaser->id;
             $transaction->cashier_id = $request->cashier_id;
             $transaction->products = implode(", ", $products);
             $transaction->total_price = $total_price;
@@ -210,11 +210,11 @@ class OrderController extends Controller
 
     public function returnOrder($id)
     {
+        $order_info = Transactions::find($id);
         // This should never happen, but a good security measure
-        if (self::checkReturned($id) == 1) return redirect()->back()->with('error', 'That order has already been fully returned.');
+        if (self::checkReturned($order_info) == 1) return redirect()->back()->with('error', 'That order has already been fully returned.');
 
         $total_tax = $total_price = 0;
-        $order_info = Transactions::find($id);
         $purchaser = $order_info->purchaser_id;
 
         // Loop through products from the order and deserialize them to get their prices & taxes etc when they were purchased
@@ -237,12 +237,12 @@ class OrderController extends Controller
 
     public function returnItem($item, $order)
     {
+        $order_info = Transactions::find($order);
         // this shouldnt happen, but worth a check
-        if (self::checkReturned($order) == 1) {
+        if (self::checkReturned($order_info) == 1) {
             return redirect()->back()->with('error', 'That order has already been returned, so you cannot return an item from it.');
         }
 
-        $order_info = Transactions::find($order);
         $user = $order_info->purchaser_id;
         $user_balance = $user->balance;
         $found = false;
@@ -288,4 +288,5 @@ class OrderController extends Controller
             return redirect()->back()->with('error', 'That item was not in the original order.');
         }
     }
+
 }

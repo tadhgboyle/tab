@@ -54,7 +54,7 @@ $users_view = Auth::user()->hasPermission('users_view');
                         <div class="select" id="role">
                             <select name="role" class="input" required>
                                 @foreach(Auth::user()->role->getRolesAvailable() as $role)
-                                    <option value="{{ $role->id }}" data-staff="{{ $role->staff ? 1 : 0 }}" {{ (isset($user->role) && $user->role->id == $role->id) || old('role') == $role->id ? "selected" : "" }}>{{ $role->name }}</option>
+                                <option value="{{ $role->id }}" data-staff="{{ $role->staff ? 1 : 0 }}" {{ (isset($user->role) && $user->role->id == $role->id) || old('role') == $role->id ? "selected" : "" }}>{{ $role->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -92,21 +92,22 @@ $users_view = Auth::user()->hasPermission('users_view');
         <input type="hidden" name="editor_id" value="{{ Auth::user()->id }}">
 
         @foreach(SettingsController::getCategories() as $category)
+        @if(isset($user->id)) @php $limit_info = UserLimitsController::getInfo($user->id, $category->value) @endphp @endif
         <div class="field">
             <label class="label">{{ ucfirst($category->value) }} Limit</label>
             <div class="control has-icons-left">
                 <span class="icon is-small is-left">
                     <i class="fas fa-dollar-sign"></i>
                 </span>
-                <input type="number" step="0.01" name="limit[{{ $category->value }}]" class="input" placeholder="Limit" value="{{ isset($user->id) ? number_format(UserLimitsController::findLimit($user->id, $category->value), 2) : '' }}">
+                <input type="number" step="0.01" name="limit[{{ $category->value }}]" class="input" placeholder="Limit" value="{{ isset($user->id) ? number_format($limit_info->limit_per, 2) : '' }}">
             </div>
             <div class="control">
                 <label class="radio">
-                    <input type="radio" name="duration[{{ $category->value }}]" value="0" @if(isset($user->id) && UserLimitsController::findDuration($user->id, $category->value) == "day") checked @endif>
+                    <input type="radio" name="duration[{{ $category->value }}]" value="0" @if(isset($user->id) && $limit_info->duration == "day") checked @endif>
                     Day
                 </label>
                 <label class="radio">
-                    <input type="radio" name="duration[{{ $category->value }}]" value="1" @if(isset($user->id) && UserLimitsController::findDuration($user->id, $category->value) == "week") checked @endif>
+                    <input type="radio" name="duration[{{ $category->value }}]" value="1" @if(isset($user->id) && $limit_info->duration == "week") checked @endif>
                     Week
                 </label>
             </div>
