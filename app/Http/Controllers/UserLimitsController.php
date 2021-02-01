@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Transaction;
 use App\Product;
+use App\UserLimits;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 use stdClass;
 
 class UserLimitsController extends Controller
@@ -13,10 +13,10 @@ class UserLimitsController extends Controller
 
     public static function getInfo($user_id, $category)
     {
-        $info = DB::table('user_limits')->where([['user_id', $user_id], ['category', $category]])->get(['duration', 'limit_per']);
+        $info = UserLimits::where([['user_id', $user_id], ['category', $category]])->select('duration', 'limit_per')->get()[0];
         $object = new stdClass;
         if (isset($info->duration)) {
-            $object->duration = $info->duration;
+            $object->duration = $info->duration == 0 ? 'day' : 'week';
         } else {
             $object->duration = 'week';
         }

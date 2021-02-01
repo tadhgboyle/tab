@@ -27,6 +27,11 @@ class User extends Authenticatable implements CastsAttributes
 
     public function set($model, string $key, $value, array $attributes)
     {
+        // when creating an order an object is passed as $value
+        if (is_object($value)) {
+            return $value->id;
+        }
+        // but when returning an order, only their ID is passed as $value
         return $value;
     }
 
