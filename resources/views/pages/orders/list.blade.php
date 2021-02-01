@@ -1,9 +1,9 @@
 @php
 
-use App\Transactions;
+use App\Transaction;
 use App\Http\Controllers\OrderController;
 use App\User;
-use App\Roles;
+use App\Role;
 $orders_view = Auth::user()->hasPermission('orders_view');
 $users_view = Auth::user()->hasPermission('users_view');
 @endphp
@@ -30,7 +30,7 @@ $users_view = Auth::user()->hasPermission('users_view');
                 </tr>
             </thead>
             <tbody>
-                @foreach (Transactions::orderBy('created_at', 'DESC')->get() as $transaction)
+                @foreach (Transaction::orderBy('created_at', 'DESC')->get() as $transaction)
                 @php $user = $transaction->purchaser_id @endphp
                 <tr>
                     <td>

@@ -3,16 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Charts\StatisticsChart;
-use App\Products;
-use App\Transactions;
+use App\Product;
+use App\Transaction;
 use Illuminate\Support\Carbon;
 
 class StatisticsChartController extends Controller
 {
     public static function orderInfo($days_ago): StatisticsChart
     {
-        $normal_data = Transactions::where([['created_at', '>=', Carbon::now()->subDays($days_ago)->toDateTimeString()], ['status', 0]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
-        $returned_data = Transactions::where([['created_at', '>=', Carbon::now()->subDays($days_ago)->toDateTimeString()], ['status', 1]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
+        $normal_data = Transaction::where([['created_at', '>=', Carbon::now()->subDays($days_ago)->toDateTimeString()], ['status', 0]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
+        $returned_data = Transaction::where([['created_at', '>=', Carbon::now()->subDays($days_ago)->toDateTimeString()], ['status', 1]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
 
         $normal_orders = array();
         $returned_orders = array();
@@ -46,9 +46,9 @@ class StatisticsChartController extends Controller
     {
         $sales = array();
 
-        $products = Products::where('deleted', false)->get();
+        $products = Product::where('deleted', false)->get();
         foreach ($products as $product) {
-            $sold = Products::findSold($product->id, $days_ago);
+            $sold = Product::findSold($product->id, $days_ago);
             if ($sold < 1) {
                 continue;
             }

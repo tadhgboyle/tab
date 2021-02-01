@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\User;
-use App\Products;
-use App\Transactions;
+use App\Product;
+use App\Transaction;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
 
-    public static function checkReturned(Transactions $order): int
+    public static function checkReturned(Transaction $order): int
     {
         $products_returned = 0;
         $order_products = 0;
@@ -65,7 +65,7 @@ class OrderController extends Controller
     public static function deserializeProduct(string $product): array
     {
         $product_id = strtok($product, "*");
-        $product_object = Products::find($product_id);
+        $product_object = Product::find($product_id);
         $product_name = $product_object->name;
         $product_category = $product_object->category;
         $product_quantity = $product_price = $product_gst = $product_pst = $product_returned = 0.00;
@@ -123,7 +123,7 @@ class OrderController extends Controller
 
             // Loop each product. Serialize it, and add it's cost to the transaction total
             foreach ($request->product as $product) {
-                $product_info = Products::find($product);
+                $product_info = Product::find($product);
                 if (array_key_exists($product, $request->quantity)) {
                     $quantity = $request->quantity[$product];
                     if ($quantity < 1) {
@@ -195,7 +195,7 @@ class OrderController extends Controller
             $purchaser->update(['balance' => $remaining_balance]);
 
             // Save transaction in database
-            $transaction = new Transactions();
+            $transaction = new Transaction();
             $transaction->purchaser_id = $purchaser->id;
             $transaction->cashier_id = $request->cashier_id;
             $transaction->products = implode(", ", $products);
@@ -210,7 +210,7 @@ class OrderController extends Controller
 
     public function returnOrder($id)
     {
-        $order_info = Transactions::find($id);
+        $order_info = Transaction::find($id);
         // This should never happen, but a good security measure
         if (self::checkReturned($order_info) == 1) return redirect()->back()->with('error', 'That order has already been fully returned.');
 
@@ -237,7 +237,7 @@ class OrderController extends Controller
 
     public function returnItem($item, $order)
     {
-        $order_info = Transactions::find($order);
+        $order_info = Transaction::find($order);
         // this shouldnt happen, but worth a check
         if (self::checkReturned($order_info) == 1) {
             return redirect()->back()->with('error', 'That order has already been returned, so you cannot return an item from it.');

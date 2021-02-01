@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
+        height: 650,
         events: {!! $activities !!},
         eventClick: function(event) {
             if (event.event.url) {

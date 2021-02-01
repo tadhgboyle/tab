@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Roles;
+use App\Role;
 use Validator;
 use Auth;
 use App\User;
@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule as ValidationRule;
 
-class UsersController extends Controller
+class UserController extends Controller
 {
 
     public function new(Request $request)
@@ -28,7 +28,7 @@ class UsersController extends Controller
                 'nullable',
                 'confirmed',
                 'min:6',
-                ValidationRule::requiredIf(in_array($request->role, array_column(Roles::getStaffRoles(), 'id'))),
+                ValidationRule::requiredIf(in_array($request->role, array_column(Role::getStaffRoles(), 'id'))),
             ]
         ]);
         if ($validator->fails()) {
@@ -60,7 +60,7 @@ class UsersController extends Controller
         $user->balance = $balance;
         $user->role = $request->role;
 
-        if (in_array($request->role, array_column(Roles::getStaffRoles(), 'name'))) {
+        if (in_array($request->role, array_column(Role::getStaffRoles(), 'name'))) {
             $user->password = bcrypt($request->password);
         }
 
@@ -114,8 +114,8 @@ class UsersController extends Controller
             return redirect()->back()->with('error', 'You cannot manage that role.')->withInput();
         }
 
-        $new_role = Roles::find($request->role)->name;
-        $staff_roles = array_column(Roles::getStaffRoles(), 'name');
+        $new_role = Role::find($request->role)->name;
+        $staff_roles = array_column(Role::getStaffRoles(), 'name');
 
         // Update their category limits
         foreach ($request->limit as $category => $limit) {

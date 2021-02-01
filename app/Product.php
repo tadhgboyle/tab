@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 
-class Products extends Model
+class Product extends Model
 {
     use QueryCacheable;
 
@@ -68,7 +68,7 @@ class Products extends Model
     {
         $sold = 0;
 
-        foreach (Transactions::where('created_at', '>=', Carbon::now()->subDays($days_ago)->toDateTimeString())->get() as $transaction) {
+        foreach (Transaction::where('created_at', '>=', Carbon::now()->subDays($days_ago)->toDateTimeString())->get() as $transaction) {
             foreach (explode(", ", $transaction->products) as $transaction_product) {
                 $deserialized_product = OrderController::deserializeProduct($transaction_product);
                 if ($deserialized_product['id'] == $product) {

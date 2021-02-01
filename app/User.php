@@ -17,7 +17,7 @@ class User extends Authenticatable implements CastsAttributes
 
     // TODO: Would using hasOne be better than casting?
     protected $casts = [
-        'role' => Roles::class
+        'role' => Role::class
     ];
 
     public function get($model, string $key, $value, array $attributes)
@@ -41,7 +41,7 @@ class User extends Authenticatable implements CastsAttributes
     // Does not factor in returned items/orders.
     public function findSpent(): float
     {
-        $spent = Transactions::where('purchaser_id', $this->id)->sum('total_price');
+        $spent = Transaction::where('purchaser_id', $this->id)->sum('total_price');
 
         $activities = DB::table('activity_transactions')->where('user_id', $this->id)->get();
         foreach ($activities as $activity) {
@@ -56,7 +56,7 @@ class User extends Authenticatable implements CastsAttributes
     {
         $returned = 0.00;
 
-        $transactions = Transactions::where('purchaser_id', $this->id)->get();
+        $transactions = Transaction::where('purchaser_id', $this->id)->get();
         foreach ($transactions as $transaction) {
             if ($transaction->status == 1) {
                 $returned += $transaction->total_price;

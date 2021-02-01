@@ -1,5 +1,5 @@
 @php
-use App\Roles;
+use App\Role;
 @endphp
 <div align="center">
     <h4 class="title has-text-weight-bold is-4">Adjust</h4>

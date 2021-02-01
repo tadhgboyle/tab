@@ -6,7 +6,7 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 
-class Roles extends Model implements CastsAttributes
+class Role extends Model implements CastsAttributes
 {
     use QueryCacheable;
 
@@ -16,7 +16,7 @@ class Roles extends Model implements CastsAttributes
 
     public function get($model, string $key, $value, array $attributes)
     {
-        return Roles::find($value);
+        return Role::find($value);
     }
 
     public function set($model, string $key, $value, array $attributes)
@@ -26,12 +26,12 @@ class Roles extends Model implements CastsAttributes
 
     public static function getRoles(string $order = 'DESC'): object
     {
-        return Roles::orderBy('order', $order)->get();
+        return Role::orderBy('order', $order)->get();
     }
 
     public static function getStaffRoles(): array
     {
-        return Roles::select('id', 'name')->orderBy('order', 'ASC')->where('staff', true)->get()->toArray();
+        return Role::select('id', 'name')->orderBy('order', 'ASC')->where('staff', true)->get()->toArray();
     }
 
     public function getRolesAvailable(): array
@@ -46,7 +46,7 @@ class Roles extends Model implements CastsAttributes
         return $roles;
     }
 
-    public function canInteract(Roles $subject): bool
+    public function canInteract(Role $subject): bool
     {
         if ($this->superuser) {
             return true;

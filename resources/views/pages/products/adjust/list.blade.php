@@ -1,6 +1,6 @@
 @php
 
-use App\Products;
+use App\Product;
 use App\Http\Controllers\UserLimitsController;
 @endphp
 @extends('layouts.default')
@@ -23,7 +23,7 @@ use App\Http\Controllers\UserLimitsController;
                 </tr>
             </thead>
             <tbody>
-                @foreach(Products::where('deleted', false)->get() as $product)
+                @foreach(Product::where('deleted', false)->get() as $product)
                 <tr>
                     <td>
                         <div>{{ $product->name }}</div>
