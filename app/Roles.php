@@ -8,7 +8,6 @@ use Rennokki\QueryCache\Traits\QueryCacheable;
 
 class Roles extends Model implements CastsAttributes
 {
-
     use QueryCacheable;
 
     protected $cacheFor = 180;

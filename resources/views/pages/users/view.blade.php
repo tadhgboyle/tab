@@ -60,7 +60,7 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
                     </td>
                     <td>
                         <div>
-                            @switch(OrderController::checkReturned($transaction->id))
+                            @switch(OrderController::checkReturned($transaction))
                                 @case(0)
                                     <span class="tag is-success is-medium">Normal</span>
                                 @break
@@ -102,9 +102,10 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
                     <tbody>
                         @foreach(SettingsController::getCategories() as $category)
                             @php
-                            $category_limit = UserLimitsController::findLimit($user->id, $category->value);
-                            $category_duration = UserLimitsController::findDuration($user->id, $category->value);
-                            $category_spent = UserLimitsController::findSpent($user->id, $category->value, $category_duration);
+                            $info = UserLimitsController::getInfo($user->id, $category->value);
+                            $category_limit = $info->limit_per;
+                            $category_duration = $info->duration;
+                            $category_spent = UserLimitsController::findSpent($user->id, $category->value, $info);
                             @endphp
                             <tr>
                                 <td>
