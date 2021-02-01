@@ -3,7 +3,7 @@
 use App\Http\Controllers\UserLimitsController;
 use App\Http\Controllers\SettingsController;
 use App\User;
-use App\Roles;
+use App\Role;
 $user = User::find(request()->route('id'));
 if (!is_null($user) && $user->deleted) return redirect()->route('users_list')->with('error', 'That user has been deleted.')->send();
 if (!is_null($user) && !Auth::user()->role->canInteract($user->role)) return redirect()->route('users_list')->with('error', 'You cannot interact with that user.')->send();

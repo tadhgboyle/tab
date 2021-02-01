@@ -1,5 +1,5 @@
 @php
-use \App\Roles;
+use \App\Role;
 @endphp
 <nav class="navbar has-shadow">
     <div class="container">

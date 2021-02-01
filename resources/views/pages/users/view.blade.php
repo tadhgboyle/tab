@@ -1,8 +1,8 @@
 @php
-use App\Transactions;
+use App\Transaction;
 use App\Http\Controllers\OrderController;
 use App\User;
-use App\Roles;
+use App\Role;
 use App\Activity;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserLimitsController;
@@ -47,7 +47,7 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
                 @endif
             </thead>
             <tbody>
-                @foreach (Transactions::where('purchaser_id', $user->id)->orderBy('created_at', 'DESC')->get() as $transaction)
+                @foreach (Transaction::where('purchaser_id', $user->id)->orderBy('created_at', 'DESC')->get() as $transaction)
                 <tr>
                     <td>
                         <div>{{ $transaction->created_at->format('M jS Y h:ia') }}</div>

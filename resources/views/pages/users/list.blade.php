@@ -1,7 +1,7 @@
 @php
 
 use App\User;
-use App\Roles;
+use App\Role;
 $users_view = Auth::user()->hasPermission('users_view');
 $users_manage = Auth::user()->hasPermission('users_manage');
 @endphp

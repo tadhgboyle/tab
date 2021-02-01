@@ -1,8 +1,8 @@
 @php
 
-use App\Products;
+use App\Product;
 use App\User;
-use App\Roles;
+use App\Role;
 use App\Http\Controllers\SettingsController;
 $user = User::find(request()->route('id'));
 if ($user == null) return redirect()->route('index')->with('error', 'Invalid user.')->send();
@@ -37,7 +37,7 @@ $users_view = Auth::user()->hasPermission('users_view');
                         <th>Price</th>
                     </thead>
                     <tbody>
-                        @foreach(Products::orderBy('name', 'ASC')->where('deleted', false)->get() as $product)
+                        @foreach(Product::orderBy('name', 'ASC')->where('deleted', false)->get() as $product)
                         <tr>
                             <td>
                                 <input type="checkbox" name="product[{{ $product->id }}]" value="{{ $product->id }}" id="{{ $product->name . ' $' . $product->price }}" class="clickable" @if(session('product[' . $product->id . ']')) checked @endif />

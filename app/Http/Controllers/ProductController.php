@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use Validator;
-use App\Products;
+use App\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
-class ProductsController extends Controller
+class ProductController extends Controller
 {
 
     public function new(Request $request)
@@ -36,7 +36,7 @@ class ProductsController extends Controller
             $stock = $request->stock;
         }
 
-        $product = new Products();
+        $product = new Product();
         $product->name = $request->name;
         $product->price = $request->price;
         $product->category = $request->category;
@@ -86,14 +86,14 @@ class ProductsController extends Controller
 
     public function delete($id)
     {
-        Products::where('id', $id)->update(['deleted' => true]);
-        return redirect()->route('products_list')->with('success', 'Successfully deleted ' . Products::find($id)->name . '.');
+        Product::where('id', $id)->update(['deleted' => true]);
+        return redirect()->route('products_list')->with('success', 'Successfully deleted ' . Product::find($id)->name . '.');
     }
 
     public function adjustStock(Request $request)
     {
         $product_id = $request->product_id;
-        $product = Products::find($product_id);
+        $product = Product::find($product_id);
         // TODO: do we need this check?
         if ($product == null) {
             return redirect()->route('products_adjust')->with('error', 'Invalid Product.');
@@ -131,7 +131,7 @@ class ProductsController extends Controller
 
     public function ajaxInit()
     {
-        $product = Products::find(\Request::get('id'));
+        $product = Product::find(\Request::get('id'));
         return view('pages.products.adjust.form', compact('product', $product));
     }
 }

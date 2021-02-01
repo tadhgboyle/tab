@@ -1,7 +1,7 @@
 @php
 
-use App\Products;
-use App\Roles;
+use App\Product;
+use App\Role;
 $products_manage = Auth::user()->hasPermission('products_manage');
 @endphp
 @extends('layouts.default')
@@ -28,7 +28,7 @@ $products_manage = Auth::user()->hasPermission('products_manage');
                 </tr>
             </thead>
             <tbody>
-                @foreach (Products::all()->where('deleted', false) as $product)
+                @foreach (Product::all()->where('deleted', false) as $product)
                 <tr>
                     <td>
                         <div>{{ $product->name }}</div>

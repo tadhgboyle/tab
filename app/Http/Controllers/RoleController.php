@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Roles;
+use App\Role;
 use Illuminate\Http\Request;
 use Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule as ValidationRule;
 
-class RolesController extends Controller
+class RoleController extends Controller
 {
     public function new(Request $request)
     {
@@ -40,7 +40,7 @@ class RolesController extends Controller
             $permissions = '[]';
         }
 
-        $role = new Roles();
+        $role = new Role();
         $role->name = $request->name;
         $role->order = $request->order;
         $role->staff = $staff;
@@ -104,7 +104,7 @@ class RolesController extends Controller
 
         $i = 1;
         foreach ($roles as $role) {
-            Roles::find($role)->update(['order' => $i]);
+            Role::find($role)->update(['order' => $i]);
             $i++;
         }
 

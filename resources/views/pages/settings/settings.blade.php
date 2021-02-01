@@ -1,7 +1,7 @@
 @php
 
 use App\Http\Controllers\SettingsController;
-use App\Roles;
+use App\Role;
 $manage_general = Auth::user()->hasPermission('settings_general');
 $manage_roles = Auth::user()->hasPermission('settings_roles_manage');
 $manage_categories = Auth::user()->hasPermission('settings_categories_manage');
@@ -117,7 +117,7 @@ $manage_categories = Auth::user()->hasPermission('settings_categories_manage');
                         </tr>
                     </thead>
                     <tbody id="sortable">
-                        @foreach(Roles::getRoles('ASC') as $role)
+                        @foreach(Role::getRoles('ASC') as $role)
                             <tr data-id="{{ $role->id }}">
                                 <td>
                                     <div>{{ $role->name }}</div>

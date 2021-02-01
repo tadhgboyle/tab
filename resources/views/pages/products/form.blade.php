@@ -1,8 +1,8 @@
 @php
 
 use App\Http\Controllers\SettingsController;
-use App\Products;
-$product = Products::find(request()->route('id'));
+use App\Product;
+$product = Product::find(request()->route('id'));
 @endphp
 @extends('layouts.default')
 @section('content')

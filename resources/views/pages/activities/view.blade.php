@@ -1,7 +1,7 @@
 @php
 
 use App\Activity;
-use App\Roles;
+use App\Role;
 $activity = Activity::find(request()->route('id'));
 if ($activity == null) return redirect()->route('activities_list')->with('error', 'Invalid activity.')->send();
 $activities_manage = Auth::user()->hasPermission('activities_manage');

@@ -1,12 +1,12 @@
 @php
 
 use App\Http\Controllers\OrderController;
-use App\Products;
-use App\Transactions;
+use App\Product;
+use App\Transaction;
 use App\User;
-use App\Roles;
+use App\Role;
 
-$transaction = Transactions::find(request()->route('id'));
+$transaction = Transaction::find(request()->route('id'));
 if ($transaction == null) return redirect()->route('orders_list')->with('error', 'Invalid order.')->send();
 
 $transaction_items = explode(", ", $transaction->products);
