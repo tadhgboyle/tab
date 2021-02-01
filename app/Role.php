@@ -21,7 +21,7 @@ class Role extends Model implements CastsAttributes
 
     public function set($model, string $key, $value, array $attributes)
     {
-        return $this->id;
+        return $value; // TODO: Test for edge cases where this might break (like user class)
     }
 
     public static function getRoles(string $order = 'DESC'): object

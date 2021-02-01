@@ -210,17 +210,18 @@ class OrderController extends Controller
 
     public function returnOrder($id)
     {
-        $order_info = Transaction::find($id);
+        $transaction = Transaction::find($id);
         // This should never happen, but a good security measure
-        if (self::checkReturned($order_info) == 1) return redirect()->back()->with('error', 'That order has already been fully returned.');
+        if (self::checkReturned($transaction) == 1) {
+            return redirect()->back()->with('error', 'That order has already been fully returned.');
+        }
 
         $total_tax = $total_price = 0;
-        $purchaser = $order_info->purchaser_id;
+        $purchaser = $transaction->purchaser_id;
 
         // Loop through products from the order and deserialize them to get their prices & taxes etc when they were purchased
-        foreach (explode(", ", $order_info->products) as $product) {
+        foreach (explode(", ", $transaction->products) as $product) {
             $product_metadata = self::deserializeProduct($product);
-            echo $product_metadata['pst'];
             if ($product_metadata['pst'] == "null") {
                 $total_tax = $product_metadata['gst'];
             } else {
@@ -231,24 +232,24 @@ class OrderController extends Controller
 
         // Update their balance and set the status to 1 for the returned order
         $purchaser->update(['balance' => ($purchaser->balance + $total_price)]);
-        $order_info->update(['status' => 1]);
+        $transaction->update(['status' => 1]);
         return redirect()->back()->with('success', 'Successfully returned order #' . $id . ' for ' . $purchaser->full_name);
     }
 
     public function returnItem($item, $order)
     {
-        $order_info = Transaction::find($order);
+        $transaction = Transaction::find($order);
         // this shouldnt happen, but worth a check
-        if (self::checkReturned($order_info) == 1) {
+        if (self::checkReturned($transaction) == 1) {
             return redirect()->back()->with('error', 'That order has already been returned, so you cannot return an item from it.');
         }
 
-        $user = $order_info->purchaser_id;
+        $user = $transaction->purchaser_id;
         $user_balance = $user->balance;
         $found = false;
 
         // Loop order products until we find the matching id
-        foreach (explode(", ", $order_info->products) as $order_products) {
+        foreach (explode(", ", $transaction->products) as $order_products) {
             $order_product = self::deserializeProduct($order_products);
             $total_tax = 0.00;
 
@@ -271,12 +272,12 @@ class OrderController extends Controller
                     $updated_products = str_replace(
                         $order_products,
                         self::serializeProduct($order_product['id'], $order_product['quantity'], $order_product['price'], $order_product['gst'], $order_product['pst'], $order_product['returned']),
-                        explode(", ", $order_info->products)
+                        explode(", ", $transaction->products)
                     );
                     // Update their balance
                     $user->update(['balance' => $user_balance += ($order_product['price'] * $total_tax)]);
                     // Now insert the funky replaced string where it was originally
-                    $order_info->update(['products' => implode(", ", $updated_products)]);
+                    $transaction->update(['products' => implode(", ", $updated_products)]);
                     return redirect()->back()->with('success', 'Successfully returned x1 ' . $order_product['name'] . ' for order #' . $order . '.');
                 } else {
                     return redirect()->back()->with('error', 'That item has already been returned the maximum amount of times for that order.');
