@@ -21,9 +21,9 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
 <p><strong>Role:</strong> {{ $user->role->name }}</p>
 <p><strong>Deleted:</strong> {{ $user->deleted ? 'Yes' : 'No' }}</p>
 <span><strong>Balance:</strong> ${{ number_format($user->balance, 2) }}, </span>
-<span><strong>Total spent:</strong> ${{ User::findSpent($user) }}, </span>
-<span><strong>Total returned:</strong> ${{ User::findReturned($user) }}, </span>
-<span><strong>Total owing:</strong> ${{ User::findOwing($user) }}</span>
+<span><strong>Total spent:</strong> ${{ $user->findSpent() }}, </span>
+<span><strong>Total returned:</strong> ${{ $user->findReturned() }}, </span>
+<span><strong>Total owing:</strong> ${{ $user->findOwing() }}</span>
 
 <br>
 <br>
@@ -53,7 +53,7 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
                         <div>{{ $transaction->created_at->format('M jS Y h:ia') }}</div>
                     </td>
                     <td>
-                        <div>{{ User::find($transaction->cashier_id)->full_name }}</div>
+                        <div>{{ $transaction->cashier_id->full_name }}</div>
                     </td>
                     <td>
                         <div>${{ number_format($transaction->total_price, 2) }}</div>
@@ -61,15 +61,15 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
                     <td>
                         <div>
                             @switch(OrderController::checkReturned($transaction->id))
-                            @case(0)
-                            <span class="tag is-success is-medium">Normal</span>
-                            @break
-                            @case(1)
-                            <span class="tag is-danger is-medium">Returned</span>
-                            @break
-                            @case(2)
-                            <span class="tag is-warning is-medium">Semi Returned</span>
-                            @break
+                                @case(0)
+                                    <span class="tag is-success is-medium">Normal</span>
+                                @break
+                                @case(1)
+                                    <span class="tag is-danger is-medium">Returned</span>
+                                @break
+                                @case(2)
+                                    <span class="tag is-warning is-medium">Semi Returned</span>
+                                @break
                             @endswitch
                         </div>
                     </td>
@@ -101,25 +101,25 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
                     </thead>
                     <tbody>
                         @foreach(SettingsController::getCategories() as $category)
-                        @php
-                        $category_limit = UserLimitsController::findLimit($user->id, $category->value);
-                        $category_duration = UserLimitsController::findDuration($user->id, $category->value);
-                        $category_spent = UserLimitsController::findSpent($user->id, $category->value, $category_duration);
-                        @endphp
-                        <tr>
-                            <td>
-                                <div>{{ ucfirst($category->value) }}</div>
-                            </td>
-                            <td>
-                                <div>{!! $category_limit == -1 ? "<i>Unlimited</i>" : "$" . number_format($category_limit, 2) . "/" . $category_duration !!}</div>
-                            </td>
-                            <td>
-                                <div>${{ number_format($category_spent, 2) }}</div>
-                            </td>
-                            <td>
-                                <div>{!! $category_limit == -1 ? "<i>Unlimited</i>" : "$" . number_format($category_limit - $category_spent, 2) !!}</div>
-                            </td>
-                        </tr>
+                            @php
+                            $category_limit = UserLimitsController::findLimit($user->id, $category->value);
+                            $category_duration = UserLimitsController::findDuration($user->id, $category->value);
+                            $category_spent = UserLimitsController::findSpent($user->id, $category->value, $category_duration);
+                            @endphp
+                            <tr>
+                                <td>
+                                    <div>{{ ucfirst($category->value) }}</div>
+                                </td>
+                                <td>
+                                    <div>{!! $category_limit == -1 ? "<i>Unlimited</i>" : "$" . number_format($category_limit, 2) . "/" . $category_duration !!}</div>
+                                </td>
+                                <td>
+                                    <div>${{ number_format($category_spent, 2) }}</div>
+                                </td>
+                                <td>
+                                    <div>{!! $category_limit == -1 ? "<i>Unlimited</i>" : "$" . number_format($category_limit - $category_spent, 2) !!}</div>
+                                </td>
+                            </tr>
                         @endforeach
                     </tbody>
                 </table>
@@ -154,12 +154,12 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
                             <td>
                                 <div>
                                     @switch($transaction['status'])
-                                    @case(0)
-                                    <span class="tag is-success is-medium">Normal</span>
-                                    @break
-                                    @case(1)
-                                    <span class="tag is-danger is-medium">Returned</span>
-                                    @break
+                                        @case(0)
+                                            <span class="tag is-success is-medium">Normal</span>
+                                        @break
+                                        @case(1)
+                                            <span class="tag is-danger is-medium">Returned</span>
+                                        @break
                                     @endswitch
                                 </div>
                             </td>

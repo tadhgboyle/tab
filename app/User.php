@@ -3,20 +3,32 @@
 namespace App;
 
 use App\Http\Controllers\OrderController;
+use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Support\Facades\DB;
 
-class User extends Authenticatable
+class User extends Authenticatable implements CastsAttributes
 {
     use QueryCacheable;
 
     protected $cacheFor = 180;
     protected $fillable = ['balance'];
 
+    // TODO: Would using hasOne be better than casting?
     protected $casts = [
         'role' => Roles::class
     ];
+
+    public function get($model, string $key, $value, array $attributes)
+    {
+        return User::find($value);
+    }
+
+    public function set($model, string $key, $value, array $attributes)
+    {
+        return $this->id;
+    }
 
     public function hasPermission($permissions): bool
     {
@@ -27,13 +39,13 @@ class User extends Authenticatable
 
     // Find how much a user has spent in total. 
     // Does not factor in returned items/orders.
-    public static function findSpent(User $user): float
+    public function findSpent(): float
     {
         $spent = 0.00;
 
-        $spent += Transactions::where('purchaser_id', $user->id)->sum('total_price');
+        $spent += Transactions::where('purchaser_id', $this->id)->sum('total_price');
 
-        $activities = DB::table('activity_transactions')->where('user_id', $user->id)->get();
+        $activities = DB::table('activity_transactions')->where('user_id', $this->id)->get();
         foreach ($activities as $activity) {
             $spent += ($activity->activity_price * $activity->activity_gst); 
         }
@@ -42,11 +54,11 @@ class User extends Authenticatable
 
     // Find how much a user has returned in total.
     // This will see if a whole order has been returned, or if not, check all items in an unreturned order.
-    public static function findReturned(User $user): float
+    public function findReturned(): float
     {
         $returned = 0.00;
 
-        $transactions = Transactions::where('purchaser_id', $user->id)->get();
+        $transactions = Transactions::where('purchaser_id', $this->id)->get();
         foreach ($transactions as $transaction) {
             if ($transaction->status == 1) {
                 $returned += $transaction->total_price;
@@ -57,13 +69,15 @@ class User extends Authenticatable
                 $product = OrderController::deserializeProduct($transaction_product);
                 if ($product['returned'] > 0) {
                     $tax = $product['gst'];
-                    if ($product['pst'] != "null") $tax += ($product['pst'] - 1);
+                    if ($product['pst'] != "null") {
+                        $tax += ($product['pst'] - 1);
+                    }
                     $returned += ($product['returned'] * $product['price'] * $tax);
                 }
             }
         }
 
-        $activity_transactions = DB::table('activity_transactions')->where([['user_id', $user->id], ['status', true]])->get();
+        $activity_transactions = DB::table('activity_transactions')->where([['user_id', $this->id], ['status', true]])->get();
         foreach($activity_transactions as $transaction) {
             $returned += ($transaction->activity_price * $transaction->activity_gst);
         }
@@ -73,8 +87,8 @@ class User extends Authenticatable
 
     // Find how much money a user owes. 
     // Taking their amount spent and subtracting the amount they have returned.
-    public static function findOwing(User $user): float
+    public function findOwing(): float
     {
-        return number_format(self::findSpent($user) - self::findReturned($user), 2);
+        return number_format($this->findSpent() - $this->findReturned(), 2);
     }
 }
