@@ -26,14 +26,20 @@ class Activity extends Model
 
     public function slotsAvailable(): int 
     {
-        if ($this->unlimited_slots) return -1;
+        if ($this->unlimited_slots) {
+            return -1;
+        }
+
         $current_attendees = DB::table('activity_transactions')->where('activity_id', $this->id)->get('user_id')->count();
         return ($this->slots - $current_attendees);
     }
 
     public function hasSlotsAvailable(int $count = 1): bool 
     {
-        if ($this->unlimited_slots) return true;
+        if ($this->unlimited_slots) {
+            return true;
+        }
+        
         $current_attendees = DB::table('activity_transactions')->where('activity_id', $this->id)->get('user_id')->count();
         return ($this->slots - ($current_attendees + $count)) >= 0;
     }
@@ -64,28 +70,38 @@ class Activity extends Model
             return "<span class=\"tag is-danger is-medium\">Over</span>";
         } else if (Carbon::parse($this->start)->isPast()) {
             return "<span class=\"tag is-warning is-medium\">In Progress</span>";
-        } else return "<span class=\"tag is-success is-medium\">Waiting</span>";
+        } else {
+            return "<span class=\"tag is-success is-medium\">Waiting</span>";
+        }
     }
 
     public function registerUser(User $user): bool 
     {
-        if ($this->isAttending($user)) return false;
-        if ($this->hasSlotsAvailable()) {
-            $balance = ($user->balance - $this->getPrice());
-            if ($user->balance >= $balance) {
-                $user->update(['balance' => $balance]);
-                DB::table('activity_transactions')->insert([
-                    'user_id' => $user->id,
-                    'cashier_id' => Auth::id(),
-                    'activity_id' => $this->id,
-                    'activity_price' => $this->price,
-                    'activity_gst' => SettingsController::getGst(),
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now()
-                ]);
-                return true;
-            }
+        if ($this->isAttending($user)) {
+            return false;
         }
-        return false;
+
+        if (!$this->hasSlotsAvailable()) {
+            return false;
+        }
+
+        $balance = ($user->balance - $this->getPrice());
+        if (!($user->balance >= $balance)) {
+            return false;
+        }
+
+        $user->update(['balance' => $balance]);
+        DB::table('activity_transactions')->insert([
+            'user_id' => $user->id,
+            'cashier_id' => Auth::id(),
+            'activity_id' => $this->id,
+            'activity_price' => $this->price,
+            'activity_gst' => SettingsController::getGst(),
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
+        ]);
+
+        return true;
     }
+
 }

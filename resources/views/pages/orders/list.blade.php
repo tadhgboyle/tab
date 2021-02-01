@@ -31,7 +31,7 @@ $users_view = Auth::user()->hasPermission('users_view');
             </thead>
             <tbody>
                 @foreach (Transactions::orderBy('created_at', 'DESC')->get() as $transaction)
-                @php $user = User::find($transaction->purchaser_id) @endphp
+                @php $user = $transaction->purchaser_id @endphp
                 <tr>
                     <td>
                         <div>{{ $transaction->created_at->format('M jS Y h:ia') }}</div>
@@ -46,7 +46,7 @@ $users_view = Auth::user()->hasPermission('users_view');
                         </div>
                     </td>
                     <td>
-                        <div>{{ User::find($transaction->cashier_id)->full_name }}</div>
+                        <div>{{ $transaction->cashier_id->full_name }}</div>
                     </td>
                     <td>
                         <div>${{ number_format($transaction->total_price, 2) }}</div>
@@ -54,15 +54,15 @@ $users_view = Auth::user()->hasPermission('users_view');
                     <td>
                         <div>
                             @switch(OrderController::checkReturned($transaction->id))
-                            @case(0)
-                            <span class="tag is-success is-medium">Normal</span>
-                            @break
-                            @case(1)
-                            <span class="tag is-danger is-medium">Returned</span>
-                            @break
-                            @case(2)
-                            <span class="tag is-warning is-medium">Semi Returned</span>
-                            @break
+                                @case(0)
+                                    <span class="tag is-success is-medium">Normal</span>
+                                @break
+                                @case(1)
+                                    <span class="tag is-danger is-medium">Returned</span>
+                                @break
+                                @case(2)
+                                    <span class="tag is-warning is-medium">Semi Returned</span>
+                                @break
                             @endswitch
                         </div>
                     </td>

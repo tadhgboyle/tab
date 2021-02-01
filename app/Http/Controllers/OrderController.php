@@ -215,7 +215,7 @@ class OrderController extends Controller
 
         $total_tax = $total_price = 0;
         $order_info = Transactions::find($id);
-        $purchaser = User::find($order_info->purchaser_id);
+        $purchaser = $order_info->purchaser_id;
 
         // Loop through products from the order and deserialize them to get their prices & taxes etc when they were purchased
         foreach (explode(", ", $order_info->products) as $product) {
@@ -243,7 +243,7 @@ class OrderController extends Controller
         }
 
         $order_info = Transactions::find($order);
-        $user = User::find($order_info->purchaser_id);
+        $user = $order_info->purchaser_id;
         $user_balance = $user->balance;
         $found = false;
 

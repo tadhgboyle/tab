@@ -35,11 +35,6 @@ class Roles extends Model implements CastsAttributes
         return Roles::select('id', 'name')->orderBy('order', 'ASC')->where('staff', true)->get()->toArray();
     }
 
-    public static function idToName(int $id): string
-    {
-        return Roles::where('id', $id)->pluck('name')->first();
-    }
-
     public function getRolesAvailable(): array
     {
         $roles = array();
@@ -63,7 +58,7 @@ class Roles extends Model implements CastsAttributes
         return $this->order < $subject->order;
     }
 
-    public function getPermissions(): array
+    private function getPermissions(): array
     {
         return json_decode($this->permissions, true);
     }

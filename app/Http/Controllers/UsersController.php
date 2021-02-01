@@ -114,7 +114,7 @@ class UsersController extends Controller
             return redirect()->back()->with('error', 'You cannot manage that role.')->withInput();
         }
 
-        $new_role = Roles::idToName($request->role);
+        $new_role = Roles::find($request->role)->name;
         $staff_roles = array_column(Roles::getStaffRoles(), 'name');
 
         // Update their category limits

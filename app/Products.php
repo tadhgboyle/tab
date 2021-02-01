@@ -15,7 +15,7 @@ class Products extends Model
 
     // Used to check if items in order have enough stock BEFORE using removeStock() to remove it.
     // If we didnt use this, then stock would be adjusted and then the order would fail, resulting in inaccurate stock.
-    public function hasStock($quantity)
+    public function hasStock($quantity): bool
     {
         if ($this->unlimited_stock) {
             return true;
@@ -54,21 +54,21 @@ class Products extends Model
         return false;
     }
 
-    public function addStock($newStock)
+    public function adjustStock($new_stock)
     {
-        return $this->increment('stock', $newStock);
+        return $this->increment('stock', $new_stock);
     }
 
-    public function addBox($boxCount)
+    public function addBox($box_count)
     {
-        return $this->addStock($boxCount * $this->box_size);
+        return $this->adjustStock($box_count * $this->box_size);
     }
 
-    public static function findSold($product, $statsTime)
+    public static function findSold($product, $days_ago): int
     {
         $sold = 0;
 
-        foreach (Transactions::where('created_at', '>=', Carbon::now()->subDays($statsTime)->toDateTimeString())->get() as $transaction) {
+        foreach (Transactions::where('created_at', '>=', Carbon::now()->subDays($days_ago)->toDateTimeString())->get() as $transaction) {
             foreach (explode(", ", $transaction->products) as $transaction_product) {
                 $deserialized_product = OrderController::deserializeProduct($transaction_product);
                 if ($deserialized_product['id'] == $product) {

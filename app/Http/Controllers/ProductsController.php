@@ -120,7 +120,7 @@ class ProductsController extends Controller
             } 
         }
 
-        $product->addStock($adjust_stock);
+        $product->adjustStock($adjust_stock);
 
         if ($request->has('adjust_box')) {
             $product->addBox($adjust_box);
