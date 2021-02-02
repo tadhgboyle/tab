@@ -5,6 +5,7 @@ namespace App;
 use App\Http\Controllers\OrderController;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Collection;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Support\Facades\DB;
 
@@ -39,16 +40,36 @@ class User extends Authenticatable implements CastsAttributes
     {
         return $this->role->hasPermission($permissions);
     }
+
+    private $_activity_transactions, $_transactions = null;
     
     // TODO: getViewUrl and getEditUrl update: why?
+
+    private function getActivityTransactions(): Collection
+    {
+        if ($this->_activity_transactions == null) {
+            $this->_activity_transactions = DB::table('activity_transactions')->where('user_id', $this->id)->get();
+        }
+        
+        return $this->_activity_transactions;
+    }
+
+    private function getTransactions(): Collection
+    {
+        if ($this->_transactions == null) {
+            $this->_transactions = Transaction::where('purchaser_id', $this->id)->get();
+        }
+
+        return $this->_transactions;
+    }
 
     // Find how much a user has spent in total. 
     // Does not factor in returned items/orders.
     public function findSpent(): float
     {
-        $spent = Transaction::where('purchaser_id', $this->id)->sum('total_price');
+        $spent = $this->getTransactions()->sum('total_price');
 
-        $activities = DB::table('activity_transactions')->where('user_id', $this->id)->get();
+        $activities = $this->getActivityTransactions();
         foreach ($activities as $activity) {
             $spent += ($activity->activity_price * $activity->activity_gst); 
         }
@@ -61,7 +82,7 @@ class User extends Authenticatable implements CastsAttributes
     {
         $returned = 0.00;
 
-        $transactions = Transaction::where('purchaser_id', $this->id)->get();
+        $transactions = $this->getTransactions();
         foreach ($transactions as $transaction) {
             if ($transaction->status == 1) {
                 $returned += $transaction->total_price;
@@ -80,9 +101,11 @@ class User extends Authenticatable implements CastsAttributes
             }
         }
 
-        $activity_transactions = DB::table('activity_transactions')->where([['user_id', $this->id], ['status', true]])->get();
+        $activity_transactions = $this->getActivityTransactions();
         foreach($activity_transactions as $transaction) {
-            $returned += ($transaction->activity_price * $transaction->activity_gst);
+            if ($transaction->status) {
+                $returned += ($transaction->activity_price * $transaction->activity_gst);
+            }
         }
 
         return number_format($returned, 2);

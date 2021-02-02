@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use App\Activity;
 use App\User;
 use Illuminate\Http\Request;
@@ -27,19 +28,20 @@ class ActivityController extends Controller
             return redirect()->route('activities_new')->withInput()->withErrors($validator);
         }
 
-        if (Carbon::parse($request->get('start'))->gte($request->get('end'))) {
+        if (Carbon::parse($request->start)->gte($request->end)) {
             return redirect()->route('activities_new')->withInput()->with('error', 'The end time must be after the start time.');
         }
 
         $activity = new Activity();
-
         $activity->name = $request->name;
         $activity->location = $request->location;
         $activity->description = $request->description;
         $activity->unlimited_slots = $request->has('unlimited_slots');
         if ($request->has('unlimited_slots')) {
             $activity->slots = -1;
-        } else $activity->slots = $request->slots;
+        } else {
+            $activity->slots = $request->slots;
+        }
         $activity->price = $request->price;
         $activity->start = $request->start;
         $activity->end = $request->end;
@@ -91,12 +93,28 @@ class ActivityController extends Controller
     }
 
     public function list() {
-        return view('pages.activities.list', ['activities' => self::getAll(true, ['id', 'name', 'start', 'end'])]);
+        return view('pages.activities.list', ['activities' => self::getAll()]);
     }
 
-    public static function getAll(bool $json = false, array $columns = ['*'], bool $deleted = false) 
+    public function view($id) {
+        $activity = Activity::find($id);
+
+        if ($activity == null) {
+            return redirect()->route('activities_list')->with('error', 'Invalid activity.')->send();
+        }
+
+        $activities_manage = Auth::user()->role->hasPermission('activities_manage');
+
+        return view('pages.activities.view', [
+            'activity' => $activity, 
+            'activities_manage' => $activities_manage, 
+            'can_register' => !strpos($activity->getStatus(), 'Over') && $activities_manage && $activity->hasSlotsAvailable()]
+        );
+    }
+
+    public static function getAll() 
     {
-        $activities = Activity::where('deleted', $deleted)->get($columns);
+        $activities = Activity::where('deleted', false)->get(['id', 'name', 'start', 'end']);
         $return = array();
 
         foreach ($activities as $activity) {
@@ -108,7 +126,7 @@ class ActivityController extends Controller
             ];
         }
 
-        return $json ? json_encode($return) : $return;
+        return json_encode($return);
     }
 
     public static function getUserActivities(User $user): array
@@ -125,15 +143,16 @@ class ActivityController extends Controller
                 'status' => $activity->status
             ];
         }
+
         return $return;
     }
 
     public static function ajaxInit() {
-        $activity = Activity::find(\Request::get('activity'));
         $users = User::where([['full_name', 'LIKE', '%' . \Request::get('search') . '%'], ['deleted', false]])->limit(5)->get();
-        $output = '';
 
-        if ($users) {
+        if (count($users)) {
+            $activity = Activity::find(\Request::get('activity'));
+            $output = '';
             foreach ($users as $key => $user) {
                 $output .= 
                 '<tr>' .
@@ -154,6 +173,8 @@ class ActivityController extends Controller
         $user = User::find(Route::current()->parameter('user'));
         if ($activity->registerUser($user)) {
             return redirect()->back()->with('success', 'Successfully registered ' . $user->full_name . ' to ' . $activity->name . '.');
-        } else return redirect()->back()->with('error', 'Could not register ' . $user->full_name . ' for ' . $activity->name . '. Is it out of slots?');
+        } else {
+            return redirect()->back()->with('error', 'Could not register ' . $user->full_name . ' for ' . $activity->name . '. Is it out of slots?');
+        }
     }
 }

@@ -9,15 +9,33 @@ use App\Settings;
 
 class SettingsController extends Controller
 {
+    private static ?SettingsController $_instance = null;
 
-    public static function getGst()
+    public static function getInstance(): SettingsController
     {
-        return Settings::where('setting', 'gst')->pluck('value')->first();
+        if (self::$_instance == null) {
+            self::$_instance = new SettingsController;
+        }
+        return self::$_instance;
     }
 
-    public static function getPst()
+    private ?float $_gst = null;
+    private ?float $_pst = null;
+
+    public function getGst(): float
     {
-        return Settings::where('setting', 'pst')->pluck('value')->first();
+        if ($this->_gst == null) {
+            $this->_gst = Settings::where('setting', 'gst')->pluck('value')->first();
+        }
+        return $this->_gst;
+    }
+
+    public function getPst(): float
+    {
+        if ($this->_pst == null) {
+            $this->_pst = Settings::where('setting', 'pst')->pluck('value')->first();
+        }
+        return $this->_pst;
     }
 
     public static function getStatsTime()

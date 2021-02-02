@@ -23,8 +23,8 @@ $users_view = Auth::user()->hasPermission('users_view');
                 @csrf
                 <input type="hidden" name="purchaser_id" value="{{ request()->route('id') }}">
                 <input type="hidden" name="cashier_id" value="{{ Auth::user()->id }}">
-                <input type="hidden" id="current_gst" value="{{ SettingsController::getGst() }}">
-                <input type="hidden" id="current_pst" value="{{ SettingsController::getPst() }}">
+                <input type="hidden" id="current_gst" value="{{ SettingsController::getInstance()->getGst() }}">
+                <input type="hidden" id="current_pst" value="{{ SettingsController::getInstance()->getPst() }}">
                 <input type="hidden" id="purchaser_balance" value="{{ $user->balance }}">
 
                 <table id="product_list">
