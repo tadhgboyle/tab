@@ -5,12 +5,17 @@ namespace App;
 use App\Http\Controllers\SettingsController;
 use App\User;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Rennokki\QueryCache\Traits\QueryCacheable;
 
 class Activity extends Model
 {
+    use QueryCacheable;
+
+    protected $cacheFor = 180;
 
     protected $fillable = ['attendees'];
 
@@ -24,13 +29,24 @@ class Activity extends Model
         'end'
     ];
 
+    private $_current_attendees = null;
+
+    // reusable function so we only query once
+    private function getCurrentAttendees(): Collection
+    {
+        if ($this->_current_attendees == null) {
+            $this->_current_attendees = DB::table('activity_transactions')->where('activity_id', $this->id)->get('user_id');
+        }
+        return $this->_current_attendees;
+    }
+
     public function slotsAvailable(): int 
     {
         if ($this->unlimited_slots) {
             return -1;
         }
 
-        $current_attendees = DB::table('activity_transactions')->where('activity_id', $this->id)->get('user_id')->count();
+        $current_attendees = $this->getCurrentAttendees()->count();
         return ($this->slots - $current_attendees);
     }
 
@@ -40,20 +56,18 @@ class Activity extends Model
             return true;
         }
         
-        $current_attendees = DB::table('activity_transactions')->where('activity_id', $this->id)->get('user_id')->count();
-        return ($this->slots - ($current_attendees + $count)) >= 0;
+        return ($this->slots - ($this->getCurrentAttendees()->count() + $count)) >= 0;
     }
 
     public function getPrice(): float 
     {
-        return ($this->price * SettingsController::getGst());
+        return ($this->price * SettingsController::getInstance()->getGst());
     }
 
     public function getAttendees(): array
     {
-        $attendees = DB::table('activity_transactions')->where('activity_id', $this->id)->get('user_id');
         $users = array();
-        foreach($attendees as $attendee) {
+        foreach($this->getCurrentAttendees() as $attendee) {
             $users[] = User::find($attendee->user_id);
         }
         return $users;
@@ -96,7 +110,7 @@ class Activity extends Model
             'cashier_id' => Auth::id(),
             'activity_id' => $this->id,
             'activity_price' => $this->price,
-            'activity_gst' => SettingsController::getGst(),
+            'activity_gst' => SettingsController::getInstance()->getGst(),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ]);

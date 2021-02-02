@@ -1,12 +1,3 @@
-@php
-
-use App\Activity;
-use App\Role;
-$activity = Activity::find(request()->route('id'));
-if ($activity == null) return redirect()->route('activities_list')->with('error', 'Invalid activity.')->send();
-$activities_manage = Auth::user()->hasPermission('activities_manage');
-$can_register = !strpos($activity->getStatus(), 'Over') && $activities_manage;
-@endphp
 @extends('layouts.default', ['page' => 'activities'])
 @section('content')
 <h2 class="title has-text-weight-bold">View Activity</h2>

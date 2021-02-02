@@ -194,7 +194,7 @@ if (!is_null($role)) $role_permissions = json_decode($role->permissions);
 @endif
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(() => {
         updateStaffInfo($('input[type=checkbox][name=staff]').prop('checked'));
         if ($('input[type=checkbox][name=superuser]').prop('checked')) {
             updatePermissionSU(true);
@@ -202,11 +202,11 @@ if (!is_null($role)) $role_permissions = json_decode($role->permissions);
         updateSections();
     });
         
-    $('input[type=checkbox][name=staff]').change(function() {
+    $('input[type=checkbox][name=staff]').change(() => {
         updateStaffInfo($(this).prop('checked'))
     });
 
-    $('input[type=checkbox][name=superuser]').change(function() {
+    $('input[type=checkbox][name=superuser]').change(() => {
         updatePermissionSU($(this).prop('checked'))
     });
 
@@ -221,7 +221,7 @@ if (!is_null($role)) $role_permissions = json_decode($role->permissions);
     }
 
     function updatePermissionSU(superuser) {
-        $('.permission').each(function() {
+        $('.permission').each(() => {
             const checkbox = $(this);
             checkbox.prop('checked', superuser);
             checkbox.prop('disabled', superuser)
@@ -236,8 +236,8 @@ if (!is_null($role)) $role_permissions = json_decode($role->permissions);
         });
     }
 
-    $('form').submit(function () {
-        $(':disabled').each(function () {
+    $('form').submit(() => {
+        $(':disabled').each(() => {
             $(this).removeAttr('disabled');
         });
     });

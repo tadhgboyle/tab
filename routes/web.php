@@ -12,7 +12,6 @@
 */
 
 use App\Http\Middleware\CheckPermission;
-use App\Role;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', function () {
@@ -24,7 +23,7 @@ Route::post('/login/auth', 'LoginController@auth')->name('login_auth');
 Route::middleware('auth')->group(function () {
 
     Route::get('/', function () {
-        if (Auth::user()->role->hasPermission('cashier')) {
+        if (Auth::user()->hasPermission('cashier')) {
             return view('pages.index');
         } else {
             return view('pages.403');
@@ -141,9 +140,7 @@ Route::middleware('auth')->group(function () {
             });
 
             Route::group(['permission' => 'activities_view'], function () {
-                Route::get('/activities/view/{id}', function () {
-                    return view('pages.activities.view');
-                })->where('id', '[0-9]+')->name('activities_view');
+                Route::get('/activities/view/{id}', 'ActivityController@view')->where('id', '[0-9]+')->name('activities_view');
             });
 
             Route::group(['permission' => 'activities_manage'], function () {
