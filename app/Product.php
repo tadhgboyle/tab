@@ -37,7 +37,7 @@ class Product extends Model
         }
     }
 
-    public function removeStock($removeStock): bool
+    public function removeStock(int $removeStock): bool
     {
         // Checks 3 things:
         // 1. If the stock is more than we are removing OR -> 2. If the product has unlimited stock => continue
@@ -50,24 +50,26 @@ class Product extends Model
         return false;
     }
 
-    public function adjustStock($new_stock)
+    public function adjustStock(int $new_stock)
     {
         return $this->increment('stock', $new_stock);
     }
 
-    public function addBox($box_count)
+    public function addBox(int $box_count)
     {
         return $this->adjustStock($box_count * $this->box_size);
     }
 
-    public static function findSold($product, $days_ago): int
+    public function findSold(int $stats_time): int
     {
         $sold = 0;
 
-        foreach (Transaction::where('created_at', '>=', Carbon::now()->subDays($days_ago)->toDateTimeString())->get() as $transaction) {
-            foreach (explode(", ", $transaction->products) as $transaction_product) {
-                $deserialized_product = OrderController::deserializeProduct($transaction_product);
-                if ($deserialized_product['id'] == $product) {
+        $transactions = Transaction::where('created_at', '>=', Carbon::now()->subDays($stats_time)->toDateTimeString())->get();
+        foreach ($transactions as $transaction) {
+            $products = explode(", ", $transaction->products);
+            foreach ($products as $transaction_product) {
+                if (strtok($transaction_product, "*") == $this->id) {
+                    $deserialized_product = OrderController::deserializeProduct($transaction_product, false);
                     $sold += ($deserialized_product['quantity'] - $deserialized_product['returned']);
                 }
             }

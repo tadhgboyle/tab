@@ -20,7 +20,7 @@ class OrderController extends Controller
 
             $products = explode(", ", $order->products);
             foreach ($products as $product) {
-                $product_info = self::deserializeProduct($product);
+                $product_info = self::deserializeProduct($product, false);
                 if ($product_info['returned'] >= $product_info['quantity']) {
                     $products_returned++;
                 } else if ($product_info['returned'] > 0) {
@@ -64,12 +64,14 @@ class OrderController extends Controller
      * Pst: 1.05
      * Returned: Quantity returned -- Default 0
      */
-    public static function deserializeProduct(string $product): array
+    public static function deserializeProduct(string $product, bool $full = true): array
     {
         $product_id = strtok($product, "*");
-        $product_object = Product::where('id', $product_id)->select('name', 'category')->get()[0];
-        $product_name = $product_object->name;
-        $product_category = $product_object->category;
+        if ($full) {
+            $product_object = Product::where('id', $product_id)->select('name', 'category')->get()[0];
+            $product_name = $product_object->name;
+            $product_category = $product_object->category;
+        }
         $product_quantity = $product_price = $product_gst = $product_pst = $product_returned = 0.00;
         // Quantity
         if (preg_match('/\*(.*?)\$/', $product, $match) == 1) {
@@ -89,16 +91,22 @@ class OrderController extends Controller
         }
         // Returned
         $product_returned = substr($product, strpos($product, "R") + 1);
-        return array(
+        $return = array(
             'id' => $product_id,
-            'name' => $product_name,
-            'category' => $product_category,
             'quantity' => $product_quantity,
             'price' => $product_price,
             'gst' => $product_gst,
             'pst' => $product_pst,
             'returned' => $product_returned
         );
+        if ($full) {
+            $return[] = array(
+                'name' => $product_name,
+                'category' => $product_category,
+            );
+        }
+
+        return $return;
     }
 
     public function submit(Request $request)
@@ -130,7 +138,7 @@ class OrderController extends Controller
             $product_info = Product::find($product);
             if (array_key_exists($product, $request->quantity)) {
                 $quantity = $request->quantity[$product];
-                if ($quantity < 1 || !is_int($quantity)) {
+                if ($quantity < 1) {
                     return redirect()->back()->withInput()->with('error', 'Quantity must be >= 1 for item ' . $product_info->name);
                 }
 
@@ -229,7 +237,7 @@ class OrderController extends Controller
 
         // Loop through products from the order and deserialize them to get their prices & taxes etc when they were purchased
         foreach (explode(", ", $transaction->products) as $product) {
-            $product_metadata = self::deserializeProduct($product);
+            $product_metadata = self::deserializeProduct($product, false);
             if ($product_metadata['pst'] == "null") {
                 $total_tax = $product_metadata['gst'];
             } else {

@@ -165,10 +165,7 @@ Route::middleware('auth')->group(function () {
          * Statistics 
          */
         Route::group(['permission' => 'statistics'], function() {
-            Route::get('/statistics', function () {
-                return view('pages.statistics.statistics');
-            })->name('statistics');
-
+            Route::get('/statistics', 'StatisticsChartController@view')->name('statistics');
             Route::post('/statistics', 'SettingsController@editStatsTime');
         });
 

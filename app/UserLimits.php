@@ -8,5 +8,15 @@ class UserLimits extends Model
 {    
     protected $primaryKey = 'limit_id';
     protected $fillable = ['user_id', 'category', 'limit_per', 'duration', 'editor_id'];
-    // TODO: Casts?
+
+    public function user()
+    {
+        return $this->hasOne(User::class);
+    }
+
+    public function category()
+    {
+        //TODO: Categories have to become their own models... hasOne(Category::class)
+    }
+
 }
