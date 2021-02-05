@@ -35,17 +35,24 @@
         </div>
     </div>
 </div>
+
 <script src="https://unpkg.com/echarts/dist/echarts.min.js"></script>
 <script src="https://unpkg.com/@chartisan/echarts/dist/chartisan_echarts.js"></script>
 
 <script>
-    const purchase_history_chart = new Chartisan({
+    new Chartisan({
         el: '#purchase_history_chart',
         url: "@chart('purchase_history_chart')",
+        hooks: new ChartisanHooks()
+            .legend()
+            .tooltip()
     });
-    const item_sales_chart = new Chartisan({
+    new Chartisan({
         el: '#item_sales_chart',
         url: "@chart('item_sales_chart')",
+        hooks: new ChartisanHooks()
+            .legend()
+            .tooltip()
     });
     $('#stats_time').change(function() {
         this.form.submit();

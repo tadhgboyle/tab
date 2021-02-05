@@ -15,8 +15,9 @@ class ItemSalesChart extends BaseChart
         $sales = array();
 
         $products = Product::where('deleted', false)->get();
+        $stats_time = SettingsController::getInstance()->getStatsTime();
         foreach ($products as $product) {
-            $sold = $product->findSold(SettingsController::getInstance()->getStatsTime());
+            $sold = $product->findSold($stats_time);
             if ($sold < 1) {
                 continue;
             }
@@ -24,14 +25,7 @@ class ItemSalesChart extends BaseChart
             array_push($sales, ['name' => $product->name, 'sold' => $sold]);
         }
 
-        uasort($sales, function ($a, $b) {
-            return ($a['sold'] > $b['sold'] ? -1 : 1);
-        });
-
-        // $popular_items = new StatisticsChart;
-        // $popular_items->labels(array_column($sales, 'name'));
-        // $popular_items->dataset('Sold', 'bar', array_column($sales, 'sold'))->color("rgb(72, 187, 120)");
-        // return $popular_items;
+        uasort($sales, fn($a, $b) => $a['sold'] > $b['sold'] ? -1 : 1);
 
         return Chartisan::build()
             ->labels(array_column($sales, 'name'))
