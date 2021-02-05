@@ -37,13 +37,13 @@ class Product extends Model
         }
     }
 
-    public function removeStock(int $removeStock): bool
+    public function removeStock(int $remove_stock): bool
     {
         // Checks 3 things:
         // 1. If the stock is more than we are removing OR -> 2. If the product has unlimited stock => continue
         // 3. If the above fails, if the product has stock override => continue
-        if (($this->getStock() >= $removeStock || $this->unlimited_stock) || $this->stock_override) {
-            $this->decrement('stock', $removeStock);
+        if (($this->getStock() >= $remove_stock || $this->unlimited_stock) || $this->stock_override) {
+            $this->decrement('stock', $remove_stock);
             return true;
         }
 
