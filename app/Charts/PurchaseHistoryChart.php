@@ -37,11 +37,6 @@ class PurchaseHistoryChart extends BaseChart
             }
         }
 
-        // return Chartisan::build()
-        //     ->labels($labels)
-        //     ->dataset('Returned Orders', 'line', $returned_orders)->lineTension(0)->color("rgb(245, 101, 101)")
-        //     ->dataset('Orders', 'line', $normal_orders)->lineTension(0)->color("rgb(72, 187, 120)");
-
         return Chartisan::build()
             ->labels($labels)
             ->dataset('Returned Orders', $returned_orders)
