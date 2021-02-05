@@ -48,7 +48,7 @@ class UserLimitsController extends Controller
             // if so, add its ((value * (quantity - returned)) * tax) to the end result
             foreach (explode(", ", $transaction['products']) as $transaction_product) {
                 if (strtolower($category) == Product::find(strtok($transaction_product, "*"))->category) {
-                    $item_info = OrderController::deserializeProduct($transaction_product);
+                    $item_info = OrderController::deserializeProduct($transaction_product, false);
                     $tax_percent = $item_info['gst'];
                     if ($item_info['pst'] != "null") $tax_percent += $item_info['pst'] - 1;
                     $quantity_available = $item_info['quantity'] - $item_info['returned'];

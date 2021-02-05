@@ -38,7 +38,7 @@ class SettingsController extends Controller
         return $this->_pst;
     }
 
-    public static function getStatsTime()
+    public static function getStatsTime(): int
     {
         return Settings::where('setting', 'stats_time')->pluck('value')->first();
     }

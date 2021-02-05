@@ -4,6 +4,7 @@ namespace App;
 
 use App\Http\Controllers\OrderController;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Collection;
 use Rennokki\QueryCache\Traits\QueryCacheable;
@@ -16,7 +17,6 @@ class User extends Authenticatable implements CastsAttributes
     protected $cacheFor = 180;
     protected $fillable = ['balance'];
 
-    // TODO: Would using hasOne be better than casting?
     protected $casts = [
         'role' => Role::class
     ];
@@ -36,15 +36,29 @@ class User extends Authenticatable implements CastsAttributes
         return $value;
     }
 
+    // TODO: finish
+    // public function limits(): HasMany
+    // {
+    //     return $this->hasMany(UserLimits::class);
+    // }
+
+    // public function getCategoryLimit(string $category): float
+    // {
+    //     foreach ($this->limits as $limit) {
+    //         if ($limit->category == $category) {
+    //             return $limit->duration;
+    //         }
+    //     }
+    //     return -1;
+    // }
+
     public function hasPermission($permissions): bool
     {
         return $this->role->hasPermission($permissions);
     }
 
-    private $_activity_transactions, $_transactions = null;
+    private ?Collection $_activity_transactions, $_transactions = null;
     
-    // TODO: getViewUrl and getEditUrl update: why?
-
     private function getActivityTransactions(): Collection
     {
         if ($this->_activity_transactions == null) {
@@ -90,7 +104,7 @@ class User extends Authenticatable implements CastsAttributes
             }
 
             foreach (explode(", ", $transaction->products) as $transaction_product) {
-                $product = OrderController::deserializeProduct($transaction_product);
+                $product = OrderController::deserializeProduct($transaction_product, false);
                 if ($product['returned'] > 0) {
                     $tax = $product['gst'];
                     if ($product['pst'] != "null") {

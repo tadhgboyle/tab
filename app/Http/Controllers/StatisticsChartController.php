@@ -9,10 +9,25 @@ use Illuminate\Support\Carbon;
 
 class StatisticsChartController extends Controller
 {
-    public static function orderInfo($days_ago): StatisticsChart
+
+    public function view()
     {
-        $normal_data = Transaction::where([['created_at', '>=', Carbon::now()->subDays($days_ago)->toDateTimeString()], ['status', 0]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
-        $returned_data = Transaction::where([['created_at', '>=', Carbon::now()->subDays($days_ago)->toDateTimeString()], ['status', 1]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
+        $stats_time = SettingsController::getStatsTime();
+        $order_info = $this->orderInfo($stats_time);
+        $item_info = $this->itemInfo($stats_time);
+
+        return view('pages.statistics.statistics', [
+            'stats_time' => $stats_time,
+            'order_info' => $order_info,
+            'item_info' => $item_info
+            ]
+        );
+    }
+
+    private function orderInfo(int $stats_time): StatisticsChart
+    {
+        $normal_data = Transaction::where([['created_at', '>=', Carbon::now()->subDays($stats_time)->toDateTimeString()], ['status', 0]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
+        $returned_data = Transaction::where([['created_at', '>=', Carbon::now()->subDays($stats_time)->toDateTimeString()], ['status', 1]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
 
         $normal_orders = array();
         $returned_orders = array();
@@ -42,13 +57,13 @@ class StatisticsChartController extends Controller
         return $recent_orders;
     }
 
-    public static function itemInfo($days_ago): StatisticsChart
+    private function itemInfo(int $stats_time): StatisticsChart
     {
         $sales = array();
 
         $products = Product::where('deleted', false)->get();
         foreach ($products as $product) {
-            $sold = Product::findSold($product->id, $days_ago);
+            $sold = $product->findSold($stats_time);
             if ($sold < 1) {
                 continue;
             }

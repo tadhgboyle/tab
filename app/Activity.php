@@ -29,7 +29,7 @@ class Activity extends Model
         'end'
     ];
 
-    private $_current_attendees = null;
+    private ?Collection $_current_attendees = null;
 
     // reusable function so we only query once
     private function getCurrentAttendees(): Collection
@@ -75,7 +75,7 @@ class Activity extends Model
 
     public function isAttending(User $user): bool 
     {
-        return DB::table('activity_transactions')->where('activity_id', $this->id)->get()->contains('user_id', $user->id);
+        return $this->getCurrentAttendees()->contains('user_id', $user->id);
     }
 
     public function getStatus(): string 
