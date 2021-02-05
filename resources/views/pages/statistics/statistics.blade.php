@@ -25,21 +25,28 @@
     <div class="column is-half">
         <h4 class="title has-text-weight-bold is-4">Order Info</h4>
         <div>
-            {!! $order_info->container() !!}
+            <div id="purchase_history_chart" style="height: 400px;"></div>
         </div>
     </div>
     <div class="column is-half">
         <h4 class="title has-text-weight-bold is-4">Item Info</h4>
         <div>
-            {!! $item_info->container() !!}
+            <div id="item_sales_chart" style="height: 400px;"></div>
         </div>
     </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js" charset="utf-8"></script>
-{!! $order_info->script() !!}
-{!! $item_info->script() !!}
+<script src="https://unpkg.com/echarts/dist/echarts.min.js"></script>
+<script src="https://unpkg.com/@chartisan/echarts/dist/chartisan_echarts.js"></script>
 
 <script>
+    const purchase_history_chart = new Chartisan({
+        el: '#purchase_history_chart',
+        url: "@chart('purchase_history_chart')",
+    });
+    const item_sales_chart = new Chartisan({
+        el: '#item_sales_chart',
+        url: "@chart('item_sales_chart')",
+    });
     $('#stats_time').change(function() {
         this.form.submit();
     })

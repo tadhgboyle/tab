@@ -21,6 +21,7 @@ class SettingsController extends Controller
 
     private ?float $_gst = null;
     private ?float $_pst = null;
+    private ?int $_stats_time = null;
 
     public function getGst(): float
     {
@@ -38,9 +39,12 @@ class SettingsController extends Controller
         return $this->_pst;
     }
 
-    public static function getStatsTime(): int
+    public function getStatsTime(): float
     {
-        return Settings::where('setting', 'stats_time')->pluck('value')->first();
+        if ($this->_stats_time == null) {
+            $this->_stats_time = Settings::where('setting', 'stats_time')->pluck('value')->first();
+        }
+        return $this->_stats_time;
     }
 
     public static function getCategories()

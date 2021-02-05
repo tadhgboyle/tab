@@ -17,7 +17,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingsController;
-use App\Http\Controllers\StatisticsChartController;
+use App\Http\Controllers\StatisticsPageController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\CheckPermission;
 use Illuminate\Support\Facades\Route;
@@ -173,7 +173,7 @@ Route::middleware('auth')->group(function () {
          * Statistics 
          */
         Route::group(['permission' => 'statistics'], function() {
-            Route::get('/statistics', [StatisticsChartController::class, 'view'])->name('statistics');
+            Route::get('/statistics', [StatisticsPageController::class, 'view'])->name('statistics');
             Route::post('/statistics', [SettingsController::class, 'editStatsTime']);
         });
 
