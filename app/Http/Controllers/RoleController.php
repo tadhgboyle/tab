@@ -99,8 +99,8 @@ class RoleController extends Controller
 
     public function order() {
 
-        $roles = \Request::get('roles');
-
+        $roles = json_decode(\Request::get('roles'))->roles;
+        
         $i = 1;
         foreach ($roles as $role) {
             Role::find($role)->update(['order' => $i]);
