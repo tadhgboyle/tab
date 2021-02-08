@@ -28,7 +28,7 @@ class UserController extends Controller
                 'nullable',
                 'confirmed',
                 'min:6',
-                ValidationRule::requiredIf(in_array($request->role, array_column(Role::getStaffRoles(), 'id'))),
+                ValidationRule::requiredIf(in_array($request->role, array_column(RoleController::getInstance()->getStaffRoles(), 'id'))),
             ]
         ]);
         if ($validator->fails()) {
@@ -62,7 +62,7 @@ class UserController extends Controller
         $user->balance = $balance;
         $user->role = $request->role;
 
-        if (in_array($request->role, array_column(Role::getStaffRoles(), 'name'))) {
+        if (in_array($request->role, array_column(RoleController::getInstance()->getStaffRoles(), 'name'))) {
             $user->password = bcrypt($request->password);
         }
 
@@ -117,7 +117,7 @@ class UserController extends Controller
         }
 
         $new_role = Role::find($request->role)->name;
-        $staff_roles = array_column(Role::getStaffRoles(), 'name');
+        $staff_roles = array_column(RoleController::getInstance()->getStaffRoles(), 'name');
 
         // Update their category limits
         foreach ($request->limit as $category => $limit) {
