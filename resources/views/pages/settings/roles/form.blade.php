@@ -1,8 +1,13 @@
 @php
 use App\Role;
+use Illuminate\Support\Facades\DB;
 $role = Role::find(request()->route('id'));
 if (!is_null($role) && !Auth::user()->role->canInteract(Role::find(request()->route('id')))) return redirect()->route('settings')->with('error', 'You cannot interact with that role.')->send();
-if (!is_null($role)) $role_permissions = $role->permissions;
+if (!is_null($role)) {
+    $role_permissions = $role->permissions;
+    $affected_users = DB::table('users')->where('role', $role->id)->count();
+    $available_roles = $role->getRolesAvailable(Auth::user()->role);
+}
 @endphp
 @extends('layouts.default')
 @section('content')
@@ -55,12 +60,12 @@ if (!is_null($role)) $role_permissions = $role->permissions;
                         <span>Cancel</span>
                     </a>
                     @if(!is_null($role))
-                        <button class="button is-danger is-outlined is-pulled-right" type="button" onclick="openModal();">
-                            <span>Delete</span>
-                            <span class="icon is-small">
-                                <i class="fas fa-times"></i>
-                            </span>
-                        </button>
+                    <button class="button is-danger is-outlined is-pulled-right" type="button" onclick="openModal();">
+                        <span>Delete</span>
+                        <span class="icon is-small">
+                            <i class="fas fa-times"></i>
+                        </span>
+                    </button>
                     @endif
                 </div>
         </div>
@@ -180,13 +185,34 @@ if (!is_null($role)) $role_permissions = $role->permissions;
             <p class="modal-card-title">Confirmation</p>
         </header>
         <section class="modal-card-body">
-            <p>Are you sure you want to delete the role {{ $role->name }}?</p>
-            <form action="" id="deleteForm" method="GET">
-                @csrf
-            </form>
+            <p><strong>{{ $affected_users }}</strong>@if($affected_users > 1 || $affected_users == 0) users @else user @endif currently have this role.</p>
+            <!-- 
+                TODO: I broke something with the permissions js suddenly
+                Rules:
+                - Only roles which the current user can interact with 
+                - If the deleted role is not a staff role, only other non-staff roles are shown 
+                - If the role is a staff role, roles of any type are shown
+            -->
+            @if(!count($available_roles) > 0)
+                <strong>No appropriate backup roles. Cannot delete.</strong>
+            @else
+                <p>Please select a new role for them to be placed in:</p>
+                <form action="" id="deleteForm" method="GET">
+                    @csrf
+                    <div class="control">
+                        <div class="select">
+                            <select name="new_role" id="new_role" class="input" required>
+                                @foreach($available_roles as $role)
+                                    <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            @endif
         </section>
         <footer class="modal-card-foot">
-            <button class="button is-success" type="submit" onclick="deleteData();">Confirm</button>
+            <button class="button is-success" type="submit" onclick="deleteData();" @if(!count($available_roles) > 0) disabled @endif>Confirm</button>
             <button class="button" onclick="closeModal();">Cancel</button>
         </footer>
     </div>
@@ -201,7 +227,7 @@ if (!is_null($role)) $role_permissions = $role->permissions;
         }
         updateSections();
     });
-        
+
     $('input[type=checkbox][name=staff]').change(() => {
         updateStaffInfo($(this).prop('checked'))
     });
@@ -211,9 +237,15 @@ if (!is_null($role)) $role_permissions = $role->permissions;
     });
 
     function updateStaffInfo(staff) {
+        console.log(staff)
         if (staff) {
             $(document.getElementById('superuser')).show(200);
-            $(document.getElementById('permissions_box')).css({opacity: 0.0, visibility: 'visible'}).animate({opacity: 1.0});
+            $(document.getElementById('permissions_box')).css({
+                opacity: 0.0,
+                visibility: 'visible'
+            }).animate({
+                opacity: 1.0
+            });
         } else {
             $(document.getElementById('superuser')).hide(200);
             $(document.getElementById('permissions_box')).css('visibility', 'hidden');
@@ -228,7 +260,7 @@ if (!is_null($role)) $role_permissions = $role->permissions;
         });
         updateSections();
     }
-    
+
     function updateSections() {
         ['users', 'products', 'activities', 'orders', 'settings'].forEach(element => {
             if ($(`#permission-${element}-checkbox`).prop('checked')) $(`#permission-${element}`).show(200);
@@ -261,6 +293,11 @@ if (!is_null($role)) $role_permissions = $role->permissions;
     }
 
     const switches = document.getElementsByClassName("js-switch");
-    for (var i = 0; i < switches.length; i++) { new Switchery(switches.item(i), {color: '#48C774', secondaryColor: '#F56D71'}) }
+    for (var i = 0; i < switches.length; i++) {
+        new Switchery(switches.item(i), {
+            color: '#48C774',
+            secondaryColor: '#F56D71'
+        })
+    }
 </script>
 @stop

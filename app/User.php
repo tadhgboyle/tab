@@ -24,6 +24,8 @@ class User extends Authenticatable implements CastsAttributes
         'deleted' => 'boolean'
     ];
 
+    // TODO: add a "root" user? only they can edit superadmin roles
+
     public function get($model, string $key, $value, array $attributes)
     {
         return User::find($value);

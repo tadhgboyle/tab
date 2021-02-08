@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Http\Controllers\RoleController;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 use Rennokki\QueryCache\Traits\QueryCacheable;
@@ -32,22 +33,27 @@ class Role extends Model implements CastsAttributes
         return $value; // TODO: Test for edge cases where this might break (like user class)
     }
 
-    public static function getRoles(string $order = 'DESC'): object
-    {
-        return Role::orderBy('order', $order)->get();
-    }
-
-    public static function getStaffRoles(): array
-    {
-        return Role::select('id', 'name')->orderBy('order', 'ASC')->where('staff', true)->get()->toArray();
-    }
-
-    public function getRolesAvailable(): array
+    public function getRolesAvailable(Role $compare = null): array
     {
         $roles = array();
-        foreach (self::getRoles() as $role) {
-            if ($this->canInteract($role)) {
-                $roles[] = $role;
+        foreach (RoleController::getInstance()->getRoles() as $role) {
+            if ($compare) {
+                if ($this->id == $role->id) {
+                    continue;
+                }
+                if ($this->staff) {
+                    if ($compare->canInteract($role)) {
+                        $roles[] = $role;
+                    }
+                } else if (!$this->staff && !$role->staff) {
+                    if ($compare->canInteract($role)) {
+                        $roles[] = $role;
+                    }
+                }
+            } else {
+                if ($this->canInteract($role)) {
+                    $roles[] = $role;
+                }
             }
         }
 

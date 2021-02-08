@@ -1,6 +1,7 @@
 @php
 
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\RoleController;
 use App\Role;
 $manage_general = Auth::user()->hasPermission('settings_general');
 $manage_roles = Auth::user()->hasPermission('settings_roles_manage');
@@ -117,7 +118,7 @@ $manage_categories = Auth::user()->hasPermission('settings_categories_manage');
                     </tr>
                 </thead>
                 <tbody id="sortable">
-                    @foreach(Role::getRoles('ASC') as $role)
+                    @foreach(RoleController::getInstance()->getRoles('ASC') as $role)
                     <tr data-id="{{ $role->id }}">
                         <td>
                             <div>{{ $role->name }}</div>
@@ -128,15 +129,15 @@ $manage_categories = Auth::user()->hasPermission('settings_categories_manage');
                         <td>
                             <div>
                                 @if (Auth::user()->role->canInteract($role))
-                                <a href="{{ route('settings_roles_edit', $role->id) }}">Edit</a>
+                                    <a href="{{ route('settings_roles_edit', $role->id) }}">Edit</a>
                                 @else
-                                <div class="control">
-                                    <button class="button is-warning" disabled>
-                                        <span class="icon">
-                                            <i class="fas fa-lock"></i>
-                                        </span>
-                                    </button>
-                                </div>
+                                    <div class="control">
+                                        <button class="button is-warning" disabled>
+                                            <span class="icon">
+                                                <i class="fas fa-lock"></i>
+                                            </span>
+                                        </button>
+                                    </div>
                                 @endif
                             </div>
                         </td>
