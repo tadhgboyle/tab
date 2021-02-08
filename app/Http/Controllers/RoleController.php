@@ -20,8 +20,7 @@ class RoleController extends Controller
             return redirect()->back()->withInput()->withErrors($validator);
         }
 
-        $staff = false;
-        if ($request->has('staff')) $staff = true;
+        $staff = $request->has('staff');
 
         $superuser = false;
 
@@ -100,7 +99,7 @@ class RoleController extends Controller
 
     public function order() {
 
-        $roles = json_decode(\Request::get('roles'))->roles;
+        $roles = \Request::get('roles');
 
         $i = 1;
         foreach ($roles as $role) {

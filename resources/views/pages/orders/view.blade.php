@@ -10,7 +10,7 @@ $transaction = Transaction::find(request()->route('id'));
 if ($transaction == null) return redirect()->route('orders_list')->with('error', 'Invalid order.')->send();
 
 $transaction_items = explode(", ", $transaction->products);
-$transaction_returned = OrderController::checkReturned($transaction);
+$transaction_returned = $transaction->checkReturned();
 $users_view = Auth::user()->hasPermission('users_view');
 $return_order = Auth::user()->hasPermission('orders_return');
 @endphp

@@ -64,7 +64,7 @@ $product = Product::find(request()->route('id'));
                     <div class="select">
                         <select name="category" required>
                             {{!! !isset($product->category) ? "<option value=\"\" disabled selected>Select Category...</option>" : '' !!}}
-                            @foreach(SettingsController::getCategories() as $category)
+                            @foreach(SettingsController::getInstance()->getCategories() as $category)
                                 <option value="{{ $category->value }}"
                                     {{ (!is_null($product) && $product->category == $category->value) || old('category') == $category->value  ? 'selected' : '' }}>
                                     {{ ucfirst($category->value) }}

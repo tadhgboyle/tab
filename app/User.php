@@ -4,7 +4,6 @@ namespace App;
 
 use App\Http\Controllers\OrderController;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Collection;
 use Rennokki\QueryCache\Traits\QueryCacheable;
@@ -18,7 +17,11 @@ class User extends Authenticatable implements CastsAttributes
     protected $fillable = ['balance'];
 
     protected $casts = [
-        'role' => Role::class
+        'name' => 'string',
+        'username' => 'string',
+        'balance' => 'float',
+        'role' => Role::class,
+        'deleted' => 'boolean'
     ];
 
     public function get($model, string $key, $value, array $attributes)
@@ -57,7 +60,8 @@ class User extends Authenticatable implements CastsAttributes
         return $this->role->hasPermission($permissions);
     }
 
-    private ?Collection $_activity_transactions, $_transactions = null;
+    private ?Collection $_activity_transactions = null;
+    private ?Collection $_transactions = null;
     
     private function getActivityTransactions(): Collection
     {
@@ -103,7 +107,8 @@ class User extends Authenticatable implements CastsAttributes
                 continue;
             }
 
-            foreach (explode(", ", $transaction->products) as $transaction_product) {
+            $transaction_products = explode(", ", $transaction->products);
+            foreach ($transaction_products as $transaction_product) {
                 $product = OrderController::deserializeProduct($transaction_product, false);
                 if ($product['returned'] > 0) {
                     $tax = $product['gst'];
