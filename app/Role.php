@@ -14,6 +14,14 @@ class Role extends Model implements CastsAttributes
 
     protected $fillable = ['order'];
 
+    protected $casts = [
+        'name' => 'string',
+        'superuser' => 'boolean', // if this is true, this group can do anything and edit any group
+        'order' => 'integer', // heierarchy system. higher order = higher priority
+        'staff' => 'boolean', // determine if they should ever have a password to login with
+        'permissions' => 'array' // decode json to an array automatically
+    ]; 
+
     public function get($model, string $key, $value, array $attributes)
     {
         return Role::find($value);
@@ -50,16 +58,13 @@ class Role extends Model implements CastsAttributes
     {
         if ($this->superuser) {
             return true;
-        } else if ($subject->superuser) {
+        }
+        
+        if ($subject->superuser) {
             return false;
         }
         
         return $this->order < $subject->order;
-    }
-
-    private function getPermissions(): array
-    {
-        return json_decode($this->permissions, true);
     }
 
     public function hasPermission($permissions): bool
@@ -69,10 +74,10 @@ class Role extends Model implements CastsAttributes
         }
 
         if (!is_array($permissions)) {
-            return in_array($permissions, $this->getPermissions());
+            return in_array($permissions, $this->permissions);
         } else {
             foreach ($permissions as $permission) {
-                if (!in_array($permission, $this->getPermissions())) {
+                if (!in_array($permission, $this->permissions)) {
                     return false;
                 }
             }

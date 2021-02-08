@@ -20,8 +20,14 @@ class Activity extends Model
     protected $fillable = ['attendees'];
 
     protected $casts = [
+        'name' => 'string',
+        'location' => 'string',
+        'description' => 'string',
         'unlimited_slots' => 'boolean',
-        'slots' => 'integer'
+        'slots' => 'integer',
+        'price' => 'float',
+        'pst' => 'boolean',
+        'deleted' => 'boolean'
     ];
 
     protected $dates = [

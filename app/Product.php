@@ -13,6 +13,17 @@ class Product extends Model
 
     protected $cacheFor = 180;
 
+    protected $casts = [
+        'name' => 'string',
+        'price' => 'float',
+        'pst' => 'boolean',
+        'deleted' => 'boolean',
+        'stock' => 'integer',
+        'unlimited_stock' => 'boolean', // stock is never checked
+        'stock_override' => 'boolean', // stock can go negative,
+        'box_size' => 'integer'
+    ];
+
     // Used to check if items in order have enough stock BEFORE using removeStock() to remove it.
     // If we didnt use this, then stock would be adjusted and then the order would fail, resulting in inaccurate stock.
     public function hasStock($quantity): bool

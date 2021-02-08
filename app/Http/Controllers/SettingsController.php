@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use App\Settings;
+use Illuminate\Database\Eloquent\Collection;
 
 class SettingsController extends Controller
 {
@@ -22,6 +23,7 @@ class SettingsController extends Controller
     private ?float $_gst = null;
     private ?float $_pst = null;
     private ?int $_stats_time = null;
+    private ?Collection $_categories = null;
 
     public function getGst(): float
     {
@@ -47,9 +49,12 @@ class SettingsController extends Controller
         return $this->_stats_time;
     }
 
-    public static function getCategories()
+    public function getCategories(): Collection
     {
-        return Settings::where('setting', 'category')->orderBy('value')->get();
+        if ($this->_categories == null) {
+            $this->_categories = Settings::where('setting', 'category')->orderBy('value')->get();
+        }
+        return $this->_categories;
     }
 
     public static function editStatsTime(Request $request)

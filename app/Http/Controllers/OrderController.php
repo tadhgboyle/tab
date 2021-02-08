@@ -10,34 +10,6 @@ use Illuminate\Http\Request;
 class OrderController extends Controller
 {
 
-    public static function checkReturned(Transaction $order): int
-    {
-        if ($order->status == 1) {
-            return 1;
-        } else {
-            $products_returned = 0;
-            $product_count = 0;
-
-            $products = explode(", ", $order->products);
-            foreach ($products as $product) {
-                $product_info = self::deserializeProduct($product, false);
-                if ($product_info['returned'] >= $product_info['quantity']) {
-                    $products_returned++;
-                } else if ($product_info['returned'] > 0) {
-                    // semi returned if at least one product has a returned value
-                    return 2;
-                }
-                $product_count++;
-            }
-            if ($products_returned >= $product_count) {
-                $order->update(['status' => '1']);
-                return 1;
-            }
-
-            return 0;
-        }
-    }
-
     /**
      * Example deserialized input:
      * ID: 34
@@ -93,18 +65,14 @@ class OrderController extends Controller
         $product_returned = substr($product, strpos($product, "R") + 1);
         $return = array(
             'id' => $product_id,
+            'name' => $full ? $product_name : '',
+            'category' => $full ? $product_category : '',
             'quantity' => $product_quantity,
             'price' => $product_price,
             'gst' => $product_gst,
             'pst' => $product_pst,
             'returned' => $product_returned
         );
-        if ($full) {
-            $return[] = array(
-                'name' => $product_name,
-                'category' => $product_category,
-            );
-        }
 
         return $return;
     }
@@ -228,7 +196,7 @@ class OrderController extends Controller
     {
         $transaction = Transaction::find($id);
         // This should never happen, but a good security measure
-        if (self::checkReturned($transaction) == 1) {
+        if ($transaction->checkReturned() == 1) {
             return redirect()->back()->with('error', 'That order has already been fully returned.');
         }
 
@@ -257,7 +225,7 @@ class OrderController extends Controller
     {
         $transaction = Transaction::find($order_id);
         // this shouldnt happen, but worth a check
-        if (self::checkReturned($transaction) == 1) {
+        if ($transaction->checkReturned() == 1) {
             return redirect()->back()->with('error', 'That order has already been returned, so you cannot return an item from it.');
         }
 

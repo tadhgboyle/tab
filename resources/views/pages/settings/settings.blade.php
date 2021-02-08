@@ -70,7 +70,7 @@ $manage_categories = Auth::user()->hasPermission('settings_categories_manage');
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach(SettingsController::getCategories() as $category)
+                        @foreach(SettingsController::getInstance()->getCategories() as $category)
                         <tr>
                             <td>
                                 <div>{{ ucfirst($category->value) }}</div>

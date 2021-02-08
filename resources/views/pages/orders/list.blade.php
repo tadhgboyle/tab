@@ -53,7 +53,7 @@ $users_view = Auth::user()->hasPermission('users_view');
                     </td>
                     <td>
                         <div>
-                            @switch(OrderController::checkReturned($transaction))
+                            @switch($transaction->checkReturned())
                                 @case(0)
                                     <span class="tag is-success is-medium">Normal</span>
                                 @break

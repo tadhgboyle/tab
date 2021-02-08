@@ -91,7 +91,7 @@ $users_view = Auth::user()->hasPermission('users_view');
 
         <input type="hidden" name="editor_id" value="{{ Auth::user()->id }}">
 
-        @foreach(SettingsController::getCategories() as $category)
+        @foreach(SettingsController::getInstance()->getCategories() as $category)
         @if(isset($user->id)) @php $limit_info = UserLimitsController::getInfo($user->id, $category->value) @endphp @endif
         <div class="field">
             <label class="label">{{ ucfirst($category->value) }} Limit</label>
