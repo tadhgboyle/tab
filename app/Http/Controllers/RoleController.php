@@ -30,15 +30,16 @@ class RoleController extends Controller
     public function getRoles(string $order = 'DESC'): object
     {
         if ($this->_roles == null) {
-            $this->_roles = Role::orderBy('order', $order)->get();
+            $this->_roles = Role::where('deleted', false)->orderBy('order', $order)->get();
         }
+
         return $this->_roles;
     }
 
     public function getStaffRoles(): array
     {
         if ($this->_staff_roles == null) {
-            $this->_staff_roles = Role::select('id', 'name')->orderBy('order', 'ASC')->where('staff', true)->get()->toArray();
+            $this->_staff_roles = Role::select('id', 'name')->orderBy('order', 'ASC')->where([['staff', true], ['deleted', false]])->get()->toArray();
         }
 
         return $this->_staff_roles;
@@ -58,19 +59,16 @@ class RoleController extends Controller
 
         $superuser = false;
 
+        $permissions = array();
         if ($staff) {
-            $permissions = array();
             if (is_array($request->permissions)) {
                 foreach ($request->permissions as $permission => $value) {
                     if ($value) $permissions[] = $permission;
                 }
             }
-            $permissions = json_encode($permissions);
             if ($request->has('superuser')) {
                 $superuser = true;
             }
-        } else {
-            $permissions = '[]';
         }
 
         $role = new Role();
@@ -102,8 +100,8 @@ class RoleController extends Controller
 
         $superuser = false;
 
+        $permissions = array();
         if ($staff) {
-            $permissions = array();
             // TODO: if they dont have "users" permission checked, ignore "users_list" etc
             if (is_array($request->permissions)) {
                 foreach ($request->permissions as $permission => $value) {
@@ -112,10 +110,7 @@ class RoleController extends Controller
                     }
                 }
             }
-            $permissions = json_encode($permissions);
             $superuser = $request->has('superuser');
-        } else {
-            $permissions = '[]';
         }
 
         DB::table('roles')
@@ -125,27 +120,34 @@ class RoleController extends Controller
         return redirect()->route('settings')->with('success', 'Edited role ' . $request->name . '.');
     }
 
-    public function delete(Request $request, $id)
+    public function delete(Request $request)
     {
-        // TODO: Test
-        $new_role = Role::find($request->get('new_role'));
-        $old_role = Role::find($id);
-        
-        $fields = [
-            'role' => $new_role->id
-        ];
-        if (!$new_role->staff) {
-            $fields[] = [
-                'password' => null
-            ];
+        // TODO: add same validation from frontend
+        $old_role = Role::find($request->old_role);
+        if (!$request->has('new_role')) {
+            $old_role->update(['deleted' => true]);
+            
+            $message = 'Deleted role ' . $old_role->name . '.';
+        } else {
+            $new_role = Role::find($request->new_role);
+
+            if (!$new_role->staff) {
+                $fields = [
+                    'role' => $new_role->id,
+                    'password' => null
+                ];
+            } else {
+                $fields = [
+                    'role' => $new_role->id
+                ];
+            }
+
+            DB::table('users')->where('role', $old_role->id)->update($fields);
+
+            $message = 'Deleted role ' . $old_role->name . ', and placed all it\'s users into ' . $new_role->name . '.';
         }
 
-        $users = User::all()->where('role', $id);
-        foreach($users as $user) {
-            $user->update($fields);
-        }
-
-        $old_role->update(['deleted' => true]);
+        return redirect()->route('settings')->with('success', $message);
     }
 
     public function order() {
