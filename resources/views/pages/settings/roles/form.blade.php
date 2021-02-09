@@ -20,7 +20,6 @@ if (!is_null($role)) {
             <form action="{{ is_null($role) ? route('settings_roles_new') : route('settings_roles_edit_form') }}" method="POST" id="role_form">
                 @csrf
                 <input type="hidden" name="editor_id" value="{{ Auth::user()->id }}">
-                <input type="hidden" name="id" value="{{ $role->id ?? '' }}">
                 <div class="field">
                     <label class="label">Name<sup style="color: red">*</sup></label>
                     <div class="control">
@@ -196,18 +195,21 @@ if (!is_null($role)) {
             @if(!count($available_roles) > 0)
                 <strong>No appropriate backup roles. Cannot delete.</strong>
             @else
-                <p>Please select a new role for them to be placed in:</p>
                 <form action="" id="deleteForm" method="GET">
                     @csrf
-                    <div class="control">
-                        <div class="select">
-                            <select name="new_role" id="new_role" class="input" required>
-                                @foreach($available_roles as $role)
-                                    <option value="{{ $role->id }}">{{ $role->name }}</option>
-                                @endforeach
-                            </select>
+                    <input type="hidden" name="old_role" value="{{ $role->id }}">
+                    @if ($affected_users >= 1)
+                        <p>Please select a new role for them to be placed in:</p>
+                        <div class="control">
+                            <div class="select">
+                                <select name="new_role" id="new_role" class="input" required>
+                                    @foreach($available_roles as $role)
+                                        <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
-                    </div>
+                    @endif
                 </form>
             @endif
         </section>
@@ -284,13 +286,14 @@ if (!is_null($role)) {
         modal.classList.remove('is-active');
     }
 
-    function deleteData() {
-        var id = document.getElementById('user_id').value;
-        var url = '{{ route("settings_roles_delete", ":id") }}';
-        url = url.replace(':id', id);
-        $("#deleteForm").attr('action', url);
-        $("#deleteForm").submit();
-    }
+    @if(!is_null($role))
+        function deleteData() {
+            var url = '{{ route("settings_roles_delete", ":id") }}';
+            url = url.replace(':id', {{ $role->id }});
+            $("#deleteForm").attr('action', url);
+            $("#deleteForm").submit();
+        }
+    @endif
 
     const switches = document.getElementsByClassName("js-switch");
     for (var i = 0; i < switches.length; i++) {

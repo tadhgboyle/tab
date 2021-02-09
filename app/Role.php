@@ -13,14 +13,18 @@ class Role extends Model implements CastsAttributes
 
     protected $cacheFor = 180;
 
-    protected $fillable = ['order'];
+    protected $fillable = [
+        'order', // used to drag and drop roles in Settings page
+        'deleted'
+    ];
 
     protected $casts = [
         'name' => 'string',
         'superuser' => 'boolean', // if this is true, this group can do anything and edit any group
         'order' => 'integer', // heierarchy system. higher order = higher priority
         'staff' => 'boolean', // determine if they should ever have a password to login with
-        'permissions' => 'array' // decode json to an array automatically
+        'permissions' => 'array', // decode json to an array automatically
+        'deleted' => 'boolean'
     ]; 
 
     public function get($model, string $key, $value, array $attributes)
@@ -35,17 +39,14 @@ class Role extends Model implements CastsAttributes
 
     public function getRolesAvailable(Role $compare = null): array
     {
+        // TODO: Refractor
         $roles = array();
         foreach (RoleController::getInstance()->getRoles() as $role) {
             if ($compare) {
                 if ($this->id == $role->id) {
                     continue;
                 }
-                if ($this->staff) {
-                    if ($compare->canInteract($role)) {
-                        $roles[] = $role;
-                    }
-                } else if (!$this->staff && !$role->staff) {
+                if ($this->staff || (!$this->staff && !$role->staff)) {
                     if ($compare->canInteract($role)) {
                         $roles[] = $role;
                     }

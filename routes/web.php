@@ -204,7 +204,6 @@ Route::middleware('auth')->group(function () {
                 Route::get('/settings/roles/order', [RoleController::class, 'order'])->name('settings_roles_order_ajax');
 
                 Route::get('/settings/roles/delete/{id}', [RoleController::class, 'delete'])->name('settings_roles_delete');
-
             });
 
             Route::group(['permission' => 'settings_categories_manage'], function () {
