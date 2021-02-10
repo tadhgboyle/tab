@@ -13,13 +13,13 @@
 
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\OrderController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\StatisticsPageController;
 use App\Http\Controllers\UserController;
-use App\Http\Middleware\CheckPermission;
+use App\Http\Middleware\HasPermission;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', function () {
@@ -40,7 +40,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
     // Check their role can access the page
-    Route::middleware(CheckPermission::class)->group(function () {
+    Route::middleware(HasPermission::class)->group(function () {
 
         /* 
          * Cashier 
@@ -50,7 +50,7 @@ Route::middleware('auth')->group(function () {
                 return view('pages.orders.order');
             })->where('id', '[0-9]+')->name('orders_new');
             
-            Route::post('/orders/submit', [OrderController::class, 'submit'])->name('orders_new_form');
+            Route::post('/orders/submit', [TransactionController::class, 'submit'])->name('orders_new_form');
         });
 
         /* 
@@ -70,8 +70,8 @@ Route::middleware('auth')->group(function () {
             });
 
             Route::group(['permission' => 'orders_return'], function() {
-                Route::get('/orders/return/order/{id}', [OrderController::class, 'returnOrder'])->where('id', '[0-9]+')->name('orders_return');
-                Route::get('/orders/return/item/{item}/{order}',[OrderController::class, 'returnItem'])->where(['item', '[0-9]+'], ['order', '[0-9]+'])->name('orders_return_item');
+                Route::get('/orders/return/order/{id}', [TransactionController::class, 'returnOrder'])->where('id', '[0-9]+')->name('orders_return');
+                Route::get('/orders/return/item/{item}/{order}',[TransactionController::class, 'returnItem'])->where(['item', '[0-9]+'], ['order', '[0-9]+'])->name('orders_return_item');
             });
         });
 

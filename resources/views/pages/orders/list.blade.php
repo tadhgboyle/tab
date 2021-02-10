@@ -1,7 +1,7 @@
 @php
 
 use App\Transaction;
-use App\Http\Controllers\OrderController;
+use App\Http\Controllers\TransactionController;
 use App\User;
 use App\Role;
 $orders_view = Auth::user()->hasPermission('orders_view');

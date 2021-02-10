@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-class CheckPermission
+class HasPermission
 {
     /**
      * Handle an incoming request.
@@ -15,10 +15,11 @@ class CheckPermission
      */
     public function handle(\Illuminate\Http\Request $request, Closure $next)
     {
-        if (!$request->user()->hasPermission($request->route()->action['permission'])) {
-            return redirect()->route('index')->with('error', "You do not have permission to access that page.");
+        if ($request->user()->hasPermission($request->route()->action['permission'])) {
+            return $next($request);
         }
 
-        return $next($request);
+        return redirect()->route('index')->with('error', "You do not have permission to access that page.");
     }
+    
 }

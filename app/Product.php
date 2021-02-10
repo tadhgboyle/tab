@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Http\Controllers\OrderController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Rennokki\QueryCache\Traits\QueryCacheable;
@@ -83,7 +83,7 @@ class Product extends Model
                     continue;
                 }
 
-                $deserialized_product = OrderController::deserializeProduct($transaction_product, false);
+                $deserialized_product = TransactionController::deserializeProduct($transaction_product, false);
                 $sold += ($deserialized_product['quantity'] - $deserialized_product['returned']);
             }
         }
