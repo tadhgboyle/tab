@@ -17,6 +17,7 @@ class SettingsController extends Controller
         if (self::$_instance == null) {
             self::$_instance = new SettingsController;
         }
+
         return self::$_instance;
     }
 
@@ -30,6 +31,7 @@ class SettingsController extends Controller
         if ($this->_gst == null) {
             $this->_gst = Settings::where('setting', 'gst')->pluck('value')->first();
         }
+
         return $this->_gst;
     }
 
@@ -38,6 +40,7 @@ class SettingsController extends Controller
         if ($this->_pst == null) {
             $this->_pst = Settings::where('setting', 'pst')->pluck('value')->first();
         }
+
         return $this->_pst;
     }
 
@@ -46,6 +49,7 @@ class SettingsController extends Controller
         if ($this->_stats_time == null) {
             $this->_stats_time = Settings::where('setting', 'stats_time')->pluck('value')->first();
         }
+
         return $this->_stats_time;
     }
 
@@ -54,6 +58,7 @@ class SettingsController extends Controller
         if ($this->_categories == null) {
             $this->_categories = Settings::where('setting', 'category')->orderBy('value')->get();
         }
+
         return $this->_categories;
     }
 
@@ -65,6 +70,7 @@ class SettingsController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator);
         }
+
         DB::table('settings')->where('setting', 'stats_time')->update(['value' => $request->stats_time]);
         return redirect()->route('statistics')->send();
     }
@@ -100,7 +106,7 @@ class SettingsController extends Controller
         $settings = new Settings();
         $settings->setting = 'category';
         $settings->value = strtolower($request->name);
-        $settings->editor_id = $request->editor_id;
+        $settings->editor_id = Auth::id();
         $settings->save();
 
         return redirect()->route('settings')->with('success', 'Created new category ' . $request->name . '.');

@@ -6,6 +6,7 @@ use App\User;
 use App\Product;
 use App\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
@@ -65,8 +66,8 @@ class OrderController extends Controller
         $product_returned = substr($product, strpos($product, "R") + 1);
         $return = array(
             'id' => $product_id,
-            'name' => $full ? $product_name : '',
-            'category' => $full ? $product_category : '',
+            'name' => $product_name ?? '',
+            'category' => $product_category ?? '',
             'quantity' => $product_quantity,
             'price' => $product_price,
             'gst' => $product_gst,
@@ -117,7 +118,7 @@ class OrderController extends Controller
                     array_push($stock_products, $product_info);
                 }
 
-                if ($product_info->pst == true) {
+                if ($product_info->pst) {
                     $total_tax = ($total_tax + SettingsController::getInstance()->getPst()) - 1;
                     $pst_metadata = SettingsController::getInstance()->getPst();
                 } else {
@@ -184,7 +185,7 @@ class OrderController extends Controller
         // Save transaction in database
         $transaction = new Transaction();
         $transaction->purchaser_id = $purchaser->id;
-        $transaction->cashier_id = $request->cashier_id;
+        $transaction->cashier_id = Auth::id();
         $transaction->products = implode(", ", $products);
         $transaction->total_price = $total_price;
         $transaction->save();
@@ -216,7 +217,7 @@ class OrderController extends Controller
 
         // Update their balance and set the status to 1 for the returned order
         $purchaser->update(['balance' => ($purchaser->balance + $total_price)]);
-        $transaction->update(['status' => 1]);
+        $transaction->update(['status' => true]);
 
         return redirect()->back()->with('success', 'Successfully returned order #' . $id . ' for ' . $purchaser->full_name);
     }

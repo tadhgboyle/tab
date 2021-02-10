@@ -20,12 +20,12 @@ class Product extends Model
         'deleted' => 'boolean',
         'stock' => 'integer',
         'unlimited_stock' => 'boolean', // stock is never checked
-        'stock_override' => 'boolean', // stock can go negative,
+        'stock_override' => 'boolean', // stock can go negative
         'box_size' => 'integer'
     ];
 
     // Used to check if items in order have enough stock BEFORE using removeStock() to remove it.
-    // If we didnt use this, then stock would be adjusted and then the order would fail, resulting in inaccurate stock.
+    // If we didnt use this, then stock would be adjusted and then the order could fail, resulting in inaccurate stock.
     public function hasStock($quantity): bool
     {
         if ($this->unlimited_stock) {
@@ -79,10 +79,12 @@ class Product extends Model
         foreach ($transactions as $transaction) {
             $products = explode(", ", $transaction->products);
             foreach ($products as $transaction_product) {
-                if (strtok($transaction_product, "*") == $this->id) {
-                    $deserialized_product = OrderController::deserializeProduct($transaction_product, false);
-                    $sold += ($deserialized_product['quantity'] - $deserialized_product['returned']);
+                if (strtok($transaction_product, "*") != $this->id) {
+                    continue;
                 }
+
+                $deserialized_product = OrderController::deserializeProduct($transaction_product, false);
+                $sold += ($deserialized_product['quantity'] - $deserialized_product['returned']);
             }
         }
 

@@ -43,6 +43,7 @@ class Activity extends Model
         if ($this->_current_attendees == null) {
             $this->_current_attendees = DB::table('activity_transactions')->where('activity_id', $this->id)->get('user_id');
         }
+
         return $this->_current_attendees;
     }
 
@@ -62,7 +63,8 @@ class Activity extends Model
             return true;
         }
         
-        return ($this->slots - ($this->getCurrentAttendees()->count() + $count)) >= 0;
+        $current_attendees = $this->getCurrentAttendees()->count();
+        return ($this->slots - ($current_attendees + $count)) >= 0;
     }
 
     public function getPrice(): float 
@@ -76,6 +78,7 @@ class Activity extends Model
         foreach($this->getCurrentAttendees() as $attendee) {
             $users[] = User::find($attendee->user_id);
         }
+        
         return $users;
     }
 

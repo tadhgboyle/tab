@@ -80,7 +80,7 @@ class ProductController extends Controller
 
         DB::table('products')
             ->where('id', $request->product_id)
-            ->update(['name' => $request->name, 'price' => $request->price, 'category' => $request->category, 'stock' => $stock, 'box_size' => $request->box_size ?? -1, 'unlimited_stock' => $unlimited_stock, 'stock_override' => $stock_override, 'pst' => $pst, 'editor_id' => $request->id]);
+            ->update(['name' => $request->name, 'price' => $request->price, 'category' => $request->category, 'stock' => $stock, 'box_size' => $request->box_size ?? -1, 'unlimited_stock' => $unlimited_stock, 'stock_override' => $stock_override, 'pst' => $pst, 'editor_id' => Auth::id()]);
         return redirect()->route('products_list')->with('success', 'Successfully edited ' . $request->name . '.');
     }
 

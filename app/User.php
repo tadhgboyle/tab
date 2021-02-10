@@ -93,6 +93,7 @@ class User extends Authenticatable implements CastsAttributes
         foreach ($activities as $activity) {
             $spent += ($activity->activity_price * $activity->activity_gst); 
         }
+        
         return number_format($spent, 2);
     }
 
@@ -104,7 +105,7 @@ class User extends Authenticatable implements CastsAttributes
 
         $transactions = $this->getTransactions();
         foreach ($transactions as $transaction) {
-            if ($transaction->status == 1) {
+            if ($transaction->status) {
                 $returned += $transaction->total_price;
                 continue;
             }
@@ -112,13 +113,15 @@ class User extends Authenticatable implements CastsAttributes
             $transaction_products = explode(", ", $transaction->products);
             foreach ($transaction_products as $transaction_product) {
                 $product = OrderController::deserializeProduct($transaction_product, false);
-                if ($product['returned'] > 0) {
-                    $tax = $product['gst'];
-                    if ($product['pst'] != "null") {
-                        $tax += ($product['pst'] - 1);
-                    }
-                    $returned += ($product['returned'] * $product['price'] * $tax);
+                if ($product['returned'] < 1) {
+                    continue;
                 }
+
+                $tax = $product['gst'];
+                if ($product['pst'] != "null") {
+                    $tax += ($product['pst'] - 1);
+                }
+                $returned += ($product['returned'] * $product['price'] * $tax);
             }
         }
 

@@ -80,7 +80,7 @@ class UserController extends Controller
             }
             UserLimits::updateOrCreate(
                 ['user_id' => $user->id, 'category' => $category],
-                ['limit_per' => $limit, 'duration' => $duration, 'editor_id' => $request->editor_id]
+                ['limit_per' => $limit, 'duration' => $duration, 'editor_id' => Auth::id()]
             );
         }
         return redirect()->route('users_list')->with('success', 'Created user ' . $request->full_name . '.');
@@ -130,7 +130,7 @@ class UserController extends Controller
             }
             UserLimits::updateOrCreate(
                 ['user_id' => $request->id, 'category' => $category],
-                ['limit_per' => $limit, 'duration' => $duration, 'editor_id' => $request->editor_id]
+                ['limit_per' => $limit, 'duration' => $duration, 'editor_id' => Auth::id()]
             );
         }
 
