@@ -93,12 +93,12 @@ class User extends Authenticatable implements CastsAttributes
     {
         $spent = $this->getTransactions()->sum('total_price');
 
-        $activities = $this->getActivityTransactions();
-        foreach ($activities as $activity) {
-            $spent += ($activity->activity_price * $activity->activity_gst);
+        $activity_transactions = $this->getActivityTransactions();
+        foreach ($activity_transactions as $activity_transaction) {
+            $spent += ($activity_transaction->activity_price * $activity_transaction->activity_gst);
         }
 
-        return number_format($spent, 2);
+        return floatval($spent);
     }
 
     // Find how much a user has returned in total.
@@ -136,13 +136,13 @@ class User extends Authenticatable implements CastsAttributes
             }
         }
 
-        return number_format($returned, 2);
+        return floatval($returned);
     }
 
     // Find how much money a user owes. 
     // Taking their amount spent and subtracting the amount they have returned.
     public function findOwing(): float
     {
-        return number_format($this->findSpent() - $this->findReturned(), 2);
+        return floatval($this->findSpent() - $this->findReturned());
     }
 }

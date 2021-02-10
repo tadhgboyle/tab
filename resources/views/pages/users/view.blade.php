@@ -21,9 +21,9 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
 <p><strong>Role:</strong> {{ $user->role->name }}</p>
 <p><strong>Deleted:</strong> {{ $user->deleted ? 'Yes' : 'No' }}</p>
 <span><strong>Balance:</strong> ${{ number_format($user->balance, 2) }}, </span>
-<span><strong>Total spent:</strong> ${{ $user->findSpent() }}, </span>
-<span><strong>Total returned:</strong> ${{ $user->findReturned() }}, </span>
-<span><strong>Total owing:</strong> ${{ $user->findOwing() }}</span>
+<span><strong>Total spent:</strong> ${{ number_format($user->findSpent(), 2) }}, </span>
+<span><strong>Total returned:</strong> ${{ number_format($user->findReturned(), 2) }}, </span>
+<span><strong>Total owing:</strong> ${{ number_format($user->findOwing(), 2) }}</span>
 
 <br>
 <br>
