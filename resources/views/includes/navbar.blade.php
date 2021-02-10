@@ -1,6 +1,3 @@
-@php
-use \App\Role;
-@endphp
 <nav class="navbar has-shadow">
     <div class="container">
         <div class="navbar-brand">
@@ -9,77 +6,77 @@ use \App\Role;
         <div class="navbar-menu">
             <div class="navbar-start">
                 @auth
-                    @if (Auth::user()->hasPermission('cashier'))
+                    @permission('cashier')
                         <a class="navbar-item @if(isset($page) && $page == 'cashier') is-active @endif" href="{{ route('index') }}">
                             <i class="fas fa-money-bill-wave-alt"></i>&nbsp;Cashier
                         </a>
-                    @endif
-                    @if (Auth::user()->hasPermission('users'))
+                    @endpermission
+                    @permission('users')
                         <div class="navbar-item has-dropdown is-hoverable">
                             <p class="navbar-link"><i class="fas fa-users"></i>&nbsp;Users</p>
                             <div class="navbar-dropdown is-boxed">
-                                @if (Auth::user()->hasPermission('users_list'))
+                                @permission('users_list')
                                     <a class="navbar-item" href="{{ route('users_list') }}">
                                         List
                                     </a>
-                                @endif
-                                @if (Auth::user()->hasPermission('users_manage'))
+                                @endpermission
+                                @permission('users_manage')
                                     <a class="navbar-item" href="{{ route('users_new') }}">
                                         Create
                                     </a>
-                                @endif
+                                @endpermission
                             </div>
                         </div>
-                    @endif
-                    @if (Auth::user()->hasPermission('products'))
+                    @endpermission
+                    @permission('products')
                         <div class="navbar-item has-dropdown is-hoverable">
                             <p class="navbar-link"><i class="fas fa-tag"></i>&nbsp;Products</p>
                             <div class="navbar-dropdown is-boxed">
-                                @if (Auth::user()->hasPermission('products_list'))
+                                @permission('products_list')
                                     <a class="navbar-item" href="{{ route('products_list') }}">
                                         List
                                     </a>
-                                @endif
-                                @if (Auth::user()->hasPermission('products_manage'))
+                                @endpermission
+                                @permission('products_manage')
                                     <a class="navbar-item" href="{{ route('products_new') }}">
                                         Create
                                     </a>
-                                @endif
-                                @if (Auth::user()->hasPermission('products_adjust'))
+                                @endpermission
+                                @permission('products_adjust')
                                     <a class="navbar-item" href="{{ route('products_adjust') }}">
                                         Adjust
                                     </a>
-                                @endif
+                                @endpermission
                             </div>
                         </div>
-                    @endif
-                    @if (Auth::user()->hasPermission('activites'))
+                    @endpermission
+                    @permission('activites')
                         <div class="navbar-item has-dropdown is-hoverable">
                             <p class="navbar-link"><i class="fas fa-calendar-alt"></i>&nbsp;Activities</p>
                             <div class="navbar-dropdown is-boxed">
-                                @if (Auth::user()->hasPermission('activities_list'))
+                                @permission('activities_list')
                                     <a class="navbar-item" href="{{ route('activities_list') }}">
                                         List
                                     </a>
-                                @endif
-                                @if (Auth::user()->hasPermission('activities_manage'))
+                                @endpermission
+                                @permission('activities_manage')
                                     <a class="navbar-item" href="{{ route('activities_new') }}">
                                         Create
                                     </a>
-                                @endif
+                                @endpermission
                             </div>
                         </div>
-                    @endif
-                    @if (Auth::user()->hasPermission('orders_list'))
+                    @endpermission
+                    @permission('orders_list')
                         <a class="navbar-item @if(isset($page) && $page == 'orders') is-active @endif" href="{{ route('orders_list') }}">
                             <i class="fas fa-shopping-basket"></i>&nbsp;Orders
                         </a>
-                    @endif
-                    @if (Auth::user()->hasPermission('statistics'))
+                    @endpermission
+                    @permission('statistics')
                         <a class="navbar-item @if(isset($page) && $page == 'statistics') is-active @endif" href="{{ route('statistics') }}">
                             <i class="fas fa-chart-pie"></i>&nbsp;Statistics
                         </a>     
-                    @endif
+                    @endpermission
                 @endauth
             </div>
 
@@ -87,7 +84,7 @@ use \App\Role;
                 @auth
                     <div class="navbar-item">
                         <div class="field is-grouped">
-                            @if (Auth::user()->hasPermission('settings'))
+                            @permission('settings')
                                 <div class="control">
                                     <a class="button is-warning" href="{{ route('settings') }}">
                                         <span class="icon">
@@ -95,7 +92,7 @@ use \App\Role;
                                         </span>
                                     </a>
                                 </div>
-                            @endif
+                            @endpermission
                             <div class="control">
                                 <a class="button is-primary" href="{{ route('logout') }}">
                                     <span class="icon">
