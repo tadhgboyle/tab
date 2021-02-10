@@ -89,29 +89,27 @@ $users_view = Auth::user()->hasPermission('users_view');
     <div class="column is-5 box">
         <h4 class="title has-text-weight-bold is-4">Category Limits</h4>
 
-        <input type="hidden" name="editor_id" value="{{ Auth::user()->id }}">
-
         @foreach(SettingsController::getInstance()->getCategories() as $category)
-        @if(isset($user->id)) @php $limit_info = UserLimitsController::getInfo($user->id, $category->value) @endphp @endif
-        <div class="field">
-            <label class="label">{{ ucfirst($category->value) }} Limit</label>
-            <div class="control has-icons-left">
-                <span class="icon is-small is-left">
-                    <i class="fas fa-dollar-sign"></i>
-                </span>
-                <input type="number" step="0.01" name="limit[{{ $category->value }}]" class="input" placeholder="Limit" value="{{ isset($user->id) ? number_format($limit_info->limit_per, 2) : '' }}">
+            @if(isset($user->id)) @php $limit_info = UserLimitsController::getInfo($user->id, $category->value) @endphp @endif
+            <div class="field">
+                <label class="label">{{ ucfirst($category->value) }} Limit</label>
+                <div class="control has-icons-left">
+                    <span class="icon is-small is-left">
+                        <i class="fas fa-dollar-sign"></i>
+                    </span>
+                    <input type="number" step="0.01" name="limit[{{ $category->value }}]" class="input" placeholder="Limit" value="{{ isset($user->id) ? number_format($limit_info->limit_per, 2) : '' }}">
+                </div>
+                <div class="control">
+                    <label class="radio">
+                        <input type="radio" name="duration[{{ $category->value }}]" value="0" @if(isset($user->id) && $limit_info->duration == "day") checked @endif>
+                        Day
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="duration[{{ $category->value }}]" value="1" @if(isset($user->id) && $limit_info->duration == "week") checked @endif>
+                        Week
+                    </label>
+                </div>
             </div>
-            <div class="control">
-                <label class="radio">
-                    <input type="radio" name="duration[{{ $category->value }}]" value="0" @if(isset($user->id) && $limit_info->duration == "day") checked @endif>
-                    Day
-                </label>
-                <label class="radio">
-                    <input type="radio" name="duration[{{ $category->value }}]" value="1" @if(isset($user->id) && $limit_info->duration == "week") checked @endif>
-                    Week
-                </label>
-            </div>
-        </div>
         @endforeach
     </div>
     </form>

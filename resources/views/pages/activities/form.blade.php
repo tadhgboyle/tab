@@ -18,7 +18,6 @@ else $start = $activity->start;
         <form action="/activities/{{ is_null($activity) ? 'new' : 'edit' }}" id="product_form" method="POST"
             class="form-horizontal">
             @csrf
-            <input type="hidden" name="id" value="{{ Auth::id() }}">
             <input type="hidden" name="id" id="activity_id" value="{{ request()->route('id') }}">
 
             <div class="field">

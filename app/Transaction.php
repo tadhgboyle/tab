@@ -17,7 +17,7 @@ class Transaction extends Model
     protected $casts = [
         'purchaser_id' => User::class,
         'cashier_id' => User::class,
-        'status' => 'boolean'
+        'status' => 'boolean' // TODO: Rename this to "returned"
     ];
 
     public function checkReturned(): int

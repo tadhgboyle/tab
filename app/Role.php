@@ -84,12 +84,12 @@ class Role extends Model implements CastsAttributes
             return in_array($permissions, $this->permissions);
         } else {
             foreach ($permissions as $permission) {
-                if (!in_array($permission, $this->permissions)) {
-                    return false;
+                if (in_array($permission, $this->permissions)) {
+                    return true;
                 }
             }
             
-            return true;
+            return false;
         }
     }
 }

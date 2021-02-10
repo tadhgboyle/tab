@@ -29,7 +29,6 @@ $product = Product::find(request()->route('id'));
         <form action="/products/{{ is_null($product) ? 'new' : 'edit' }}" id="product_form" method="POST"
             class="form-horizontal">
             @csrf
-            <input type="hidden" name="id" value="{{ Auth::user()->id }}">
             <input type="hidden" name="product_id" id="product_id" value="{{ $product->id ?? null }}">
 
             <div class="field">

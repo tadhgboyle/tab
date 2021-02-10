@@ -19,7 +19,6 @@ if (!is_null($role)) {
             @include('includes.messages')
             <form action="{{ is_null($role) ? route('settings_roles_new') : route('settings_roles_edit_form') }}" method="POST" id="role_form">
                 @csrf
-                <input type="hidden" name="editor_id" value="{{ Auth::user()->id }}">
                 <div class="field">
                     <label class="label">Name<sup style="color: red">*</sup></label>
                     <div class="control">
