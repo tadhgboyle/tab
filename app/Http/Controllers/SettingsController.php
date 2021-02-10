@@ -85,7 +85,7 @@ class SettingsController extends Controller
             return redirect()->back()->withInput()->withErrors($validator);
         }
 
-        // TODO: This is probably not as efficient as it could be...
+        // TODO: This is probably not as efficient as it could be... use updateOrCreate() ?
         DB::table('settings')->where('setting', 'gst')->update(['value' => $request->gst]);
         DB::table('settings')->where('setting', 'pst')->update(['value' => $request->pst]);
         return redirect()->route('settings')->with('success', 'Updated settings.');

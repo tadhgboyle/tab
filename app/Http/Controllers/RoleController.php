@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RoleRequest;
 use App\Role;
-use App\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
-use Validator;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule as ValidationRule;
 
 class RoleController extends Controller
 {
@@ -45,16 +43,8 @@ class RoleController extends Controller
         return $this->_staff_roles;
     }
 
-    public function new(Request $request)
+    public function new(RoleRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|min:2|unique:roles,name',
-            'order' => 'required|numeric',
-        ]);
-        if ($validator->fails()) {
-            return redirect()->back()->withInput()->withErrors($validator);
-        }
-
         $staff = $request->has('staff');
 
         $superuser = false;
@@ -82,20 +72,8 @@ class RoleController extends Controller
         return redirect()->route('settings')->with('success', 'Created role ' . $request->name . '.');
     }
     
-    public function edit(Request $request)
+    public function edit(RoleRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => [
-                'required',
-                'min:2',
-                ValidationRule::unique('roles')->ignore($request->id, 'id')
-            ],
-            'order' => 'required|numeric',
-        ]);
-        if ($validator->fails()) {
-            return redirect()->back()->withInput()->withErrors($validator);
-        }
-
         $staff = $request->has('staff');
 
         $superuser = false;

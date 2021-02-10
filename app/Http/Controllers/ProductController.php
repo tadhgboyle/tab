@@ -2,27 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductRequest;
 use Validator;
 use App\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
 
-    public function new(Request $request)
+    public function new(ProductRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|min:3|unique:products,name',
-            'price' => 'required|numeric',
-            'category' => 'required',
-            'box_size' => 'not_in:0'
-        ]);
-        if ($validator->fails()) {
-            return redirect()->back()->withInput()->withErrors($validator);
-        }
-
         // Box size of -1 means they cannot receive stock via box. Instead must use normal stock
         $box_size = -1;
         if (!empty($request->box_size)) $box_size = $request->box_size;
@@ -50,22 +40,8 @@ class ProductController extends Controller
         return redirect()->route('products_list')->with('success', 'Successfully created ' . $request->name . '.');
     }
 
-    public function edit(Request $request)
+    public function edit(ProductRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => [
-                'required',
-                'min:2',
-                Rule::unique('products')->ignore($request->product_id, 'id')
-            ],
-            'price' => 'required|numeric',
-            'category' => 'required',
-            'box_size' => 'not_in:0'
-        ]);
-        if ($validator->fails()) {
-            return redirect()->back()->withInput()->withErrors($validator);
-        }
-
         $pst = $request->has('pst');
 
         $unlimited_stock = $request->has('unlimited_stock');
