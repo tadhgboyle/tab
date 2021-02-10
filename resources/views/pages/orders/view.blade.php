@@ -1,6 +1,6 @@
 @php
 
-use App\Http\Controllers\OrderController;
+use App\Http\Controllers\TransactionController;
 use App\Product;
 use App\Transaction;
 use App\User;
@@ -54,7 +54,7 @@ $return_order = Auth::user()->hasPermission('orders_return');
                 </thead>
                 <tbody>
                     @foreach($transaction_items as $product)
-                    @php $item_info = OrderController::deserializeProduct($product); @endphp
+                    @php $item_info = TransactionController::deserializeProduct($product); @endphp
                     <tr>
                         <td>
                             <div>{{ $item_info['name'] }}</div>

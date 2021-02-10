@@ -40,25 +40,26 @@ class Role extends Model implements CastsAttributes
     public function getRolesAvailable(Role $compare = null): array
     {
         // TODO: Refractor
-        $roles = array();
-        foreach (RoleController::getInstance()->getRoles() as $role) {
+        $return = array();
+        $roles = RoleController::getInstance()->getRoles();
+        foreach ($roles as $role) {
             if ($compare) {
                 if ($this->id == $role->id) {
                     continue;
                 }
                 if ($this->staff || (!$this->staff && !$role->staff)) {
                     if ($compare->canInteract($role)) {
-                        $roles[] = $role;
+                        $return[] = $role;
                     }
                 }
             } else {
                 if ($this->canInteract($role)) {
-                    $roles[] = $role;
+                    $return[] = $role;
                 }
             }
         }
 
-        return $roles;
+        return $return;
     }
 
     public function canInteract(Role $subject): bool
@@ -80,16 +81,15 @@ class Role extends Model implements CastsAttributes
             return true;
         }
 
-        if (!is_array($permissions)) {
-            return in_array($permissions, $this->permissions);
-        } else {
+        if (is_array($permissions)) {
             foreach ($permissions as $permission) {
                 if (in_array($permission, $this->permissions)) {
                     return true;
                 }
             }
-            
             return false;
+        } else {
+            return in_array($permissions, $this->permissions);
         }
     }
 }

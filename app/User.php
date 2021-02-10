@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Http\Controllers\OrderController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Collection;
@@ -112,7 +112,7 @@ class User extends Authenticatable implements CastsAttributes
 
             $transaction_products = explode(", ", $transaction->products);
             foreach ($transaction_products as $transaction_product) {
-                $product = OrderController::deserializeProduct($transaction_product, false);
+                $product = TransactionController::deserializeProduct($transaction_product, false);
                 if ($product['returned'] < 1) {
                     continue;
                 }

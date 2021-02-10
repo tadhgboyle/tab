@@ -8,7 +8,7 @@ use App\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class OrderController extends Controller
+class TransactionController extends Controller
 {
 
     /**
@@ -41,7 +41,7 @@ class OrderController extends Controller
     {
         $product_id = strtok($product, "*");
         if ($full) {
-            $product_object = Product::where('id', $product_id)->select('name', 'category')->get()[0];
+            $product_object = Product::find($product_id);
             $product_name = $product_object->name;
             $product_category = $product_object->category;
         }
