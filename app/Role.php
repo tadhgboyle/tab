@@ -9,6 +9,7 @@ use Rennokki\QueryCache\Traits\QueryCacheable;
 
 class Role extends Model implements CastsAttributes
 {
+    
     use QueryCacheable;
 
     protected $cacheFor = 180;
@@ -25,7 +26,7 @@ class Role extends Model implements CastsAttributes
         'staff' => 'boolean', // determine if they should ever have a password to login with
         'permissions' => 'array', // decode json to an array automatically
         'deleted' => 'boolean'
-    ]; 
+    ];
 
     public function get($model, string $key, $value, array $attributes)
     {
@@ -67,11 +68,11 @@ class Role extends Model implements CastsAttributes
         if ($this->superuser) {
             return true;
         }
-        
+
         if ($subject->superuser) {
             return false;
         }
-        
+
         return $this->order < $subject->order;
     }
 

@@ -9,6 +9,7 @@ use Rennokki\QueryCache\Traits\QueryCacheable;
 
 class Product extends Model
 {
+    
     use QueryCacheable;
 
     protected $cacheFor = 180;
@@ -90,5 +91,4 @@ class Product extends Model
 
         return $sold;
     }
-
 }

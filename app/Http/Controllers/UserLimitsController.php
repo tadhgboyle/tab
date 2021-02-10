@@ -14,19 +14,20 @@ class UserLimitsController extends Controller
     public static function getInfo($user_id, $category)
     {
         $info = UserLimits::where([['user_id', $user_id], ['category', $category]])->select('duration', 'limit_per')->get()[0];
-        $object = new stdClass;
+        $return = new stdClass;
         if (isset($info->duration)) {
-            $object->duration = $info->duration == 0 ? 'day' : 'week';
+            $return->duration = $info->duration == 0 ? 'day' : 'week';
         } else {
-            $object->duration = 'week';
+            $return->duration = 'week';
         }
         if (isset($info->limit_per)) {
-            $object->limit_per = $info->limit_per;
+            $return->limit_per = $info->limit_per;
         } else {
             // Usually this will happen when we make a new category after a user was made
-            $object->limit_per = -1;
+            $return->limit_per = -1;
         }
-        return $object;
+
+        return $return;
     }
 
     public static function findSpent(int $user_id, string $category, object $info)
@@ -34,9 +35,8 @@ class UserLimitsController extends Controller
         // First, if they have unlimited money for this category, let's grab all their transactions
         if ($info->limit_per == -1) {
             $transactions = Transaction::where([['purchaser_id', $user_id], ['status', 0]])->get();
-        }
-        // Determine how far back to grab transactions from
-        else {
+        } else {
+            // Determine how far back to grab transactions from
             $transactions = Transaction::where([['created_at', '>=', Carbon::now()->subDays($info->duration == 'day' ? 1 : 7)->toDateTimeString()], ['purchaser_id', $user_id], ['status', 0]])->get();
         }
 
@@ -50,7 +50,9 @@ class UserLimitsController extends Controller
                 if (strtolower($category) == Product::find(strtok($transaction_product, "*"))->category) {
                     $item_info = TransactionController::deserializeProduct($transaction_product, false);
                     $tax_percent = $item_info['gst'];
-                    if ($item_info['pst'] != "null") $tax_percent += $item_info['pst'] - 1;
+                    if ($item_info['pst'] != "null") {
+                        $tax_percent += $item_info['pst'] - 1;
+                    }
                     $quantity_available = $item_info['quantity'] - $item_info['returned'];
                     $category_spent += ($item_info['price'] * $quantity_available) * $tax_percent;
                 }
@@ -59,5 +61,4 @@ class UserLimitsController extends Controller
 
         return $category_spent;
     }
-    
 }

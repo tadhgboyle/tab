@@ -11,10 +11,14 @@ use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable implements CastsAttributes
 {
+    
     use QueryCacheable;
 
     protected $cacheFor = 180;
-    protected $fillable = ['balance'];
+
+    protected $fillable = [
+        'balance'
+    ];
 
     protected $casts = [
         'name' => 'string',
@@ -23,6 +27,9 @@ class User extends Authenticatable implements CastsAttributes
         'role' => Role::class,
         'deleted' => 'boolean'
     ];
+
+    private ?Collection $_activity_transactions = null;
+    private ?Collection $_transactions = null;
 
     // TODO: add a "root" user? only they can edit superadmin roles
 
@@ -62,15 +69,12 @@ class User extends Authenticatable implements CastsAttributes
         return $this->role->hasPermission($permissions);
     }
 
-    private ?Collection $_activity_transactions = null;
-    private ?Collection $_transactions = null;
-    
     private function getActivityTransactions(): Collection
     {
         if ($this->_activity_transactions == null) {
             $this->_activity_transactions = DB::table('activity_transactions')->where('user_id', $this->id)->get();
         }
-        
+
         return $this->_activity_transactions;
     }
 
@@ -91,9 +95,9 @@ class User extends Authenticatable implements CastsAttributes
 
         $activities = $this->getActivityTransactions();
         foreach ($activities as $activity) {
-            $spent += ($activity->activity_price * $activity->activity_gst); 
+            $spent += ($activity->activity_price * $activity->activity_gst);
         }
-        
+
         return number_format($spent, 2);
     }
 
@@ -126,7 +130,7 @@ class User extends Authenticatable implements CastsAttributes
         }
 
         $activity_transactions = $this->getActivityTransactions();
-        foreach($activity_transactions as $transaction) {
+        foreach ($activity_transactions as $transaction) {
             if ($transaction->status) {
                 $returned += ($transaction->activity_price * $transaction->activity_gst);
             }

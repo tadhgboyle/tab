@@ -13,6 +13,9 @@ class RoleController extends Controller
 
     private static ?RoleController $_instance = null;
 
+    private ?Collection $_roles = null;
+    private ?array $_staff_roles = null;
+
     public static function getInstance(): RoleController
     {
         if (self::$_instance == null) {
@@ -20,10 +23,6 @@ class RoleController extends Controller
         }
         return self::$_instance;
     }
-
-    private ?Collection $_roles = null;
-    private ?array $_staff_roles = null;
-
 
     public function getRoles(string $order = 'DESC'): object
     {
@@ -71,7 +70,7 @@ class RoleController extends Controller
 
         return redirect()->route('settings')->with('success', 'Created role ' . $request->name . '.');
     }
-    
+
     public function edit(RoleRequest $request)
     {
         $staff = $request->has('staff');
@@ -104,7 +103,7 @@ class RoleController extends Controller
         $old_role = Role::find($request->old_role);
         if (!$request->has('new_role')) {
             $old_role->update(['deleted' => true]);
-            
+
             $message = 'Deleted role ' . $old_role->name . '.';
         } else {
             $new_role = Role::find($request->new_role);
@@ -128,10 +127,11 @@ class RoleController extends Controller
         return redirect()->route('settings')->with('success', $message);
     }
 
-    public function order() {
+    public function order()
+    {
 
         $roles = json_decode(\Request::get('roles'))->roles;
-        
+
         $i = 1;
         foreach ($roles as $role) {
             Role::find($role)->update(['order' => $i]);

@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Controllers\RoleController;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule as ValidationRule;
 
 class UserRequest extends FormRequest
@@ -29,12 +31,12 @@ class UserRequest extends FormRequest
             'full_name' => [
                 'required',
                 'min:4',
-                'unique:users'
+                ValidationRule::unique('users')
             ],
             'username' => [
                 'required',
                 'min:3',
-                'unique:users'
+                ValidationRule::unique('users')
             ],
             'balance' => [
                 'nullable'
