@@ -3,7 +3,7 @@
 use App\Product;
 use App\User;
 use App\Role;
-use App\Http\Controllers\SettingsController;
+use App\Helpers\SettingsHelper;
 $user = User::find(request()->route('id'));
 if ($user == null) return redirect()->route('index')->with('error', 'Invalid user.')->send();
 $users_view = Auth::user()->hasPermission('users_view');
@@ -22,8 +22,8 @@ $users_view = Auth::user()->hasPermission('users_view');
             <form method="post" id="order" action="{{ route('orders_new_form') }}">
                 @csrf
                 <input type="hidden" name="purchaser_id" value="{{ request()->route('id') }}">
-                <input type="hidden" id="current_gst" value="{{ SettingsController::getInstance()->getGst() }}">
-                <input type="hidden" id="current_pst" value="{{ SettingsController::getInstance()->getPst() }}">
+                <input type="hidden" id="current_gst" value="{{ SettingsHelper::getInstance()->getGst() }}">
+                <input type="hidden" id="current_pst" value="{{ SettingsHelper::getInstance()->getPst() }}">
                 <input type="hidden" id="purchaser_balance" value="{{ $user->balance }}">
 
                 <table id="product_list">

@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Http\Controllers\RoleController;
+use App\Helpers\RoleHelper;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 use Rennokki\QueryCache\Traits\QueryCacheable;
@@ -42,7 +42,7 @@ class Role extends Model implements CastsAttributes
     {
         // TODO: Refractor
         $return = array();
-        $roles = RoleController::getInstance()->getRoles();
+        $roles = RoleHelper::getInstance()->getRoles();
         foreach ($roles as $role) {
             if ($compare) {
                 if ($this->id == $role->id) {

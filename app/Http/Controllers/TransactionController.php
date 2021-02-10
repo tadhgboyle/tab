@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\SettingsHelper;
 use App\User;
 use App\Product;
 use App\Transaction;
@@ -100,7 +101,7 @@ class TransactionController extends Controller
         $total_price = 0;
         $quantity = 1;
         $product_metadata = $pst_metadata = "";
-        $total_tax = SettingsController::getInstance()->getGst();
+        $total_tax = SettingsHelper::getInstance()->getGst();
 
         // Loop each product. Serialize it, and add it's cost to the transaction total
         foreach ($request->product as $product) {
@@ -119,8 +120,8 @@ class TransactionController extends Controller
                 }
 
                 if ($product_info->pst) {
-                    $total_tax = ($total_tax + SettingsController::getInstance()->getPst()) - 1;
-                    $pst_metadata = SettingsController::getInstance()->getPst();
+                    $total_tax = ($total_tax + SettingsHelper::getInstance()->getPst()) - 1;
+                    $pst_metadata = SettingsHelper::getInstance()->getPst();
                 } else {
                     $pst_metadata = "null";
                 }
@@ -130,12 +131,12 @@ class TransactionController extends Controller
                     array_push($transaction_categories, $product_info->category);
                 }
 
-                $product_metadata = self::serializeProduct($product, $quantity, $product_info->price, SettingsController::getInstance()->getGst(), $pst_metadata, 0);
+                $product_metadata = self::serializeProduct($product, $quantity, $product_info->price, SettingsHelper::getInstance()->getGst(), $pst_metadata, 0);
             }
 
             array_push($products, $product_metadata);
             $total_price += (($product_info->price * $quantity) * $total_tax);
-            $total_tax = SettingsController::getInstance()->getGst();
+            $total_tax = SettingsHelper::getInstance()->getGst();
         }
 
         $purchaser = User::find($request->purchaser_id);
