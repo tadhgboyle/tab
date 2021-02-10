@@ -1,7 +1,7 @@
 @php
 
 use App\Product;
-use App\Http\Controllers\UserLimitsController;
+use App\Helpers\UserLimitsHelper;
 @endphp
 @extends('layouts.default')
 @section('content')

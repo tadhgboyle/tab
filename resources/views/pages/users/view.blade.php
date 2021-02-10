@@ -5,7 +5,7 @@ use App\User;
 use App\Role;
 use App\Activity;
 use App\Helpers\SettingsHelper;
-use App\Http\Controllers\UserLimitsController;
+use App\Helpers\UserLimitsHelper;
 use Carbon\Carbon;
 use App\Http\Controllers\ActivityController;
 
@@ -102,10 +102,10 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
                     <tbody>
                         @foreach(SettingsHelper::getInstance()->getCategories() as $category)
                             @php
-                            $info = UserLimitsController::getInfo($user->id, $category->value);
+                            $info = UserLimitsHelper::getInfo($user->id, $category->value);
                             $category_limit = $info->limit_per;
                             $category_duration = $info->duration;
-                            $category_spent = UserLimitsController::findSpent($user->id, $category->value, $info);
+                            $category_spent = UserLimitsHelper::findSpent($user->id, $category->value, $info);
                             @endphp
                             <tr>
                                 <td>

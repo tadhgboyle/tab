@@ -97,7 +97,6 @@ class RoleController extends Controller
 
     public function order()
     {
-
         $roles = json_decode(\Request::get('roles'))->roles;
 
         $i = 1;

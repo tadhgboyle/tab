@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class ActivityController extends Controller
 {
+    
     public function new(ActivityRequest $request)
     {
         if (Carbon::parse($request->start)->gte($request->end)) {
