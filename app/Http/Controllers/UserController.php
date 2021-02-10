@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\RoleHelper;
 use App\Http\Requests\UserRequest;
 use App\Role;
 use Auth;
@@ -41,7 +42,7 @@ class UserController extends Controller
         $user->balance = $balance;
         $user->role = $request->role;
 
-        if (in_array($request->role, array_column(RoleController::getInstance()->getStaffRoles(), 'name'))) {
+        if (in_array($request->role, array_column(RoleHelper::getInstance()->getStaffRoles(), 'name'))) {
             $user->password = bcrypt($request->password);
         }
 
@@ -76,7 +77,7 @@ class UserController extends Controller
         }
 
         $new_role = Role::find($request->role)->name;
-        $staff_roles = array_column(RoleController::getInstance()->getStaffRoles(), 'name');
+        $staff_roles = array_column(RoleHelper::getInstance()->getStaffRoles(), 'name');
 
         // Update their category limits
         foreach ($request->limit as $category => $limit) {

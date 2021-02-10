@@ -1,7 +1,6 @@
 @php
-
-use App\Http\Controllers\SettingsController;
-use App\Http\Controllers\RoleController;
+use App\Helpers\SettingsHelper;
+use App\Helpers\RoleHelper;
 use App\Role;
 $manage_general = Auth::user()->hasPermission('settings_general');
 $manage_roles = Auth::user()->hasPermission('settings_roles_manage');
@@ -26,7 +25,7 @@ $manage_categories = Auth::user()->hasPermission('settings_categories_manage');
                         <span class="icon is-small is-left">
                             <i class="fas fa-percent"></i>
                         </span>
-                        <input type="number" step="0.01" name="gst" class="input" value="{{ SettingsController::getInstance()->getGst() }}">
+                        <input type="number" step="0.01" name="gst" class="input" value="{{ SettingsHelper::getInstance()->getGst() }}">
                     </div>
                 </div>
 
@@ -36,7 +35,7 @@ $manage_categories = Auth::user()->hasPermission('settings_categories_manage');
                         <span class="icon is-small is-left">
                             <i class="fas fa-percent"></i>
                         </span>
-                        <input type="number" step="0.01" name="pst" class="input" value="{{ SettingsController::getInstance()->getPst() }}">
+                        <input type="number" step="0.01" name="pst" class="input" value="{{ SettingsHelper::getInstance()->getPst() }}">
                     </div>
                 </div>
 
@@ -71,7 +70,7 @@ $manage_categories = Auth::user()->hasPermission('settings_categories_manage');
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach(SettingsController::getInstance()->getCategories() as $category)
+                        @foreach(SettingsHelper::getInstance()->getCategories() as $category)
                         <tr>
                             <td>
                                 <div>{{ ucfirst($category->value) }}</div>
@@ -118,7 +117,7 @@ $manage_categories = Auth::user()->hasPermission('settings_categories_manage');
                     </tr>
                 </thead>
                 <tbody id="sortable">
-                    @foreach(RoleController::getInstance()->getRoles('ASC') as $role)
+                    @foreach(RoleHelper::getInstance()->getRoles('ASC') as $role)
                     <tr data-id="{{ $role->id }}">
                         <td>
                             <div>{{ $role->name }}</div>

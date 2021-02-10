@@ -2,8 +2,8 @@
 
 namespace App\Charts;
 
+use App\Helpers\SettingsHelper;
 use App\Product;
-use App\Http\Controllers\SettingsController;
 use ConsoleTVs\Charts\BaseChart;
 use Illuminate\Http\Request;
 use Chartisan\PHP\Chartisan;
@@ -16,7 +16,7 @@ class ItemSalesChart extends BaseChart
         $sales = array();
 
         $products = Product::where('deleted', false)->get();
-        $stats_time = SettingsController::getInstance()->getStatsTime();
+        $stats_time = SettingsHelper::getInstance()->getStatsTime();
         foreach ($products as $product) {
             $sold = $product->findSold($stats_time);
             if ($sold < 1) {

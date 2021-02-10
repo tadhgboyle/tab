@@ -1,7 +1,7 @@
 @php
 
 use App\Http\Controllers\UserLimitsController;
-use App\Http\Controllers\SettingsController;
+use App\Helpers\SettingsHelper;
 use App\User;
 use App\Role;
 $user = User::find(request()->route('id'));
@@ -89,7 +89,7 @@ $users_view = Auth::user()->hasPermission('users_view');
     <div class="column is-5 box">
         <h4 class="title has-text-weight-bold is-4">Category Limits</h4>
 
-        @foreach(SettingsController::getInstance()->getCategories() as $category)
+        @foreach(SettingsHelper::getInstance()->getCategories() as $category)
             @if(isset($user->id)) @php $limit_info = UserLimitsController::getInfo($user->id, $category->value) @endphp @endif
             <div class="field">
                 <label class="label">{{ ucfirst($category->value) }} Limit</label>

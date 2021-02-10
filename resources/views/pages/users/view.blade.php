@@ -4,7 +4,7 @@ use App\Http\Controllers\TransactionController;
 use App\User;
 use App\Role;
 use App\Activity;
-use App\Http\Controllers\SettingsController;
+use App\Helpers\SettingsHelper;
 use App\Http\Controllers\UserLimitsController;
 use Carbon\Carbon;
 use App\Http\Controllers\ActivityController;
@@ -100,7 +100,7 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach(SettingsController::getInstance()->getCategories() as $category)
+                        @foreach(SettingsHelper::getInstance()->getCategories() as $category)
                             @php
                             $info = UserLimitsController::getInfo($user->id, $category->value);
                             $category_limit = $info->limit_per;

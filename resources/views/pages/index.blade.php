@@ -1,7 +1,6 @@
 @php
 
 use App\User;
-use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Auth;
 @endphp
 @extends('layouts.default', ['page' => 'cashier'])

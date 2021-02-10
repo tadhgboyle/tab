@@ -2,8 +2,8 @@
 
 namespace App\Charts;
 
+use App\Helpers\SettingsHelper;
 use App\Transaction;
-use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Carbon;
 use ConsoleTVs\Charts\BaseChart;
 use Illuminate\Http\Request;
@@ -14,8 +14,8 @@ class PurchaseHistoryChart extends BaseChart
 
     public function handler(Request $request): Chartisan
     {
-        $normal_data = Transaction::where([['created_at', '>=', Carbon::now()->subDays(SettingsController::getInstance()->getStatsTime())->toDateTimeString()], ['status', 0]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
-        $returned_data = Transaction::where([['created_at', '>=', Carbon::now()->subDays(SettingsController::getInstance()->getStatsTime())->toDateTimeString()], ['status', 1]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
+        $normal_data = Transaction::where([['created_at', '>=', Carbon::now()->subDays(SettingsHelper::getInstance()->getStatsTime())->toDateTimeString()], ['status', 0]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
+        $returned_data = Transaction::where([['created_at', '>=', Carbon::now()->subDays(SettingsHelper::getInstance()->getStatsTime())->toDateTimeString()], ['status', 1]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
 
         $normal_orders = $returned_orders = $labels = array();
 

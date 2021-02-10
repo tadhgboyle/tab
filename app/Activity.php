@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Http\Controllers\SettingsController;
+use App\Helpers\SettingsHelper;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -68,7 +68,7 @@ class Activity extends Model
 
     public function getPrice(): float
     {
-        return ($this->price * SettingsController::getInstance()->getGst());
+        return ($this->price * SettingsHelper::getInstance()->getGst());
     }
 
     public function getAttendees(): array
@@ -118,7 +118,7 @@ class Activity extends Model
             'cashier_id' => Auth::id(),
             'activity_id' => $this->id,
             'activity_price' => $this->price,
-            'activity_gst' => SettingsController::getInstance()->getGst(),
+            'activity_gst' => SettingsHelper::getInstance()->getGst(),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ]);

@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Controllers\RoleController;
+use App\Helpers\RoleHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -49,7 +49,7 @@ class UserRequest extends FormRequest
                 'nullable',
                 'confirmed',
                 'min:6',
-                ValidationRule::requiredIf(in_array($request->role, array_column(RoleController::getInstance()->getStaffRoles(), 'id'))),
+                ValidationRule::requiredIf(in_array($request->role, array_column(RoleHelper::getInstance()->getStaffRoles(), 'id'))),
             ]
         ];
     }
