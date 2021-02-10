@@ -38,6 +38,7 @@ class TransactionController extends Controller
      * Pst: 1.05
      * Returned: Quantity returned -- Default 0
      */
+    // TODO: Create App\Helpers\ProductHelper and move this + serializer to it
     public static function deserializeProduct(string $product, bool $full = true): array
     {
         $product_id = strtok($product, "*");
@@ -148,14 +149,14 @@ class TransactionController extends Controller
         $category_spent = $category_limit = 0.00;
         // Loop categories within this transaction
         foreach ($transaction_categories as $category) {
-            $limit_info = UserLimitsController::getInfo($request->purchaser_id, $category);
+            $limit_info = UserLimitsHelper::getInfo($request->purchaser_id, $category);
             $category_limit = $limit_info->limit_per;
             // Skip this category if they have unlimited. Saves time querying
             if ($category_limit == -1) {
                 continue;
             }
 
-            $category_spent = $category_spent_orig = UserLimitsController::findSpent($request->purchaser_id, $category, $limit_info);
+            $category_spent = $category_spent_orig = UserLimitsHelper::findSpent($request->purchaser_id, $category, $limit_info);
 
             // Loop all products in this transaction. If the product's category is the current one in the above loop, add it's price to category spent
             foreach ($products as $product) {
