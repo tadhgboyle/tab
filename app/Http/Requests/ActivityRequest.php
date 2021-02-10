@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule as ValidationRule;
 
 class ActivityRequest extends FormRequest
 {
@@ -28,7 +29,7 @@ class ActivityRequest extends FormRequest
                 'required',
                 'min:3',
                 'max:255',
-                'unique:activities'
+                ValidationRule::unique('activities')
             ],
             'location' => [
                 'min:3',
@@ -43,7 +44,7 @@ class ActivityRequest extends FormRequest
             'slots' => [
                 'num:1',
                 'numeric',
-                'required_if:unlimited_slots,0',
+                ValidationRule::requiredIf($this->get('unlimited_slots') == 0)
             ],
             'price' => [
                 'required',

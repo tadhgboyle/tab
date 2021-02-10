@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule as ValidationRule;
 
 class RoleRequest extends FormRequest
 {
@@ -27,7 +28,7 @@ class RoleRequest extends FormRequest
             'name' => [
                 'required',
                 'min:2',
-                'unique:roles'
+                ValidationRule::unique('roles')
             ],
             'order' => [
                 'required',

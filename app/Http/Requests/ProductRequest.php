@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule as ValidationRule;
 
 class ProductRequest extends FormRequest
 {
@@ -27,7 +28,7 @@ class ProductRequest extends FormRequest
             'name' => [
                 'required',
                 'min:3',
-                'unique:products'
+                ValidationRule::unique('products')
             ],
             'price' => [
                 'required',
@@ -37,7 +38,7 @@ class ProductRequest extends FormRequest
                 'required'
             ],
             'box_size' => [
-                'not_in:0'
+                ValidationRule::notIn(0)
             ]
         ];
     }

@@ -93,7 +93,7 @@ class ProductController extends Controller
                 return redirect()->back()->with('error', 'Please specify how much stock to add to ' . $product->name . '.');
             } else if ($request->adjust_box == 0) {
                 return redirect()->back()->with('error', 'Please specify how many boxes or stock to add to ' . $product->name . '.');
-            } 
+            }
         }
 
         $product->adjustStock($adjust_stock);

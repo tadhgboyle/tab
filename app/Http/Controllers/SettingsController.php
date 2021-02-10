@@ -10,7 +10,13 @@ use Illuminate\Database\Eloquent\Collection;
 
 class SettingsController extends Controller
 {
+
     private static ?SettingsController $_instance = null;
+
+    private ?float $_gst = null;
+    private ?float $_pst = null;
+    private ?int $_stats_time = null;
+    private ?Collection $_categories = null;
 
     public static function getInstance(): SettingsController
     {
@@ -20,11 +26,6 @@ class SettingsController extends Controller
 
         return self::$_instance;
     }
-
-    private ?float $_gst = null;
-    private ?float $_pst = null;
-    private ?int $_stats_time = null;
-    private ?Collection $_categories = null;
 
     public function getGst(): float
     {

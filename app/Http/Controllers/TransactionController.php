@@ -26,7 +26,7 @@ class TransactionController extends Controller
     {
         return $id . "*" . $quantity . "$" . $price . "G" . $gst . "P" . $pst . "R" . $returned;
     }
-    
+
     /**
      * Example serialized product:
      * 3*5$1.45G1.07P1.05R0
@@ -153,7 +153,7 @@ class TransactionController extends Controller
             if ($category_limit == -1) {
                 continue;
             }
-            
+
             $category_spent = $category_spent_orig = UserLimitsController::findSpent($request->purchaser_id, $category, $limit_info);
 
             // Loop all products in this transaction. If the product's category is the current one in the above loop, add it's price to category spent
@@ -272,10 +272,9 @@ class TransactionController extends Controller
                 return redirect()->back()->with('success', 'Successfully returned x1 ' . $order_product['name'] . ' for order #' . $order_id . '.');
             }
         }
-        
+
         if ($found === false) {
             return redirect()->back()->with('error', 'That item was not in the original order.');
         }
     }
-
 }

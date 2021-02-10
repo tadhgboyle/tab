@@ -65,11 +65,13 @@ class ActivityController extends Controller
         return redirect()->route('activities_list')->with('success', 'Deleted activity ' . $activity->name . '.');
     }
 
-    public function list() {
+    public function list()
+    {
         return view('pages.activities.list', ['activities' => self::getAll()]);
     }
 
-    public function view($id) {
+    public function view($id)
+    {
         $activity = Activity::find($id);
 
         if ($activity == null) {
@@ -78,14 +80,17 @@ class ActivityController extends Controller
 
         $activities_manage = Auth::user()->role->hasPermission('activities_manage');
 
-        return view('pages.activities.view', [
-            'activity' => $activity, 
-            'activities_manage' => $activities_manage, 
-            'can_register' => !strpos($activity->getStatus(), 'Over') && $activities_manage && $activity->hasSlotsAvailable()]
+        return view(
+            'pages.activities.view',
+            [
+                'activity' => $activity,
+                'activities_manage' => $activities_manage,
+                'can_register' => !strpos($activity->getStatus(), 'Over') && $activities_manage && $activity->hasSlotsAvailable()
+            ]
         );
     }
 
-    public static function getAll() 
+    public static function getAll()
     {
         $activities = Activity::where('deleted', false)->get(['id', 'name', 'start', 'end']);
         $return = array();
@@ -120,28 +125,30 @@ class ActivityController extends Controller
         return $return;
     }
 
-    public static function ajaxInit() {
+    public static function ajaxInit()
+    {
         $users = User::where([['full_name', 'LIKE', '%' . \Request::get('search') . '%'], ['deleted', false]])->limit(5)->get();
 
         if (count($users)) {
             $activity = Activity::find(\Request::get('activity'));
             $output = '';
             foreach ($users as $key => $user) {
-                $output .= 
-                '<tr>' .
-                    '<td>' . $user->full_name . '</td>' . 
+                $output .=
+                    '<tr>' .
+                    '<td>' . $user->full_name . '</td>' .
                     '<td>$' . number_format($user->balance, 2) . '</td>' .
                     (($user->balance < $activity->getPrice() || $activity->isAttending($user)) ?
-                    '<td><button class="button is-success is-small" disabled>Add</button></td>' :
-                    '<td><a href="' . route('activities_user_add', [$activity->id, $user->id]) . '" class="button is-success is-small">Add</a></td>') . 
-                '</tr>';
+                        '<td><button class="button is-success is-small" disabled>Add</button></td>' :
+                        '<td><a href="' . route('activities_user_add', [$activity->id, $user->id]) . '" class="button is-success is-small">Add</a></td>') .
+                    '</tr>';
             }
         }
 
         return $output;
     }
 
-    public static function registerUser() {
+    public static function registerUser()
+    {
         $activity = Activity::find(Route::current()->parameter('id'));
         $user = User::find(Route::current()->parameter('user'));
         if ($activity->registerUser($user)) {

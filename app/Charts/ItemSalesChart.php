@@ -10,6 +10,7 @@ use Chartisan\PHP\Chartisan;
 
 class ItemSalesChart extends BaseChart
 {
+
     public function handler(Request $request): Chartisan
     {
         $sales = array();
@@ -25,7 +26,7 @@ class ItemSalesChart extends BaseChart
             array_push($sales, ['name' => $product->name, 'sold' => $sold]);
         }
 
-        uasort($sales, fn($a, $b) => $a['sold'] > $b['sold'] ? -1 : 1);
+        uasort($sales, fn ($a, $b) => $a['sold'] > $b['sold'] ? -1 : 1);
 
         return Chartisan::build()
             ->labels(array_column($sales, 'name'))

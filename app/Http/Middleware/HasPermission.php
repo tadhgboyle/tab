@@ -21,5 +21,4 @@ class HasPermission
 
         return redirect()->route('index')->with('error', "You do not have permission to access that page.");
     }
-    
 }

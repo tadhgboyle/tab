@@ -13,11 +13,10 @@ use Rennokki\QueryCache\Traits\QueryCacheable;
 
 class Activity extends Model
 {
+    
     use QueryCacheable;
 
     protected $cacheFor = 180;
-
-    protected $fillable = ['attendees'];
 
     protected $casts = [
         'name' => 'string',
@@ -47,7 +46,7 @@ class Activity extends Model
         return $this->_current_attendees;
     }
 
-    public function slotsAvailable(): int 
+    public function slotsAvailable(): int
     {
         if ($this->unlimited_slots) {
             return -1;
@@ -57,17 +56,17 @@ class Activity extends Model
         return ($this->slots - $current_attendees);
     }
 
-    public function hasSlotsAvailable(int $count = 1): bool 
+    public function hasSlotsAvailable(int $count = 1): bool
     {
         if ($this->unlimited_slots) {
             return true;
         }
-        
+
         $current_attendees = $this->getCurrentAttendees()->count();
         return ($this->slots - ($current_attendees + $count)) >= 0;
     }
 
-    public function getPrice(): float 
+    public function getPrice(): float
     {
         return ($this->price * SettingsController::getInstance()->getGst());
     }
@@ -75,19 +74,19 @@ class Activity extends Model
     public function getAttendees(): array
     {
         $users = array();
-        foreach($this->getCurrentAttendees() as $attendee) {
+        foreach ($this->getCurrentAttendees() as $attendee) {
             $users[] = User::find($attendee->user_id);
         }
-        
+
         return $users;
     }
 
-    public function isAttending(User $user): bool 
+    public function isAttending(User $user): bool
     {
         return $this->getCurrentAttendees()->contains('user_id', $user->id);
     }
 
-    public function getStatus(): string 
+    public function getStatus(): string
     {
         if (Carbon::parse($this->end)->isPast()) {
             return "<span class=\"tag is-danger is-medium\">Over</span>";
@@ -98,7 +97,7 @@ class Activity extends Model
         }
     }
 
-    public function registerUser(User $user): bool 
+    public function registerUser(User $user): bool
     {
         if ($this->isAttending($user)) {
             return false;
@@ -126,5 +125,4 @@ class Activity extends Model
 
         return true;
     }
-
 }
