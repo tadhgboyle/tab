@@ -92,7 +92,6 @@ Documentation (in the form of a printable user handbook) is being written.
 - Built in Activity category
 - Repeating activities. When they create activity, ask if repeated daily, weekly, monthly. Create more Activity rows for each day in the duration
     - If repeating activity, add a column (nullable), for root activity, the ID of the original activity it is duplicating
-- Categories should use an ID, and be serialized into each order product incase they are deleted.
 - Disable submit button when anything goes wrong *(Remaining: Stock, Categories)* 
     - Then on the backend, if they somehow bypass the disabled submit button: on errors during order, return back with their input + quantities
 - Rework how to select items and quantities. Right now it is somewhat not intuitive. New system:
@@ -127,6 +126,7 @@ Documentation (in the form of a printable user handbook) is being written.
 
 ## Issues/Bugs:
 - https://youtu.be/ShrS3HXwzPg Implement some of these things
+- Categories should use an ID, and be serialized into each order product incase they are deleted.
 - Dont import classes in views, use controllers to return views instead.
 - (Intermittent) When an error happens on order screen, it returns back with selection, but when you unselect a box it all gets NaN
 

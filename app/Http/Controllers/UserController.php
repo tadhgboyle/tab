@@ -2,39 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserRequest;
 use App\Role;
-use Validator;
 use Auth;
 use App\User;
 use App\UserLimits;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule as ValidationRule;
 
 class UserController extends Controller
 {
-
-    public function new(Request $request)
+    
+    public function new(UserRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'full_name' => 'required|min:4|unique:users,full_name',
-            'username' => 'nullable|min:3|unique:users,username',
-            'balance' => 'nullable',
-            'role' => [
-                'required',
-                ValidationRule::in(array_column(Auth::user()->role->getRolesAvailable(), 'id'))
-            ],
-            'password' => [
-                'nullable',
-                'confirmed',
-                'min:6',
-                ValidationRule::requiredIf(in_array($request->role, array_column(RoleController::getInstance()->getStaffRoles(), 'id'))),
-            ]
-        ]);
-        if ($validator->fails()) {
-            return redirect()->route('users_new')->withInput()->withErrors($validator);
-        }
-
         // Create a new User object and hash it's password if required by their role
         $user = new User();
         $user->full_name = $request->full_name;
@@ -74,8 +53,9 @@ class UserController extends Controller
             // Default to limit per day rather than week if not specified
             empty($request->duration[$category]) ? $duration = 0 : $duration = $request->duration[$category];
             // Default to unlimited limit if not specified
-            if (empty($limit)) $limit = -1;
-            else if ($limit < -1) {
+            if (empty($limit)) {
+                $limit = -1;
+            } else if ($limit < -1) {
                 return redirect()>back()->with('error', 'Limit must be -1 or above for ' . ucfirst($category) . '. (-1 means no limit)')->withInput($request->all());
             }
             UserLimits::updateOrCreate(
@@ -86,29 +66,8 @@ class UserController extends Controller
         return redirect()->route('users_list')->with('success', 'Created user ' . $request->full_name . '.');
     }
 
-    public function edit(Request $request)
+    public function edit(UserRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'full_name' => [
-                'required',
-                'min:4',
-                ValidationRule::unique('users')->ignore($request->id, 'id')
-            ],
-            'username' => [
-                'required',
-                'min:3',
-                ValidationRule::unique('users')->ignore($request->id, 'id')
-            ],
-            'balance' => 'required|numeric',
-            'role' => [
-                'required',
-                ValidationRule::in(array_column(Auth::user()->role->getRolesAvailable(), 'id'))
-            ],
-        ]);
-        if ($validator->fails()) {
-            return redirect()->back()->withInput()->withErrors($validator);
-        }
-
         $password = null;
         $old_role = User::find($request->id)->role->name;
 

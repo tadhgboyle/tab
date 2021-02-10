@@ -4,30 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Activity;
+use App\Http\Requests\ActivityRequest;
 use App\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 
 class ActivityController extends Controller
 {
-    public function new(Request $request)
+    public function new(ActivityRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|min:3|max:255|unique:activities',
-            'location' => 'min:3|max:36|nullable',
-            'description' => 'min:3|max:255|nullable',
-            'slots' => 'required_if:unlimited_slots,0|numeric|min:1',
-            'price' => 'required|numeric',
-            'start' => 'required',
-            'end' => 'required',
-        ]);
-        if ($validator->fails()) {
-            return redirect()->route('activities_new')->withInput()->withErrors($validator);
-        }
-
         if (Carbon::parse($request->start)->gte($request->end)) {
             return redirect()->route('activities_new')->withInput()->with('error', 'The end time must be after the start time.');
         }
@@ -50,21 +36,8 @@ class ActivityController extends Controller
         return redirect()->route('activities_list')->with('success', 'Created activity ' . $request->name . '.');
     }
 
-    public function edit(Request $request)
+    public function edit(ActivityRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|min:3|max:255|unique:activities',
-            'location' => 'min:3|max:36|nullable',
-            'description' => 'min:3|max:255|nullable',
-            'slots' => 'required_if:unlimited_slots,0|numeric|min:1',
-            'price' => 'required|numeric',
-            'start' => 'required',
-            'end' => 'required',
-        ]);
-        if ($validator->fails()) {
-            return redirect()->route('activities_edit', $request->activity_id)->withInput()->withErrors($validator);
-        }
-
         if (Carbon::parse($request->get('start'))->gte($request->get('end'))) {
             return redirect()->route('activities_edit', $request->activity_id)->withInput()->with('error', 'The end time must be after the start time.');
         }
