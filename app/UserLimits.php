@@ -23,7 +23,7 @@ class UserLimits extends Model
 
     public function user()
     {
-        return $this->hasOne(User::class);
+        return $this->hasOne(User::class, 'id');
     }
 
     public function category()

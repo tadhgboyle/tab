@@ -1,7 +1,5 @@
 @php
-
 use App\User;
-use Illuminate\Support\Facades\Auth;
 @endphp
 @extends('layouts.default', ['page' => 'cashier'])
 @section('content')
@@ -22,7 +20,8 @@ use Illuminate\Support\Facades\Auth;
             </thead>
             <tbody>
                 <!-- TODO: Self purchases permission -->
-                @foreach(User::where('deleted', false)->get() as $result)
+                @php $users = User::where('deleted', false)->select(['id', 'full_name', 'balance'])->get() @endphp
+                @foreach($users as $result)
                     <tr>
                         <td>
                             <div><a href="{{ route('orders_new', $result->id) }}">{{ $result->full_name }}</a></div>

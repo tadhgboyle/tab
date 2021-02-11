@@ -18,12 +18,23 @@ class Transaction extends Model
         'status'
     ];
 
-    // TODO: See if we can either 1. rename these to remove the _id 2. use getters instead (just so it doesnt look weird)
+    // TODO: use hasOne
     protected $casts = [
         'purchaser_id' => User::class,
         'cashier_id' => User::class,
         'status' => 'boolean' // TODO: Rename this to "returned"
     ];
+
+    // TODO: implement
+    public function purchaser()
+    {
+        return $this->hasOne(User::class, 'id', 'purchaser_id');
+    }
+
+    public function cashier()
+    {
+        return $this->hasOne(User::class, 'id', 'cashier_id');
+    }
 
     public function checkReturned(): int
     {

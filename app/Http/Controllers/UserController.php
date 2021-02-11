@@ -40,9 +40,9 @@ class UserController extends Controller
         }
 
         $user->balance = $balance;
-        $user->role = $request->role;
+        $user->role_id = $request->role_id;
 
-        if (in_array($request->role, array_column(RoleHelper::getInstance()->getStaffRoles(), 'name'))) {
+        if (in_array($request->role_id, array_column(RoleHelper::getInstance()->getStaffRoles(), 'name'))) {
             $user->password = bcrypt($request->password);
         }
 
@@ -72,11 +72,11 @@ class UserController extends Controller
         $password = null;
         $old_role = User::find($request->id)->role->name;
 
-        if (!in_array($request->role, array_column(Auth::user()->role->getRolesAvailable(), 'id'))) {
+        if (!in_array($request->role_id, array_column(Auth::user()->role->getRolesAvailable(), 'id'))) {
             return redirect()->back()->with('error', 'You cannot manage that role.')->withInput();
         }
 
-        $new_role = Role::find($request->role)->name;
+        $new_role = Role::find($request->role_id)->name;
         $staff_roles = array_column(RoleHelper::getInstance()->getStaffRoles(), 'name');
 
         // Update their category limits
@@ -99,7 +99,7 @@ class UserController extends Controller
         if (($old_role == $new_role) || (in_array($old_role, $staff_roles) && in_array($new_role, $staff_roles))) {
             DB::table('users')
                 ->where('id', $request->id)
-                ->update(['full_name' => $request->full_name, 'username' => $request->username, 'balance' => $request->balance, 'role' => $request->role]);
+                ->update(['full_name' => $request->full_name, 'username' => $request->username, 'balance' => $request->balance, 'role_id' => $request->role_id]);
 
             return redirect()->route('users_list')->with('success', 'Updated user ' . $request->full_name . '.');
         }
@@ -120,7 +120,7 @@ class UserController extends Controller
 
         DB::table('users')
             ->where('id', $request->id)
-            ->update(['full_name' => $request->full_name, 'username' => $request->username, 'balance' => $request->balance, 'role' => $request->role, 'password' => $password]);
+            ->update(['full_name' => $request->full_name, 'username' => $request->username, 'balance' => $request->balance, 'role_id' => $request->role_id, 'password' => $password]);
 
         return redirect()->route('users_list')->with('success', 'Updated user ' . $request->full_name . '.');
     }

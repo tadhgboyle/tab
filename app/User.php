@@ -24,9 +24,13 @@ class User extends Authenticatable implements CastsAttributes
         'name' => 'string',
         'username' => 'string',
         'balance' => 'float',
-        'role' => Role::class,
         'deleted' => 'boolean'
     ];
+    
+    public function role() 
+    {
+        return $this->hasOne(Role::class, 'id', 'role_id');
+    }
 
     private ?Collection $_activity_transactions = null;
     private ?Collection $_transactions = null;

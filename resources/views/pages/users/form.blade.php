@@ -51,8 +51,8 @@ $users_view = Auth::user()->hasPermission('users_view');
                 <div class="field">
                     <label class="label">Role<sup style="color: red">*</sup></label>
                     <div class="control">
-                        <div class="select" id="role">
-                            <select name="role" class="input" required>
+                        <div class="select" id="role_id">
+                            <select name="role_id" class="input" required>
                                 @foreach(Auth::user()->role->getRolesAvailable() as $role)
                                 <option value="{{ $role->id }}" data-staff="{{ $role->staff ? 1 : 0 }}" {{ (isset($user->role) && $user->role->id == $role->id) || old('role') == $role->id ? "selected" : "" }}>{{ $role->name }}</option>
                                 @endforeach
