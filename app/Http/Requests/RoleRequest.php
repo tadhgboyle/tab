@@ -28,7 +28,7 @@ class RoleRequest extends FormRequest
             'name' => [
                 'required',
                 'min:2',
-                ValidationRule::unique('roles')
+                ValidationRule::unique('roles')->ignore($this->get('id'))
             ],
             'order' => [
                 'required',

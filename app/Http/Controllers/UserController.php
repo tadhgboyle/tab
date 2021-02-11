@@ -8,6 +8,7 @@ use App\Role;
 use Auth;
 use App\User;
 use App\UserLimits;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
@@ -130,5 +131,10 @@ class UserController extends Controller
         $user = User::find($id);
         $user->update(['deleted' => true]);
         return redirect()->route('users_list')->with('success', 'Deleted user ' . $user->full_name . '.');
+    }
+
+    public function view(Request $request) 
+    {
+        // TODO
     }
 }

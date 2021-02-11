@@ -28,7 +28,7 @@ class ProductRequest extends FormRequest
             'name' => [
                 'required',
                 'min:3',
-                ValidationRule::unique('products')
+                ValidationRule::unique('products')->ignore($this->get('id'))
             ],
             'price' => [
                 'required',
@@ -38,6 +38,7 @@ class ProductRequest extends FormRequest
                 'required'
             ],
             'box_size' => [
+                // TODO: gte -1
                 ValidationRule::notIn(0)
             ]
         ];

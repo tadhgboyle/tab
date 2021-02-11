@@ -207,7 +207,8 @@ class TransactionController extends Controller
         $purchaser = $transaction->purchaser;
 
         // Loop through products from the order and deserialize them to get their prices & taxes etc when they were purchased
-        foreach (explode(", ", $transaction->products) as $product) {
+        $transaction_products = explode(", ", $transaction->products);
+        foreach ($transaction_products as $product) {
             $product_metadata = self::deserializeProduct($product, false);
             if ($product_metadata['pst'] == "null") {
                 $total_tax = $product_metadata['gst'];

@@ -29,7 +29,7 @@ class ActivityRequest extends FormRequest
                 'required',
                 'min:3',
                 'max:255',
-                ValidationRule::unique('activities')
+                ValidationRule::unique('activities')->ignore($this->get('id'))
             ],
             'location' => [
                 'min:3',
