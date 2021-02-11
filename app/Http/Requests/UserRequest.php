@@ -25,23 +25,24 @@ class UserRequest extends FormRequest
      *
      * @return array
      */
-    public function rules(Request $request)
+    public function rules()
     {
         return [
             'full_name' => [
                 'required',
                 'min:4',
-                ValidationRule::unique('users')
+                ValidationRule::unique('users')->ignore($this->get('id'))
             ],
             'username' => [
-                'required',
+                'nullable',
                 'min:3',
-                ValidationRule::unique('users')
+                ValidationRule::unique('users')->ignore($this->get('id'))
             ],
             'balance' => [
-                'nullable'
+                'nullable',
+                'numeric'
             ],
-            'role' => [
+            'role_id' => [
                 'required',
                 ValidationRule::in(array_column(Auth::user()->role->getRolesAvailable(), 'id'))
             ],
@@ -49,7 +50,7 @@ class UserRequest extends FormRequest
                 'nullable',
                 'confirmed',
                 'min:6',
-                ValidationRule::requiredIf(in_array($request->role, array_column(RoleHelper::getInstance()->getStaffRoles(), 'id'))),
+                ValidationRule::requiredIf(in_array($this->get('role'), array_column(RoleHelper::getInstance()->getStaffRoles(), 'id'))),
             ]
         ];
     }

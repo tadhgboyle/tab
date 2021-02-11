@@ -47,7 +47,8 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
                 @endif
             </thead>
             <tbody>
-                @foreach (Transaction::where('purchaser_id', $user->id)->orderBy('created_at', 'DESC')->get() as $transaction)
+                @php $transactions = Transaction::where('purchaser_id', $user->id)->orderBy('created_at', 'DESC')->get() @endphp
+                @foreach ($transactions as $transaction)
                 <tr>
                     <td>
                         <div>{{ $transaction->created_at->format('M jS Y h:ia') }}</div>
@@ -100,7 +101,8 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach(SettingsHelper::getInstance()->getCategories() as $category)
+                        @php $categories = SettingsHelper::getInstance()->getCategories() @endphp
+                        @foreach($categories as $category)
                             @php
                             $info = UserLimitsHelper::getInfo($user->id, $category->value);
                             $category_limit = $info->limit_per;
@@ -138,7 +140,8 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (ActivityController::getUserActivities($user) as $transaction)
+                        @php $transactions = ActivityController::getUserActivities($user) @endphp
+                        @foreach ($transactions as $transaction)
                         <tr>
                             <td>
                                 <div>{{ $transaction['created_at']->format('M jS Y h:ia') }}</div>
