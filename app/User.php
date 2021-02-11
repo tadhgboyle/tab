@@ -3,13 +3,12 @@
 namespace App;
 
 use App\Http\Controllers\TransactionController;
-use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Collection;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Support\Facades\DB;
 
-class User extends Authenticatable implements CastsAttributes
+class User extends Authenticatable
 {
     
     use QueryCacheable;
@@ -36,21 +35,6 @@ class User extends Authenticatable implements CastsAttributes
     private ?Collection $_transactions = null;
 
     // TODO: add a "root" user? only they can edit superadmin roles
-
-    public function get($model, string $key, $value, array $attributes)
-    {
-        return User::find($value);
-    }
-
-    public function set($model, string $key, $value, array $attributes)
-    {
-        // when creating an order an object is passed as $value
-        if (is_object($value)) {
-            return $value->id;
-        }
-        // but when returning an order, only their ID is passed as $value
-        return $value;
-    }
 
     // TODO: finish
     // public function limits(): HasMany

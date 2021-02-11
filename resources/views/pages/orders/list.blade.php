@@ -31,7 +31,6 @@ $users_view = Auth::user()->hasPermission('users_view');
             </thead>
             <tbody>
                 @foreach (Transaction::orderBy('created_at', 'DESC')->get() as $transaction)
-                @php $user = $transaction->purchaser_id @endphp
                 <tr>
                     <td>
                         <div>{{ $transaction->created_at->format('M jS Y h:ia') }}</div>
@@ -39,14 +38,14 @@ $users_view = Auth::user()->hasPermission('users_view');
                     <td>
                         <div>
                             @if ($users_view)
-                            <a href="{{ route('users_view', $user->id) }}">{{ $user->full_name }}</a>
+                            <a href="{{ route('users_view', $transaction->purchaser->id) }}">{{ $transaction->purchaser->full_name }}</a>
                             @else
-                            {{ $user->full_name }}
+                            {{ $transaction->purchaser->full_name }}
                             @endif
                         </div>
                     </td>
                     <td>
-                        <div>{{ $transaction->cashier_id->full_name }}</div>
+                        <div>{{ $transaction->cashier->full_name }}</div>
                     </td>
                     <td>
                         <div>${{ number_format($transaction->total_price, 2) }}</div>

@@ -204,7 +204,7 @@ class TransactionController extends Controller
         }
 
         $total_tax = $total_price = 0;
-        $purchaser = $transaction->purchaser_id;
+        $purchaser = $transaction->purchaser;
 
         // Loop through products from the order and deserialize them to get their prices & taxes etc when they were purchased
         foreach (explode(", ", $transaction->products) as $product) {
@@ -232,7 +232,7 @@ class TransactionController extends Controller
             return redirect()->back()->with('error', 'That order has already been returned, so you cannot return an item from it.');
         }
 
-        $user = $transaction->purchaser_id;
+        $user = $transaction->purchaser;
         $user_balance = $user->balance;
         $found = false;
 

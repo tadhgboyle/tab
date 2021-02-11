@@ -18,14 +18,10 @@ class Transaction extends Model
         'status'
     ];
 
-    // TODO: use hasOne
     protected $casts = [
-        'purchaser_id' => User::class,
-        'cashier_id' => User::class,
         'status' => 'boolean' // TODO: Rename this to "returned"
     ];
 
-    // TODO: implement
     public function purchaser()
     {
         return $this->hasOne(User::class, 'id', 'purchaser_id');
