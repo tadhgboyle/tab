@@ -53,7 +53,7 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
                         <div>{{ $transaction->created_at->format('M jS Y h:ia') }}</div>
                     </td>
                     <td>
-                        <div>{{ $transaction->cashier_id->full_name }}</div>
+                        <div>{{ $transaction->cashier->full_name }}</div>
                     </td>
                     <td>
                         <div>${{ number_format($transaction->total_price, 2) }}</div>
