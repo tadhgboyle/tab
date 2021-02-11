@@ -3,11 +3,10 @@
 namespace App;
 
 use App\Helpers\RoleHelper;
-use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 
-class Role extends Model implements CastsAttributes
+class Role extends Model
 {
     
     use QueryCacheable;
@@ -27,16 +26,6 @@ class Role extends Model implements CastsAttributes
         'permissions' => 'array', // decode json to an array automatically
         'deleted' => 'boolean'
     ];
-
-    public function get($model, string $key, $value, array $attributes)
-    {
-        return Role::find($value);
-    }
-
-    public function set($model, string $key, $value, array $attributes)
-    {
-        return $value; // TODO: Test for edge cases where this might break (like user class)
-    }
 
     public function getRolesAvailable(Role $compare = null): array
     {

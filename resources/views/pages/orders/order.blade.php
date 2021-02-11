@@ -36,7 +36,8 @@ $users_view = Auth::user()->hasPermission('users_view');
                         <th>Price</th>
                     </thead>
                     <tbody>
-                        @foreach(Product::orderBy('name', 'ASC')->where('deleted', false)->get() as $product)
+                        @php $products = Product::orderBy('name', 'ASC')->where('deleted', false)->get(); @endphp
+                        @foreach($products as $product)
                         <tr>
                             <td>
                                 <input type="checkbox" name="product[{{ $product->id }}]" value="{{ $product->id }}" id="{{ $product->name . ' $' . $product->price }}" class="clickable" @if(session('product[' . $product->id . ']')) checked @endif />
