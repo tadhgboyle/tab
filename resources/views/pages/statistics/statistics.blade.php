@@ -23,16 +23,20 @@
         </div>
     </div>
     <div class="column is-half">
+        @permission('statistics_order_history')
         <h4 class="title has-text-weight-bold is-4">Order Info</h4>
         <div>
             <div id="purchase_history_chart" style="height: 400px;"></div>
         </div>
+        @endpermission
     </div>
     <div class="column is-half">
+        @permission('statistics_item_info')
         <h4 class="title has-text-weight-bold is-4">Item Info</h4>
         <div>
             <div id="item_sales_chart" style="height: 400px;"></div>
         </div>
+        @endpermission
     </div>
 </div>
 
@@ -40,20 +44,26 @@
 <script src="https://unpkg.com/@chartisan/echarts/dist/chartisan_echarts.js"></script>
 
 <script>
-    new Chartisan({
-        el: '#purchase_history_chart',
-        url: "@chart('purchase_history_chart')",
-        hooks: new ChartisanHooks()
-            .legend()
-            .tooltip()
-    });
-    new Chartisan({
-        el: '#item_sales_chart',
-        url: "@chart('item_sales_chart')",
-        hooks: new ChartisanHooks()
-            .legend()
-            .tooltip()
-    });
+    @permission('statistics_order_history')
+        new Chartisan({
+            el: '#purchase_history_chart',
+            url: "@chart('purchase_history_chart')",
+            hooks: new ChartisanHooks()
+                .legend()
+                .tooltip()
+        });
+    @endpermission
+
+    @permission('statistics_item_info')
+        new Chartisan({
+            el: '#item_sales_chart',
+            url: "@chart('item_sales_chart')",
+            hooks: new ChartisanHooks()
+                .legend()
+                .tooltip()
+        });
+    @endpermission
+    
     $('#stats_time').change(function() {
         this.form.submit();
     })
