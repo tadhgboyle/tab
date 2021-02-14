@@ -8,6 +8,7 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a s
 - :bar_chart: [ChartJS](https://www.chartjs.org) for the beautiful statistics charts, and [ConsoleTVs/Charts](https://github.com/ConsoleTVs/Charts) for the Laravel package.
 - :art: [Bulma](https://bulma.io) for their lightweight, easy to use and great-looking CSS framework.
 - :white_check_mark::x: [Switchery](https://github.com/abpetkov/switchery) for the simple to use & nice looking Switches replacement for ugly HTML checkboxes.
+- :calendar: [FullCalendar](https://fullcalendar.io) for their simple and responsive calendar library.
 
 *Note: Some migrations are not up to date. I am manually editing my local MySQL tables and will update migrations when it is more stable.*
 
@@ -88,7 +89,9 @@ Documentation (in the form of a printable user handbook) is being written.
 
 *High to Low priority sort*
 - Fix everything in Issues/Bugs
-- Categories should use an ID, and be serialized into each order product incase they are deleted.
+- Built in Activity category
+- Repeating activities. When they create activity, ask if repeated daily, weekly, monthly. Create more Activity rows for each day in the duration
+    - If repeating activity, add a column (nullable), for root activity, the ID of the original activity it is duplicating
 - Disable submit button when anything goes wrong *(Remaining: Stock, Categories)* 
     - Then on the backend, if they somehow bypass the disabled submit button: on errors during order, return back with their input + quantities
 - Rework how to select items and quantities. Right now it is somewhat not intuitive. New system:
@@ -122,8 +125,10 @@ Documentation (in the form of a printable user handbook) is being written.
     - Serialize so if it gets returned they get the discount back
 
 ## Issues/Bugs:
-- (Intermittent) When an error happens on order screen, it returns back with selection, but when you unselect a box it all gets NaN
+- Fix js in Role form page, staff and superuser checkboxes return undefined
+- Categories should use an ID, and be serialized into each order product incase they are deleted.
 - Dont import classes in views, use controllers to return views instead.
+- (Intermittent) When an error happens on order screen, it returns back with selection, but when you unselect a box it all gets NaN
 
 ## Contributors:
 - @nUKEmAN4

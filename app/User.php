@@ -2,54 +2,135 @@
 
 namespace App;
 
-use App\Http\Controllers\OrderController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Collection;
 use Rennokki\QueryCache\Traits\QueryCacheable;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
+    
     use QueryCacheable;
 
     protected $cacheFor = 180;
-    protected $fillable = ['balance'];
+
+    protected $fillable = [
+        'balance'
+    ];
+
+    protected $casts = [
+        'name' => 'string',
+        'username' => 'string',
+        'balance' => 'float',
+        'deleted' => 'boolean'
+    ];
+    
+    public function role() 
+    {
+        return $this->hasOne(Role::class, 'id', 'role_id');
+    }
+
+    private ?Collection $_activity_transactions = null;
+    private ?Collection $_transactions = null;
+
+    // TODO: add a "root" user? only they can edit superadmin roles
+
+    // TODO: finish
+    // public function limits(): HasMany
+    // {
+    //     return $this->hasMany(UserLimits::class);
+    // }
+
+    // public function getCategoryLimit(string $category): float
+    // {
+    //     foreach ($this->limits as $limit) {
+    //         if ($limit->category == $category) {
+    //             return $limit->duration;
+    //         }
+    //     }
+    //     return -1;
+    // }
+
+    public function hasPermission($permissions): bool
+    {
+        return $this->role->hasPermission($permissions);
+    }
+
+    private function getActivityTransactions(): Collection
+    {
+        if ($this->_activity_transactions == null) {
+            $this->_activity_transactions = DB::table('activity_transactions')->where('user_id', $this->id)->get();
+        }
+
+        return $this->_activity_transactions;
+    }
+
+    private function getTransactions(): Collection
+    {
+        if ($this->_transactions == null) {
+            $this->_transactions = Transaction::where('purchaser_id', $this->id)->get();
+        }
+
+        return $this->_transactions;
+    }
 
     // Find how much a user has spent in total. 
     // Does not factor in returned items/orders.
-    public static function findSpent(User $user): float
+    public function findSpent(): float
     {
-        return number_format(Transactions::where('purchaser_id', $user->id)->sum('total_price'), 2);
+        $spent = $this->getTransactions()->sum('total_price');
+
+        $activity_transactions = $this->getActivityTransactions();
+        foreach ($activity_transactions as $activity_transaction) {
+            $spent += ($activity_transaction->activity_price * $activity_transaction->activity_gst);
+        }
+
+        return floatval($spent);
     }
 
     // Find how much a user has returned in total.
     // This will see if a whole order has been returned, or if not, check all items in an unreturned order.
-    public static function findReturned(User $user): float
+    public function findReturned(): float
     {
         $returned = 0.00;
-        $transactions = Transactions::where('purchaser_id', $user->id)->get();
 
+        $transactions = $this->getTransactions();
         foreach ($transactions as $transaction) {
-            if ($transaction->status == 1) {
+            if ($transaction->status) {
                 $returned += $transaction->total_price;
                 continue;
             }
 
-            foreach (explode(", ", $transaction->products) as $transaction_product) {
-                $product = OrderController::deserializeProduct($transaction_product);
-                if ($product['returned'] > 0) {
-                    $tax = $product['gst'];
-                    if ($product['pst'] != "null") $tax += ($product['pst'] - 1);
-                    $returned += $product['returned'] * $product['price'] * $tax;
+            $transaction_products = explode(", ", $transaction->products);
+            foreach ($transaction_products as $transaction_product) {
+                $product = TransactionController::deserializeProduct($transaction_product, false);
+                if ($product['returned'] < 1) {
+                    continue;
                 }
+
+                $tax = $product['gst'];
+                if ($product['pst'] != "null") {
+                    $tax += ($product['pst'] - 1);
+                }
+                $returned += ($product['returned'] * $product['price'] * $tax);
             }
         }
 
-        return number_format($returned, 2);
+        $activity_transactions = $this->getActivityTransactions();
+        foreach ($activity_transactions as $transaction) {
+            if ($transaction->status) {
+                $returned += ($transaction->activity_price * $transaction->activity_gst);
+            }
+        }
+
+        return floatval($returned);
     }
 
     // Find how much money a user owes. 
     // Taking their amount spent and subtracting the amount they have returned.
-    public static function findOwing(User $user): float
+    public function findOwing(): float
     {
-        return number_format(User::findSpent($user) - User::findReturned($user), 2);
+        return floatval($this->findSpent() - $this->findReturned());
     }
 }

@@ -1,9 +1,9 @@
 @php
 
-use App\Products;
-use App\Http\Controllers\UserLimitsController;
+use App\Product;
+use App\Helpers\UserLimitsHelper;
 @endphp
-@extends('layouts.default')
+@extends('layouts.default', ['page' => 'products'])
 @section('content')
 <h2 class="title has-text-weight-bold">Stock Adjustment</h2>
 <div id="loading" align="center">
@@ -23,7 +23,7 @@ use App\Http\Controllers\UserLimitsController;
                 </tr>
             </thead>
             <tbody>
-                @foreach(Products::where('deleted', false)->get() as $product)
+                @foreach(Product::where('deleted', false)->get() as $product)
                 <tr>
                     <td>
                         <div>{{ $product->name }}</div>
@@ -32,7 +32,7 @@ use App\Http\Controllers\UserLimitsController;
                         <div>{{ ucfirst($product->category) }}</div>
                     </td>
                     <td>
-                        <div>{!! Products::getStock($product->id) !!}</div>
+                        <div>{!! $product->getStock() !!}</div>
                     </td>
                     <td>
                         <div>{{ $product->stock_override ? 'True' : 'False' }}</div>
@@ -42,6 +42,7 @@ use App\Http\Controllers\UserLimitsController;
                     </td>
                     <td>
                         <div class="control">
+                        <!-- TODO: Should we disable button if it has unlimited stock? Makes it harder to edit on the fly... -->
                             <button class="button is-info" id="adjust_select" value="{{ $product->id }}">
                                 <span class="icon">
                                     <i class="fas fa-edit"></i>

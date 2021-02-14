@@ -175,6 +175,10 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        /*
+         * Custom Blade Directives...
+         */
+        App\Providers\BladeServiceProvider::class,
     ],
 
     /*

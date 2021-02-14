@@ -11,26 +11,36 @@
 |
 */
 
-use App\Http\Middleware\CheckPermission;
-use App\Roles;
+use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\StatisticsPageController;
+use App\Http\Controllers\UserController;
+use App\Http\Middleware\HasPermission;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', function () {
     return view('pages.login');
 })->name('login');
-Route::post('/login/auth', 'LoginController@auth')->name('login_auth');
+Route::post('/login/auth', [LoginController::class, 'auth'])->name('login_auth');
 
 // Middleware('auth') requires the user to be signed in to view the page
 Route::middleware('auth')->group(function () {
 
     Route::get('/', function () {
-        if (Roles::hasPermission(Auth::user()->role, 'cashier')) return view('pages.index');
-        else return view('pages.403');
+        if (Auth::user()->hasPermission('cashier')) {
+            return view('pages.index');
+        } else {
+            return view('pages.403');
+        }
     })->name('index');
-    Route::get('/logout', 'LoginController@logout')->name('logout');
+    Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
     // Check their role can access the page
-    Route::middleware(CheckPermission::class)->group(function () {
+    Route::middleware(HasPermission::class)->group(function () {
 
         /* 
          * Cashier 
@@ -40,7 +50,7 @@ Route::middleware('auth')->group(function () {
                 return view('pages.orders.order');
             })->where('id', '[0-9]+')->name('orders_new');
             
-            Route::post('/orders/submit', 'OrderController@submit')->name('orders_new_form');
+            Route::post('/orders/submit', [TransactionController::class, 'submit'])->name('orders_new_form');
         });
 
         /* 
@@ -60,8 +70,8 @@ Route::middleware('auth')->group(function () {
             });
 
             Route::group(['permission' => 'orders_return'], function() {
-                Route::get('/orders/return/order/{id}', 'OrderController@returnOrder')->where('id', '[0-9]+')->name('orders_return');
-                Route::get('/orders/return/item/{item}/{order}', 'OrderController@returnItem')->where(['item', '[0-9]+'], ['order', '[0-9]+'])->name('orders_return_item');
+                Route::get('/orders/return/order/{id}', [TransactionController::class, 'returnOrder'])->where('id', '[0-9]+')->name('orders_return');
+                Route::get('/orders/return/item/{item}/{order}',[TransactionController::class, 'returnItem'])->where(['item', '[0-9]+'], ['order', '[0-9]+'])->name('orders_return_item');
             });
         });
 
@@ -85,14 +95,14 @@ Route::middleware('auth')->group(function () {
                 Route::get('/users/new', function () {
                     return view('pages.users.form');
                 })->name('users_new');
-                Route::post('/users/new', 'UsersController@new')->name('users_new_form');
+                Route::post('/users/new', [UserController::class, 'new'])->name('users_new_form');
 
                 Route::get('/users/edit/{id}', function () {
                     return view('pages.users.form');
                 })->where('id', '[0-9]+')->name('users_edit');
-                Route::post('/users/edit', 'UsersController@edit')->name('users_edit_form');
+                Route::post('/users/edit', [UserController::class, 'edit'])->name('users_edit_form');
 
-                Route::get('/users/delete/{id}', 'UsersController@delete')->where('id', '[0-9]+')->name('users_delete');
+                Route::get('/users/delete/{id}', [UserController::class, 'delete'])->where('id', '[0-9]+')->name('users_delete');
             });
         });
 
@@ -110,22 +120,52 @@ Route::middleware('auth')->group(function () {
                 Route::get('/products/new', function () {
                     return view('pages.products.form');
                 })->name('products_new');
-                Route::post('/products/new', 'ProductsController@new');
+                Route::post('/products/new', [ProductController::class, 'new']);
 
                 Route::get('/products/edit/{id}', function () {
                     return view('pages.products.form');
                 })->where('id', '[0-9]+')->name('products_edit');
-                Route::post('/products/edit', 'ProductsController@edit')->name('products_edit_form');
+                Route::post('/products/edit', [ProductController::class, 'edit'])->name('products_edit_form');
 
-                Route::get('/products/delete/{id}', 'ProductsController@delete')->where('id', '[0-9]+')->name('products_delete');
+                Route::get('/products/delete/{id}', [ProductController::class, 'delete'])->where('id', '[0-9]+')->name('products_delete');
             });
 
             Route::group(['permission' => 'products_adjust'], function () {
                 Route::get('/products/adjust', function () {
                     return view('pages.products.adjust.list');
                 })->where('id', '[0-9]+')->name('products_adjust');
-                Route::post('/products/adjust/ajax', 'ProductsController@ajaxInit')->name('products_adjust_ajax');
-                Route::post('/products/adjust', 'ProductsController@adjustStock')->name('products_adjust_form');
+                Route::post('/products/adjust/ajax', [ProductController::class, 'ajaxInit'])->name('products_adjust_ajax');
+                Route::post('/products/adjust', [ProductController::class, 'adjustStock'])->name('products_adjust_form');
+            });
+        });
+
+        /* 
+         * Activities
+         */
+        Route::group(['permission' => 'activities'], function () {
+            Route::group(['permission' => 'activities_list'], function () {
+                Route::get('/activities', [ActivityController::class, 'list'])->name('activities_list');
+            });
+
+            Route::group(['permission' => 'activities_view'], function () {
+                Route::get('/activities/view/{id}', [ActivityController::class, 'view'])->where('id', '[0-9]+')->name('activities_view');
+            });
+
+            Route::group(['permission' => 'activities_manage'], function () {
+                Route::get('/activities/new/{date?}', function ($date = null) {
+                    return view('pages.activities.form', ['start' => $date]);
+                })->name('activities_new');
+                Route::post('/activities/new', [ActivityController::class, 'new']);
+
+                Route::get('/activities/edit/{id}', function () {
+                    return view('pages.activities.form');
+                })->where('id', '[0-9]+')->name('activities_edit');
+                Route::post('/activities/edit', [ActivityController::class, 'edit'])->name('activities_edit_form');
+
+                Route::post('/activities/view/search', [ActivityController::class, 'ajaxInit'])->name('activities_user_search');
+                Route::get('/activities/view/{id}/add/{user}', [ActivityController::class, 'registerUser'])->name('activities_user_add');
+
+                Route::get('/activities/delete/{id}', [ActivityController::class, 'delete'])->where('id', '[0-9]+')->name('activities_delete');
             });
         });
 
@@ -133,11 +173,8 @@ Route::middleware('auth')->group(function () {
          * Statistics 
          */
         Route::group(['permission' => 'statistics'], function() {
-            Route::get('/statistics', function () {
-                return view('pages.statistics.statistics');
-            })->name('statistics');
-
-            Route::post('/statistics', 'SettingsController@editStatsTime');
+            Route::get('/statistics', [StatisticsPageController::class, 'view'])->name('statistics');
+            Route::post('/statistics', [SettingsController::class, 'editStatsTime']);
         });
 
         /* 
@@ -149,7 +186,7 @@ Route::middleware('auth')->group(function () {
             })->name('settings');
 
             Route::group(['permission' => 'settings_general'], function () {
-                Route::post('/settings', 'SettingsController@editSettings')->name('settings_form');
+                Route::post('/settings', [SettingsController::class, 'editSettings'])->name('settings_form');
             });
 
             Route::group(['permission' => 'settings_roles_manage'], function () {
@@ -157,17 +194,16 @@ Route::middleware('auth')->group(function () {
                     return view('pages.settings.roles.form');
                 })->name('settings_roles_new');
                 Route::post('/settings/roles/new',
-                    'RolesController@new'
+                    [RoleController::class, 'new']
                 )->name('settings_roles_new_form');
 
                 Route::get('/settings/roles/edit/{id}', function () {
                     return view('pages.settings.roles.form');
                 })->where('id', '[0-9]+')->name('settings_roles_edit');
-                Route::post('/settings/roles/edit', 'RolesController@edit')->name('settings_roles_edit_form');
-                Route::get('/settings/roles/order', 'RolesController@order')->name('settings_roles_order_ajax');
+                Route::post('/settings/roles/edit', [RoleController::class, 'edit'])->name('settings_roles_edit_form');
+                Route::get('/settings/roles/order', [RoleController::class, 'order'])->name('settings_roles_order_ajax');
 
-                Route::get('/settings/roles/delete/{id}', 'RolesController@delete')->name('settings_roles_delete');
-
+                Route::get('/settings/roles/delete/{id}', [RoleController::class, 'delete'])->name('settings_roles_delete');
             });
 
             Route::group(['permission' => 'settings_categories_manage'], function () {
@@ -175,10 +211,10 @@ Route::middleware('auth')->group(function () {
                     return view('pages.settings.categories.form');
                 })->name('settings_categories_new');
                 Route::post('/settings/categories/new',
-                    'SettingsController@newCat'
+                    [SettingsController::class, 'newCat']
                 )->name('settings_categories_new_form');
 
-                Route::get('/settings/categories/delete/{name}', 'SettingsController@deleteCat')->name('settings_categories_delete');
+                Route::get('/settings/categories/delete/{name}', [SettingsController::class, 'deleteCat'])->name('settings_categories_delete');
             });
         });
     });
