@@ -125,7 +125,7 @@ Documentation (in the form of a printable user handbook) is being written.
     - Serialize so if it gets returned they get the discount back
 
 ## Issues/Bugs:
-- https://youtu.be/ShrS3HXwzPg Implement some of these things
+- Fix js in Role form page, staff and superuser checkboxes return undefined
 - Categories should use an ID, and be serialized into each order product incase they are deleted.
 - Dont import classes in views, use controllers to return views instead.
 - (Intermittent) When an error happens on order screen, it returns back with selection, but when you unselect a box it all gets NaN
