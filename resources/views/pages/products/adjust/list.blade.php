@@ -3,7 +3,7 @@
 use App\Product;
 use App\Helpers\UserLimitsHelper;
 @endphp
-@extends('layouts.default')
+@extends('layouts.default', ['page' => 'products'])
 @section('content')
 <h2 class="title has-text-weight-bold">Stock Adjustment</h2>
 <div id="loading" align="center">

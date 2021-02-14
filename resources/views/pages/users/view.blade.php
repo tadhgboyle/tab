@@ -14,7 +14,7 @@ $users_manage = Auth::user()->hasPermission('users_manage');
 $orders_view = Auth::user()->hasPermission('orders_view');
 if ($user == null) return redirect()->route('users_list')->with('error', 'Invalid user.')->send();
 @endphp
-@extends('layouts.default')
+@extends('layouts.default', ['page' => 'users'])
 @section('content')
 <h2 class="title has-text-weight-bold">View User</h2>
 <h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if(!$user->deleted && $users_manage && Auth::user()->role->canInteract($user->role))<a href="{{ route('users_edit', $user->id) }}">(Edit)</a>@endif</h4>

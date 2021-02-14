@@ -1,13 +1,18 @@
 @php
 use App\Role;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\PermissionHelper;
 $role = Role::find(request()->route('id'));
-if (!is_null($role) && !Auth::user()->role->canInteract(Role::find(request()->route('id')))) return redirect()->route('settings')->with('error', 'You cannot interact with that role.')->send();
+$role_permissions = null;
+if (!is_null($role) && !Auth::user()->role->canInteract(Role::find(request()->route('id')))) {
+    return redirect()->route('settings')->with('error', 'You cannot interact with that role.')->send();
+}
 if (!is_null($role)) {
     $role_permissions = $role->permissions;
-    $affected_users = DB::table('users')->where('role', $role->id)->count();
+    $affected_users = DB::table('users')->where('role_id', $role->id)->count();
     $available_roles = $role->getRolesAvailable(Auth::user()->role);
 }
+$permissionHelper = PermissionHelper::getInstance()
 @endphp
 @extends('layouts.default')
 @section('content')
@@ -19,6 +24,7 @@ if (!is_null($role)) {
             @include('includes.messages')
             <form action="{{ is_null($role) ? route('settings_roles_new') : route('settings_roles_edit_form') }}" method="POST" id="role_form">
                 @csrf
+                <input type="hidden" name="role_id" id="role_id" value="{{ $role->id ?? null }}">
                 <div class="field">
                     <label class="label">Name<sup style="color: red">*</sup></label>
                     <div class="control">
@@ -71,106 +77,7 @@ if (!is_null($role)) {
     <div class="column box is-8" id="permissions_box" style="visibility: hidden;">
         <h4 class="title has-text-weight-bold is-4">Permissions</h4>
         <hr>
-        <h4 class="subtitle"><strong>Cashier</strong></h4>
-        <div class="control">
-            <label class="checkbox">
-                <input type="checkbox" class="permission" name="permissions[cashier]" value="1" @if(!is_null($role) && (in_array('cashier', $role_permissions) || $role->superuser)) checked @endif>
-                Create Orders
-            </label>
-        </div>
-        <hr>
-        <h4 class="subtitle"><strong>Users</strong>&nbsp;<input type="checkbox" class="permission" id="permission-users-checkbox" name="permissions[users]" onclick="updateSections();" value="1" @if(!is_null($role) && (in_array('users', $role_permissions) || $role->superuser)) checked @endif></h4>
-        <div class="control" id="permission-users" style="display: none;">
-            <label class="checkbox">
-                <input type="checkbox" class="permission" name="permissions[users_list]" value="1" @if(!is_null($role) && (in_array('users_list', $role_permissions) || $role->superuser)) checked @endif>
-                List Users
-            </label>
-            &nbsp;
-            <label class="checkbox">
-                <input type="checkbox" class="permission" name="permissions[users_view]" value="1" @if(!is_null($role) && (in_array('users_view', $role_permissions) || $role->superuser)) checked @endif>
-                View User Information
-            </label>
-            &nbsp;
-            <label class="checkbox">
-                <input type="checkbox" class="permission" name="permissions[users_manage]" value="1" @if(!is_null($role) && (in_array('users_manage', $role_permissions) || $role->superuser)) checked @endif>
-                Manage Users
-            </label>
-        </div>
-        <hr>
-        <h4 class="subtitle"><strong>Products</strong>&nbsp;<input type="checkbox" class="permission" id="permission-products-checkbox" name="permissions[products]" onclick="updateSections();" value="1" @if(!is_null($role) && (in_array('products', $role_permissions) || $role->superuser)) checked @endif></h4>
-        <div class="control" id="permission-products" style="display: none;">
-            <label class="checkbox">
-                <input type="checkbox" class="permission" name="permissions[products_list]" value="1" @if(!is_null($role) && (in_array('products_list', $role_permissions) || $role->superuser)) checked @endif>
-                List Products
-            </label>
-            &nbsp;
-            <label class="checkbox">
-                <input type="checkbox" class="permission" name="permissions[products_manage]" value="1" @if(!is_null($role) && (in_array('products_manage', $role_permissions) || $role->superuser)) checked @endif>
-                Manage Products
-            </label>
-            &nbsp;
-            <label class="checkbox">
-                <input type="checkbox" class="permission" name="permissions[products_adjust]" value="1" @if(!is_null($role) && (in_array('products_adjust', $role_permissions) || $role->superuser)) checked @endif>
-                Adjust Stock
-            </label>
-        </div>
-        <hr>
-        <h4 class="subtitle"><strong>Activities</strong>&nbsp;<input type="checkbox" class="permission" id="permission-activities-checkbox" name="permissions[activities]" onclick="updateSections();" value="1" @if(!is_null($role) && (in_array('activities', $role_permissions) || $role->superuser)) checked @endif></h4>
-        <div class="control" id="permission-activities" style="display: none;">
-            <label class="checkbox">
-                <input type="checkbox" class="permission" name="permissions[activities_list]" value="1" @if(!is_null($role) && (in_array('activities_list', $role_permissions) || $role->superuser)) checked @endif>
-                List Activities
-            </label>
-            &nbsp;
-            <label class="checkbox">
-                <input type="checkbox" class="permission" name="permissions[activities_manage]" value="1" @if(!is_null($role) && (in_array('activities_manage', $role_permissions) || $role->superuser)) checked @endif>
-                Manage Activities
-            </label>
-        </div>
-        <hr>
-        <h4 class="subtitle"><strong>Orders</strong>&nbsp;<input type="checkbox" class="permission" id="permission-orders-checkbox" name="permissions[orders]" onclick="updateSections();" value="1" @if(!is_null($role) && (in_array('orders', $role_permissions) || $role->superuser)) checked @endif></h4>
-        <div class="control" id="permission-orders" style="display: none;">
-            <label class="checkbox">
-                <input type="checkbox" class="permission" name="permissions[orders_list]" value="1" @if(!is_null($role) && (in_array('orders_list', $role_permissions) || $role->superuser)) checked @endif>
-                List Orders
-            </label>
-            &nbsp;
-            <label class="checkbox">
-                <input type="checkbox" class="permission" name="permissions[orders_view]" value="1" @if(!is_null($role) && (in_array('orders_view', $role_permissions) || $role->superuser)) checked @endif>
-                View Order Information
-            </label>
-            &nbsp;
-            <label class="checkbox">
-                <input type="checkbox" class="permission" name="permissions[orders_return]" value="1" @if(!is_null($role) && (in_array('orders_return', $role_permissions) || $role->superuser)) checked @endif>
-                Return Orders
-            </label>
-        </div>
-        <hr>
-        <h4 class="subtitle"><strong>Statistics</strong></h4>
-        <div class="control">
-            <label class="checkbox">
-                <input type="checkbox" class="permission" name="permissions[statistics]" value="1" @if(!is_null($role) && (in_array('statistics', $role_permissions) || $role->superuser)) checked @endif>
-                View Statistics
-            </label>
-        </div>
-        <hr>
-        <h4 class="subtitle"><strong>Settings</strong>&nbsp;<input type="checkbox" class="permission" id="permission-settings-checkbox" name="permissions[settings]" onclick="updateSections();" value="1" @if(!is_null($role) && (in_array('settings', $role_permissions) || $role->superuser)) checked @endif></h4>
-        <div class="control" id="permission-settings" style="display: none;">
-            <label class="checkbox">
-                <input type="checkbox" class="permission" name="permissions[settings_general]" value="1" @if(!is_null($role) && (in_array('settings_general', $role_permissions) || $role->superuser)) checked @endif>
-                Manage General Settings
-            </label>
-            &nbsp;
-            <label class="checkbox">
-                <input type="checkbox" class="permission" name="permissions[settings_categories_manage]" value="1" @if(!is_null($role) && (in_array('settings_categories_manage', $role_permissions) || $role->superuser)) checked @endif>
-                Manage Categories
-            </label>
-            &nbsp;
-            <label class="checkbox">
-                <input type="checkbox" class="permission" name="permissions[settings_roles_manage]" value="1" @if(!is_null($role) && (in_array('settings_roles_manage', $role_permissions) || $role->superuser)) checked @endif>
-                Manage Roles
-            </label>
-        </div>
+            {!! $permissionHelper->renderForm($role, $role_permissions) !!}
         </form>
     </div>
 </div>
@@ -263,9 +170,12 @@ if (!is_null($role)) {
     }
 
     function updateSections() {
-        ['users', 'products', 'activities', 'orders', 'settings'].forEach(element => {
-            if ($(`#permission-${element}-checkbox`).prop('checked')) $(`#permission-${element}`).show(200);
-            else $(`#permission-${element}`).hide(200);
+        [{!! $permissionHelper->getCategoryKeys() !!}].forEach(element => {
+            if ($(`#permission-${element}-checkbox`).prop('checked')) {
+                $(`#permission-${element}`).show(200);
+            } else {
+                $(`#permission-${element}`).hide(200);
+            }
         });
     }
 
@@ -275,17 +185,17 @@ if (!is_null($role)) {
         });
     });
 
-    const modal = document.querySelector('.modal');
-
-    function openModal() {
-        modal.classList.add('is-active');
-    }
-
-    function closeModal() {
-        modal.classList.remove('is-active');
-    }
-
     @if(!is_null($role))
+        const modal = document.querySelector('.modal');
+        
+        function openModal() {
+            modal.classList.add('is-active');
+        }
+        
+        function closeModal() {
+            modal.classList.remove('is-active');
+        }
+
         function deleteData() {
             var url = '{{ route("settings_roles_delete", ":id") }}';
             url = url.replace(':id', {{ $role->id }});

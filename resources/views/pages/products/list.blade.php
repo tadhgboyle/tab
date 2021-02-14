@@ -4,7 +4,7 @@ use App\Product;
 use App\Role;
 $products_manage = Auth::user()->hasPermission('products_manage');
 @endphp
-@extends('layouts.default')
+@extends('layouts.default', ['page' => 'products'])
 @section('content')
 <h2 class="title has-text-weight-bold">Product List</h2>
 <div id="loading" align="center">

@@ -5,7 +5,7 @@ use App\Role;
 $users_view = Auth::user()->hasPermission('users_view');
 $users_manage = Auth::user()->hasPermission('users_manage');
 @endphp
-@extends('layouts.default')
+@extends('layouts.default', ['page' => 'users'])
 @section('content')
 <h2 class="title has-text-weight-bold">User List</h2>
 <div id="loading" align="center">

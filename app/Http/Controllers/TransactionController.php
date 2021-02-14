@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\SettingsHelper;
+use App\Helpers\UserLimitsHelper;
 use App\User;
 use App\Product;
 use App\Transaction;
