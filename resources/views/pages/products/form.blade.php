@@ -4,7 +4,7 @@ use App\Helpers\SettingsHelper;
 use App\Product;
 $product = Product::find(request()->route('id'));
 @endphp
-@extends('layouts.default')
+@extends('layouts.default', ['page' => 'products'])
 @section('content')
 <h2 class="title has-text-weight-bold">{{ is_null($product) ? 'Create' : 'Edit' }} Product</h2>
 @if(!is_null($product)) <h4 class="subtitle"><strong>Product:</strong> {{ $product->name }}</h4> @endif

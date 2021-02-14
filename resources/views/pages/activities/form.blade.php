@@ -6,7 +6,7 @@ $activity = Activity::find(request()->route('id'));
 if ($activity == null) $start = request()->route('date') ?? Carbon::now();
 else $start = $activity->start;
 @endphp
-@extends('layouts.default')
+@extends('layouts.default', ['page' => 'activities'])
 @section('content')
 <h2 class="title has-text-weight-bold">{{ is_null($activity) ? 'Create' : 'Edit' }} Activity</h2>
 @if(!is_null($activity)) <h4 class="subtitle"><strong>Activity:</strong> {{ $activity->name }}</h4> @endif
@@ -146,7 +146,6 @@ else $start = $activity->start;
 
     $(document).ready(function() {
         const date = new Date('{{ $start }}');
-        date.setDate(date.getDate() + 1);
         @if(is_null($activity))
             flatpickr('#start', { defaultDate: date, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: 'today' });
         @else

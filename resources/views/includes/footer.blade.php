@@ -1,5 +1,4 @@
 @php
-use App\Role;
 use Illuminate\Database\Eloquent\Collection;
 $greeting = Collection::make(['Welcome back', 'Greetings', 'Good day', 'Hello', 'Howdy', 'Bonjour', 'Hola', 'Long time no see',
 'Salutations', 'Peek-a-boo', 'Ahoy', 'Top of the morning', 'G\'day'])->random();

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\PermissionHelper;
 use App\Http\Requests\RoleRequest;
 use App\Role;
 use Illuminate\Http\Request;
@@ -13,27 +14,14 @@ class RoleController extends Controller
     public function new(RoleRequest $request)
     {
         $staff = $request->has('staff');
-
-        $superuser = false;
-
-        $permissions = array();
-        if ($staff) {
-            if (is_array($request->permissions)) {
-                foreach ($request->permissions as $permission => $value) {
-                    if ($value) $permissions[] = $permission;
-                }
-            }
-            if ($request->has('superuser')) {
-                $superuser = true;
-            }
-        }
+        $superuser = $staff && $request->has('superuser');
 
         $role = new Role();
         $role->name = $request->name;
         $role->order = $request->order;
         $role->staff = $staff;
         $role->superuser = $superuser;
-        $role->permissions = $permissions;
+        $role->permissions = PermissionHelper::parseNodes($request->permissions);
         $role->save();
 
         return redirect()->route('settings')->with('success', 'Created role ' . $request->name . '.');
@@ -42,25 +30,11 @@ class RoleController extends Controller
     public function edit(RoleRequest $request)
     {
         $staff = $request->has('staff');
-
-        $superuser = false;
-
-        $permissions = array();
-        if ($staff) {
-            // TODO: if they dont have "users" permission checked, ignore "users_list" etc
-            if (is_array($request->permissions)) {
-                foreach ($request->permissions as $permission => $value) {
-                    if ($value) {
-                        $permissions[] = $permission;
-                    }
-                }
-            }
-            $superuser = $request->has('superuser');
-        }
+        $superuser = $staff && $request->has('superuser');
 
         DB::table('roles')
-            ->where('id', $request->id)
-            ->update(['name' => $request->name, 'order' => $request->order, 'superuser' => $superuser, 'staff' => $staff, 'permissions' => $permissions]);
+            ->where('id', $request->role_id)
+            ->update(['name' => $request->name, 'order' => $request->order, 'superuser' => $superuser, 'staff' => $staff, 'permissions' => PermissionHelper::parseNodes($request->permissions)]);
 
         return redirect()->route('settings')->with('success', 'Edited role ' . $request->name . '.');
     }
@@ -78,16 +52,17 @@ class RoleController extends Controller
 
             if (!$new_role->staff) {
                 $fields = [
-                    'role' => $new_role->id,
+                    'role_id' => $new_role->id,
                     'password' => null
                 ];
             } else {
                 $fields = [
-                    'role' => $new_role->id
+                    'role_id' => $new_role->id
                 ];
             }
 
-            DB::table('users')->where('role', $old_role->id)->update($fields);
+            DB::table('users')->where('role_id', $old_role->id)->update($fields);
+            $old_role->update(['deleted' => true]);
 
             $message = 'Deleted role ' . $old_role->name . ', and placed all it\'s users into ' . $new_role->name . '.';
         }

@@ -9,7 +9,7 @@ if (!is_null($user) && $user->deleted) return redirect()->route('users_list')->w
 if (!is_null($user) && !Auth::user()->role->canInteract($user->role)) return redirect()->route('users_list')->with('error', 'You cannot interact with that user.')->send();
 $users_view = Auth::user()->hasPermission('users_view');
 @endphp
-@extends('layouts.default')
+@extends('layouts.default', ['page' => 'users'])
 @section('content')
 <h2 class="title has-text-weight-bold">{{ is_null($user) ? 'Create' : 'Edit' }} User</h2>
 @if(!is_null($user)) <h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if($users_view)<a href="{{ route('users_view', $user->id) }}">(View)</a>@endif</h4>@endif
