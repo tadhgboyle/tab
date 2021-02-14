@@ -1,12 +1,3 @@
-@php
-use App\Http\Controllers\StatisticsChartController;
-use App\Http\Controllers\SettingsController;
-
-$statsTime = SettingsController::getStatsTime();
-$orderinfo = StatisticsChartController::orderInfo($statsTime);
-$iteminfo = StatisticsChartController::itemInfo($statsTime);
-$profit = StatisticsChartController::profit($statsTime);
-@endphp
 @extends('layouts.default', ['page' => 'statistics'])
 @section('content')
 <h2 class="title has-text-weight-bold">Statistics</h2>
@@ -19,12 +10,12 @@ $profit = StatisticsChartController::profit($statsTime);
                     <form action="/statistics" method="POST">
                         @csrf
                         <select name="stats_time" class="input" id="stats_time">
-                            <option value="9999" {{ $statsTime == "9999" ? "selected" : "" }}>All Time</option>
-                            <option value="90" {{ $statsTime == "90" ? "selected" : "" }}>Three Months</option>
-                            <option value="30" {{ $statsTime == "30" ? "selected" : "" }}>One Month</option>
-                            <option value="14" {{ $statsTime == "14" ? "selected" : "" }}>Two Weeks</option>
-                            <option value="7" {{ $statsTime == "7" ? "selected" : "" }}>One Week</option>
-                            <option value="2" {{ $statsTime == "2" ? "selected" : "" }}>Two Days</option>
+                            <option value="9999" {{ $stats_time == "9999" ? "selected" : "" }}>All Time</option>
+                            <option value="90" {{ $stats_time == "90" ? "selected" : "" }}>Three Months</option>
+                            <option value="30" {{ $stats_time == "30" ? "selected" : "" }}>One Month</option>
+                            <option value="14" {{ $stats_time == "14" ? "selected" : "" }}>Two Weeks</option>
+                            <option value="7" {{ $stats_time == "7" ? "selected" : "" }}>One Week</option>
+                            <option value="2" {{ $stats_time == "2" ? "selected" : "" }}>Two Days</option>
                         </select>
                     </form>
                 </div>
@@ -34,33 +25,38 @@ $profit = StatisticsChartController::profit($statsTime);
     <div class="column is-half">
         <h4 class="title has-text-weight-bold is-4">Order Info</h4>
         <div>
-            {!! $orderinfo->container() !!}
+            <div id="purchase_history_chart" style="height: 400px;"></div>
         </div>
     </div>
     <div class="column is-half">
         <h4 class="title has-text-weight-bold is-4">Item Info</h4>
         <div>
-            {!! $iteminfo->container() !!}
+            <div id="item_sales_chart" style="height: 400px;"></div>
         </div>
     </div>
-    <div class="column is-half">
-        <h4 class="title has-text-weight-bold is-4">Profit</h4>
-        <div>
-            {!! $profit->container() !!}
-        </div>
-    </div>
-    <div class="column is-half"></div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js" charset="utf-8"></script>
-{!! $orderinfo->script() !!}
-{!! $iteminfo->script() !!}
-{!! $profit->script() !!}
+
+<script src="https://unpkg.com/echarts/dist/echarts.min.js"></script>
+<script src="https://unpkg.com/@chartisan/echarts/dist/chartisan_echarts.js"></script>
 
 <script>
-    $('#stats_time').change(function () {
-            this.form.submit();
-        }
-    )
+    new Chartisan({
+        el: '#purchase_history_chart',
+        url: "@chart('purchase_history_chart')",
+        hooks: new ChartisanHooks()
+            .legend()
+            .tooltip()
+    });
+    new Chartisan({
+        el: '#item_sales_chart',
+        url: "@chart('item_sales_chart')",
+        hooks: new ChartisanHooks()
+            .legend()
+            .tooltip()
+    });
+    $('#stats_time').change(function() {
+        this.form.submit();
+    })
 </script>
 
 @endsection

@@ -8,7 +8,6 @@
         @include('includes.messages')
         <form action="{{ route('settings_categories_new_form') }}" method="POST">
             @csrf
-            <input type="hidden" name="editor_id" value="{{ Auth::user()->id }}">
             <div class="field">
                 <label class="label">Name<sup style="color: red">*</sup></label>
                 <div class="control">

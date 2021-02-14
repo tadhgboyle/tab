@@ -10,26 +10,6 @@ use App\Settings;
 class SettingsController extends Controller
 {
 
-    public static function getGst()
-    {
-        return Settings::where('setting', 'gst')->pluck('value')->first();
-    }
-
-    public static function getPst()
-    {
-        return Settings::where('setting', 'pst')->pluck('value')->first();
-    }
-
-    public static function getStatsTime()
-    {
-        return Settings::where('setting', 'stats_time')->pluck('value')->first();
-    }
-
-    public static function getCategories()
-    {
-        return Settings::where('setting', 'category')->orderBy('value')->get();
-    }
-
     public static function editStatsTime(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -38,6 +18,7 @@ class SettingsController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator);
         }
+
         DB::table('settings')->where('setting', 'stats_time')->update(['value' => $request->stats_time]);
         return redirect()->route('statistics')->send();
     }
@@ -52,7 +33,7 @@ class SettingsController extends Controller
             return redirect()->back()->withInput()->withErrors($validator);
         }
 
-        // TODO: This is probably not as efficient as it could be...
+        // TODO: This is probably not as efficient as it could be... use updateOrCreate() ?
         DB::table('settings')->where('setting', 'gst')->update(['value' => $request->gst]);
         DB::table('settings')->where('setting', 'pst')->update(['value' => $request->pst]);
         return redirect()->route('settings')->with('success', 'Updated settings.');
@@ -73,7 +54,7 @@ class SettingsController extends Controller
         $settings = new Settings();
         $settings->setting = 'category';
         $settings->value = strtolower($request->name);
-        $settings->editor_id = $request->editor_id;
+        $settings->editor_id = Auth::id();
         $settings->save();
 
         return redirect()->route('settings')->with('success', 'Created new category ' . $request->name . '.');

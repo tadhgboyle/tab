@@ -1,12 +1,12 @@
 @php
 
-use App\Products;
+use App\Product;
 use App\User;
-use App\Roles;
-use App\Http\Controllers\SettingsController;
+use App\Role;
+use App\Helpers\SettingsHelper;
 $user = User::find(request()->route('id'));
 if ($user == null) return redirect()->route('index')->with('error', 'Invalid user.')->send();
-$users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
+$users_view = Auth::user()->hasPermission('users_view');
 @endphp
 @extends('layouts.default', ['page' => 'cashier'])
 @section('content')
@@ -22,9 +22,8 @@ $users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
             <form method="post" id="order" action="{{ route('orders_new_form') }}">
                 @csrf
                 <input type="hidden" name="purchaser_id" value="{{ request()->route('id') }}">
-                <input type="hidden" name="cashier_id" value="{{ Auth::user()->id }}">
-                <input type="hidden" id="current_gst" value="{{ SettingsController::getGst() }}">
-                <input type="hidden" id="current_pst" value="{{ SettingsController::getPst() }}">
+                <input type="hidden" id="current_gst" value="{{ SettingsHelper::getInstance()->getGst() }}">
+                <input type="hidden" id="current_pst" value="{{ SettingsHelper::getInstance()->getPst() }}">
                 <input type="hidden" id="purchaser_balance" value="{{ $user->balance }}">
 
                 <table id="product_list">
@@ -37,28 +36,29 @@ $users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
                         <th>Price</th>
                     </thead>
                     <tbody>
-                        @foreach(Products::orderBy('name', 'ASC')->where('deleted', false)->get() as $product)
-                            <tr>
-                                <td>
-                                    <input type="checkbox" name="product[{{ $product->id }}]" value="{{ $product->id }}" id="{{ $product->name . ' $' . $product->price }}" class="clickable" @if(session('product[' . $product->id . ']')) checked @endif />
-                                    <input type="hidden" id="pst[{{ $product->id }}]" name="pst[{{ $product->id }}]" value="{{ $product->pst }}" />
-                                </td>
-                                <td>
-                                    <input type="number" name="quantity[{{ $product->id }}]" id="quantity[{{ $product->id }}]" value="{{ session('quantity[' . $product->id . ']', 1) }}" min="1" class="input is-small" style="width: 80%"/>
-                                </td>
-                                <td>
-                                    <div>{{ $product->name }}</div>
-                                </td>
-                                <td>
-                                    <div>{{ ucfirst($product->category) }}</div>
-                                </td>
-                                <td>
-                                    <div>{!! Products::getStock($product->id) !!}</div>
-                                </td>
-                                <td>
-                                    <div>${{ number_format($product->price, 2) }}</div>
-                                </td>
-                            </tr>
+                        @php $products = Product::orderBy('name', 'ASC')->where('deleted', false)->get(); @endphp
+                        @foreach($products as $product)
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="product[{{ $product->id }}]" value="{{ $product->id }}" id="{{ $product->name . ' $' . $product->price }}" class="clickable" @if(session('product[' . $product->id . ']')) checked @endif />
+                                <input type="hidden" id="pst[{{ $product->id }}]" name="pst[{{ $product->id }}]" value="{{ $product->pst }}" />
+                            </td>
+                            <td>
+                                <input type="number" name="quantity[{{ $product->id }}]" id="quantity[{{ $product->id }}]" value="{{ session('quantity[' . $product->id . ']', 1) }}" min="1" class="input is-small" style="width: 80%" />
+                            </td>
+                            <td>
+                                <div>{{ $product->name }}</div>
+                            </td>
+                            <td>
+                                <div>{{ ucfirst($product->category) }}</div>
+                            </td>
+                            <td>
+                                <div>{!! $product->getStock() !!}</div>
+                            </td>
+                            <td>
+                                <div>${{ number_format($product->price, 2) }}</div>
+                            </td>
+                        </tr>
                         @endforeach
                     </tbody>
                 </table>
@@ -76,7 +76,7 @@ $users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
         <br>
         <input type="submit" form="order" value="Submit" class="disableable button is-success" disabled>
         <a class="button is-outlined" href="{{ route('index') }}">
-            <span>Cancel</span> 
+            <span>Cancel</span>
         </a>
     </div>
 </div>
@@ -87,13 +87,11 @@ $users_view = Roles::hasPermission(Auth::user()->role, 'users_view');
             "scrollY": "49vh",
             "scrollCollapse": true,
             "order": [],
-            "columnDefs": [
-                { 
-                    "orderable": false, 
-                    "searchable": false,
-                    "targets": [0, 1]
-                }
-            ]
+            "columnDefs": [{
+                "orderable": false,
+                "searchable": false,
+                "targets": [0, 1]
+            }]
         });
         $('#loading').hide();
         $('#order_container').css('visibility', 'visible');

@@ -1,10 +1,10 @@
 @php
 
-use App\Http\Controllers\SettingsController;
-use App\Products;
-$product = Products::find(request()->route('id'));
+use App\Helpers\SettingsHelper;
+use App\Product;
+$product = Product::find(request()->route('id'));
 @endphp
-@extends('layouts.default')
+@extends('layouts.default', ['page' => 'products'])
 @section('content')
 <h2 class="title has-text-weight-bold">{{ is_null($product) ? 'Create' : 'Edit' }} Product</h2>
 @if(!is_null($product)) <h4 class="subtitle"><strong>Product:</strong> {{ $product->name }}</h4> @endif
@@ -29,13 +29,12 @@ $product = Products::find(request()->route('id'));
         <form action="/products/{{ is_null($product) ? 'new' : 'edit' }}" id="product_form" method="POST"
             class="form-horizontal">
             @csrf
-            <input type="hidden" name="id" value="{{ Auth::user()->id }}">
             <input type="hidden" name="product_id" id="product_id" value="{{ $product->id ?? null }}">
 
             <div class="field">
                 <label class="label">Name<sup style="color: red">*</sup></label>
                 <div class="control">
-                    <input type="text" name="name" class="input" placeholder="Name" value="{{ $product->name ?? old('name') }}">
+                    <input type="text" name="name" class="input" placeholder="Name" required value="{{ $product->name ?? old('name') }}">
                 </div>
             </div>
 
@@ -45,7 +44,7 @@ $product = Products::find(request()->route('id'));
                     <span class="icon is-small is-left">
                         <i class="fas fa-dollar-sign"></i>
                     </span>
-                    <input type="number" step="0.01" name="price" class="input" value="{{ isset($product->price) ? number_format($product->price, 2) : number_format(old('price'), 2) }}">
+                    <input type="number" step="0.01" name="price" class="input" required value="{{ isset($product->price) ? number_format($product->price, 2) : number_format(old('price'), 2) }}">
                 </div>
             </div>
 
@@ -62,9 +61,9 @@ $product = Products::find(request()->route('id'));
                 <label class="label">Category<sup style="color: red">*</sup></label>
                 <div class="control">
                     <div class="select">
-                        <select name="category">
+                        <select name="category" required>
                             {{!! !isset($product->category) ? "<option value=\"\" disabled selected>Select Category...</option>" : '' !!}}
-                            @foreach(SettingsController::getCategories() as $category)
+                            @foreach(SettingsHelper::getInstance()->getCategories() as $category)
                                 <option value="{{ $category->value }}"
                                     {{ (!is_null($product) && $product->category == $category->value) || old('category') == $category->value  ? 'selected' : '' }}>
                                     {{ ucfirst($category->value) }}
