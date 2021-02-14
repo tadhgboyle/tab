@@ -42,7 +42,7 @@ class PermissionHelper
         $this->register('Activity Management', 'activities', [
             'activities_list' => 'List all Activities',
             'activities_manage' => 'Edit/Create/Delete Activities',
-            'activities_register_user' => 'Register User for Activity' // TODO implement
+            'activities_register_user' => 'Register User for Activity'
         ]);
 
         $this->register('Order Management', 'orders', [
@@ -53,7 +53,7 @@ class PermissionHelper
 
         $this->register('Statistics', 'statistics', [
             'statistics_order_history' => 'View Order history chart',
-            'statistics_product_info' => 'View Product info chart'
+            'statistics_item_info' => 'View Product info chart'
         ]);
 
         $this->register('Settings', 'settings', [

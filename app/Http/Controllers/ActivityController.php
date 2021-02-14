@@ -86,7 +86,7 @@ class ActivityController extends Controller
             [
                 'activity' => $activity,
                 'activities_manage' => $activities_manage,
-                'can_register' => !strpos($activity->getStatus(), 'Over') && $activities_manage && $activity->hasSlotsAvailable()
+                'can_register' => !strpos($activity->getStatus(), 'Over') && $activities_manage && $activity->hasSlotsAvailable() && Auth::user()->role->hasPermission('activities_register_user')
             ]
         );
     }
