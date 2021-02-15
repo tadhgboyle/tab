@@ -41,7 +41,7 @@ $permissionHelper = PermissionHelper::getInstance()
                     <div class="control">
                         <label class="checkbox label">
                             Staff
-                            <input type="checkbox" class="js-switch" name="staff" @if(isset($role->staff) && $role->staff) checked @endif>
+                            <input type="checkbox" class="js-switch" name="staff" id="staff" @if(isset($role->staff) && $role->staff) checked @endif>
                         </label>
                     </div>
                 </div>
@@ -49,7 +49,7 @@ $permissionHelper = PermissionHelper::getInstance()
                     <div class="control">
                         <label class="checkbox label">
                             Superuser
-                            <input type="checkbox" class="js-switch" name="superuser" @if(isset($role->superuser) && $role->superuser) checked @endif>
+                            <input type="checkbox" class="js-switch" name="superuser" id="superuser" @if(isset($role->superuser) && $role->superuser) checked @endif>
                         </label>
                     </div>
                 </div>
@@ -136,16 +136,15 @@ $permissionHelper = PermissionHelper::getInstance()
         updateSections();
     });
 
-    $('input[type=checkbox][name=staff]').change(() => {
-        updateStaffInfo($(this).prop('checked'))
+    $('input[type=checkbox][name=staff]').click(function() {
+        updateStaffInfo(this.checked)
     });
 
-    $('input[type=checkbox][name=superuser]').change(() => {
-        updatePermissionSU($(this).prop('checked'))
+    $('input[type=checkbox][name=superuser]').click(function() {
+        updatePermissionSU(this.checked)
     });
 
     function updateStaffInfo(staff) {
-        console.log(staff)
         if (staff) {
             $(document.getElementById('superuser')).show(200);
             $(document.getElementById('permissions_box')).css({
@@ -161,7 +160,7 @@ $permissionHelper = PermissionHelper::getInstance()
     }
 
     function updatePermissionSU(superuser) {
-        $('.permission').each(() => {
+        $('.permission').each(function() {
             const checkbox = $(this);
             checkbox.prop('checked', superuser);
             checkbox.prop('disabled', superuser)
@@ -180,7 +179,7 @@ $permissionHelper = PermissionHelper::getInstance()
     }
 
     $('form').submit(() => {
-        $(':disabled').each(() => {
+        $(':disabled').each(function() {
             $(this).removeAttr('disabled');
         });
     });

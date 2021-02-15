@@ -89,7 +89,9 @@ Documentation (in the form of a printable user handbook) is being written.
 
 *High to Low priority sort*
 - Fix everything in Issues/Bugs
-- Built in Activity category
+- Let categories be for just products or just activities or both
+- Let products be purchasable by a parent only.
+    - Will require a boolean attribute in users table "parent"
 - Repeating activities. When they create activity, ask if repeated daily, weekly, monthly. Create more Activity rows for each day in the duration
     - If repeating activity, add a column (nullable), for root activity, the ID of the original activity it is duplicating
 - Disable submit button when anything goes wrong *(Remaining: Stock, Categories)* 
