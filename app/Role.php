@@ -71,16 +71,12 @@ class Role extends Model
             return true;
         }
 
-        if (is_array($permissions)) {
-            foreach ($permissions as $permission) {
-                if (in_array($permission, $this->permissions)) {
-                    return true;
-                }
-            }
-            
-            return false;
+        foreach ((array) $permissions as $permission) {
+            if (in_array($permission, $this->permissions)) {
+                return true;
+            }            
         }
-            
-        return in_array($permissions, $this->permissions);
+
+        return false;
     }
 }

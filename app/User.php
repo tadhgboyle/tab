@@ -16,7 +16,8 @@ class User extends Authenticatable
     protected $cacheFor = 180;
 
     protected $fillable = [
-        'balance'
+        'balance',
+        'deleted'
     ];
 
     protected $casts = [

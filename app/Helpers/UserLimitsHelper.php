@@ -14,7 +14,10 @@ class UserLimitsHelper
 
     public static function getInfo($user_id, $category)
     {
-        $info = UserLimits::where([['user_id', $user_id], ['category', $category]])->select('duration', 'limit_per')->get()[0];
+        $info = UserLimits::where([['user_id', $user_id], ['category', $category]])->select('duration', 'limit_per')->get();
+        if (count($info)) {
+            $info = $info[0];
+        }
         $return = new stdClass;
         if (isset($info->duration)) {
             $return->duration = $info->duration == 0 ? 'day' : 'week';
