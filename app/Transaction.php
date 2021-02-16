@@ -53,7 +53,7 @@ class Transaction extends Model
             }
             if ($products_returned >= $product_count) {
                 // incase something went wrong and the status wasnt updated earlier, do it now
-                $this->update(['status' => '1']);
+                $this->update(['status' => true]);
                 return 1;
             }
 

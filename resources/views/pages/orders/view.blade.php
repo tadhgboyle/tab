@@ -72,7 +72,7 @@ $return_order = Auth::user()->hasPermission('orders_return');
                         <td>
                             <div>
                                 @if($transaction->status == 0 && $item_info['returned'] < $item_info['quantity']) 
-                                    <button class="button is-danger is-small" onclick="openProductModal({{ $item_info['id'] }});">Return ({{ $item_info['quantity'] - $item_info['returned'] }})</button>
+                                    <button class="button is-danger is-small"  onclick="openProductModal({{ $item_info['id'] }});">Return ({{ $item_info['quantity'] - $item_info['returned'] }})</button>
                                 @else
                                     <div>Returned</div>
                                 @endif

@@ -196,6 +196,9 @@ class TransactionController extends Controller
         return redirect('/')->with('success', 'Order #' . $transaction->id . '. ' . $purchaser->full_name . " now has $" . number_format(round($remaining_balance, 2), 2));
     }
 
+    // TODO: when whole transaction is returned, manually deserialize and reserialize all products with return value of their original quantity
+    // to keep consistency with item sales chart
+
     public function returnOrder($id)
     {
         $transaction = Transaction::find($id);

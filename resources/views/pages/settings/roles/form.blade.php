@@ -92,7 +92,6 @@ $permissionHelper = PermissionHelper::getInstance()
         <section class="modal-card-body">
             <p><strong>{{ $affected_users }}</strong>@if($affected_users > 1 || $affected_users == 0) users @else user @endif currently have this role.</p>
             <!-- 
-                TODO: I broke something with the permissions js suddenly
                 Rules:
                 - Only roles which the current user can interact with 
                 - If the deleted role is not a staff role, only other non-staff roles are shown 
@@ -155,7 +154,9 @@ $permissionHelper = PermissionHelper::getInstance()
             });
         } else {
             $(document.getElementById('superuser')).hide(200);
-            $(document.getElementById('permissions_box')).css('visibility', 'hidden');
+            $(document.getElementById('permissions_box')).css({
+                visibility: 'hidden'
+            })
         }
     }
 
@@ -171,6 +172,7 @@ $permissionHelper = PermissionHelper::getInstance()
     function updateSections() {
         [{!! $permissionHelper->getCategoryKeys() !!}].forEach(element => {
             if ($(`#permission-${element}-checkbox`).prop('checked')) {
+                // TODO: is it better UX to not hide/show the sub permissions? then they know what their options are?
                 $(`#permission-${element}`).show(200);
             } else {
                 $(`#permission-${element}`).hide(200);

@@ -50,6 +50,7 @@ $users_view = Auth::user()->hasPermission('users_view');
 
                 <div class="field">
                     <label class="label">Role<sup style="color: red">*</sup></label>
+                    <!-- TODO: some sort of blocking of changing their own role -->
                     <div class="control">
                         <div class="select" id="role_id">
                             <select name="role_id" class="input" required>
@@ -63,7 +64,7 @@ $users_view = Auth::user()->hasPermission('users_view');
 
                 <div id="password_hidable" style="display: none;">
                     <div class="field">
-                        <label class="label">Password</label>
+                        <label class="label">{{ !is_null($user) ? 'Change ' : '' }}Password</label>
                         <div class="control has-icons-left">
                             <span class="icon is-small is-left">
                                 <i class="fas fa-lock"></i>

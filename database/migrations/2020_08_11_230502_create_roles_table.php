@@ -19,7 +19,7 @@ class CreateRolesTable extends Migration
             $table->integer('order')->unique();
             $table->boolean('superuser')->default(false);
             $table->boolean('staff')->default(false);
-            $table->string('permissions', 2048)->default('[]');
+            $table->text('permissions')->default('[]');
             $table->nullableTimestamps();
         });
     }
