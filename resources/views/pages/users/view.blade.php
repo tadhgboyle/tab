@@ -1,19 +1,3 @@
-@php
-use App\Transaction;
-use App\Http\Controllers\TransactionController;
-use App\User;
-use App\Role;
-use App\Activity;
-use App\Helpers\SettingsHelper;
-use App\Helpers\UserLimitsHelper;
-use Carbon\Carbon;
-use App\Http\Controllers\ActivityController;
-
-$user = User::find(request()->route('id'));
-$users_manage = Auth::user()->hasPermission('users_manage');
-$orders_view = Auth::user()->hasPermission('orders_view');
-if ($user == null) return redirect()->route('users_list')->with('error', 'Invalid user.')->send();
-@endphp
 @extends('layouts.default', ['page' => 'users'])
 @section('content')
 <h2 class="title has-text-weight-bold">View User</h2>
@@ -47,7 +31,6 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
                 @endif
             </thead>
             <tbody>
-                @php $transactions = Transaction::where('purchaser_id', $user->id)->orderBy('created_at', 'DESC')->get() @endphp
                 @foreach ($transactions as $transaction)
                 <tr>
                     <td>
@@ -101,26 +84,19 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
                         </tr>
                     </thead>
                     <tbody>
-                        @php $categories = SettingsHelper::getInstance()->getCategories() @endphp
                         @foreach($categories as $category)
-                            @php
-                            $info = UserLimitsHelper::getInfo($user->id, $category->value);
-                            $category_limit = $info->limit_per;
-                            $category_duration = $info->duration;
-                            $category_spent = UserLimitsHelper::findSpent($user->id, $category->value, $info);
-                            @endphp
                             <tr>
                                 <td>
-                                    <div>{{ ucfirst($category->value) }}</div>
+                                    <div>{{ ucfirst($category['name']) }}</div>
                                 </td>
                                 <td>
-                                    <div>{!! $category_limit == -1 ? "<i>Unlimited</i>" : "$" . number_format($category_limit, 2) . "/" . $category_duration !!}</div>
+                                    <div>{!! $category['limit'] == -1 ? "<i>Unlimited</i>" : "$" . number_format($category['limit'], 2) . "/" . $category['duration'] !!}</div>
                                 </td>
                                 <td>
-                                    <div>${{ number_format($category_spent, 2) }}</div>
+                                    <div>${{ number_format($category['spent'], 2) }}</div>
                                 </td>
                                 <td>
-                                    <div>{!! $category_limit == -1 ? "<i>Unlimited</i>" : "$" . number_format($category_limit - $category_spent, 2) !!}</div>
+                                    <div>{!! $category['limit'] == -1 ? "<i>Unlimited</i>" : "$" . number_format($category['limit'] - $category['spent'], 2) !!}</div>
                                 </td>
                             </tr>
                         @endforeach
@@ -140,8 +116,7 @@ if ($user == null) return redirect()->route('users_list')->with('error', 'Invali
                         </tr>
                     </thead>
                     <tbody>
-                        @php $transactions = ActivityController::getUserActivities($user) @endphp
-                        @foreach ($transactions as $transaction)
+                        @foreach ($activity_transactions as $transaction)
                         <tr>
                             <td>
                                 <div>{{ $transaction['created_at']->format('M jS Y h:ia') }}</div>

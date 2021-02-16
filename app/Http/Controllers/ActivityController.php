@@ -82,8 +82,7 @@ class ActivityController extends Controller
         $activities_manage = Auth::user()->role->hasPermission('activities_manage');
 
         return view(
-            'pages.activities.view',
-            [
+            'pages.activities.view', [
                 'activity' => $activity,
                 'activities_manage' => $activities_manage,
                 'can_register' => !strpos($activity->getStatus(), 'Over') && $activities_manage && $activity->hasSlotsAvailable() && Auth::user()->role->hasPermission('activities_register_user')

@@ -8,7 +8,9 @@ use App\Role;
 use Auth;
 use App\User;
 use App\UserLimits;
-use Illuminate\Http\Request;
+use App\Transaction;
+use App\Helpers\SettingsHelper;
+use App\Helpers\UserLimitsHelper;
 use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
@@ -133,8 +135,38 @@ class UserController extends Controller
         return redirect()->route('users_list')->with('success', 'Deleted user ' . $user->full_name . '.');
     }
 
-    public function view(Request $request) 
+    public function view() 
     {
-        // TODO
+        $user = User::find(request()->route('id'));
+        if ($user == null) {
+            return redirect()->route('users_list')->with('error', 'Invalid user.')->send();
+        }
+
+        $users_manage = Auth::user()->hasPermission('users_manage');
+        $orders_view = Auth::user()->hasPermission('orders_view');
+        $transactions = Transaction::where('purchaser_id', $user->id)->orderBy('created_at', 'DESC')->get();
+        $activity_transactions = ActivityController::getUserActivities($user);
+
+        $categories = SettingsHelper::getInstance()->getCategories();
+        $processed_categories = array();
+        foreach ($categories as $category) {
+            $info = UserLimitsHelper::getInfo($user->id, $category->value);
+
+            $processed_categories[$category->value] = [
+                'name' => $category->value,
+                'limit' => $info->limit_per,
+                'duration' => $info->duration,
+                'spent' => UserLimitsHelper::findSpent($user->id, $category->value, $info)
+            ];
+        }
+
+        return view('pages.users.view', [
+            'user' => $user,
+            'users_manage' => $users_manage,
+            'orders_view' => $orders_view,
+            'transactions' => $transactions,
+            'activity_transactions' => $activity_transactions,
+            'categories' => $processed_categories,
+        ]);
     }
 }

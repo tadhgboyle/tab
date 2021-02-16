@@ -6,6 +6,7 @@ use App\Http\Requests\ProductRequest;
 use Validator;
 use App\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
@@ -35,7 +36,7 @@ class ProductController extends Controller
         $product->unlimited_stock = $unlimited_stock;
         $product->stock_override = $request->has('stock_override');
         $product->pst = $request->has('pst');
-        $product->creator_id = $request->id;
+        $product->creator_id = Auth::id();
         $product->save();
         return redirect()->route('products_list')->with('success', 'Successfully created ' . $request->name . '.');
     }

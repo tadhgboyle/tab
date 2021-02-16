@@ -34,12 +34,10 @@ class ActivityRequest extends FormRequest
             'location' => [
                 'min:3',
                 'max:36',
-                'nullable'
             ],
             'description' => [
                 'min:3',
                 'max:255',
-                'nullable'
             ],
             'slots' => [
                 'num:1',

@@ -86,9 +86,7 @@ Route::middleware('auth')->group(function () {
             });
 
             Route::group(['permission' => 'users_view'], function () {
-                Route::get('/users/view/{id}', function () {
-                    return view('pages.users.view');
-                })->where('id', '[0-9]+')->name('users_view');
+                Route::get('/users/view/{id}', [UserController::class, 'view'])->where('id', '[0-9]+')->name('users_view');
             });
 
             Route::group(['permission' => 'users_manage'], function () {
