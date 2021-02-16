@@ -77,9 +77,10 @@ class Role extends Model
                     return true;
                 }
             }
+            
             return false;
-        } else {
-            return in_array($permissions, $this->permissions);
         }
+            
+        return in_array($permissions, $this->permissions);
     }
 }

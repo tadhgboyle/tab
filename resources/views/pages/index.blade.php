@@ -21,13 +21,13 @@ use App\User;
             <tbody>
                 <!-- TODO: Self purchases permission -->
                 @php $users = User::where('deleted', false)->select(['id', 'full_name', 'balance'])->get() @endphp
-                @foreach($users as $result)
+                @foreach($users as $user)
                     <tr>
                         <td>
-                            <div><a href="{{ route('orders_new', $result->id) }}">{{ $result->full_name }}</a></div>
+                            <div><a href="{{ route('orders_new', $user->id) }}">{{ $user->full_name }}</a></div>
                         </td>
                         <td>
-                            <div>${{ number_format($result->balance, 2) }}</div>
+                            <div>${{ number_format($user->balance, 2) }}</div>
                         </td>
                     </tr>
                 @endforeach

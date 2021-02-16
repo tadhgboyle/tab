@@ -31,7 +31,7 @@ class UserLimitsHelper
         return $return;
     }
 
-    public static function findSpent(int $user_id, string $category, object $info)
+    public static function findSpent(int $user_id, string $category, object $info): float
     {
         // First, if they have unlimited money for this category, let's grab all their transactions
         if ($info->limit_per == -1) {

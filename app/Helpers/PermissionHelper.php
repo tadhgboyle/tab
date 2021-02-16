@@ -119,6 +119,7 @@ class PermissionHelper
             }
 
             $checked = (!is_null($role) && (in_array($category_root_node, $role_permissions) || $role->superuser)) ? 'checked' : '';
+            // TODO: click on name of category to select/deselect checkbox
             $return .= "
                 <h4 class=\"subtitle\"><strong>$category</strong>&nbsp;<input type=\"checkbox\" class=\"permission\" id=\"permission-$category_root_node-checkbox\" name=\"permissions[$category_root_node]\" onclick=\"updateSections();\" value=\"1\" $checked></h4>
                 <div class=\"control\" id=\"permission-$category_root_node\" style=\"display: none;\">
