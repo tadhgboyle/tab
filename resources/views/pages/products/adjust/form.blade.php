@@ -1,9 +1,6 @@
-@php
-use App\Role;
-@endphp
 <div align="center">
     <h4 class="title has-text-weight-bold is-4">Adjust</h4>
-    <p><strong>Product:</strong> {{ $product->name }} @permission('products_edit')<a href="{{ route('products_edit' ,$product->id) }}">(Edit)</a>@endpermission</p>
+    <p><strong>Product:</strong> {{ $product->name }} @permission('products_edit')<a href="{{ route('products_edit', $product->id) }}">(Edit)</a>@endpermission</p>
     <hr>
     @if($product->unlimited_stock)
     <i>No available options</i>

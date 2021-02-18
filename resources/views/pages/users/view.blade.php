@@ -125,7 +125,13 @@
                                 <div>{{ $transaction['cashier']->full_name }}</div>
                             </td>
                             <td>
-                                <div><a href="{{ route('activities_view', $transaction['activity']->id) }}">{{ $transaction['activity']->name }}</a></div>
+                                <div>
+                                    @permission('activities_view')
+                                        <a href="{{ route('activities_view', $transaction['activity']->id) }}">{{ $transaction['activity']->name }}</a>
+                                    @else
+                                        {{ $transaction['activity']->name }}
+                                    @endpermission
+                                </div>
                             </td>
                             <td>
                                 <div>{!! $transaction['price'] > 0 ? '$' . number_format($transaction['price'], 2) : '<i>Free</i>' !!}</div>
