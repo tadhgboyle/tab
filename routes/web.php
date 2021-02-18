@@ -103,29 +103,21 @@ Route::middleware('auth')->group(function () {
          */
         Route::group(['permission' => 'products'], function() {
             Route::group(['permission' => 'products_list'], function () {
-                Route::get('/products', function () {
-                    return view('pages.products.list');
-                })->name('products_list');
+                Route::get('/products', [ProductController::class, 'list'])->name('products_list');
             });
 
             Route::group(['permission' => 'products_manage'], function () {
-                Route::get('/products/new', function () {
-                    return view('pages.products.form');
-                })->name('products_new');
+                Route::get('/products/new', [ProductController::class, 'form'])->name('products_new');
                 Route::post('/products/new', [ProductController::class, 'new']);
 
-                Route::get('/products/edit/{id}', function () {
-                    return view('pages.products.form');
-                })->where('id', '[0-9]+')->name('products_edit');
+                Route::get('/products/edit/{id}', [ProductController::class, 'form'])->where('id', '[0-9]+')->name('products_edit');
                 Route::post('/products/edit', [ProductController::class, 'edit'])->name('products_edit_form');
 
                 Route::get('/products/delete/{id}', [ProductController::class, 'delete'])->where('id', '[0-9]+')->name('products_delete');
             });
 
             Route::group(['permission' => 'products_adjust'], function () {
-                Route::get('/products/adjust', function () {
-                    return view('pages.products.adjust.list');
-                })->where('id', '[0-9]+')->name('products_adjust');
+                Route::get('/products/adjust', [ProductController::class, 'adjustList'])->where('id', '[0-9]+')->name('products_adjust');
                 Route::post('/products/adjust/ajax', [ProductController::class, 'ajaxInit'])->name('products_adjust_ajax');
                 Route::post('/products/adjust', [ProductController::class, 'adjustStock'])->name('products_adjust_form');
             });

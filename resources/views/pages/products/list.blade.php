@@ -1,9 +1,3 @@
-@php
-
-use App\Product;
-use App\Role;
-$products_manage = Auth::user()->hasPermission('products_manage');
-@endphp
 @extends('layouts.default', ['page' => 'products'])
 @section('content')
 <h2 class="title has-text-weight-bold">Product List</h2>
@@ -28,7 +22,7 @@ $products_manage = Auth::user()->hasPermission('products_manage');
                 </tr>
             </thead>
             <tbody>
-                @foreach (Product::all()->where('deleted', false) as $product)
+                @foreach ($products as $product)
                 <tr>
                     <td>
                         <div>{{ $product->name }}</div>

@@ -1,8 +1,3 @@
-@php
-
-use App\Product;
-use App\Helpers\UserLimitsHelper;
-@endphp
 @extends('layouts.default', ['page' => 'products'])
 @section('content')
 <h2 class="title has-text-weight-bold">Stock Adjustment</h2>
@@ -23,7 +18,7 @@ use App\Helpers\UserLimitsHelper;
                 </tr>
             </thead>
             <tbody>
-                @foreach(Product::where('deleted', false)->get() as $product)
+                @foreach($products as $product)
                 <tr>
                     <td>
                         <div>{{ $product->name }}</div>

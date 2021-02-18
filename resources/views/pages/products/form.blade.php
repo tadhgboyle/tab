@@ -1,9 +1,3 @@
-@php
-
-use App\Helpers\SettingsHelper;
-use App\Product;
-$product = Product::find(request()->route('id'));
-@endphp
 @extends('layouts.default', ['page' => 'products'])
 @section('content')
 <h2 class="title has-text-weight-bold">{{ is_null($product) ? 'Create' : 'Edit' }} Product</h2>
@@ -63,7 +57,7 @@ $product = Product::find(request()->route('id'));
                     <div class="select">
                         <select name="category" required>
                             {{!! !isset($product->category) ? "<option value=\"\" disabled selected>Select Category...</option>" : '' !!}}
-                            @foreach(SettingsHelper::getInstance()->getCategories() as $category)
+                            @foreach($categories as $category)
                                 <option value="{{ $category->value }}"
                                     {{ (!is_null($product) && $product->category == $category->value) || old('category') == $category->value  ? 'selected' : '' }}>
                                     {{ ucfirst($category->value) }}
