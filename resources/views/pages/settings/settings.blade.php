@@ -1,12 +1,3 @@
-@php
-use App\Helpers\SettingsHelper;
-use App\Helpers\RoleHelper;
-use App\Role;
-$manage_general = Auth::user()->hasPermission('settings_general');
-$manage_roles = Auth::user()->hasPermission('settings_roles_manage');
-$manage_categories = Auth::user()->hasPermission('settings_categories_manage');
-// TODO: Remove self purchases setting and change to per-group permission
-@endphp
 @extends('layouts.default')
 @section('content')
 <h2 class="title has-text-weight-bold">Settings</h2>
@@ -25,7 +16,7 @@ $manage_categories = Auth::user()->hasPermission('settings_categories_manage');
                         <span class="icon is-small is-left">
                             <i class="fas fa-percent"></i>
                         </span>
-                        <input type="number" step="0.01" name="gst" class="input" value="{{ SettingsHelper::getInstance()->getGst() }}">
+                        <input type="number" step="0.01" name="gst" class="input" value="{{ $gst }}">
                     </div>
                 </div>
 
@@ -35,7 +26,7 @@ $manage_categories = Auth::user()->hasPermission('settings_categories_manage');
                         <span class="icon is-small is-left">
                             <i class="fas fa-percent"></i>
                         </span>
-                        <input type="number" step="0.01" name="pst" class="input" value="{{ SettingsHelper::getInstance()->getPst() }}">
+                        <input type="number" step="0.01" name="pst" class="input" value="{{ $pst }}">
                     </div>
                 </div>
 
@@ -70,7 +61,7 @@ $manage_categories = Auth::user()->hasPermission('settings_categories_manage');
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach(SettingsHelper::getInstance()->getCategories() as $category)
+                        @foreach($categories as $category)
                         <tr>
                             <td>
                                 <div>{{ ucfirst($category->value) }}</div>
@@ -117,7 +108,7 @@ $manage_categories = Auth::user()->hasPermission('settings_categories_manage');
                     </tr>
                 </thead>
                 <tbody id="sortable">
-                    @foreach(RoleHelper::getInstance()->getRoles('ASC') as $role)
+                    @foreach($roles as $role)
                     <tr data-id="{{ $role->id }}">
                         <td>
                             <div>{{ $role->name }}</div>
@@ -159,67 +150,67 @@ $manage_categories = Auth::user()->hasPermission('settings_categories_manage');
 <script type="text/javascript">
     $(document).ready(function() {
         @if($manage_categories)
-        $('#category_list').DataTable({
-            "paging": false,
-            "searching": false,
-            "scrollY": "49vh",
-            "scrollCollapse": true,
-            "bInfo": false,
-            "columnDefs": [{
-                "orderable": false,
-                "searchable": false,
-                "targets": 1
-            }]
-        });
+            $('#category_list').DataTable({
+                "paging": false,
+                "searching": false,
+                "scrollY": "49vh",
+                "scrollCollapse": true,
+                "bInfo": false,
+                "columnDefs": [{
+                    "orderable": false,
+                    "searchable": false,
+                    "targets": 1
+                }]
+            });
         @endif
 
         @if($manage_roles)
-        $('#role_list').DataTable({
-            "order": [],
-            "paging": false,
-            "searching": false,
-            "scrollY": "49vh",
-            "scrollCollapse": true,
-            "bInfo": false,
-            "columnDefs": [{
-                "orderable": false,
-                "searchable": false,
-                "targets": [1, 2]
-            }]
-        });
+            $('#role_list').DataTable({
+                "order": [],
+                "paging": false,
+                "searching": false,
+                "scrollY": "49vh",
+                "scrollCollapse": true,
+                "bInfo": false,
+                "columnDefs": [{
+                    "orderable": false,
+                    "searchable": false,
+                    "targets": [1, 2]
+                }]
+            });
 
-        @if(Auth::user()->role->superuser)
-        $("#sortable").sortable({
-            start: function(event, ui) {
-                let start_pos = ui.item.index();
-                ui.item.data('startPos', start_pos);
-            },
-            update: function(event, ui) {
-                let roles = $("#sortable").children();
-                let toSubmit = [];
-                roles.each(function() {
-                    toSubmit.push($(this).data().id);
-                });
+            @if(Auth::user()->role->superuser)
+                $("#sortable").sortable({
+                    start: function(event, ui) {
+                        let start_pos = ui.item.index();
+                        ui.item.data('startPos', start_pos);
+                    },
+                    update: function(event, ui) {
+                        let roles = $("#sortable").children();
+                        let toSubmit = [];
+                        roles.each(function() {
+                            toSubmit.push($(this).data().id);
+                        });
 
-                $.ajax({
-                    url: "{{ route('settings_roles_order_ajax') }}",
-                    type: "GET",
-                    data: {
-                        roles: JSON.stringify({
-                            "roles": toSubmit
-                        })
-                    },
-                    success: function(response) {
-                        // Success
-                    },
-                    error: function(xhr) {
-                        // Error
-                        console.log(xhr);
+                        $.ajax({
+                            url: "{{ route('settings_roles_order_ajax') }}",
+                            type: "GET",
+                            data: {
+                                roles: JSON.stringify({
+                                    "roles": toSubmit
+                                })
+                            },
+                            success: function(response) {
+                                // Success
+                            },
+                            error: function(xhr) {
+                                // Error
+                                console.log(xhr);
+                            }
+                        });
                     }
                 });
-            }
-        });
-        @endif
+            @endif
         @endif
 
         $('#category_loading').hide();

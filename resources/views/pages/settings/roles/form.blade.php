@@ -1,19 +1,3 @@
-@php
-use App\Role;
-use Illuminate\Support\Facades\DB;
-use App\Helpers\PermissionHelper;
-$role = Role::find(request()->route('id'));
-$role_permissions = null;
-if (!is_null($role) && !Auth::user()->role->canInteract(Role::find(request()->route('id')))) {
-    return redirect()->route('settings')->with('error', 'You cannot interact with that role.')->send();
-}
-if (!is_null($role)) {
-    $role_permissions = $role->permissions;
-    $affected_users = DB::table('users')->where('role_id', $role->id)->count();
-    $available_roles = $role->getRolesAvailable(Auth::user()->role);
-}
-$permissionHelper = PermissionHelper::getInstance()
-@endphp
 @extends('layouts.default')
 @section('content')
 <h2 class="title has-text-weight-bold">{{ is_null($role) ? 'Create' : 'Edit' }} Role</h2>
