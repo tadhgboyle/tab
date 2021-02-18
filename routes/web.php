@@ -46,10 +46,7 @@ Route::middleware('auth')->group(function () {
          * Cashier 
          */
         Route::group(['permission' => 'cashier'], function() {
-            Route::get('/orders/{id}', function () {
-                return view('pages.orders.order');
-            })->where('id', '[0-9]+')->name('orders_new');
-            
+            Route::get('/orders/{id}', [TransactionController::class, 'order'])->where('id', '[0-9]+')->name('orders_new');
             Route::post('/orders/submit', [TransactionController::class, 'submit'])->name('orders_new_form');
         });
 
