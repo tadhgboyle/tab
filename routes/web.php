@@ -58,15 +58,11 @@ Route::middleware('auth')->group(function () {
          */
         Route::group(['permission' => 'orders'], function () {
             Route::group(['permission' => 'orders_list'], function() {
-                Route::get('/orders', function () {
-                    return view('pages.orders.list');
-                })->name('orders_list');
+                Route::get('/orders', [TransactionController::class, 'list'])->name('orders_list');
             });
 
             Route::group(['permission' => 'orders_view'], function() {
-                Route::get('/orders/view/{id}', function () {
-                    return view('pages.orders.view');
-                })->where('id', '[0-9]+')->name('orders_view');
+                Route::get('/orders/view/{id}', [TransactionController::class, 'view'])->where('id', '[0-9]+')->name('orders_view');
             });
 
             Route::group(['permission' => 'orders_return'], function() {
