@@ -6,8 +6,9 @@ use App\Http\Requests\ProductRequest;
 use Validator;
 use App\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Auth;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\SettingsHelper;
 
 class ProductController extends Controller
 {
@@ -63,8 +64,32 @@ class ProductController extends Controller
 
     public function delete($id)
     {
-        Product::where('id', $id)->update(['deleted' => true]);
-        return redirect()->route('products_list')->with('success', 'Successfully deleted ' . Product::find($id)->name . '.');
+        $product = Product::find($id);
+        $product->update(['deleted' => true]);
+        return redirect()->route('products_list')->with('success', 'Successfully deleted ' . $product->name . '.');
+    }
+
+    public function list()
+    {
+        return view('pages.products.list', [
+            'products_manage' => Auth::user()->hasPermission('products_manage'),
+            'products' => Product::where('deleted', false)->get(),
+        ]);
+    }
+
+    public function form()
+    {
+        return view('pages.products.form', [
+            'product' => Product::find(request()->route('id')),
+            'categories' => SettingsHelper::getInstance()->getCategories()
+        ]);
+    }
+
+    public function adjustList()
+    {
+        return view('pages.products.adjust.list', [
+            'products' => Product::where('deleted', false)->get()
+        ]);
     }
 
     public function adjustStock(Request $request)
