@@ -1,12 +1,3 @@
-@php
-
-use App\Transaction;
-use App\Http\Controllers\TransactionController;
-use App\User;
-use App\Role;
-$orders_view = Auth::user()->hasPermission('orders_view');
-$users_view = Auth::user()->hasPermission('users_view');
-@endphp
 @extends('layouts.default', ['page' => 'orders'])
 @section('content')
 <h2 class="title has-text-weight-bold">Order List</h2>
@@ -30,7 +21,7 @@ $users_view = Auth::user()->hasPermission('users_view');
                 </tr>
             </thead>
             <tbody>
-                @foreach (Transaction::orderBy('created_at', 'DESC')->get() as $transaction)
+                @foreach ($transactions as $transaction)
                 <tr>
                     <td>
                         <div>{{ $transaction->created_at->format('M jS Y h:ia') }}</div>
@@ -38,9 +29,9 @@ $users_view = Auth::user()->hasPermission('users_view');
                     <td>
                         <div>
                             @if ($users_view)
-                            <a href="{{ route('users_view', $transaction->purchaser->id) }}">{{ $transaction->purchaser->full_name }}</a>
+                                <a href="{{ route('users_view', $transaction->purchaser->id) }}">{{ $transaction->purchaser->full_name }}</a>
                             @else
-                            {{ $transaction->purchaser->full_name }}
+                                {{ $transaction->purchaser->full_name }}
                             @endif
                         </div>
                     </td>

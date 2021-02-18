@@ -1,19 +1,3 @@
-@php
-
-use App\Http\Controllers\TransactionController;
-use App\Product;
-use App\Transaction;
-use App\User;
-use App\Role;
-
-$transaction = Transaction::find(request()->route('id'));
-if ($transaction == null) return redirect()->route('orders_list')->with('error', 'Invalid order.')->send();
-
-$transaction_items = explode(", ", $transaction->products);
-$transaction_returned = $transaction->checkReturned();
-$users_view = Auth::user()->hasPermission('users_view');
-$return_order = Auth::user()->hasPermission('orders_return');
-@endphp
 @extends('layouts.default', ['page' => 'orders'])
 @section('content')
 <h2 class="title has-text-weight-bold">View Order</h2>
@@ -54,25 +38,24 @@ $return_order = Auth::user()->hasPermission('orders_return');
                 </thead>
                 <tbody>
                     @foreach($transaction_items as $product)
-                    @php $item_info = TransactionController::deserializeProduct($product); @endphp
                     <tr>
                         <td>
-                            <div>{{ $item_info['name'] }}</div>
+                            <div>{{ $product['name'] }}</div>
                         </td>
                         <td>
-                            <div>${{ number_format($item_info['price'], 2) }}</div>
+                            <div>${{ number_format($product['price'], 2) }}</div>
                         </td>
                         <td>
-                            <div>{{ $item_info['quantity'] }}</div>
+                            <div>{{ $product['quantity'] }}</div>
                         </td>
                         <td>
-                            <div>${{ number_format($item_info['price'] * $item_info['quantity'], 2) }}</div>
+                            <div>${{ number_format($product['price'] * $product['quantity'], 2) }}</div>
                         </td>
                         @if($return_order)
                         <td>
                             <div>
-                                @if($transaction->status == 0 && $item_info['returned'] < $item_info['quantity']) 
-                                    <button class="button is-danger is-small"  onclick="openProductModal({{ $item_info['id'] }});">Return ({{ $item_info['quantity'] - $item_info['returned'] }})</button>
+                                @if($transaction->status == 0 && $product['returned'] < $product['quantity']) 
+                                    <button class="button is-danger is-small"  onclick="openProductModal({{ $product['id'] }});">Return ({{ $product['quantity'] - $product['returned'] }})</button>
                                 @else
                                     <div>Returned</div>
                                 @endif
@@ -148,43 +131,43 @@ $return_order = Auth::user()->hasPermission('orders_return');
     });
 
     @if($return_order)
-    const modal_order = document.querySelector('.modal-order');
+        const modal_order = document.querySelector('.modal-order');
 
-    function openModal() {
-        modal_order.classList.add('is-active');
-    }
+        function openModal() {
+            modal_order.classList.add('is-active');
+        }
 
-    function closeModal() {
-        modal_order.classList.remove('is-active');
-    }
+        function closeModal() {
+            modal_order.classList.remove('is-active');
+        }
 
-    function returnData() {
-        let url = '{{ route("orders_return", ":id") }}';
-        url = url.replace(':id', {{ $transaction->id }});
-        $("#returnForm").attr('action', url);
-        $("#returnForm").submit();
-    }
+        function returnData() {
+            let url = '{{ route("orders_return", ":id") }}';
+            url = url.replace(':id', {{ $transaction->id }});
+            $("#returnForm").attr('action', url);
+            $("#returnForm").submit();
+        }
 
-    let product = null;
-    const modal_product = document.querySelector('.modal-product');
+        let product = null;
+        const modal_product = document.querySelector('.modal-product');
 
-    function openProductModal(return_product) {
-        product = return_product;
-        modal_product.classList.add('is-active');
-    }
+        function openProductModal(return_product) {
+            product = return_product;
+            modal_product.classList.add('is-active');
+        }
 
-    function closeProductModal() {
-        product = null;
-        modal_product.classList.remove('is-active');
-    }
+        function closeProductModal() {
+            product = null;
+            modal_product.classList.remove('is-active');
+        }
 
-    function returnProductData() {
-        let url = '{{ route("orders_return_item", [":item", ":order"]) }}';
-        url = url.replace(':item', product);
-        url = url.replace(':order', {{ $transaction->id }});
-        $("#returnItemForm").attr('action', url);
-        $("#returnItemForm").submit();
-    }
+        function returnProductData() {
+            let url = '{{ route("orders_return_item", [":item", ":order"]) }}';
+            url = url.replace(':item', product);
+            url = url.replace(':order', {{ $transaction->id }});
+            $("#returnItemForm").attr('action', url);
+            $("#returnItemForm").submit();
+        }
     @endif
 </script>
 @endsection

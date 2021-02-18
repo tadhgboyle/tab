@@ -8,7 +8,7 @@ use App\User;
 use App\Product;
 use App\Transaction;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Auth;
 
 class TransactionController extends Controller
 {
@@ -283,5 +283,35 @@ class TransactionController extends Controller
         if ($found === false) {
             return redirect()->back()->with('error', 'That item was not in the original order.');
         }
+    }
+
+    public function list()
+    {
+        return view('pages.orders.list', [
+            'orders_view' => Auth::user()->hasPermission('orders_view'),
+            'users_view' => Auth::user()->hasPermission('users_view'),
+            'transactions' => Transaction::orderBy('created_at', 'DESC')->get()
+        ]);
+    }
+
+    public function view()
+    {
+        $transaction = Transaction::find(request()->route('id'));
+        if ($transaction == null) {
+            return redirect()->route('orders_list')->with('error', 'Invalid order.')->send();
+        }
+
+        $transaction_items = array();
+        foreach (explode(", ", $transaction->products) as $product) {
+            $transaction_items[] = self::deserializeProduct($product);
+        }
+
+        return view('pages.orders.view', [
+            'transaction' => $transaction,
+            'transaction_items' => $transaction_items,
+            'transaction_returned' => $transaction->checkReturned(),
+            'users_view' => Auth::user()->hasPermission('users_view'),
+            'return_order' => Auth::user()->hasPermission('orders_return')
+        ]);
     }
 }
