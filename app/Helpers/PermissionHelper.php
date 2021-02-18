@@ -52,7 +52,7 @@ class PermissionHelper
         ]);
 
         $this->register('Statistics', 'statistics', [
-            'statistics_order_history' => 'View Order history chart',
+            'statistics_order_history' => 'View Order history chart', // TODO: implement these
             'statistics_item_info' => 'View Product info chart'
         ]);
 

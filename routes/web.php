@@ -22,9 +22,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Middleware\HasPermission;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/login', function () {
-    return view('pages.login');
-})->name('login');
+Route::get('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/login/auth', [LoginController::class, 'auth'])->name('login_auth');
 
 // Middleware('auth') requires the user to be signed in to view the page
@@ -34,6 +32,7 @@ Route::middleware('auth')->group(function () {
         if (Auth::user()->hasPermission('cashier')) {
             return view('pages.index');
         } else {
+            // TODO: figure out what to do with users who dont have permission. when they sign in they get a 403 page, not nice UX
             return view('pages.403');
         }
     })->name('index');
@@ -158,25 +157,17 @@ Route::middleware('auth')->group(function () {
          * Settings 
          */
         Route::group(['permission' => 'settings'], function() {
-            Route::get('/settings', function () {
-                return view('pages.settings.settings');
-            })->name('settings');
+            Route::get('/settings', [SettingsController::class, 'view'])->name('settings');
 
             Route::group(['permission' => 'settings_general'], function () {
                 Route::post('/settings', [SettingsController::class, 'editSettings'])->name('settings_form');
             });
 
             Route::group(['permission' => 'settings_roles_manage'], function () {
-                Route::get('/settings/roles/new', function () {
-                    return view('pages.settings.roles.form');
-                })->name('settings_roles_new');
-                Route::post('/settings/roles/new',
-                    [RoleController::class, 'new']
-                )->name('settings_roles_new_form');
+                Route::get('/settings/roles/new', [RoleController::class, 'roleForm'])->name('settings_roles_new');
+                Route::post('/settings/roles/new', [RoleController::class, 'new'])->name('settings_roles_new_form');
 
-                Route::get('/settings/roles/edit/{id}', function () {
-                    return view('pages.settings.roles.form');
-                })->where('id', '[0-9]+')->name('settings_roles_edit');
+                Route::get('/settings/roles/edit/{id}', [RoleController::class, 'roleForm'])->where('id', '[0-9]+')->name('settings_roles_edit');
                 Route::post('/settings/roles/edit', [RoleController::class, 'edit'])->name('settings_roles_edit_form');
                 Route::get('/settings/roles/order', [RoleController::class, 'order'])->name('settings_roles_order_ajax');
 
@@ -184,14 +175,10 @@ Route::middleware('auth')->group(function () {
             });
 
             Route::group(['permission' => 'settings_categories_manage'], function () {
-                Route::get('/settings/categories/new', function () {
-                    return view('pages.settings.categories.form');
-                })->name('settings_categories_new');
-                Route::post('/settings/categories/new',
-                    [SettingsController::class, 'newCat']
-                )->name('settings_categories_new_form');
+                Route::get('/settings/categories/new', [SettingsController::class, 'categoryForm'])->name('settings_categories_new');
+                Route::post('/settings/categories/new', [SettingsController::class, 'newCategory'])->name('settings_categories_new_form');
 
-                Route::get('/settings/categories/delete/{name}', [SettingsController::class, 'deleteCat'])->name('settings_categories_delete');
+                Route::get('/settings/categories/delete/{name}', [SettingsController::class, 'deleteCategory'])->name('settings_categories_delete');
             });
         });
     });
