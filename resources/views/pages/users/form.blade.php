@@ -1,14 +1,3 @@
-@php
-
-use App\Helpers\UserLimitsHelper;
-use App\Helpers\SettingsHelper;
-use App\User;
-use App\Role;
-$user = User::find(request()->route('id'));
-if (!is_null($user) && $user->deleted) return redirect()->route('users_list')->with('error', 'That user has been deleted.')->send();
-if (!is_null($user) && !Auth::user()->role->canInteract($user->role)) return redirect()->route('users_list')->with('error', 'You cannot interact with that user.')->send();
-$users_view = Auth::user()->hasPermission('users_view');
-@endphp
 @extends('layouts.default', ['page' => 'users'])
 @section('content')
 <h2 class="title has-text-weight-bold">{{ is_null($user) ? 'Create' : 'Edit' }} User</h2>
@@ -54,8 +43,8 @@ $users_view = Auth::user()->hasPermission('users_view');
                     <div class="control">
                         <div class="select" id="role_id">
                             <select name="role_id" class="input" required>
-                                @foreach(Auth::user()->role->getRolesAvailable() as $role)
-                                <option value="{{ $role->id }}" data-staff="{{ $role->staff ? 1 : 0 }}" {{ (isset($user->role) && $user->role->id == $role->id) || old('role') == $role->id ? "selected" : "" }}>{{ $role->name }}</option>
+                                @foreach($available_roles as $role)
+                                    <option value="{{ $role->id }}" data-staff="{{ $role->staff ? 1 : 0 }}" {{ (isset($user->role) && $user->role->id == $role->id) || old('role') == $role->id ? "selected" : "" }}>{{ $role->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -90,23 +79,22 @@ $users_view = Auth::user()->hasPermission('users_view');
     <div class="column is-5 box">
         <h4 class="title has-text-weight-bold is-4">Category Limits</h4>
 
-        @foreach(SettingsHelper::getInstance()->getCategories() as $category)
-            @if(isset($user->id)) @php $limit_info = UserLimitsHelper::getInfo($user->id, $category->value) @endphp @endif
+        @foreach($categories as $category)
             <div class="field">
-                <label class="label">{{ ucfirst($category->value) }} Limit</label>
+                <label class="label">{{ ucfirst($category['name']) }} Limit</label>
                 <div class="control has-icons-left">
                     <span class="icon is-small is-left">
                         <i class="fas fa-dollar-sign"></i>
                     </span>
-                    <input type="number" step="0.01" name="limit[{{ $category->value }}]" class="input" placeholder="Limit" value="{{ isset($user->id) ? number_format($limit_info->limit_per, 2) : '' }}">
+                    <input type="number" step="0.01" name="limit[{{ $category['name'] }}]" class="input" placeholder="Limit" value="{{ number_format($category['info']->limit_per, 2) }}">
                 </div>
                 <div class="control">
                     <label class="radio">
-                        <input type="radio" name="duration[{{ $category->value }}]" value="0" @if(isset($user->id) && $limit_info->duration == "day") checked @endif>
+                        <input type="radio" name="duration[{{ $category['name'] }}]" value="0" @if($category['info']->duration == "day") checked @endif>
                         Day
                     </label>
                     <label class="radio">
-                        <input type="radio" name="duration[{{ $category->value }}]" value="1" @if(isset($user->id) && $limit_info->duration == "week") checked @endif>
+                        <input type="radio" name="duration[{{ $category['name'] }}]" value="1" @if($category['info']->duration == "week") checked @endif>
                         Week
                     </label>
                 </div>
@@ -180,23 +168,23 @@ $users_view = Auth::user()->hasPermission('users_view');
     }
 
     @if(!is_null($user))
-    const modal = document.querySelector('.modal');
+        const modal = document.querySelector('.modal');
 
-    function openModal() {
-        modal.classList.add('is-active');
-    }
+        function openModal() {
+            modal.classList.add('is-active');
+        }
 
-    function closeModal() {
-        modal.classList.remove('is-active');
-    }
+        function closeModal() {
+            modal.classList.remove('is-active');
+        }
 
-    function deleteData() {
-        var id = document.getElementById('user_id').value;
-        var url = '{{ route("users_delete", ":id") }}';
-        url = url.replace(':id', id);
-        $("#deleteForm").attr('action', url);
-        $("#deleteForm").submit();
-    }
+        function deleteData() {
+            var id = document.getElementById('user_id').value;
+            var url = '{{ route("users_delete", ":id") }}';
+            url = url.replace(':id', id);
+            $("#deleteForm").attr('action', url);
+            $("#deleteForm").submit();
+        }
     @endif
 </script>
 @endsection

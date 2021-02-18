@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Http\Controllers\TransactionController;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Collection;
 use Rennokki\QueryCache\Traits\QueryCacheable;
@@ -34,6 +35,7 @@ class User extends Authenticatable
 
     private ?Collection $_activity_transactions = null;
     private ?Collection $_transactions = null;
+    private ?array $_activities = null;
 
     // TODO: add a "root" user? only they can edit superadmin roles
 
@@ -61,7 +63,7 @@ class User extends Authenticatable
     private function getActivityTransactions(): Collection
     {
         if ($this->_activity_transactions == null) {
-            $this->_activity_transactions = DB::table('activity_transactions')->where('user_id', $this->id)->get();
+            $this->_activity_transactions = DB::table('activity_transactions')->where('user_id', $this->id)->orderBy('created_at', 'DESC')->get();
         }
 
         return $this->_activity_transactions;
@@ -74,6 +76,28 @@ class User extends Authenticatable
         }
 
         return $this->_transactions;
+    }
+
+    public function getActivities(): array
+    {
+        if ($this->_activities == null) {
+            $return = array();
+
+            $activity_transactions = $this->getActivityTransactions();
+            foreach ($activity_transactions as $activity) {
+                $return[] = [
+                    'created_at' => Carbon::parse($activity->created_at),
+                    'cashier' => User::find($activity->cashier_id),
+                    'activity' => Activity::find($activity->activity_id),
+                    'price' => $activity->activity_price,
+                    'status' => $activity->status
+                ];
+            }
+
+            $this->_activities = $return;
+        }
+
+        return $this->_activities;
     }
 
     // Find how much a user has spent in total. 

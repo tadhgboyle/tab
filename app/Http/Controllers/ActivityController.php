@@ -107,24 +107,6 @@ class ActivityController extends Controller
         return json_encode($return);
     }
 
-    public static function getUserActivities(User $user): array
-    {
-        $activities = DB::table('activity_transactions')->where('user_id', $user->id)->orderBy('created_at', 'DESC')->get();
-        $return = array();
-
-        foreach ($activities as $activity) {
-            $return[] = [
-                'created_at' => Carbon::parse($activity->created_at),
-                'cashier' => User::find($activity->cashier_id),
-                'activity' => Activity::find($activity->activity_id),
-                'price' => $activity->activity_price,
-                'status' => $activity->status
-            ];
-        }
-
-        return $return;
-    }
-
     public static function ajaxInit()
     {
         $users = User::where([['full_name', 'LIKE', '%' . \Request::get('search') . '%'], ['deleted', false]])->limit(5)->get();
