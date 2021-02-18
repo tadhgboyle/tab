@@ -128,14 +128,10 @@ Route::middleware('auth')->group(function () {
             });
 
             Route::group(['permission' => 'activities_manage'], function () {
-                Route::get('/activities/new/{date?}', function ($date = null) {
-                    return view('pages.activities.form', ['start' => $date]);
-                })->name('activities_new');
+                Route::get('/activities/new/{date?}', [ActivityController::class, 'form'])->name('activities_new');
                 Route::post('/activities/new', [ActivityController::class, 'new']);
 
-                Route::get('/activities/edit/{id}', function () {
-                    return view('pages.activities.form');
-                })->where('id', '[0-9]+')->name('activities_edit');
+                Route::get('/activities/edit/{id}', [ActivityController::class, 'form'])->where('id', '[0-9]+')->name('activities_edit');
                 Route::post('/activities/edit', [ActivityController::class, 'edit'])->name('activities_edit_form');
 
                 Route::post('/activities/view/search', [ActivityController::class, 'ajaxInit'])->name('activities_user_search');
@@ -169,6 +165,7 @@ Route::middleware('auth')->group(function () {
 
                 Route::get('/settings/roles/edit/{id}', [RoleController::class, 'roleForm'])->where('id', '[0-9]+')->name('settings_roles_edit');
                 Route::post('/settings/roles/edit', [RoleController::class, 'edit'])->name('settings_roles_edit_form');
+                
                 Route::get('/settings/roles/order', [RoleController::class, 'order'])->name('settings_roles_order_ajax');
 
                 Route::get('/settings/roles/delete/{id}', [RoleController::class, 'delete'])->name('settings_roles_delete');

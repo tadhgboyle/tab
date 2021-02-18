@@ -127,7 +127,7 @@ Documentation (in the form of a printable user handbook) is being written.
     - Serialize so if it gets returned they get the discount back
 
 ## Issues/Bugs:
-- Dont import classes in views, use controllers to return views instead.
+- Clicking on a date to make new activity subtracts 1 from the day
 - Lazy loading of users/products (especially in cashier view).
     - They should type a query first, or use some ajax to fetch data. or else it could take forever to load
 - Categories should use an ID, and be serialized into each order product incase they are deleted.
