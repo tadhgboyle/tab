@@ -135,17 +135,21 @@ class UserController extends Controller
         return redirect()->route('users_list')->with('success', 'Deleted user ' . $user->full_name . '.');
     }
 
+    public function list()
+    {
+        return view('pages.users.list', [
+            'users_view' => Auth::user()->hasPermission('users_view'),
+            'users_manage' => Auth::user()->hasPermission('users_manage'),
+            'users' => User::where('deleted', false)->get()
+        ]);
+    }
+
     public function view() 
     {
         $user = User::find(request()->route('id'));
         if ($user == null) {
             return redirect()->route('users_list')->with('error', 'Invalid user.')->send();
         }
-
-        $users_manage = Auth::user()->hasPermission('users_manage');
-        $orders_view = Auth::user()->hasPermission('orders_view');
-        $transactions = Transaction::where('purchaser_id', $user->id)->orderBy('created_at', 'DESC')->get();
-        $activity_transactions = ActivityController::getUserActivities($user);
 
         $categories = SettingsHelper::getInstance()->getCategories();
         $processed_categories = array();
@@ -162,11 +166,40 @@ class UserController extends Controller
 
         return view('pages.users.view', [
             'user' => $user,
-            'users_manage' => $users_manage,
-            'orders_view' => $orders_view,
-            'transactions' => $transactions,
-            'activity_transactions' => $activity_transactions,
+            'users_manage' => Auth::user()->hasPermission('users_manage'),
+            'can_interact' => Auth::user()->role->canInteract($user->role),
+            'orders_view' => Auth::user()->hasPermission('orders_view'),
+            'transactions' => Transaction::where('purchaser_id', $user->id)->orderBy('created_at', 'DESC')->get(),
+            'activity_transactions' => $user->getActivities(),
             'categories' => $processed_categories,
+        ]);
+    }
+
+    public function form()
+    {
+        $user = User::find(request()->route('id'));
+        if ($user != null) {
+            if ($user->deleted) {
+                return redirect()->route('users_list')->with('error', 'That user has been deleted.')->send();
+            }
+            if (!Auth::user()->role->canInteract($user->role)) {
+                return redirect()->route('users_list')->with('error', 'You cannot interact with that user.')->send();
+            }
+        }
+
+        $categories = array();
+        foreach (SettingsHelper::getInstance()->getCategories() as $category) {
+            $categories[] = [
+                'name' => $category->value,
+                'info' => UserLimitsHelper::getInfo($user->id ?? null, $category->value)
+            ];
+        }
+
+        return view('pages.users.form', [
+            'user' => $user,
+            'users_view' => Auth::user()->hasPermission('users_view'),
+            'available_roles' => Auth::user()->role->getRolesAvailable(),
+            'categories' => $categories
         ]);
     }
 }

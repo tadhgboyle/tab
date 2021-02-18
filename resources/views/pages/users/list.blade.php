@@ -1,10 +1,3 @@
-@php
-
-use App\User;
-use App\Role;
-$users_view = Auth::user()->hasPermission('users_view');
-$users_manage = Auth::user()->hasPermission('users_manage');
-@endphp
 @extends('layouts.default', ['page' => 'users'])
 @section('content')
 <h2 class="title has-text-weight-bold">User List</h2>
@@ -30,7 +23,7 @@ $users_manage = Auth::user()->hasPermission('users_manage');
                 </tr>
             </thead>
             <tbody>
-                @foreach (User::where('deleted', false)->get() as $user)
+                @foreach ($users as $user)
                 <tr>
                     <td>
                         <div>{{ $user->full_name }}</div>

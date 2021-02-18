@@ -80,9 +80,7 @@ Route::middleware('auth')->group(function () {
          */
         Route::group(['permission' => 'users'], function () {
             Route::group(['permission' => 'users_list'], function () {
-                Route::get('/users', function () {
-                    return view('pages.users.list');
-                })->name('users_list');
+                Route::get('/users', [UserController::class, 'list'])->name('users_list');
             });
 
             Route::group(['permission' => 'users_view'], function () {
@@ -90,14 +88,10 @@ Route::middleware('auth')->group(function () {
             });
 
             Route::group(['permission' => 'users_manage'], function () {
-                Route::get('/users/new', function () {
-                    return view('pages.users.form');
-                })->name('users_new');
+                Route::get('/users/new', [UserController::class, 'form'])->name('users_new');
                 Route::post('/users/new', [UserController::class, 'new'])->name('users_new_form');
 
-                Route::get('/users/edit/{id}', function () {
-                    return view('pages.users.form');
-                })->where('id', '[0-9]+')->name('users_edit');
+                Route::get('/users/edit/{id}', [UserController::class, 'form'])->where('id', '[0-9]+')->name('users_edit');
                 Route::post('/users/edit', [UserController::class, 'edit'])->name('users_edit_form');
 
                 Route::get('/users/delete/{id}', [UserController::class, 'delete'])->where('id', '[0-9]+')->name('users_delete');

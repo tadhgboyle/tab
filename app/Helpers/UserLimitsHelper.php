@@ -12,12 +12,13 @@ use App\Http\Controllers\TransactionController;
 class UserLimitsHelper
 {
 
-    public static function getInfo($user_id, $category)
+    public static function getInfo(int $user_id, string $category): stdClass
     {
-        $info = UserLimits::where([['user_id', $user_id], ['category', $category]])->select('duration', 'limit_per')->get();
+        $info = $user_id == null ? array() : UserLimits::where([['user_id', $user_id], ['category', $category]])->select('duration', 'limit_per')->get();
         if (count($info)) {
             $info = $info[0];
         }
+        
         $return = new stdClass;
         if (isset($info->duration)) {
             $return->duration = $info->duration == 0 ? 'day' : 'week';
