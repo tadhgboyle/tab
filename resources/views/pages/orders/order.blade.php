@@ -1,17 +1,7 @@
-@php
-
-use App\Product;
-use App\User;
-use App\Role;
-use App\Helpers\SettingsHelper;
-$user = User::find(request()->route('id'));
-if ($user == null) return redirect()->route('index')->with('error', 'Invalid user.')->send();
-$users_view = Auth::user()->hasPermission('users_view');
-@endphp
 @extends('layouts.default', ['page' => 'cashier'])
 @section('content')
 <h2 class="title has-text-weight-bold">Cashier</h2>
-<h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if($users_view)<a href="{{ route('users_view',request()->route('id')) }}">(View)</a>@endif</h4>
+<h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if($users_view)<a href="{{ route('users_view', request()->route('id')) }}">(View)</a>@endif</h4>
 <div class="columns box">
     <div class="column is-two-thirds">
         @include('includes.messages')
@@ -22,8 +12,8 @@ $users_view = Auth::user()->hasPermission('users_view');
             <form method="post" id="order" action="{{ route('orders_new_form') }}">
                 @csrf
                 <input type="hidden" name="purchaser_id" value="{{ request()->route('id') }}">
-                <input type="hidden" id="current_gst" value="{{ SettingsHelper::getInstance()->getGst() }}">
-                <input type="hidden" id="current_pst" value="{{ SettingsHelper::getInstance()->getPst() }}">
+                <input type="hidden" id="current_gst" value="{{ $gst }}">
+                <input type="hidden" id="current_pst" value="{{ $pst }}">
                 <input type="hidden" id="purchaser_balance" value="{{ $user->balance }}">
 
                 <table id="product_list">
@@ -36,7 +26,6 @@ $users_view = Auth::user()->hasPermission('users_view');
                         <th>Price</th>
                     </thead>
                     <tbody>
-                        @php $products = Product::orderBy('name', 'ASC')->where('deleted', false)->get(); @endphp
                         @foreach($products as $product)
                         <tr>
                             <td>

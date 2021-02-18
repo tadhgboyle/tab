@@ -314,4 +314,20 @@ class TransactionController extends Controller
             'return_order' => Auth::user()->hasPermission('orders_return')
         ]);
     }
+
+    public function order()
+    {
+        $user = User::find(request()->route('id'));
+        if ($user == null) {
+            return redirect()->route('index')->with('error', 'Invalid user.')->send();
+        }
+
+        return view('pages.orders.order', [
+            'user' => $user,
+            'users_view' => Auth::user()->hasPermission('users_view'),
+            'products' => Product::orderBy('name', 'ASC')->where('deleted', false)->get(),
+            'gst' => SettingsHelper::getInstance()->getGst(),
+            'pst' => SettingsHelper::getInstance()->getPst()
+        ]);
+    }
 }
