@@ -1,11 +1,3 @@
-@php
-
-use App\Activity;
-use Carbon\Carbon;
-$activity = Activity::find(request()->route('id'));
-if ($activity == null) $start = request()->route('date') ?? Carbon::now();
-else $start = $activity->start;
-@endphp
 @extends('layouts.default', ['page' => 'activities'])
 @section('content')
 <h2 class="title has-text-weight-bold">{{ is_null($activity) ? 'Create' : 'Edit' }} Activity</h2>

@@ -81,13 +81,26 @@ class ActivityController extends Controller
 
         $activities_manage = Auth::user()->role->hasPermission('activities_manage');
 
-        return view(
-            'pages.activities.view', [
-                'activity' => $activity,
-                'activities_manage' => $activities_manage,
-                'can_register' => !strpos($activity->getStatus(), 'Over') && $activities_manage && $activity->hasSlotsAvailable() && Auth::user()->role->hasPermission('activities_register_user')
-            ]
-        );
+        return view('pages.activities.view', [
+            'activity' => $activity,
+            'activities_manage' => $activities_manage,
+            'can_register' => !strpos($activity->getStatus(), 'Over') && $activities_manage && $activity->hasSlotsAvailable() && Auth::user()->role->hasPermission('activities_register_user')
+        ]);
+    }
+
+    public function form()
+    {
+        $activity = Activity::find(request()->route('id'));
+        if ($activity == null) {
+            $start = request()->route('date') ?? Carbon::now();
+        } else {
+            $start = $activity->start;
+        }
+
+        return view('pages.activities.form', [
+            'activity' => $activity,
+            'start' => $start
+        ]);
     }
 
     public static function getAll()
