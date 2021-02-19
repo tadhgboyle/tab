@@ -129,6 +129,7 @@ Documentation (in the form of a printable user handbook) is being written.
 ## Issues/Bugs:
 - Clicking on a date to make new activity subtracts 1 from the day
 - Lazy loading of users/products (especially in cashier view).
+    - Use this https://github.com/yajra/laravel-datatables
     - They should type a query first, or use some ajax to fetch data. or else it could take forever to load
 - Categories should use an ID, and be serialized into each order product incase they are deleted.
 - (Intermittent) When an error happens on order screen, it returns back with selection, but when you unselect a box it all gets NaN

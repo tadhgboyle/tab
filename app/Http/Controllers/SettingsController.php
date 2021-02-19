@@ -8,7 +8,6 @@ use App\Helpers\SettingsHelper;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use App\Settings;
-use Auth;
 
 class SettingsController extends Controller
 {
@@ -45,9 +44,6 @@ class SettingsController extends Controller
     public function view()
     {
         return view('pages.settings.settings', [
-            'manage_general' => Auth::user()->hasPermission('settings_general'),
-            'manage_roles' => Auth::user()->hasPermission('settings_roles_manage'),
-            'manage_categories' => Auth::user()->hasPermission('settings_categories_manage'),
             'gst' => SettingsHelper::getInstance()->getGst(),
             'pst' => SettingsHelper::getInstance()->getPst(),
             'categories' => SettingsHelper::getInstance()->getCategories(),

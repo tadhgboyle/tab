@@ -14,16 +14,16 @@
                     <th>Username</th>
                     <th>Balance</th>
                     <th>Role</th>
-                    @if ($users_view)
+                    @permission('users_view')
                     <th></th>
-                    @endif
-                    @if ($users_manage)
+                    @endpermission
+                    @permission('users_manage')
                     <th></th>
-                    @endif
+                    @endpermission
                 </tr>
             </thead>
             <tbody>
-                @foreach ($users as $user)
+                @foreach($users as $user)
                 <tr>
                     <td>
                         <div>{{ $user->full_name }}</div>
@@ -37,12 +37,12 @@
                     <td>
                         <div>{{ $user->role->name }}</div>
                     </td>
-                    @if ($users_view)
+                    @permission('users_view')
                     <td>
                         <div><a href="{{ route('users_view', $user->id) }}">View</a></div>
                     </td>
-                    @endif
-                    @if ($users_manage)
+                    @endpermission
+                    @permission('users_manage')
                         @if (Auth::user()->role->canInteract($user->role))
                         <td>
                             <div><a href="{{ route('users_edit', $user->id) }}">Edit</a></div>
@@ -58,7 +58,7 @@
                             </div>
                         </td>
                         @endif
-                    @endif
+                    @endpermission
                 </tr>
                 @endforeach
             </tbody>

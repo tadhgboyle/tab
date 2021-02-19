@@ -72,7 +72,6 @@ class ProductController extends Controller
     public function list()
     {
         return view('pages.products.list', [
-            'products_manage' => Auth::user()->hasPermission('products_manage'),
             'products' => Product::where('deleted', false)->get(),
         ]);
     }

@@ -1,7 +1,7 @@
 @extends('layouts.default', ['page' => 'users'])
 @section('content')
 <h2 class="title has-text-weight-bold">{{ is_null($user) ? 'Create' : 'Edit' }} User</h2>
-@if(!is_null($user)) <h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if($users_view)<a href="{{ route('users_view', $user->id) }}">(View)</a>@endif</h4>@endif
+@if(!is_null($user)) <h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @permission('users_view')<a href="{{ route('users_view', $user->id) }}">(View)</a>@endpermission</h4>@endif
 <div class="columns">
     <div class="column is-5">
         @include('includes.messages')
