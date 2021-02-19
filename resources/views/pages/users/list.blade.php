@@ -75,12 +75,12 @@
                 "orderable": false,
                 "searchable": false,
                 "targets": [
-                    @if($users_view && $users_manage)
+                    @if(hasPermission('users_view') && hasPermission('users_manage'))
                     4,
                     5
-                    @elseif($users_view && !$users_manage)
+                    @elseif(hasPermission('users_view') && !hasPermission('users_manage'))
                     4
-                    @elseif(!$users_view && $users_manage)
+                    @elseif(!hasPermission('users_view') && hasPermission('users_manage'))
                     4
                     @endif
                 ]

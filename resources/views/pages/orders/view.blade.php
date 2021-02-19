@@ -70,7 +70,7 @@
     </div>
 </div>
 
-@if(!is_null($transaction) && $return_order)
+@if(!is_null($transaction) && hasPermission('orders_return'))
 <div class="modal modal-order">
     <div class="modal-background" onclick="closeModal();"></div>
     <div class="modal-card">
