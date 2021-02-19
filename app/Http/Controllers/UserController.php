@@ -138,8 +138,6 @@ class UserController extends Controller
     public function list()
     {
         return view('pages.users.list', [
-            'users_view' => Auth::user()->hasPermission('users_view'), /* needed for complex calculations */
-            'users_manage' => Auth::user()->hasPermission('users_manage'),
             'users' => User::where('deleted', false)->get()
         ]);
     }
@@ -166,7 +164,6 @@ class UserController extends Controller
 
         return view('pages.users.view', [
             'user' => $user,
-            'users_manage' => Auth::user()->hasPermission('users_manage'), /* needed for complex calculations */
             'can_interact' => Auth::user()->role->canInteract($user->role),
             'transactions' => Transaction::where('purchaser_id', $user->id)->orderBy('created_at', 'DESC')->get(),
             'activity_transactions' => $user->getActivities(),

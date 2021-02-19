@@ -26,7 +26,7 @@ class BladeServiceProvider extends ServiceProvider
     public function boot()
     {
         Blade::if('permission', function (string $permission) {
-            return Auth::user()->role->hasPermission($permission);
+            return hasPermission($permission);
         });
 
         // TODO: Blade::if('page') to clean up the navbar

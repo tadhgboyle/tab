@@ -308,7 +308,6 @@ class TransactionController extends Controller
             'transaction' => $transaction,
             'transaction_items' => $transaction_items,
             'transaction_returned' => $transaction->checkReturned(),
-            'return_order' => Auth::user()->hasPermission('orders_return') /* needed for complex calculations */
         ]);
     }
 
