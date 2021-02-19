@@ -288,8 +288,6 @@ class TransactionController extends Controller
     public function list()
     {
         return view('pages.orders.list', [
-            'orders_view' => Auth::user()->hasPermission('orders_view'),
-            'users_view' => Auth::user()->hasPermission('users_view'),
             'transactions' => Transaction::orderBy('created_at', 'DESC')->get()
         ]);
     }
@@ -310,8 +308,7 @@ class TransactionController extends Controller
             'transaction' => $transaction,
             'transaction_items' => $transaction_items,
             'transaction_returned' => $transaction->checkReturned(),
-            'users_view' => Auth::user()->hasPermission('users_view'),
-            'return_order' => Auth::user()->hasPermission('orders_return')
+            'return_order' => Auth::user()->hasPermission('orders_return') /* needed for complex calculations */
         ]);
     }
 
@@ -324,7 +321,6 @@ class TransactionController extends Controller
 
         return view('pages.orders.order', [
             'user' => $user,
-            'users_view' => Auth::user()->hasPermission('users_view'),
             'products' => Product::orderBy('name', 'ASC')->where('deleted', false)->get(),
             'gst' => SettingsHelper::getInstance()->getGst(),
             'pst' => SettingsHelper::getInstance()->getPst()

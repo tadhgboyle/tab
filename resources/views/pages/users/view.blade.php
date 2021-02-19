@@ -26,12 +26,12 @@
                 <th>Cashier</th>
                 <th>Price</th>
                 <th>Status</th>
-                @if($orders_view)
+                @permission('orders_view')
                 <th></th>
-                @endif
+                @endpermission
             </thead>
             <tbody>
-                @foreach ($transactions as $transaction)
+                @foreach($transactions as $transaction)
                 <tr>
                     <td>
                         <div>{{ $transaction->created_at->format('M jS Y h:ia') }}</div>
@@ -57,11 +57,11 @@
                             @endswitch
                         </div>
                     </td>
-                    @if($orders_view)
+                    @permission('orders_view')
                     <td>
                         <div><a href="{{ route('orders_view', $transaction->id) }}">View</a></div>
                     </td>
-                    @endif
+                    @endpermission
                 </tr>
                 @endforeach
             </tbody>
@@ -172,9 +172,9 @@
                 "searchable": false,
                 "targets": [
                     3,
-                    @if($orders_view)
+                    @permission('orders_view')
                     4
-                    @endif
+                    @endpermission
                 ]
             }]
         });

@@ -6,8 +6,8 @@
         @include('includes.messages')
         <p><strong>Order ID:</strong> {{ request()->route('id') }}</p>
         <p><strong>Date:</strong> {{ $transaction->created_at->format('M jS Y h:ia') }}</p>
-        <p><strong>Purchaser:</strong> @if($users_view) <a href="{{ route('users_view', $transaction->purchaser_id) }}">{{ $transaction->purchaser->full_name }}</a> @else {{ $transaction->purchaser->full_name }} @endif</p>
-        <p><strong>Cashier:</strong> @if($users_view) <a href="{{ route('users_view', $transaction->cashier_id) }}">{{ $transaction->cashier->full_name }}</a> @else {{ $transaction->cashier->full_name }} @endif</p>
+        <p><strong>Purchaser:</strong> @permission('users_view') <a href="{{ route('users_view', $transaction->purchaser_id) }}">{{ $transaction->purchaser->full_name }}</a> @else {{ $transaction->purchaser->full_name }} @endpermission</p>
+        <p><strong>Cashier:</strong> @permission('users_view') <a href="{{ route('users_view', $transaction->cashier_id) }}">{{ $transaction->cashier->full_name }}</a> @else {{ $transaction->cashier->full_name }} @endpermission</p>
         <p><strong>Total Price:</strong> ${{ number_format($transaction->total_price, 2) }}</p>
         <p><strong>Status:</strong> @switch($transaction_returned) @case(0) Not Returned @break @case(1) Returned @break @case(2) Semi Returned @break @endswitch</p>
         <br>
@@ -32,9 +32,9 @@
                     <th>Price</th>
                     <th>Quantity</th>
                     <th>Item Price</th>
-                    @if($return_order)
+                    @permission('orders_return')
                     <th></th>
-                    @endif
+                    @endpermission
                 </thead>
                 <tbody>
                     @foreach($transaction_items as $product)
@@ -51,7 +51,7 @@
                         <td>
                             <div>${{ number_format($product['price'] * $product['quantity'], 2) }}</div>
                         </td>
-                        @if($return_order)
+                        @permission('orders_return')
                         <td>
                             <div>
                                 @if($transaction->status == 0 && $product['returned'] < $product['quantity']) 
@@ -61,7 +61,7 @@
                                 @endif
                             </div>
                         </td>
-                        @endif
+                        @endpermission
                     </tr>
                     @endforeach
                 </tbody>
@@ -91,7 +91,7 @@
 </div>
 @endif
 
-@if($return_order)
+@permission('orders_return')
 <div class="modal modal-product">
     <div class="modal-background" onclick="closeProductModal();"></div>
     <div class="modal-card">
@@ -110,7 +110,7 @@
         </footer>
     </div>
 </div>
-@endif
+@endpermission
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -118,19 +118,19 @@
             "paging": false,
             "scrollY": "49vh",
             "scrollCollapse": true,
-            @if($return_order)
+            @permission('orders_return')
             "columnDefs": [{
                 "orderable": false,
                 "searchable": false,
                 "targets": [4]
             }]
-            @endif
+            @endpermission
         });
         $('#loading').hide();
         $('#table_container').css('visibility', 'visible');
     });
 
-    @if($return_order)
+    @permission('orders_return')
         const modal_order = document.querySelector('.modal-order');
 
         function openModal() {
@@ -168,6 +168,6 @@
             $("#returnItemForm").attr('action', url);
             $("#returnItemForm").submit();
         }
-    @endif
+    @endpermission
 </script>
 @endsection

@@ -8,7 +8,6 @@ use App\Http\Requests\ActivityRequest;
 use App\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\DB;
 
 class ActivityController extends Controller
 {

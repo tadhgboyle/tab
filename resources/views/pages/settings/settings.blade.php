@@ -2,7 +2,7 @@
 @section('content')
 <h2 class="title has-text-weight-bold">Settings</h2>
 <div class="columns">
-    @if($manage_general)
+    @permission('settings_general')
     <div class="column is-3">
         <div class="box">
             <h4 class="title has-text-weight-bold is-4">General</h4>
@@ -41,11 +41,11 @@
             </form>
         </div>
     </div>
-    @endif
+    @endpermission
 
     <div class="column"></div>
 
-    @if($manage_categories)
+    @permission('settings_categories_manage')
     <div class="column is-3">
         <div class="box">
             <h4 class="title has-text-weight-bold is-4">Categories</h4>
@@ -88,11 +88,11 @@
             </a>
         </div>
     </div>
-    @endif
+    @endpermission
 
     <div class="column"></div>
 
-    @if($manage_roles)
+    @permission('settings_roles_manage')
     <div class="column box is-4">
         <h4 class="title has-text-weight-bold is-4">Roles</h4>
         <div id="role_loading" align="center">
@@ -144,12 +144,12 @@
             <span>New</span>
         </a>
     </div>
-    @endif
+    @endpermission
 </div>
 
 <script type="text/javascript">
     $(document).ready(function() {
-        @if($manage_categories)
+        @permission('settings_categories_manage')
             $('#category_list').DataTable({
                 "paging": false,
                 "searching": false,
@@ -162,9 +162,9 @@
                     "targets": 1
                 }]
             });
-        @endif
+        @endpermission
 
-        @if($manage_roles)
+        @permission('settings_roles_manage')
             $('#role_list').DataTable({
                 "order": [],
                 "paging": false,
@@ -211,7 +211,7 @@
                     }
                 });
             @endif
-        @endif
+        @endpermission
 
         $('#category_loading').hide();
         $('#category_container').css('visibility', 'visible');
