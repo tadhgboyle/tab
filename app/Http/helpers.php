@@ -4,11 +4,11 @@ if (! function_exists('hasPermission')) {
     /**
      * Check if the logged in user has specified permission
      *
-     * @param  string  $permission
+     * @param  $permission
      * @return bool
      */
-    function hasPermission(string $permission): bool
+    function hasPermission($permission): bool
     {
-        return Auth::user()->hasPermission($permission);
+        return Auth::user()->role->hasPermission($permission);
     }
 }

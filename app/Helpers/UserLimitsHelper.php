@@ -8,6 +8,7 @@ use App\UserLimits;
 use Illuminate\Support\Carbon;
 use stdClass;
 use App\Http\Controllers\TransactionController;
+use App\User;
 
 class UserLimitsHelper
 {
@@ -35,20 +36,24 @@ class UserLimitsHelper
         return $return;
     }
 
-    public static function findSpent(int $user_id, string $category, object $info): float
+    public static function findSpent(User $user, string $category, object $info): float
     {
         // First, if they have unlimited money for this category, let's grab all their transactions
         if ($info->limit_per == -1) {
-            $transactions = Transaction::where([['purchaser_id', $user_id], ['status', 0]])->get();
+            $transactions = $user->getTransactions();
         } else {
             // Determine how far back to grab transactions from
-            $transactions = Transaction::where([['created_at', '>=', Carbon::now()->subDays($info->duration == 'day' ? 1 : 7)->toDateTimeString()], ['purchaser_id', $user_id], ['status', 0]])->get();
+            // TODO: dont waste a query where
+            $transactions = Transaction::where([['created_at', '>=', Carbon::now()->subDays($info->duration == 'day' ? 1 : 7)->toDateTimeString()], ['purchaser_id', $user->id]])->get();
         }
 
         $category_spent = 0.00;
 
         // Loop applicable transactions, then do a bunch of wacky shit
         foreach ($transactions as $transaction) {
+            if ($transaction->status == true) {
+                continue;
+            }
             // Loop transaction products. Determine if the product's category is the one we are looking at,
             // if so, add its ((value * (quantity - returned)) * tax) to the end result
             foreach (explode(", ", $transaction['products']) as $transaction_product) {

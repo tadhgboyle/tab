@@ -18,10 +18,16 @@ class UserLimits extends Model
     ];
 
     protected $casts = [
+        'category' => 'string',
         'limit_per' => 'float'
     ];
 
     public function user()
+    {
+        return $this->hasOne(User::class, 'id');
+    }
+
+    public function editor()
     {
         return $this->hasOne(User::class, 'id');
     }

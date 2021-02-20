@@ -55,9 +55,9 @@ class User extends Authenticatable
     //     return -1;
     // }
 
-    public function hasPermission($permissions): bool
+    public function hasPermission($permission): bool
     {
-        return $this->role->hasPermission($permissions);
+        return $this->role->hasPermission($permission);
     }
 
     private function getActivityTransactions(): Collection
@@ -69,10 +69,10 @@ class User extends Authenticatable
         return $this->_activity_transactions;
     }
 
-    private function getTransactions(): Collection
+    public function getTransactions(): Collection
     {
         if ($this->_transactions == null) {
-            $this->_transactions = Transaction::where('purchaser_id', $this->id)->get();
+            $this->_transactions = Transaction::where('purchaser_id', $this->id)->orderBy('created_at', 'DESC')->get();
         }
 
         return $this->_transactions;

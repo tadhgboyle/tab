@@ -158,14 +158,14 @@ class UserController extends Controller
                 'name' => $category->value,
                 'limit' => $info->limit_per,
                 'duration' => $info->duration,
-                'spent' => UserLimitsHelper::findSpent($user->id, $category->value, $info)
+                'spent' => UserLimitsHelper::findSpent($user, $category->value, $info)
             ];
         }
 
         return view('pages.users.view', [
             'user' => $user,
             'can_interact' => Auth::user()->role->canInteract($user->role),
-            'transactions' => Transaction::where('purchaser_id', $user->id)->orderBy('created_at', 'DESC')->get(),
+            'transactions' => $user->getTransactions(),
             'activity_transactions' => $user->getActivities(),
             'categories' => $processed_categories,
         ]);

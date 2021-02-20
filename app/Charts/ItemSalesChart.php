@@ -10,7 +10,9 @@ use Chartisan\PHP\Chartisan;
 
 class ItemSalesChart extends BaseChart
 {
-
+    
+    public ?array $middlewares = ['auth'];
+    
     public function handler(Request $request): Chartisan
     {
         $sales = array();

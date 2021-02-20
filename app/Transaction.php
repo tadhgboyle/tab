@@ -34,7 +34,7 @@ class Transaction extends Model
 
     public function checkReturned(): int
     {
-        if ($this->status == 1) {
+        if ($this->status) {
             return 1;
         } else {
             $products_returned = 0;
