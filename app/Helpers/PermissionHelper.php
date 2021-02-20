@@ -41,6 +41,7 @@ class PermissionHelper
 
         $this->register('Activity Management', 'activities', [
             'activities_list' => 'List all Activities',
+            'activities_view' => 'View specific Activity information',
             'activities_manage' => 'Edit/Create/Delete Activities',
             'activities_register_user' => 'Register User for Activity'
         ]);
@@ -52,7 +53,7 @@ class PermissionHelper
         ]);
 
         $this->register('Statistics', 'statistics', [
-            'statistics_order_history' => 'View Order history chart', // TODO: implement these
+            'statistics_order_history' => 'View Order history chart',
             'statistics_item_info' => 'View Product info chart'
         ]);
 
@@ -74,13 +75,7 @@ class PermissionHelper
 
     public function getCategories(): array
     {
-        $return = array();
-
-        foreach ($this->_permissions as $category_name => $meta) {
-            $return[] = $category_name;
-        }
-
-        return $return;
+        return array_keys($this->_permissions);
     }
 
     /**

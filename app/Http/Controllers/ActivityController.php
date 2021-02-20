@@ -78,12 +78,12 @@ class ActivityController extends Controller
             return redirect()->route('activities_list')->with('error', 'Invalid activity.')->send();
         }
 
-        $activities_manage = Auth::user()->role->hasPermission('activities_manage');
+        $activities_manage = hasPermission('activities_manage');
 
         return view('pages.activities.view', [
             'activity' => $activity,
             'activities_manage' => $activities_manage,
-            'can_register' => !strpos($activity->getStatus(), 'Over') && $activities_manage && $activity->hasSlotsAvailable() && Auth::user()->role->hasPermission('activities_register_user')
+            'can_register' => !strpos($activity->getStatus(), 'Over') && $activities_manage && $activity->hasSlotsAvailable() && hasPermission('activities_register_user')
         ]);
     }
 

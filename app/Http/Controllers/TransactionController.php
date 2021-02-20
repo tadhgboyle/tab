@@ -116,7 +116,7 @@ class TransactionController extends Controller
 
                 // Stock handling
                 if (!$product_info->hasStock($quantity)) {
-                    return redirect()->back()->withInput()->with('error', 'Not enough ' . $product_info->name . ' in stock. Only ' . $product->stock . ' remaining.');
+                    return redirect()->back()->withInput()->with('error', 'Not enough ' . $product_info->name . ' in stock. Only ' . $product_info->stock . ' remaining.');
                 } else {
                     array_push($stock_products, $product_info);
                 }
@@ -157,7 +157,7 @@ class TransactionController extends Controller
                 continue;
             }
 
-            $category_spent = $category_spent_orig = UserLimitsHelper::findSpent($request->purchaser_id, $category, $limit_info);
+            $category_spent = $category_spent_orig = UserLimitsHelper::findSpent($purchaser, $category, $limit_info);
 
             // Loop all products in this transaction. If the product's category is the current one in the above loop, add it's price to category spent
             foreach ($products as $product) {

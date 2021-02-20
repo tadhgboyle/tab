@@ -116,7 +116,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($activity_transactions as $transaction)
+                        @foreach($activity_transactions as $transaction)
                         <tr>
                             <td>
                                 <div>{{ $transaction['created_at']->format('M jS Y h:ia') }}</div>

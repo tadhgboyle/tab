@@ -15,7 +15,7 @@ class HasPermission
      */
     public function handle(\Illuminate\Http\Request $request, Closure $next)
     {
-        if ($request->user()->hasPermission($request->route()->action['permission'])) {
+        if (hasPermission($request->route()->action['permission'])) {
             return $next($request);
         }
 

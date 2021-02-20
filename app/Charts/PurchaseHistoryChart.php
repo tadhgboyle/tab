@@ -12,6 +12,8 @@ use Chartisan\PHP\Chartisan;
 class PurchaseHistoryChart extends BaseChart
 {
 
+    public ?array $middlewares = ['auth']; // TODO: use HasPermission::class middleware, just dont know how to pass the permission
+
     public function handler(Request $request): Chartisan
     {
         $normal_data = Transaction::where([['created_at', '>=', Carbon::now()->subDays(SettingsHelper::getInstance()->getStatsTime())->toDateTimeString()], ['status', 0]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();

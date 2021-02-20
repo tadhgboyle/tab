@@ -6,7 +6,6 @@ use App\Http\Requests\ProductRequest;
 use Validator;
 use App\Product;
 use Illuminate\Http\Request;
-use Auth;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\SettingsHelper;
 
@@ -37,7 +36,7 @@ class ProductController extends Controller
         $product->unlimited_stock = $unlimited_stock;
         $product->stock_override = $request->has('stock_override');
         $product->pst = $request->has('pst');
-        $product->creator_id = Auth::id();
+        $product->creator_id = auth()->id();
         $product->save();
         return redirect()->route('products_list')->with('success', 'Successfully created ' . $request->name . '.');
     }
@@ -58,7 +57,7 @@ class ProductController extends Controller
 
         DB::table('products')
             ->where('id', $request->product_id)
-            ->update(['name' => $request->name, 'price' => $request->price, 'category' => $request->category, 'stock' => $stock, 'box_size' => $request->box_size ?? -1, 'unlimited_stock' => $unlimited_stock, 'stock_override' => $stock_override, 'pst' => $pst, 'editor_id' => Auth::id()]);
+            ->update(['name' => $request->name, 'price' => $request->price, 'category' => $request->category, 'stock' => $stock, 'box_size' => $request->box_size ?? -1, 'unlimited_stock' => $unlimited_stock, 'stock_override' => $stock_override, 'pst' => $pst, 'editor_id' => auth()->id()]);
         return redirect()->route('products_list')->with('success', 'Successfully edited ' . $request->name . '.');
     }
 

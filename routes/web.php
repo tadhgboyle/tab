@@ -29,7 +29,7 @@ Route::post('/login/auth', [LoginController::class, 'auth'])->name('login_auth')
 Route::middleware('auth')->group(function () {
 
     Route::get('/', function () {
-        if (Auth::user()->hasPermission('cashier')) {
+        if (hasPermission('cashier')) {
             return view('pages.index');
         } else {
             // TODO: figure out what to do with users who dont have permission. when they sign in they get a 403 page, not nice UX
