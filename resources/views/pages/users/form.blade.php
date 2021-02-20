@@ -33,7 +33,7 @@
                         <span class="icon is-small is-left">
                             <i class="fas fa-dollar-sign"></i>
                         </span>
-                        <input type="number" step="0.01" name="balance" class="input" value="{{ isset($user->balance) ? number_format($user->balance, 2) : number_format(old('balance'), 2) }}">
+                        <input type="number" step="0.01" name="balance" class="input" value="{{ isset($user->balance) ? number_format($user->balance, 2, ".", "") : number_format(old('balance'), 2, ".", "") }}">
                     </div>
                 </div>
 

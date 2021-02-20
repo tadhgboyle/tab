@@ -26,6 +26,7 @@ class ActivityController extends Controller
         if ($request->has('unlimited_slots')) {
             $activity->slots = -1;
         } else {
+            die($request->slots);
             $activity->slots = $request->slots;
         }
         $activity->price = $request->price;
@@ -122,18 +123,18 @@ class ActivityController extends Controller
     public static function ajaxInit()
     {
         $users = User::where([['full_name', 'LIKE', '%' . \Request::get('search') . '%'], ['deleted', false]])->limit(5)->get();
+        $output = '';
 
         if (count($users)) {
             $activity = Activity::find(\Request::get('activity'));
-            $output = '';
             foreach ($users as $key => $user) {
                 $output .=
                     '<tr>' .
-                    '<td>' . $user->full_name . '</td>' .
-                    '<td>$' . number_format($user->balance, 2) . '</td>' .
-                    (($user->balance < $activity->getPrice() || $activity->isAttending($user)) ?
-                        '<td><button class="button is-success is-small" disabled>Add</button></td>' :
-                        '<td><a href="' . route('activities_user_add', [$activity->id, $user->id]) . '" class="button is-success is-small">Add</a></td>') .
+                        '<td>' . $user->full_name . '</td>' .
+                        '<td>$' . number_format($user->balance, 2) . '</td>' .
+                        (($user->balance < $activity->getPrice() || $activity->isAttending($user)) ?
+                            '<td><button class="button is-success is-small" disabled>Add</button></td>' :
+                            '<td><a href="' . route('activities_user_add', [$activity->id, $user->id]) . '" class="button is-success is-small">Add</a></td>') .
                     '</tr>';
             }
         }

@@ -34,15 +34,18 @@ class ActivityRequest extends FormRequest
             'location' => [
                 'min:3',
                 'max:36',
+                'nullable'
             ],
             'description' => [
                 'min:3',
                 'max:255',
+                'nullable'
             ],
             'slots' => [
-                'num:1',
+                'min:1',
                 'numeric',
-                ValidationRule::requiredIf($this->get('unlimited_slots') == 0)
+                'nullable',
+                ValidationRule::requiredIf(!$this->has('unlimited_slots'))
             ],
             'price' => [
                 'required',
