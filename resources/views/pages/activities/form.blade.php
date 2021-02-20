@@ -54,7 +54,6 @@
 
     </div>
     <div class="column is-4">
-
             <div class="field">
                 <label class="label">Start Time<sup style="color: red">*</sup></label>
                 <div class="control">
@@ -65,7 +64,7 @@
             <div class="field">
                 <label class="label">End Time<sup style="color: red">*</sup></label>
                 <div class="control">
-                    <input type="text" name="end" id="end" class="input" required value="{{ (isset($activity->end)) ? $activity->end : '' }}">
+                    <input type="text" name="end" id="end" class="input" required value="{{ (isset($activity->end)) ? $activity->end : old('end') }}">
                 </div>
             </div>
 

@@ -173,6 +173,7 @@ class UserController extends Controller
 
     public function form()
     {
+        // TODO: when editing user their balance is empty
         $user = User::find(request()->route('id'));
         if ($user != null) {
             if ($user->deleted) {
