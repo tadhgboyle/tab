@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
 use App\Activity;
 use App\Http\Requests\ActivityRequest;
 use App\User;
@@ -26,7 +25,6 @@ class ActivityController extends Controller
         if ($request->has('unlimited_slots')) {
             $activity->slots = -1;
         } else {
-            die($request->slots);
             $activity->slots = $request->slots;
         }
         $activity->price = $request->price;
