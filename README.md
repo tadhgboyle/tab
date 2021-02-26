@@ -73,8 +73,14 @@ Documentation (in the form of a printable user handbook) is being written.
 #### Order Information Page
 ![Order Info Page](https://i.imgur.com/SZkOOmn.png)
 
+#### Activity List Page
+![Activity List Page](https://i.imgur.com/OShQs4Y.png)
+
+#### Activity Information Page
+![Activity Information Page](https://i.imgur.com/D1uNxgo.png)
+
 #### Chart.js Statistics Page
-![Chart.js Statistics Page](https://i.imgur.com/Qqhmj5z.png)
+![Chart.js Statistics Page](https://i.imgur.com/2OOU7ZX.png)
 
 #### Stock Adjustment Page
 ![Stock Adjustment Page](https://i.imgur.com/inUoVcl.png)
