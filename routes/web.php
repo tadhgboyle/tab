@@ -21,6 +21,7 @@ use App\Http\Controllers\StatisticsPageController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\HasPermission;
 use Illuminate\Support\Facades\Route;
+use App\User;
 
 Route::get('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/login/auth', [LoginController::class, 'auth'])->name('login_auth');
@@ -30,7 +31,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/', function () {
         if (hasPermission('cashier')) {
-            return view('pages.index');
+            return view('pages.index', ['users' => User::where('deleted', false)->select(['id', 'full_name', 'balance'])->get()]);
         } else {
             // TODO: figure out what to do with users who dont have permission. when they sign in they get a 403 page, not nice UX
             return view('pages.403');

@@ -1,6 +1,3 @@
-@php
-use App\User;
-@endphp
 @extends('layouts.default', ['page' => 'cashier'])
 @section('content')
 <h2 class="title has-text-weight-bold">Cashier</h2>
@@ -20,7 +17,6 @@ use App\User;
             </thead>
             <tbody>
                 <!-- TODO: Self purchases permission -->
-                @php $users = User::where('deleted', false)->select(['id', 'full_name', 'balance'])->get() @endphp
                 @foreach($users as $user)
                     <tr>
                         <td>

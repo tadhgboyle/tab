@@ -25,6 +25,7 @@ class PermissionHelper
     {
         $this->register('Cashier', 'cashier', [
             'cashier_create' => 'Create Orders',
+            'cashier_self_purchase' => 'Create orders for themselves' // TODO implement
         ]);
 
         $this->register('Users', 'users', [
@@ -69,8 +70,10 @@ class PermissionHelper
      */
     private function register(string $category_name, string $root_node, array $permissions)
     {
-        $this->_permissions[$category_name]['root_node'] = $root_node;
-        $this->_permissions[$category_name]['permissions'] = $permissions;
+        $this->_permissions[$category_name] = [
+            'root_node' => $root_node,
+            'permissions' => $permissions
+        ];
     }
 
     public function getCategories(): array
@@ -92,7 +95,7 @@ class PermissionHelper
         return rtrim($return, ',');
     }
 
-    public function renderForm(?Role $role, ?array $role_permissions): string
+    public function renderForm(?Role $role): string
     {
         $return = '';
 
@@ -103,7 +106,7 @@ class PermissionHelper
 
             $category_permissions_html = '';
             foreach ($category_permissions as $node => $name) {
-                $checked = (!is_null($role) && (in_array($node, $role_permissions) || $role->superuser)) ? 'checked' : '';
+                $checked = (!is_null($role) && (in_array($node, $role->permissions) || $role->superuser)) ? 'checked' : '';
                 $category_permissions_html .= "
                     <label class=\"checkbox\">
                         <input type=\"checkbox\" class=\"permission\" name=\"permissions[$node]\" value=\"1\" $checked>
@@ -113,7 +116,7 @@ class PermissionHelper
                 ";
             }
 
-            $checked = (!is_null($role) && (in_array($category_root_node, $role_permissions) || $role->superuser)) ? 'checked' : '';
+            $checked = (!is_null($role) && (in_array($category_root_node, $role->permissions) || $role->superuser)) ? 'checked' : '';
             // TODO: click on name of category to select/deselect checkbox
             $return .= "
                 <h4 class=\"subtitle\"><strong>$category</strong>&nbsp;<input type=\"checkbox\" class=\"permission\" id=\"permission-$category_root_node-checkbox\" name=\"permissions[$category_root_node]\" onclick=\"updateSections();\" value=\"1\" $checked></h4>
@@ -130,44 +133,47 @@ class PermissionHelper
     public static function parseNodes($permissions): array
     {
         $return = array();
-        if (is_array($permissions)) {
-            $selected_categories = array();
-            foreach ($permissions as $permission => $value) {
-                if (!$value) {
-                    continue;
-                }
 
-                // if this node doesnt have a _, its probably a category root node
-                if (!Str::contains($permission, '_')) {
-                    $return[] = $permission;
-                    $selected_categories[] = $permission;
-                    continue;
-                }
+        if (!is_array($permissions)) {
+            return $return;
+        }
 
-                // grab the root node from a normal node (first element if we split by _)
-                // and ensure this node was selected. if not, dont add it
-                $category = explode('_', $permission)[0];
-                if (!in_array($category, $selected_categories)) {
-                    continue;
-                }
-
-                $return[] = $permission;
+        $selected_categories = array();
+        foreach ($permissions as $permission => $value) {
+            if (!$value) {
+                continue;
             }
 
-            foreach ($selected_categories as $category_root_node) {
-                // remove any root categories which have no child nodes selected
-                $found = false;
+            // if this node doesnt have a _, its probably a category root node
+            if (!Str::contains($permission, '_')) {
+                $return[] = $permission;
+                $selected_categories[] = $permission;
+                continue;
+            }
 
-                foreach ($return as $permission) {
-                    if (Str::startsWith($permission, $category_root_node . '_')) {
-                        $found = true;
-                        break;
-                    }
-                }
+            // grab the root node from a normal node (first element if we split by _)
+            // and ensure this node was selected. if not, dont add it
+            $category = explode('_', $permission)[0];
+            if (!in_array($category, $selected_categories)) {
+                continue;
+            }
 
-                if (!$found) {
-                    unset($return[array_search($category_root_node, $return)]);
+            $return[] = $permission;
+        }
+
+        foreach ($selected_categories as $category_root_node) {
+            // remove any root categories which have no child nodes selected
+            $found = false;
+
+            foreach ($return as $permission) {
+                if (Str::startsWith($permission, $category_root_node . '_')) {
+                    $found = true;
+                    break;
                 }
+            }
+
+            if (!$found) {
+                unset($return[array_search($category_root_node, $return)]);
             }
         }
 

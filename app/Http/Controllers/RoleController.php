@@ -74,20 +74,18 @@ class RoleController extends Controller
     public function roleForm()
     {
         $role = Role::find(request()->route('id'));
-        $role_permissions = null;
 
         if (!is_null($role)) {
             if (!Auth::user()->role->canInteract($role)) {
                 return redirect()->route('settings')->with('error', 'You cannot interact with that role.')->send();
             }
-            $role_permissions = $role->permissions;
+
             $affected_users = DB::table('users')->where('role_id', $role->id)->count();
             $available_roles = $role->getRolesAvailable(Auth::user()->role);
         }
 
         return view('pages.settings.roles.form', [
             'role' => $role,
-            'role_permissions' => $role_permissions,
             'affected_users' => $affected_users ?? null,
             'available_roles' => $available_roles ?? null,
             'permissionHelper' => PermissionHelper::getInstance()

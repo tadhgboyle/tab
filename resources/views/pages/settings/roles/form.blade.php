@@ -61,7 +61,7 @@
     <div class="column box is-8" id="permissions_box" style="visibility: hidden;">
         <h4 class="title has-text-weight-bold is-4">Permissions</h4>
         <hr>
-            {!! $permissionHelper->renderForm($role, $role_permissions) !!}
+            {!! $permissionHelper->renderForm($role) !!}
         </form>
     </div>
 </div>
