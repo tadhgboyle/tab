@@ -43,7 +43,7 @@ class UserLimitsHelper
             $transactions = $user->getTransactions();
         } else {
             // Determine how far back to grab transactions from
-            // TODO: dont waste a query where
+            // TODO: dont waste a query here
             $transactions = Transaction::where([['created_at', '>=', Carbon::now()->subDays($info->duration == 'day' ? 1 : 7)->toDateTimeString()], ['purchaser_id', $user->id]])->get();
         }
 
@@ -51,12 +51,13 @@ class UserLimitsHelper
 
         // Loop applicable transactions, then do a bunch of wacky shit
         foreach ($transactions as $transaction) {
-            if ($transaction->status == true) {
+            if ($transaction->status) {
                 continue;
             }
             // Loop transaction products. Determine if the product's category is the one we are looking at,
             // if so, add its ((value * (quantity - returned)) * tax) to the end result
-            foreach (explode(", ", $transaction['products']) as $transaction_product) {
+            $transaction_products = explode(", ", $transaction['products']);
+            foreach ($transaction_products as $transaction_product) {
                 if (strtolower($category) == Product::find(strtok($transaction_product, "*"))->category) {
                     $item_info = TransactionController::deserializeProduct($transaction_product, false);
                     $tax_percent = $item_info['gst'];

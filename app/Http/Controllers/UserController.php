@@ -178,6 +178,7 @@ class UserController extends Controller
             if ($user->deleted) {
                 return redirect()->route('users_list')->with('error', 'That user has been deleted.')->send();
             }
+
             if (!Auth::user()->role->canInteract($user->role)) {
                 return redirect()->route('users_list')->with('error', 'You cannot interact with that user.')->send();
             }

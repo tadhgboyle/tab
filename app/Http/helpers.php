@@ -9,6 +9,6 @@ if (! function_exists('hasPermission')) {
      */
     function hasPermission($permission): bool
     {
-        return Auth::user()->role->hasPermission($permission);
+        return Auth::user()->hasPermission($permission);
     }
 }

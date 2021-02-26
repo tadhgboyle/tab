@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use App\Helpers\RoleHelper;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule as ValidationRule;
 
