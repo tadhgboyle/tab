@@ -7,14 +7,14 @@
             <div class="navbar-start">
                 @auth
                     @permission('cashier')
-                        <a class="navbar-item @if(isset($page) && $page == 'cashier') is-active @endif" href="{{ route('index') }}">
+                        <a class="navbar-item {{ page('cashier', $page ?? null) }}" href="{{ route('index') }}">
                             <i class="fas fa-money-bill-wave-alt"></i>&nbsp;Cashier
                         </a>
                     @endpermission
 
                     @permission('users')
                         <div class="navbar-item has-dropdown is-hoverable">
-                            <p class="navbar-link @if(isset($page) && $page == 'users') is-active @endif"><i class="fas fa-users"></i>&nbsp;Users</p>
+                            <p class="navbar-link {{ page('users', $page ?? null) }}"><i class="fas fa-users"></i>&nbsp;Users</p>
                             <div class="navbar-dropdown is-boxed">
                                 @permission('users_list')
                                     <a class="navbar-item" href="{{ route('users_list') }}">
@@ -32,7 +32,7 @@
 
                     @permission('products')
                         <div class="navbar-item has-dropdown is-hoverable">
-                            <p class="navbar-link @if(isset($page) && $page == 'products') is-active @endif"><i class="fas fa-tag"></i>&nbsp;Products</p>
+                            <p class="navbar-link {{ page('products', $page ?? null) }}"><i class="fas fa-tag"></i>&nbsp;Products</p>
                             <div class="navbar-dropdown is-boxed">
                                 @permission('products_list')
                                     <a class="navbar-item" href="{{ route('products_list') }}">
@@ -55,7 +55,7 @@
 
                     @permission('activites')
                         <div class="navbar-item has-dropdown is-hoverable">
-                            <p class="navbar-link @if(isset($page) && $page == 'activities') is-active @endif"><i class="fas fa-calendar-alt"></i>&nbsp;Activities</p>
+                            <p class="navbar-link {{ page('activities', $page ?? null) }}"><i class="fas fa-calendar-alt"></i>&nbsp;Activities</p>
                             <div class="navbar-dropdown is-boxed">
                                 @permission('activities_list')
                                     <a class="navbar-item" href="{{ route('activities_list') }}">
@@ -72,13 +72,13 @@
                     @endpermission
 
                     @permission('orders_list')
-                        <a class="navbar-item @if(isset($page) && $page == 'orders') is-active @endif" href="{{ route('orders_list') }}">
+                        <a class="navbar-item {{ page('orders', $page ?? null) }}" href="{{ route('orders_list') }}">
                             <i class="fas fa-shopping-basket"></i>&nbsp;Orders
                         </a>
                     @endpermission
 
                     @permission('statistics')
-                        <a class="navbar-item @if(isset($page) && $page == 'statistics') is-active @endif" href="{{ route('statistics') }}">
+                        <a class="navbar-item {{ page('statistics', $page ?? null) }}" href="{{ route('statistics') }}">
                             <i class="fas fa-chart-pie"></i>&nbsp;Statistics
                         </a>     
                     @endpermission
