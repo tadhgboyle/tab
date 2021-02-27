@@ -13,6 +13,7 @@ use App\User;
 class UserLimitsHelper
 {
 
+    // TODO clean
     public static function getInfo(?int $user_id, string $category): stdClass
     {
         $info = $user_id == null ? array() : UserLimits::where([['user_id', $user_id], ['category', $category]])->select('duration', 'limit_per')->get();

@@ -21,7 +21,7 @@ use App\Http\Controllers\StatisticsPageController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\HasPermission;
 use Illuminate\Support\Facades\Route;
-use App\User;
+use Illuminate\Support\Facades\DB;
 
 Route::get('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/login/auth', [LoginController::class, 'auth'])->name('login_auth');
@@ -31,7 +31,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/', function () {
         if (hasPermission('cashier')) {
-            return view('pages.index', ['users' => User::where('deleted', false)->select(['id', 'full_name', 'balance'])->get()]);
+            return view('pages.index', ['users' => 
+            DB::table('users')->where('deleted', false)->when(!hasPermission('cashier_self_purchases'), function($query) {
+                $query->where('users.id', '!=', auth()->id());
+            })->select(['id', 'full_name', 'balance'])->get()]);
         } else {
             // TODO: figure out what to do with users who dont have permission. when they sign in they get a 403 page, not nice UX
             return view('pages.403');
@@ -46,7 +49,7 @@ Route::middleware('auth')->group(function () {
          * Cashier 
          */
         Route::group(['permission' => 'cashier'], function() {
-            Route::get('/orders/{id}', [TransactionController::class, 'order'])->where('id', '[0-9]+')->name('orders_new');
+            Route::get('/orders/{id}', [TransactionController::class, 'order'])->name('orders_new');
             Route::post('/orders/submit', [TransactionController::class, 'submit'])->name('orders_new_form');
         });
 
@@ -59,12 +62,12 @@ Route::middleware('auth')->group(function () {
             });
 
             Route::group(['permission' => 'orders_view'], function() {
-                Route::get('/orders/view/{id}', [TransactionController::class, 'view'])->where('id', '[0-9]+')->name('orders_view');
+                Route::get('/orders/view/{id}', [TransactionController::class, 'view'])->name('orders_view');
             });
 
             Route::group(['permission' => 'orders_return'], function() {
-                Route::get('/orders/return/order/{id}', [TransactionController::class, 'returnOrder'])->where('id', '[0-9]+')->name('orders_return');
-                Route::get('/orders/return/item/{item}/{order}',[TransactionController::class, 'returnItem'])->where(['item', '[0-9]+'], ['order', '[0-9]+'])->name('orders_return_item');
+                Route::get('/orders/return/order/{id}', [TransactionController::class, 'returnOrder'])->name('orders_return');
+                Route::get('/orders/return/item/{item}/{order}',[TransactionController::class, 'returnItem'])->name('orders_return_item');
             });
         });
 
@@ -77,17 +80,17 @@ Route::middleware('auth')->group(function () {
             });
 
             Route::group(['permission' => 'users_view'], function () {
-                Route::get('/users/view/{id}', [UserController::class, 'view'])->where('id', '[0-9]+')->name('users_view');
+                Route::get('/users/view/{id}', [UserController::class, 'view'])->name('users_view');
             });
 
             Route::group(['permission' => 'users_manage'], function () {
                 Route::get('/users/new', [UserController::class, 'form'])->name('users_new');
                 Route::post('/users/new', [UserController::class, 'new'])->name('users_new_form');
 
-                Route::get('/users/edit/{id}', [UserController::class, 'form'])->where('id', '[0-9]+')->name('users_edit');
+                Route::get('/users/edit/{id}', [UserController::class, 'form'])->name('users_edit');
                 Route::post('/users/edit', [UserController::class, 'edit'])->name('users_edit_form');
 
-                Route::get('/users/delete/{id}', [UserController::class, 'delete'])->where('id', '[0-9]+')->name('users_delete');
+                Route::get('/users/delete/{id}', [UserController::class, 'delete'])->name('users_delete');
             });
         });
 
@@ -103,14 +106,14 @@ Route::middleware('auth')->group(function () {
                 Route::get('/products/new', [ProductController::class, 'form'])->name('products_new');
                 Route::post('/products/new', [ProductController::class, 'new']);
 
-                Route::get('/products/edit/{id}', [ProductController::class, 'form'])->where('id', '[0-9]+')->name('products_edit');
+                Route::get('/products/edit/{id}', [ProductController::class, 'form'])->name('products_edit');
                 Route::post('/products/edit', [ProductController::class, 'edit'])->name('products_edit_form');
 
-                Route::get('/products/delete/{id}', [ProductController::class, 'delete'])->where('id', '[0-9]+')->name('products_delete');
+                Route::get('/products/delete/{id}', [ProductController::class, 'delete'])->name('products_delete');
             });
 
             Route::group(['permission' => 'products_adjust'], function () {
-                Route::get('/products/adjust', [ProductController::class, 'adjustList'])->where('id', '[0-9]+')->name('products_adjust');
+                Route::get('/products/adjust', [ProductController::class, 'adjustList'])->name('products_adjust');
                 Route::post('/products/adjust/ajax', [ProductController::class, 'ajaxInit'])->name('products_adjust_ajax');
                 Route::post('/products/adjust', [ProductController::class, 'adjustStock'])->name('products_adjust_form');
             });
@@ -125,20 +128,20 @@ Route::middleware('auth')->group(function () {
             });
 
             Route::group(['permission' => 'activities_view'], function () {
-                Route::get('/activities/view/{id}', [ActivityController::class, 'view'])->where('id', '[0-9]+')->name('activities_view');
+                Route::get('/activities/view/{id}', [ActivityController::class, 'view'])->name('activities_view');
             });
 
             Route::group(['permission' => 'activities_manage'], function () {
                 Route::get('/activities/new/{date?}', [ActivityController::class, 'form'])->name('activities_new');
-                Route::post('/activities/new', [ActivityController::class, 'new']);
+                Route::post('/activities/new', [ActivityController::class, 'new'])->name('activities_new_form');
 
-                Route::get('/activities/edit/{id}', [ActivityController::class, 'form'])->where('id', '[0-9]+')->name('activities_edit');
+                Route::get('/activities/edit/{id}', [ActivityController::class, 'form'])->name('activities_edit');
                 Route::post('/activities/edit', [ActivityController::class, 'edit'])->name('activities_edit_form');
 
                 Route::post('/activities/view/search', [ActivityController::class, 'ajaxInit'])->name('activities_user_search');
                 Route::get('/activities/view/{id}/add/{user}', [ActivityController::class, 'registerUser'])->name('activities_user_add');
 
-                Route::get('/activities/delete/{id}', [ActivityController::class, 'delete'])->where('id', '[0-9]+')->name('activities_delete');
+                Route::get('/activities/delete/{id}', [ActivityController::class, 'delete'])->name('activities_delete');
             });
         });
 
@@ -164,7 +167,7 @@ Route::middleware('auth')->group(function () {
                 Route::get('/settings/roles/new', [RoleController::class, 'roleForm'])->name('settings_roles_new');
                 Route::post('/settings/roles/new', [RoleController::class, 'new'])->name('settings_roles_new_form');
 
-                Route::get('/settings/roles/edit/{id}', [RoleController::class, 'roleForm'])->where('id', '[0-9]+')->name('settings_roles_edit');
+                Route::get('/settings/roles/edit/{id}', [RoleController::class, 'roleForm'])->name('settings_roles_edit');
                 Route::post('/settings/roles/edit', [RoleController::class, 'edit'])->name('settings_roles_edit_form');
                 
                 Route::get('/settings/roles/order', [RoleController::class, 'order'])->name('settings_roles_order_ajax');

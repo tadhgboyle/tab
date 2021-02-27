@@ -7,7 +7,7 @@
 
     <div class="column is-5">
         @include('includes.messages')
-        <form action="/activities/{{ is_null($activity) ? 'new' : 'edit' }}" id="product_form" method="POST"
+        <form action="{{ is_null($activity) ? route('activities_new_form') : route('activities_edit_form') }}" id="product_form" method="POST"
             class="form-horizontal">
             @csrf
             <input type="hidden" name="id" id="activity_id" value="{{ request()->route('id') }}">

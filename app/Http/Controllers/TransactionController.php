@@ -83,10 +83,12 @@ class TransactionController extends Controller
 
     public function submit(Request $request)
     {
-        // TODO: Make this a permission
-        // if (SettingsController::getSelfPurchases() && $request->cashier_id == $request->purchaser_id && User::find($request->cashier_id)->role != 'administrator') {
-        //     return redirect('/')->with('error', 'You cannot make purchases for yourself.');
-        // }
+
+        if (!hasPermission('cashier_self_purchases')) {
+            if ($request->purchaser_id == auth()->id()) {
+                return redirect('/')->with('error', 'You cannot make purchases for yourself.');
+            }
+        }
 
         if (!isset($request->product)) {
             return redirect()->back()->withInput()->with('error', 'Please select at least one item.');
@@ -316,6 +318,12 @@ class TransactionController extends Controller
         $user = User::find(request()->route('id'));
         if ($user == null) {
             return redirect()->route('index')->with('error', 'Invalid user.')->send();
+        }
+
+        if (!hasPermission('cashier_self_purchases')) {
+            if ($user->id == auth()->id()) {
+                return redirect('/')->with('error', 'You cannot make purchases for yourself.');
+            }
         }
 
         return view('pages.orders.order', [

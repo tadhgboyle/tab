@@ -16,7 +16,6 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- TODO: Self purchases permission -->
                 @foreach($users as $user)
                     <tr>
                         <td>
