@@ -11,7 +11,7 @@
         <p><strong>Total Price:</strong> ${{ number_format($transaction->total_price, 2) }}</p>
         <p><strong>Status:</strong> @switch($transaction_returned) @case(0) Not Returned @break @case(1) Returned @break @case(2) Semi Returned @break @endswitch</p>
         <br>
-        @if($transaction_returned != 1 && $return_order)
+        @if($transaction_returned != 1 && hasPermission('orders_return'))
         <button class="button is-danger is-outlined" type="button" onclick="openModal();">
             <span>Return</span>
             <span class="icon is-small">
