@@ -25,7 +25,7 @@ class PermissionHelper
     {
         $this->register('Cashier', 'cashier', [
             'cashier_create' => 'Create Orders',
-            'cashier_self_purchase' => 'Create orders for themselves' // TODO implement
+            'cashier_self_purchases' => 'Create orders for themselves'
         ]);
 
         $this->register('Users', 'users', [

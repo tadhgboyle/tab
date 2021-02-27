@@ -179,6 +179,11 @@ return [
          * Custom Blade Directives...
          */
         App\Providers\BladeServiceProvider::class,
+
+        /*
+         * DataTables library...
+         */
+        Yajra\DataTables\DataTablesServiceProvider::class,
     ],
 
     /*
@@ -206,6 +211,7 @@ return [
         'Cookie' => Illuminate\Support\Facades\Cookie::class,
         'Crypt' => Illuminate\Support\Facades\Crypt::class,
         'DB' => Illuminate\Support\Facades\DB::class,
+        'DataTables' => Yajra\DataTables\Facades\DataTables::class,
         'Eloquent' => Illuminate\Database\Eloquent\Model::class,
         'Event' => Illuminate\Support\Facades\Event::class,
         'File' => Illuminate\Support\Facades\File::class,

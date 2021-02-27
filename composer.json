@@ -13,7 +13,8 @@
         "fideloper/proxy": "^4.0",
         "laravel/framework": "^8.0",
         "laravel/tinker": "^2.0",
-        "rennokki/laravel-eloquent-query-cache": "^2.0"
+        "rennokki/laravel-eloquent-query-cache": "^2.0",
+        "yajra/laravel-datatables-oracle": "~9.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.5",
