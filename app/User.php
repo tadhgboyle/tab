@@ -27,6 +27,10 @@ class User extends Authenticatable
         'balance' => 'float',
         'deleted' => 'boolean'
     ];
+
+    protected $with = [
+        'role'
+    ];
     
     public function role() 
     {

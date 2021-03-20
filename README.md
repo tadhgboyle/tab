@@ -1,6 +1,6 @@
 # tabReborn
 
-A lightweight, selfhosted web app that camps, resorts and schools can use as a simple POS.
+A lightweight, selfhosted web app that camps, resorts and schools can use as a Point Of Sale system.
 
 #### Credits
 
@@ -26,12 +26,21 @@ Documentation (in the form of a printable user handbook) is being written.
             - And many more! I try to add as much customizability as possible for permissions.
     - Users can be edited anytime, with an easy to use interface.
     - Users can be (soft) deleted anytime.
+- "Category" organization theory
+    - Categories are used to organize products and activities.
+    - Each Category can be set to be strictly for Products, or Activites or both.
+    - When making or editing a Product or Activity, only applicable Categories will be shown.
+    - See "Parental control" to see how Categories are used further.
 - Parental control
-    - Parents or guardians can set their children a certain amount of money to spend in each category.
+    - Parents or guardians can set their children a certain amount of money to spend in each "category".
     - These limits can be set per-category to either day or week.
 - Product control and editing
     - Change the name and price anytime.
     - Optional PST charge on a per-item basis.
+- Activity scheduling
+    - Create Activities which last up to many days.
+    - Add price, location, and extra info if you want.
+    - Users can register for activities.
 - Inventory/Stock management
     - Depending on each product's settings (See next point), during an order, stock will be automatically removed as per quantity.
     - Each product has some settings:
@@ -95,7 +104,6 @@ Documentation (in the form of a printable user handbook) is being written.
 
 *High to Low priority sort*
 - Fix everything in Issues/Bugs
-- Let categories be for just products or just activities or both
 - Let products be purchasable by a parent only.
     - Will require a boolean attribute in users table "parent"
 - Repeating activities. When they create activity, ask if repeated daily, weekly, monthly. Create more Activity rows for each day in the duration
@@ -105,10 +113,11 @@ Documentation (in the form of a printable user handbook) is being written.
 - Rework how to select items and quantities. Right now it is somewhat not intuitive. New system:
     - **Similar to GBBC tab, click an item to add it to a list of all items. Click more times for more quantity**
 - Complete inventory features
-    - Remaining: 
+    - Remaining:
         - "Set stock" in adjust page as well as add/subtract.
         - Add product option if stock should be added back upon return or not.
 - Change user list to display deleted users (with toggle) & add an undelete function. (All for products as well).
+    - Livewire?
 - Create user "pay out" page, which will be used to mark how much a user has paid off of their owing amount.
     - Track what payment method was used, as well as the transaction # + more details (depending on how they pay)
 - Instead/as well as category limits, allow setting a hard limit per day/week.
@@ -120,6 +129,7 @@ Documentation (in the form of a printable user handbook) is being written.
     - (Todo) User's favorite items (Charts).
 - Add sales/discounts to item for period of time (automatic or button)
 - Add auditing/tracking of everything
+    - Remove "editor_id" from models
     - Role changes
     - New users
     - Price changes
@@ -137,7 +147,6 @@ Documentation (in the form of a printable user handbook) is being written.
 - Lazy loading of users/products (especially in cashier view).
     - Use this https://github.com/yajra/laravel-datatables
     - They should type a query first, or use some ajax to fetch data. or else it could take forever to load
-- Categories should use an ID, and be serialized into each order product incase they are deleted.
 - (Intermittent) When an error happens on order screen, it returns back with selection, but when you unselect a box it all gets NaN
 
 ## Contributors:

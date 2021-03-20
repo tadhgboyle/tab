@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
+use App\Helpers\CategoryHelper;
 use App\Helpers\RoleHelper;
 use App\Http\Requests\UserRequest;
 use App\Role;
 use Auth;
 use App\User;
 use App\UserLimits;
-use App\Transaction;
-use App\Helpers\SettingsHelper;
 use App\Helpers\UserLimitsHelper;
-use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -52,18 +51,18 @@ class UserController extends Controller
         $user->save();
 
         // Update their category limits
-        foreach ($request->limit as $category => $limit) {
+        foreach ($request->limit as $category_id => $limit) {
             $duration = 0;
             // Default to limit per day rather than week if not specified
-            empty($request->duration[$category]) ? $duration = 0 : $duration = $request->duration[$category];
+            empty($request->duration[$category_id]) ? $duration = 0 : $duration = $request->duration[$category_id];
             // Default to unlimited limit if not specified
             if (empty($limit)) {
                 $limit = -1;
             } else if ($limit < -1) {
-                return redirect() > back()->with('error', 'Limit must be -1 or above for ' . ucfirst($category) . '. (-1 means no limit)')->withInput($request->all());
+                return redirect() > back()->with('error', 'Limit must be -1 or above for ' . Category::find($category_id)->name . '. (-1 means no limit)')->withInput($request->all());
             }
             UserLimits::updateOrCreate(
-                ['user_id' => $user->id, 'category' => $category],
+                ['user_id' => $user->id, 'category_id' => $category_id],
                 ['limit_per' => $limit, 'duration' => $duration, 'editor_id' => Auth::id()]
             );
         }
@@ -72,27 +71,28 @@ class UserController extends Controller
 
     public function edit(UserRequest $request)
     {
-        $password = null;
-        $old_role = User::find($request->id)->role->name;
-
         if (!in_array($request->role_id, array_column(Auth::user()->role->getRolesAvailable(), 'id'))) {
-            return redirect()->back()->with('error', 'You cannot manage that role.')->withInput();
+            return redirect()->back()->with('error', 'You cannot manage users with that role.')->withInput();
         }
+
+        $password = null;
+        $user = User::find($request->id);
+        $old_role = $user->role->name;
 
         $new_role = Role::find($request->role_id)->name;
         $staff_roles = array_column(RoleHelper::getInstance()->getStaffRoles(), 'name');
 
         // Update their category limits
-        foreach ($request->limit as $category => $limit) {
+        foreach ($request->limit as $category_id => $limit) {
             $duration = 0;
-            empty($request->duration[$category]) ? $duration = 0 : $duration = $request->duration[$category];
+            empty($request->duration[$category_id]) ? $duration = 0 : $duration = $request->duration[$category_id];
             if (empty($limit)) {
                 $limit = -1;
             } else if ($limit < -1) {
-                return redirect()->back()->with('error', 'Limit must be above -1 for ' . ucfirst($category) . '. (-1 means no limit)')->withInput($request->all());
+                return redirect()->back()->with('error', 'Limit must be above -1 for ' . Category::find($category_id)->name . '. (-1 means no limit)')->withInput($request->all());
             }
             UserLimits::updateOrCreate(
-                ['user_id' => $request->id, 'category' => $category],
+                ['user_id' => $request->id, 'category_id' => $category_id],
                 ['limit_per' => $limit, 'duration' => $duration, 'editor_id' => Auth::id()]
             );
         }
@@ -100,10 +100,7 @@ class UserController extends Controller
         // TODO: This next part is fucking terrifying. Probably can find a better solution.
         // If same role or changing from one staff role to another
         if (($old_role == $new_role) || (in_array($old_role, $staff_roles) && in_array($new_role, $staff_roles))) {
-            DB::table('users')
-                ->where('id', $request->id)
-                ->update(['full_name' => $request->full_name, 'username' => $request->username, 'balance' => $request->balance, 'role_id' => $request->role_id]);
-
+            $user->update($request->all(['full_name', 'user_name', 'balance', 'role_id']));
             return redirect()->route('users_list')->with('success', 'Updated user ' . $request->full_name . '.');
         }
         // If old role is camper and new role is staff
@@ -121,9 +118,7 @@ class UserController extends Controller
         // If new role is camper
         else $password = null;
 
-        DB::table('users')
-            ->where('id', $request->id)
-            ->update(['full_name' => $request->full_name, 'username' => $request->username, 'balance' => $request->balance, 'role_id' => $request->role_id, 'password' => $password]);
+        $user->update(['full_name' => $request->full_name, 'username' => $request->username, 'balance' => $request->balance, 'role_id' => $request->role_id, 'password' => $password]);
 
         return redirect()->route('users_list')->with('success', 'Updated user ' . $request->full_name . '.');
     }
@@ -149,16 +144,16 @@ class UserController extends Controller
             return redirect()->route('users_list')->with('error', 'Invalid user.')->send();
         }
 
-        $categories = SettingsHelper::getInstance()->getCategories();
+        $categories = CategoryHelper::getInstance()->getCategories();
         $processed_categories = array();
         foreach ($categories as $category) {
-            $info = UserLimitsHelper::getInfo($user->id, $category->value);
+            $info = UserLimitsHelper::getInfo($user->id, $category->id);
 
-            $processed_categories[$category->value] = [
-                'name' => $category->value,
+            $processed_categories[$category->id] = [
+                'name' => $category->name,
                 'limit' => $info->limit_per,
                 'duration' => $info->duration,
-                'spent' => UserLimitsHelper::findSpent($user, $category->value, $info)
+                'spent' => UserLimitsHelper::findSpent($user, $category->id, $info)
             ];
         }
 
@@ -185,10 +180,10 @@ class UserController extends Controller
         }
 
         $categories = array();
-        foreach (SettingsHelper::getInstance()->getCategories() as $category) {
+        foreach (CategoryHelper::getInstance()->getCategories() as $category) {
             $categories[] = [
-                'name' => $category->value,
-                'info' => UserLimitsHelper::getInfo($user->id ?? null, $category->value)
+                'name' => $category->name,
+                'info' => UserLimitsHelper::getInfo($user->id ?? null, $category->id)
             ];
         }
 
