@@ -16,7 +16,7 @@ class RoleHelper
     public static function getInstance(): RoleHelper
     {
         if (self::$_instance == null) {
-            self::$_instance = new RoleHelper;
+            self::$_instance = new RoleHelper();
         }
 
         return self::$_instance;

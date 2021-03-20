@@ -98,6 +98,7 @@ class ActivityController extends Controller
         return view('pages.activities.form', [
             'activity' => $activity,
             'start' => $start
+            // TODO: 'categories' => CategoryHelper->getActivityCategories()
         ]);
     }
 

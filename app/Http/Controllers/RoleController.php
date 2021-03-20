@@ -71,7 +71,7 @@ class RoleController extends Controller
         return redirect()->route('settings')->with('success', $message);
     }
 
-    public function roleForm()
+    public function form()
     {
         $role = Role::find(request()->route('id'));
 

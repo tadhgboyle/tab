@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\CategoryHelper;
 use App\Http\Requests\ProductRequest;
 use Validator;
 use App\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Helpers\SettingsHelper;
 
 class ProductController extends Controller
 {
@@ -30,7 +30,7 @@ class ProductController extends Controller
         $product = new Product();
         $product->name = $request->name;
         $product->price = $request->price;
-        $product->category = $request->category;
+        $product->category_id = $request->category;
         $product->stock = $stock;
         $product->box_size = $box_size;
         $product->unlimited_stock = $unlimited_stock;
@@ -57,7 +57,7 @@ class ProductController extends Controller
 
         DB::table('products')
             ->where('id', $request->product_id)
-            ->update(['name' => $request->name, 'price' => $request->price, 'category' => $request->category, 'stock' => $stock, 'box_size' => $request->box_size ?? -1, 'unlimited_stock' => $unlimited_stock, 'stock_override' => $stock_override, 'pst' => $pst, 'editor_id' => auth()->id()]);
+            ->update(['name' => $request->name, 'price' => $request->price, 'category_id' => $request->category, 'stock' => $stock, 'box_size' => $request->box_size ?? -1, 'unlimited_stock' => $unlimited_stock, 'stock_override' => $stock_override, 'pst' => $pst, 'editor_id' => auth()->id()]);
         return redirect()->route('products_list')->with('success', 'Successfully edited ' . $request->name . '.');
     }
 
@@ -79,7 +79,7 @@ class ProductController extends Controller
     {
         return view('pages.products.form', [
             'product' => Product::find(request()->route('id')),
-            'categories' => SettingsHelper::getInstance()->getCategories()
+            'categories' => CategoryHelper::getInstance()->getProductCategories()
         ]);
     }
 

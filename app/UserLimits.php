@@ -18,7 +18,6 @@ class UserLimits extends Model
     ];
 
     protected $casts = [
-        'category' => 'string',
         'limit_per' => 'float'
     ];
 
@@ -34,6 +33,6 @@ class UserLimits extends Model
 
     public function category()
     {
-        //TODO: Categories have to become their own models... hasOne(Category::class)
+        return $this->hasOne(Category::class, 'id', 'category');
     }
 }

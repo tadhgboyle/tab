@@ -14,9 +14,9 @@ class UserLimitsHelper
 {
 
     // TODO clean
-    public static function getInfo(?int $user_id, string $category): stdClass
+    public static function getInfo(?int $user_id, int $category_id): stdClass
     {
-        $info = $user_id == null ? array() : UserLimits::where([['user_id', $user_id], ['category', $category]])->select('duration', 'limit_per')->get();
+        $info = $user_id == null ? array() : UserLimits::where([['user_id', $user_id], ['category_id', $category_id]])->select('duration', 'limit_per')->get();
         if (count($info)) {
             $info = $info[0];
         }
@@ -37,7 +37,7 @@ class UserLimitsHelper
         return $return;
     }
 
-    public static function findSpent(User $user, string $category, object $info): float
+    public static function findSpent(User $user, string $category_id, object $info): float
     {
         // First, if they have unlimited money for this category, let's grab all their transactions
         if ($info->limit_per == -1) {
@@ -59,7 +59,7 @@ class UserLimitsHelper
             // if so, add its ((value * (quantity - returned)) * tax) to the end result
             $transaction_products = explode(", ", $transaction['products']);
             foreach ($transaction_products as $transaction_product) {
-                if (strtolower($category) == Product::find(strtok($transaction_product, "*"))->category) {
+                if ($category_id == Product::find(strtok($transaction_product, "*"))->category_id) {
                     $item_info = TransactionController::deserializeProduct($transaction_product, false);
                     $tax_percent = $item_info['gst'];
                     if ($item_info['pst'] != "null") {

@@ -12,6 +12,7 @@
 */
 
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\ProductController;
@@ -164,10 +165,10 @@ Route::middleware('auth')->group(function () {
             });
 
             Route::group(['permission' => 'settings_roles_manage'], function () {
-                Route::get('/settings/roles/new', [RoleController::class, 'roleForm'])->name('settings_roles_new');
+                Route::get('/settings/roles/new', [RoleController::class, 'form'])->name('settings_roles_new');
                 Route::post('/settings/roles/new', [RoleController::class, 'new'])->name('settings_roles_new_form');
 
-                Route::get('/settings/roles/edit/{id}', [RoleController::class, 'roleForm'])->name('settings_roles_edit');
+                Route::get('/settings/roles/edit/{id}', [RoleController::class, 'form'])->name('settings_roles_edit');
                 Route::post('/settings/roles/edit', [RoleController::class, 'edit'])->name('settings_roles_edit_form');
                 
                 Route::get('/settings/roles/order', [RoleController::class, 'order'])->name('settings_roles_order_ajax');
@@ -175,11 +176,17 @@ Route::middleware('auth')->group(function () {
                 Route::get('/settings/roles/delete/{id}', [RoleController::class, 'delete'])->name('settings_roles_delete');
             });
 
+            /*
+             * Categories
+             */
             Route::group(['permission' => 'settings_categories_manage'], function () {
-                Route::get('/settings/categories/new', [SettingsController::class, 'categoryForm'])->name('settings_categories_new');
-                Route::post('/settings/categories/new', [SettingsController::class, 'newCategory'])->name('settings_categories_new_form');
+                Route::get('/settings/categories/new', [CategoryController::class, 'form'])->name('settings_categories_new');
+                Route::post('/settings/categories/new', [CategoryController::class, 'new'])->name('settings_categories_new_form');
 
-                Route::get('/settings/categories/delete/{name}', [SettingsController::class, 'deleteCategory'])->name('settings_categories_delete');
+                Route::get('/settings/categories/edit/{id}', [CategoryController::class, 'form'])->name('settings_categories_edit');
+                Route::post('/settings/categories/edit', [CategoryController::class, 'edit'])->name('settings_categories_edit_form');
+                
+                Route::get('/settings/categories/delete/{id}', [CategoryController::class, 'delete'])->name('settings_categories_delete');
             });
         });
     });

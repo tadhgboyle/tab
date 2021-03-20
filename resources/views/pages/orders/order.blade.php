@@ -39,7 +39,7 @@
                                 <div>{{ $product->name }}</div>
                             </td>
                             <td>
-                                <div>{{ ucfirst($product->category) }}</div>
+                                <div>{{ $product->category->name }}</div>
                             </td>
                             <td>
                                 <div>{!! $product->getStock() !!}</div>

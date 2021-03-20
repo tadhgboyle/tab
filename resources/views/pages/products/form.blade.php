@@ -58,9 +58,9 @@
                         <select name="category" required>
                             {{!! !isset($product->category) ? "<option value=\"\" disabled selected>Select Category...</option>" : '' !!}}
                             @foreach($categories as $category)
-                                <option value="{{ $category->value }}"
-                                    {{ (!is_null($product) && $product->category == $category->value) || old('category') == $category->value  ? 'selected' : '' }}>
-                                    {{ ucfirst($category->value) }}
+                                <option value="{{ $category->id }}"
+                                    {{ (!is_null($product) && $product->category_id == $category->id) || old('category') == $category->id  ? 'selected' : '' }}>
+                                    {{ $category->name }}
                                 </option>
                             @endforeach
                         </select>

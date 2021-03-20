@@ -57,6 +57,12 @@ class ActivityRequest extends FormRequest
             'end' => [
                 'required'
             ]
+            // TODO
+            // 'category' => [
+            //     'required',
+            //     'integer',
+            //     ValidationRule::in(CategoryHelper::getInstance()->getActivityCategories()->pluck('id')),
+            // ],
         ];
     }
 }

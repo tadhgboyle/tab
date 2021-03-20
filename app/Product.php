@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Helpers\CategoryHelper;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
@@ -24,6 +25,15 @@ class Product extends Model
         'stock_override' => 'boolean', // stock can go negative
         'box_size' => 'integer'
     ];
+
+    protected $with = [
+        'category'
+    ];
+
+    public function category() {
+        // TODO: is this better practice? return CategoryHelper::getInstance()->getCategories()->where('id', $this->category_id)->first()
+        return $this->hasOne(Category::class, 'id', 'category_id');
+    }
 
     // Used to check if items in order have enough stock BEFORE using removeStock() to remove it.
     // If we didnt use this, then stock would be adjusted and then the order could fail, resulting in inaccurate stock.
