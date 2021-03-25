@@ -28,7 +28,7 @@
                         <div>{{ $product->name }}</div>
                     </td>
                     <td>
-                        <div>{{ $product-category->name }}</div>
+                        <div>{{ $product->category->name }}</div>
                     </td>
                     <td>
                         <div>{!! $product->price > 0 ? '$' . number_format($product->price, 2) : '<i>Free</i>' !!}</div>
