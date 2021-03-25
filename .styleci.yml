@@ -112,5 +112,4 @@ enabled:
 
 finder:
   exclude:
-    - "core/assets"
-    - "core/includes"
+    - "vendor"
