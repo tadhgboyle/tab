@@ -86,15 +86,15 @@
                     <span class="icon is-small is-left">
                         <i class="fas fa-dollar-sign"></i>
                     </span>
-                    <input type="number" step="0.01" name="limit[{{ $category['name'] }}]" class="input" placeholder="Limit" value="{{ number_format($category['info']->limit_per, 2) }}">
+                    <input type="number" step="0.01" name="limit[{{ $category['id'] }}]" class="input" placeholder="Limit" value="{{ number_format($category['info']->limit_per, 2) }}">
                 </div>
                 <div class="control">
                     <label class="radio">
-                        <input type="radio" name="duration[{{ $category['name'] }}]" value="0" @if($category['info']->duration == "day") checked @endif>
+                        <input type="radio" name="duration[{{ $category['id'] }}]" value="0" @if($category['info']->duration == "day") checked @endif>
                         Day
                     </label>
                     <label class="radio">
-                        <input type="radio" name="duration[{{ $category['name'] }}]" value="1" @if($category['info']->duration == "week") checked @endif>
+                        <input type="radio" name="duration[{{ $category['id'] }}]" value="1" @if($category['info']->duration == "week") checked @endif>
                         Week
                     </label>
                 </div>

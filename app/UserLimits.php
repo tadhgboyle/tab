@@ -11,7 +11,7 @@ class UserLimits extends Model
 
     protected $fillable = [
         'user_id',
-        'category',
+        'category_id',
         'limit_per',
         'duration',
         'editor_id'

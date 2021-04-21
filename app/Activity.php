@@ -7,7 +7,6 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 
@@ -115,7 +114,7 @@ class Activity extends Model
         $user->update(['balance' => $balance]);
         DB::table('activity_transactions')->insert([
             'user_id' => $user->id,
-            'cashier_id' => Auth::id(),
+            'cashier_id' => auth()->id(),
             'activity_id' => $this->id,
             'activity_price' => $this->price,
             'activity_gst' => SettingsHelper::getInstance()->getGst(),

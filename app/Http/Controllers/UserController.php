@@ -179,9 +179,11 @@ class UserController extends Controller
             }
         }
 
-        $categories = array();
-        foreach (CategoryHelper::getInstance()->getCategories() as $category) {
-            $categories[] = [
+        $processed_categories = array();
+        $categories = CategoryHelper::getInstance()->getCategories()->sortBy('name');
+        foreach ($categories as $category) {
+            $processed_categories[] = [
+                'id' => $category->id,
                 'name' => $category->name,
                 'info' => UserLimitsHelper::getInfo($user->id ?? null, $category->id)
             ];
@@ -190,7 +192,7 @@ class UserController extends Controller
         return view('pages.users.form', [
             'user' => $user,
             'available_roles' => Auth::user()->role->getRolesAvailable(),
-            'categories' => $categories
+            'categories' => $processed_categories
         ]);
     }
 }

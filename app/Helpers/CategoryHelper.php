@@ -8,15 +8,15 @@ use Illuminate\Database\Eloquent\Collection;
 class CategoryHelper
 {
 
-    private static ?CategoryHelper $_instance = null;
+    private static CategoryHelper $_instance;
 
-    private ?Collection $_categories = null;
-    private ?Collection $_product_categories = null;
-    private ?Collection $_activity_categories = null;
+    private Collection $_categories;
+    private Collection $_product_categories;
+    private Collection $_activity_categories;
 
     public static function getInstance(): CategoryHelper
     {
-        if (self::$_instance == null) {
+        if (!isset(self::$_instance)) {
             self::$_instance = new CategoryHelper();
         }
 
@@ -25,7 +25,7 @@ class CategoryHelper
 
     public function getCategories(): Collection
     {
-        if ($this->_categories == null) {
+        if (!isset($this->_categories)) {
             $this->_categories = Category::where('deleted', false)->orderBy('name', 'DESC')->get();
         }
 
@@ -34,9 +34,11 @@ class CategoryHelper
 
     public function getProductCategories(): Collection
     {
-        // TODO: Cleaner to use getCategories()->whereIn(), but that doesnt work with the CategoryType cast
-        if ($this->_product_categories == null) {
+        // Cleaner to use getCategories()->whereIn(), but that doesnt work with the CategoryType cast
+        if (!isset($this->_product_categories)) {
+
             $categories = $this->getCategories();
+
             $this->_product_categories = new Collection();
 
             foreach ($categories as $category) {
@@ -44,7 +46,7 @@ class CategoryHelper
                     continue;
                 }
 
-                $this->_product_categories[] = $category;
+                $this->_product_categories->add($category);
             }
         }
 
@@ -53,8 +55,10 @@ class CategoryHelper
 
     public function getActivityCategories(): Collection
     {
-        if ($this->_activity_categories == null) {
+        if (!isset($this->_activity_categories)) {
+
             $categories = $this->getCategories();
+
             $this->_activity_categories = new Collection();
 
             foreach ($categories as $category) {
@@ -62,7 +66,7 @@ class CategoryHelper
                     continue;
                 }
 
-                $this->_activity_categories[] = $category;
+                $this->_activity_categories->add($category);
             }
         }
 
