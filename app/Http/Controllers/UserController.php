@@ -144,8 +144,9 @@ class UserController extends Controller
             return redirect()->route('users_list')->with('error', 'Invalid user.')->send();
         }
 
-        $categories = CategoryHelper::getInstance()->getCategories();
         $processed_categories = array();
+        $categories = CategoryHelper::getInstance()->getCategories();
+        
         foreach ($categories as $category) {
             $info = UserLimitsHelper::getInfo($user->id, $category->id);
 
@@ -181,6 +182,7 @@ class UserController extends Controller
 
         $processed_categories = array();
         $categories = CategoryHelper::getInstance()->getCategories()->sortBy('name');
+
         foreach ($categories as $category) {
             $processed_categories[] = [
                 'id' => $category->id,
