@@ -25,7 +25,7 @@ class ProductRequest extends FormRequest
                 'required',
                 'numeric'
             ],
-            'category' => [
+            'category_id' => [
                 'required',
                 'integer',
                 ValidationRule::in(CategoryHelper::getInstance()->getProductCategories()->pluck('id')),
