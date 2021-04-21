@@ -27,7 +27,5 @@ class BladeServiceProvider extends ServiceProvider
         Blade::if('permission', function (string $permission) {
             return hasPermission($permission);
         });
-
-        // TODO: Blade::if('page') to clean up the navbar
     }
 }

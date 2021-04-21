@@ -44,7 +44,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
     // Check their role can access the page
-    Route::middleware(HasPermission::class)->group(function () {
+    Route::middleware(HasPermission::class)->group(function() {
 
         /* 
          * Cashier 

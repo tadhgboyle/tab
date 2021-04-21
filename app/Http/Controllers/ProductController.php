@@ -94,7 +94,7 @@ class ProductController extends Controller
     {
         $product_id = $request->product_id;
         $product = Product::find($product_id);
-        // TODO: do we need this check?
+
         if ($product == null) {
             return redirect()->route('products_adjust')->with('error', 'Invalid Product.');
         }

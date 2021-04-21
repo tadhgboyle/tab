@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Helpers\CategoryHelper;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
@@ -31,7 +30,6 @@ class Product extends Model
     ];
 
     public function category() {
-        // TODO: is this better practice? return CategoryHelper::getInstance()->getCategories()->where('id', $this->category_id)->first()
         return $this->hasOne(Category::class, 'id', 'category_id');
     }
 

@@ -8,13 +8,13 @@ use Illuminate\Support\Str;
 class PermissionHelper
 {
 
-    private static ?PermissionHelper $_instance = null;
+    private static PermissionHelper $_instance;
 
     private array $_permissions = array();
 
     public static function getInstance(): PermissionHelper
     {
-        if (self::$_instance == null) {
+        if (!isset(self::$_instance)) {
             self::$_instance = new PermissionHelper();
         }
 

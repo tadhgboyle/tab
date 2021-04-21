@@ -21,11 +21,7 @@ class Category extends Model
 
     protected $casts = [
         'name' => 'string',
-        'type' => CategoryType::class, // $category->type->name + $category->type->id
+        'type' => CategoryType::class, // $category->type->name (ie: "Products Only") + $category->type->id (ie: 2)
         'deleted' => 'boolean'
     ];
-
-    // public function products() {
-    //     return $this->hasMany('products', 'category_id');
-    // }
 }

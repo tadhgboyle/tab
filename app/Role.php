@@ -74,7 +74,7 @@ class Role extends Model
         foreach ((array) $permissions as $permission) {
             if (in_array($permission, $this->permissions)) {
                 return true;
-            }            
+            }
         }
 
         return false;
