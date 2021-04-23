@@ -2,21 +2,12 @@
 
 namespace App\Http\Requests;
 
+use App\Helpers\CategoryHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule as ValidationRule;
 
 class ProductRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return true;
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -28,14 +19,16 @@ class ProductRequest extends FormRequest
             'name' => [
                 'required',
                 'min:3',
-                ValidationRule::unique('products')->ignore($this->get('id'))
+                ValidationRule::unique('products')->ignore($this->get('product_id'))
             ],
             'price' => [
                 'required',
                 'numeric'
             ],
-            'category' => [
-                'required'
+            'category_id' => [
+                'required',
+                'integer',
+                ValidationRule::in(CategoryHelper::getInstance()->getProductCategories()->pluck('id')),
             ],
             'box_size' => [
                 // TODO: gte -1

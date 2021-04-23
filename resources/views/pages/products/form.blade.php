@@ -55,12 +55,12 @@
                 <label class="label">Category<sup style="color: red">*</sup></label>
                 <div class="control">
                     <div class="select">
-                        <select name="category" required>
+                        <select name="category_id" required>
                             {{!! !isset($product->category) ? "<option value=\"\" disabled selected>Select Category...</option>" : '' !!}}
                             @foreach($categories as $category)
-                                <option value="{{ $category->value }}"
-                                    {{ (!is_null($product) && $product->category == $category->value) || old('category') == $category->value  ? 'selected' : '' }}>
-                                    {{ ucfirst($category->value) }}
+                                <option value="{{ $category->id }}"
+                                    {{ (!is_null($product) && $product->category_id == $category->id) || old('category') == $category->id  ? 'selected' : '' }}>
+                                    {{ $category->name }}
                                 </option>
                             @endforeach
                         </select>
