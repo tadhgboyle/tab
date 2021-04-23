@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Collection;
 
 class CategoryHelper
 {
-
     private static CategoryHelper $_instance;
 
     private Collection $_categories;
@@ -36,7 +35,6 @@ class CategoryHelper
     {
         // Cleaner to use getCategories()->whereIn(), but that doesnt work with the CategoryType cast
         if (!isset($this->_product_categories)) {
-
             $categories = $this->getCategories();
 
             $this->_product_categories = new Collection();
@@ -56,7 +54,6 @@ class CategoryHelper
     public function getActivityCategories(): Collection
     {
         if (!isset($this->_activity_categories)) {
-
             $categories = $this->getCategories();
 
             $this->_activity_categories = new Collection();

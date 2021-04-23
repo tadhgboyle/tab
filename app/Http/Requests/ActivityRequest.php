@@ -19,34 +19,34 @@ class ActivityRequest extends FormRequest
                 'required',
                 'min:3',
                 'max:255',
-                ValidationRule::unique('activities')->ignore($this->get('id'))
+                ValidationRule::unique('activities')->ignore($this->get('id')),
             ],
             'location' => [
                 'min:3',
                 'max:36',
-                'nullable'
+                'nullable',
             ],
             'description' => [
                 'min:3',
                 'max:255',
-                'nullable'
+                'nullable',
             ],
             'slots' => [
                 'min:1',
                 'numeric',
                 'nullable',
-                ValidationRule::requiredIf(!$this->has('unlimited_slots'))
+                ValidationRule::requiredIf(!$this->has('unlimited_slots')),
             ],
             'price' => [
                 'required',
-                'numeric'
+                'numeric',
             ],
             'start' => [
-                'required'
+                'required',
             ],
             'end' => [
-                'required'
-            ]
+                'required',
+            ],
             // TODO
             // 'category_id' => [
             //     'required',

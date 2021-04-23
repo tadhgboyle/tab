@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\PermissionHelper;
-use App\Http\Requests\RoleRequest;
+use Auth;
 use App\Role;
 use Illuminate\Http\Request;
+use App\Helpers\PermissionHelper;
+use App\Http\Requests\RoleRequest;
 use Illuminate\Support\Facades\DB;
-use Auth;
 
 class RoleController extends Controller
 {
-
     public function new(RoleRequest $request)
     {
         $staff = $request->has('staff');
@@ -54,11 +53,11 @@ class RoleController extends Controller
             if (!$new_role->staff) {
                 $fields = [
                     'role_id' => $new_role->id,
-                    'password' => null
+                    'password' => null,
                 ];
             } else {
                 $fields = [
-                    'role_id' => $new_role->id
+                    'role_id' => $new_role->id,
                 ];
             }
 
@@ -88,7 +87,7 @@ class RoleController extends Controller
             'role' => $role,
             'affected_users' => $affected_users ?? null,
             'available_roles' => $available_roles ?? null,
-            'permissionHelper' => PermissionHelper::getInstance()
+            'permissionHelper' => PermissionHelper::getInstance(),
         ]);
     }
 

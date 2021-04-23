@@ -2,26 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Category;
-use App\Helpers\CategoryHelper;
-use App\Helpers\RoleHelper;
-use App\Http\Requests\UserRequest;
-use App\Role;
 use Auth;
+use App\Role;
 use App\User;
+use App\Category;
 use App\UserLimits;
+use App\Helpers\RoleHelper;
+use App\Helpers\CategoryHelper;
 use App\Helpers\UserLimitsHelper;
+use App\Http\Requests\UserRequest;
 
 class UserController extends Controller
 {
-
     public function new(UserRequest $request)
     {
         // Create a new User object and hash it's password if required by their role
         $user = new User();
         $user->full_name = $request->full_name;
         if (empty($request->username)) {
-            $user->username = strtolower(str_replace(" ", "", $request->full_name));
+            $user->username = strtolower(str_replace(' ', '', $request->full_name));
         } else {
             $user->username = $request->username;
         }
@@ -58,8 +57,10 @@ class UserController extends Controller
             // Default to unlimited limit if not specified
             if (empty($limit)) {
                 $limit = -1;
-            } else if ($limit < -1) {
-                return redirect() > back()->with('error', 'Limit must be -1 or above for ' . Category::find($category_id)->name . '. (-1 means no limit)')->withInput($request->all());
+            } else {
+                if ($limit < -1) {
+                    return redirect() > back()->with('error', 'Limit must be -1 or above for ' . Category::find($category_id)->name . '. (-1 means no limit)')->withInput($request->all());
+                }
             }
             UserLimits::updateOrCreate(
                 ['user_id' => $user->id, 'category_id' => $category_id],
@@ -88,8 +89,10 @@ class UserController extends Controller
             empty($request->duration[$category_id]) ? $duration = 0 : $duration = $request->duration[$category_id];
             if (empty($limit)) {
                 $limit = -1;
-            } else if ($limit < -1) {
-                return redirect()->back()->with('error', 'Limit must be above -1 for ' . Category::find($category_id)->name . '. (-1 means no limit)')->withInput($request->all());
+            } else {
+                if ($limit < -1) {
+                    return redirect()->back()->with('error', 'Limit must be above -1 for ' . Category::find($category_id)->name . '. (-1 means no limit)')->withInput($request->all());
+                }
             }
             UserLimits::updateOrCreate(
                 ['user_id' => $request->id, 'category_id' => $category_id],
@@ -104,19 +107,23 @@ class UserController extends Controller
             return redirect()->route('users_list')->with('success', 'Updated user ' . $request->full_name . '.');
         }
         // If old role is camper and new role is staff
-        else if (!in_array($old_role, $staff_roles) && in_array($new_role, $staff_roles)) {
-            if (!empty($request->password)) {
-                if ($request->password == $request->password_confirmation) {
-                    $password = bcrypt($request->password);
+        else {
+            if (!in_array($old_role, $staff_roles) && in_array($new_role, $staff_roles)) {
+                if (!empty($request->password)) {
+                    if ($request->password == $request->password_confirmation) {
+                        $password = bcrypt($request->password);
+                    } else {
+                        return redirect()->back()->with('error', 'Please confirm the password.')->withInput();
+                    }
                 } else {
-                    return redirect()->back()->with('error', 'Please confirm the password.')->withInput();
+                    return redirect()->back()->with('error', 'Please enter a password.')->withInput();
                 }
-            } else {
-                return redirect()->back()->with('error', 'Please enter a password.')->withInput();
+            }
+            // If new role is camper
+            else {
+                $password = null;
             }
         }
-        // If new role is camper
-        else $password = null;
 
         $user->update(['full_name' => $request->full_name, 'username' => $request->username, 'balance' => $request->balance, 'role_id' => $request->role_id, 'password' => $password]);
 
@@ -133,20 +140,20 @@ class UserController extends Controller
     public function list()
     {
         return view('pages.users.list', [
-            'users' => User::where('deleted', false)->get()
+            'users' => User::where('deleted', false)->get(),
         ]);
     }
 
-    public function view() 
+    public function view()
     {
         $user = User::find(request()->route('id'));
         if ($user == null) {
             return redirect()->route('users_list')->with('error', 'Invalid user.')->send();
         }
 
-        $processed_categories = array();
+        $processed_categories = [];
         $categories = CategoryHelper::getInstance()->getCategories();
-        
+
         foreach ($categories as $category) {
             $info = UserLimitsHelper::getInfo($user->id, $category->id);
 
@@ -154,7 +161,7 @@ class UserController extends Controller
                 'name' => $category->name,
                 'limit' => $info->limit_per,
                 'duration' => $info->duration,
-                'spent' => UserLimitsHelper::findSpent($user, $category->id, $info)
+                'spent' => UserLimitsHelper::findSpent($user, $category->id, $info),
             ];
         }
 
@@ -180,21 +187,21 @@ class UserController extends Controller
             }
         }
 
-        $processed_categories = array();
+        $processed_categories = [];
         $categories = CategoryHelper::getInstance()->getCategories()->sortBy('name');
 
         foreach ($categories as $category) {
             $processed_categories[] = [
                 'id' => $category->id,
                 'name' => $category->name,
-                'info' => UserLimitsHelper::getInfo($user->id ?? null, $category->id)
+                'info' => UserLimitsHelper::getInfo($user->id ?? null, $category->id),
             ];
         }
 
         return view('pages.users.form', [
             'user' => $user,
             'available_roles' => Auth::user()->role->getRolesAvailable(),
-            'categories' => $processed_categories
+            'categories' => $processed_categories,
         ]);
     }
 }

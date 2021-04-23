@@ -11,6 +11,7 @@ class HasPermission
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
+     *
      * @return mixed
      */
     public function handle(\Illuminate\Http\Request $request, Closure $next)

@@ -2,14 +2,13 @@
 
 namespace App;
 
-use App\Http\Controllers\TransactionController;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Rennokki\QueryCache\Traits\QueryCacheable;
+use App\Http\Controllers\TransactionController;
 
 class Product extends Model
 {
-    
     use QueryCacheable;
 
     protected $cacheFor = 180;
@@ -22,14 +21,15 @@ class Product extends Model
         'stock' => 'integer',
         'unlimited_stock' => 'boolean', // stock is never checked
         'stock_override' => 'boolean', // stock can go negative
-        'box_size' => 'integer'
+        'box_size' => 'integer',
     ];
 
     protected $with = [
-        'category'
+        'category',
     ];
 
-    public function category() {
+    public function category()
+    {
         return $this->hasOne(Category::class, 'id', 'category_id');
     }
 
@@ -86,9 +86,9 @@ class Product extends Model
 
         $transactions = Transaction::where('created_at', '>=', Carbon::now()->subDays($stats_time)->toDateTimeString())->get();
         foreach ($transactions as $transaction) {
-            $products = explode(", ", $transaction->products);
+            $products = explode(', ', $transaction->products);
             foreach ($products as $transaction_product) {
-                if (strtok($transaction_product, "*") != $this->id) {
+                if (strtok($transaction_product, '*') != $this->id) {
                     continue;
                 }
 

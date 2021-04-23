@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\CategoryHelper;
-use App\Http\Requests\ProductRequest;
 use Validator;
 use App\Product;
 use Illuminate\Http\Request;
+use App\Helpers\CategoryHelper;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\ProductRequest;
 
 class ProductController extends Controller
 {
-
     public function new(ProductRequest $request)
     {
         // Box size of -1 means they cannot receive stock via box. Instead must use normal stock
         $box_size = -1;
-        if (!empty($request->box_size)) $box_size = $request->box_size;
+        if (!empty($request->box_size)) {
+            $box_size = $request->box_size;
+        }
 
         $unlimited_stock = $request->has('unlimited_stock');
 
@@ -79,14 +80,14 @@ class ProductController extends Controller
     {
         return view('pages.products.form', [
             'product' => Product::find(request()->route('id')),
-            'categories' => CategoryHelper::getInstance()->getProductCategories()
+            'categories' => CategoryHelper::getInstance()->getProductCategories(),
         ]);
     }
 
     public function adjustList()
     {
         return view('pages.products.adjust.list', [
-            'products' => Product::where('deleted', false)->get()
+            'products' => Product::where('deleted', false)->get(),
         ]);
     }
 
@@ -115,8 +116,10 @@ class ProductController extends Controller
         if ($adjust_stock == 0) {
             if (!$request->has('adjust_box')) {
                 return redirect()->back()->with('error', 'Please specify how much stock to add to ' . $product->name . '.');
-            } else if ($request->adjust_box == 0) {
-                return redirect()->back()->with('error', 'Please specify how many boxes or stock to add to ' . $product->name . '.');
+            } else {
+                if ($request->adjust_box == 0) {
+                    return redirect()->back()->with('error', 'Please specify how many boxes or stock to add to ' . $product->name . '.');
+                }
             }
         }
 

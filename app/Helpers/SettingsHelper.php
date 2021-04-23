@@ -6,7 +6,6 @@ use App\Settings;
 
 class SettingsHelper
 {
-
     private static SettingsHelper $_instance;
 
     private float $_gst;

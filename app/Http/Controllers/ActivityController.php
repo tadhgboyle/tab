@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Activity;
-use App\Http\Requests\ActivityRequest;
 use App\User;
+use App\Activity;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Route;
+use App\Http\Requests\ActivityRequest;
 
 class ActivityController extends Controller
 {
-    
     public function new(ActivityRequest $request)
     {
         if (Carbon::parse($request->start)->gte($request->end)) {
@@ -51,7 +50,7 @@ class ActivityController extends Controller
             'slots' => $request->has('unlimited_slots') ? -1 : $request->slots,
             'price' => $request->price,
             'start' => $request->start,
-            'end' => $request->end
+            'end' => $request->end,
         ]);
 
         return redirect()->route('activities_list')->with('success', 'Updated activity ' . $request->name . '.');
@@ -82,7 +81,7 @@ class ActivityController extends Controller
         return view('pages.activities.view', [
             'activity' => $activity,
             'activities_manage' => $activities_manage,
-            'can_register' => !strpos($activity->getStatus(), 'Over') && $activities_manage && $activity->hasSlotsAvailable() && hasPermission('activities_register_user')
+            'can_register' => !strpos($activity->getStatus(), 'Over') && $activities_manage && $activity->hasSlotsAvailable() && hasPermission('activities_register_user'),
         ]);
     }
 
@@ -97,7 +96,7 @@ class ActivityController extends Controller
 
         return view('pages.activities.form', [
             'activity' => $activity,
-            'start' => $start
+            'start' => $start,
             // TODO: 'categories' => CategoryHelper->getActivityCategories()
         ]);
     }
@@ -105,14 +104,14 @@ class ActivityController extends Controller
     public static function getAll()
     {
         $activities = Activity::where('deleted', false)->get(['id', 'name', 'start', 'end']);
-        $return = array();
+        $return = [];
 
         foreach ($activities as $activity) {
             $return[] = [
                 'title' => $activity->name,
                 'start' => Carbon::parse($activity->start),
                 'end' => Carbon::parse($activity->end),
-                'url' => route('activities_view', $activity->id)
+                'url' => route('activities_view', $activity->id),
             ];
         }
 
