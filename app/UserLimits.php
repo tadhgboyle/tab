@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Casts\CategoryType;
 use Illuminate\Database\Eloquent\Model;
 
 class UserLimits extends Model
@@ -18,7 +19,8 @@ class UserLimits extends Model
     ];
 
     protected $casts = [
-        'limit_per' => 'float'
+        'limit_per' => 'float',
+        'category_id' => CategoryType::class
     ];
 
     public function user()
