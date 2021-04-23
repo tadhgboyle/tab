@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Collection;
 
 class RoleHelper
 {
-
     private static RoleHelper $_instance;
 
     private Collection $_roles;

@@ -1,10 +1,11 @@
-<?php 
+<?php
 
-if (! function_exists('hasPermission')) {
+if (!function_exists('hasPermission')) {
     /**
-     * Check if the logged in user has specified permission
+     * Check if the logged in user has specified permission.
      *
      * @param $permission
+     *
      * @return bool
      */
     function hasPermission($permission): bool
@@ -13,12 +14,13 @@ if (! function_exists('hasPermission')) {
     }
 }
 
-if (! function_exists('page')) {
+if (!function_exists('page')) {
     /**
-     * Check if current page matches this navbar item and display "is-active" class if so
+     * Check if current page matches this navbar item and display "is-active" class if so.
      *
      * @param $navbar_item
      * @param $page
+     *
      * @return bool
      */
     function page(string $current_page, ?string $page): string

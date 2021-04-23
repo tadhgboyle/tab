@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class CreateCategoriesTable extends Migration
 {
@@ -16,7 +16,7 @@ class CreateCategoriesTable extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('type')->default(1); // 1 = products + activities, 2 = products only, 3 = activities only 
+            $table->integer('type')->default(1); // 1 = products + activities, 2 = products only, 3 = activities only
             $table->boolean('deleted')->default(false);
             $table->timestamps();
         });

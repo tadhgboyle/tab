@@ -11,29 +11,27 @@
 |
 */
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\HasPermission;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\StatisticsPageController;
-use App\Http\Controllers\UserController;
-use App\Http\Middleware\HasPermission;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\DB;
 
 Route::get('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/login/auth', [LoginController::class, 'auth'])->name('login_auth');
 
 // Middleware('auth') requires the user to be signed in to view the page
 Route::middleware('auth')->group(function () {
-
     Route::get('/', function () {
         if (hasPermission('cashier')) {
-            return view('pages.index', ['users' => 
-            DB::table('users')->where('deleted', false)->when(!hasPermission('cashier_self_purchases'), function($query) {
+            return view('pages.index', ['users' => DB::table('users')->where('deleted', false)->when(!hasPermission('cashier_self_purchases'), function ($query) {
                 $query->where('users.id', '!=', auth()->id());
             })->select(['id', 'full_name', 'balance'])->get()]);
         } else {
@@ -44,36 +42,36 @@ Route::middleware('auth')->group(function () {
     Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
     // Check their role can access the page
-    Route::middleware(HasPermission::class)->group(function() {
+    Route::middleware(HasPermission::class)->group(function () {
 
-        /* 
-         * Cashier 
+        /*
+         * Cashier
          */
-        Route::group(['permission' => 'cashier'], function() {
+        Route::group(['permission' => 'cashier'], function () {
             Route::get('/orders/{id}', [TransactionController::class, 'order'])->name('orders_new');
             Route::post('/orders/submit', [TransactionController::class, 'submit'])->name('orders_new_form');
         });
 
-        /* 
-         * Orders 
+        /*
+         * Orders
          */
         Route::group(['permission' => 'orders'], function () {
-            Route::group(['permission' => 'orders_list'], function() {
+            Route::group(['permission' => 'orders_list'], function () {
                 Route::get('/orders', [TransactionController::class, 'list'])->name('orders_list');
             });
 
-            Route::group(['permission' => 'orders_view'], function() {
+            Route::group(['permission' => 'orders_view'], function () {
                 Route::get('/orders/view/{id}', [TransactionController::class, 'view'])->name('orders_view');
             });
 
-            Route::group(['permission' => 'orders_return'], function() {
+            Route::group(['permission' => 'orders_return'], function () {
                 Route::get('/orders/return/order/{id}', [TransactionController::class, 'returnOrder'])->name('orders_return');
-                Route::get('/orders/return/item/{item}/{order}',[TransactionController::class, 'returnItem'])->name('orders_return_item');
+                Route::get('/orders/return/item/{item}/{order}', [TransactionController::class, 'returnItem'])->name('orders_return_item');
             });
         });
 
-        /* 
-         * Users 
+        /*
+         * Users
          */
         Route::group(['permission' => 'users'], function () {
             Route::group(['permission' => 'users_list'], function () {
@@ -95,10 +93,10 @@ Route::middleware('auth')->group(function () {
             });
         });
 
-        /* 
-         * Products 
+        /*
+         * Products
          */
-        Route::group(['permission' => 'products'], function() {
+        Route::group(['permission' => 'products'], function () {
             Route::group(['permission' => 'products_list'], function () {
                 Route::get('/products', [ProductController::class, 'list'])->name('products_list');
             });
@@ -120,7 +118,7 @@ Route::middleware('auth')->group(function () {
             });
         });
 
-        /* 
+        /*
          * Activities
          */
         Route::group(['permission' => 'activities'], function () {
@@ -146,18 +144,18 @@ Route::middleware('auth')->group(function () {
             });
         });
 
-        /* 
-         * Statistics 
+        /*
+         * Statistics
          */
-        Route::group(['permission' => 'statistics'], function() {
+        Route::group(['permission' => 'statistics'], function () {
             Route::get('/statistics', [StatisticsPageController::class, 'view'])->name('statistics');
             Route::post('/statistics', [SettingsController::class, 'editStatsTime']);
         });
 
-        /* 
-         * Settings 
+        /*
+         * Settings
          */
-        Route::group(['permission' => 'settings'], function() {
+        Route::group(['permission' => 'settings'], function () {
             Route::get('/settings', [SettingsController::class, 'view'])->name('settings');
 
             Route::group(['permission' => 'settings_general'], function () {
@@ -170,7 +168,7 @@ Route::middleware('auth')->group(function () {
 
                 Route::get('/settings/roles/edit/{id}', [RoleController::class, 'form'])->name('settings_roles_edit');
                 Route::post('/settings/roles/edit', [RoleController::class, 'edit'])->name('settings_roles_edit_form');
-                
+
                 Route::get('/settings/roles/order', [RoleController::class, 'order'])->name('settings_roles_order_ajax');
 
                 Route::get('/settings/roles/delete/{id}', [RoleController::class, 'delete'])->name('settings_roles_delete');
@@ -185,7 +183,7 @@ Route::middleware('auth')->group(function () {
 
                 Route::get('/settings/categories/edit/{id}', [CategoryController::class, 'form'])->name('settings_categories_edit');
                 Route::post('/settings/categories/edit', [CategoryController::class, 'edit'])->name('settings_categories_edit_form');
-                
+
                 Route::get('/settings/categories/delete/{id}', [CategoryController::class, 'delete'])->name('settings_categories_delete');
             });
         });

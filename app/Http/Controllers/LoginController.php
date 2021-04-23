@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Auth;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
-    
     public function auth(Request $request)
     {
         if (Auth::attempt($request->except(['_token']))) {

@@ -8,13 +8,12 @@ use App\Http\Requests\CategoryRequest;
 // TODO: fallback category logic similar to roles
 class CategoryController extends Controller
 {
-
     public function form()
     {
         $category = Category::find(request()->route('id'));
 
         return view('pages.settings.categories.form', [
-            'category' => $category
+            'category' => $category,
         ]);
     }
 

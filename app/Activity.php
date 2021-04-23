@@ -2,17 +2,15 @@
 
 namespace App;
 
-use App\Helpers\SettingsHelper;
-use App\User;
 use Carbon\Carbon;
+use App\Helpers\SettingsHelper;
 use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Model;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 
 class Activity extends Model
 {
-    
     use QueryCacheable;
 
     protected $cacheFor = 180;
@@ -25,16 +23,16 @@ class Activity extends Model
         'slots' => 'integer',
         'price' => 'float',
         'pst' => 'boolean',
-        'deleted' => 'boolean'
+        'deleted' => 'boolean',
     ];
 
     protected $dates = [
         'start',
-        'end'
+        'end',
     ];
 
     protected $fillable = [
-        'deleted'
+        'deleted',
     ];
 
     private ?Collection $_current_attendees = null;
@@ -56,7 +54,7 @@ class Activity extends Model
         }
 
         $current_attendees = $this->getCurrentAttendees()->count();
-        return ($this->slots - $current_attendees);
+        return $this->slots - $current_attendees;
     }
 
     public function hasSlotsAvailable(int $count = 1): bool
@@ -71,12 +69,12 @@ class Activity extends Model
 
     public function getPrice(): float
     {
-        return ($this->price * SettingsHelper::getInstance()->getGst());
+        return $this->price * SettingsHelper::getInstance()->getGst();
     }
 
     public function getAttendees(): array
     {
-        $users = array();
+        $users = [];
         foreach ($this->getCurrentAttendees() as $attendee) {
             $users[] = User::find($attendee->user_id);
         }
@@ -92,11 +90,13 @@ class Activity extends Model
     public function getStatus(): string
     {
         if (Carbon::parse($this->end)->isPast()) {
-            return "<span class=\"tag is-danger is-medium\">Over</span>";
-        } else if (Carbon::parse($this->start)->isPast()) {
-            return "<span class=\"tag is-warning is-medium\">In Progress</span>";
+            return '<span class="tag is-danger is-medium">Over</span>';
         } else {
-            return "<span class=\"tag is-success is-medium\">Waiting</span>";
+            if (Carbon::parse($this->start)->isPast()) {
+                return '<span class="tag is-warning is-medium">In Progress</span>';
+            } else {
+                return '<span class="tag is-success is-medium">Waiting</span>';
+            }
         }
     }
 
@@ -123,7 +123,7 @@ class Activity extends Model
             'activity_price' => $this->price,
             'activity_gst' => SettingsHelper::getInstance()->getGst(),
             'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now()
+            'updated_at' => Carbon::now(),
         ]);
 
         return true;

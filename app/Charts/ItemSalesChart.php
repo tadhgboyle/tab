@@ -2,20 +2,19 @@
 
 namespace App\Charts;
 
-use App\Helpers\SettingsHelper;
 use App\Product;
-use ConsoleTVs\Charts\BaseChart;
-use Illuminate\Http\Request;
 use Chartisan\PHP\Chartisan;
+use Illuminate\Http\Request;
+use App\Helpers\SettingsHelper;
+use ConsoleTVs\Charts\BaseChart;
 
 class ItemSalesChart extends BaseChart
 {
-    
     public ?array $middlewares = ['auth'];
-    
+
     public function handler(Request $request): Chartisan
     {
-        $sales = array();
+        $sales = [];
 
         $products = Product::where('deleted', false)->get();
         $stats_time = SettingsHelper::getInstance()->getStatsTime();

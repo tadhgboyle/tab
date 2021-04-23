@@ -2,26 +2,25 @@
 
 namespace App\Helpers;
 
-use App\Transaction;
+use App\User;
+use stdClass;
 use App\Product;
 use App\UserLimits;
+use App\Transaction;
 use Illuminate\Support\Carbon;
-use stdClass;
 use App\Http\Controllers\TransactionController;
-use App\User;
 
 class UserLimitsHelper
 {
-
     // TODO clean
     public static function getInfo(?int $user_id, int $category_id): stdClass
     {
-        $info = $user_id == null ? array() : UserLimits::where([['user_id', $user_id], ['category_id', $category_id]])->select('duration', 'limit_per')->get();
+        $info = $user_id == null ? [] : UserLimits::where([['user_id', $user_id], ['category_id', $category_id]])->select('duration', 'limit_per')->get();
         if (count($info)) {
             $info = $info[0];
         }
-        
-        $return = new stdClass;
+
+        $return = new stdClass();
         if (isset($info->duration)) {
             $return->duration = $info->duration == 0 ? 'day' : 'week';
         } else {
@@ -57,12 +56,12 @@ class UserLimitsHelper
             }
             // Loop transaction products. Determine if the product's category is the one we are looking at,
             // if so, add its ((value * (quantity - returned)) * tax) to the end result
-            $transaction_products = explode(", ", $transaction['products']);
+            $transaction_products = explode(', ', $transaction['products']);
             foreach ($transaction_products as $transaction_product) {
-                if ($category_id == Product::find(strtok($transaction_product, "*"))->category_id) {
+                if ($category_id == Product::find(strtok($transaction_product, '*'))->category_id) {
                     $item_info = TransactionController::deserializeProduct($transaction_product, false);
                     $tax_percent = $item_info['gst'];
-                    if ($item_info['pst'] != "null") {
+                    if ($item_info['pst'] != 'null') {
                         $tax_percent += $item_info['pst'] - 1;
                     }
                     $quantity_available = $item_info['quantity'] - $item_info['returned'];
