@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\CategoryHelper;
 use App\Helpers\RoleHelper;
 use Illuminate\Http\Request;
 use App\Helpers\SettingsHelper;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
-use App\Settings;
 
 class SettingsController extends Controller
 {
@@ -46,39 +46,8 @@ class SettingsController extends Controller
         return view('pages.settings.settings', [
             'gst' => SettingsHelper::getInstance()->getGst(),
             'pst' => SettingsHelper::getInstance()->getPst(),
-            'categories' => SettingsHelper::getInstance()->getCategories(),
+            'categories' => CategoryHelper::getInstance()->getCategories(),
             'roles' => RoleHelper::getInstance()->getRoles('ASC')
         ]);
-    }
-
-    public function categoryForm()
-    {
-        return view('pages.settings.categories.form');
-    }
-
-    public function newCategory(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|unique:settings,value',
-        ]);
-        if ($validator->fails()) {
-            return redirect()->back()->withInput()->withErrors($validator);
-        }
-
-        // TODO: Category ID's -> Allow for renaming of categories
-        $settings = new Settings();
-        $settings->setting = 'category';
-        $settings->value = strtolower($request->name);
-        $settings->editor_id = auth()->id();
-        $settings->save();
-
-        return redirect()->route('settings')->with('success', 'Created new category ' . $request->name . '.');
-    }
-
-    public function deleteCategory(Request $request)
-    {
-        // TODO: Fallback "default" category for items whose categories were deleted?
-        Settings::where([['setting', 'category'], ['value', $request->name]])->delete();
-        return redirect()->route('settings')->with('success', 'Deleted category ' . ucfirst($request->name) . '.');
     }
 }

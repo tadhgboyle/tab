@@ -46,7 +46,7 @@
     <div class="column"></div>
 
     @permission('settings_categories_manage')
-    <div class="column is-3">
+    <div class="column is-4">
         <div class="box">
             <h4 class="title has-text-weight-bold is-4">Categories</h4>
             <div id="category_loading" align="center">
@@ -57,6 +57,7 @@
                     <thead>
                         <tr>
                             <th>Name</th>
+                            <th>Type</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -64,15 +65,13 @@
                         @foreach($categories as $category)
                         <tr>
                             <td>
-                                <div>{{ ucfirst($category->value) }}</div>
+                                <div>{{ $category->name }}</div>
                             </td>
                             <td>
-                                <div>
-                                    <form>
-                                        <input type="hidden" id="{{ $category->value }}" value="{{ $category->value }}">
-                                        <a href="javascript:;">Edit</a>
-                                    </form>
-                                </div>
+                                <div>{{ $category->type->name }}</div>
+                            </td>
+                            <td>
+                                <a href="{{ route('settings_categories_edit', $category->id) }}">Edit</a>
                             </td>
                         </tr>
                         @endforeach
@@ -159,7 +158,7 @@
                 "columnDefs": [{
                     "orderable": false,
                     "searchable": false,
-                    "targets": 1
+                    "targets": [1, 2]
                 }]
             });
         @endpermission

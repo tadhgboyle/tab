@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Casts\CategoryType;
 use Illuminate\Database\Eloquent\Model;
 
 class UserLimits extends Model
@@ -11,15 +12,15 @@ class UserLimits extends Model
 
     protected $fillable = [
         'user_id',
-        'category',
+        'category_id',
         'limit_per',
         'duration',
         'editor_id'
     ];
 
     protected $casts = [
-        'category' => 'string',
-        'limit_per' => 'float'
+        'limit_per' => 'float',
+        'category_id' => CategoryType::class
     ];
 
     public function user()
@@ -34,6 +35,6 @@ class UserLimits extends Model
 
     public function category()
     {
-        //TODO: Categories have to become their own models... hasOne(Category::class)
+        return $this->hasOne(Category::class, 'id', 'category');
     }
 }

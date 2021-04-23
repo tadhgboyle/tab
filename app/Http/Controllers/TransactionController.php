@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
 use App\Helpers\SettingsHelper;
 use App\Helpers\UserLimitsHelper;
 use App\User;
@@ -46,7 +47,7 @@ class TransactionController extends Controller
         if ($full) {
             $product_object = Product::find($product_id);
             $product_name = $product_object->name;
-            $product_category = $product_object->category;
+            $product_category = $product_object->category_id;
         }
         $product_quantity = $product_price = $product_gst = $product_pst = $product_returned = 0.00;
         // Quantity
@@ -131,8 +132,8 @@ class TransactionController extends Controller
                 }
 
                 // keep track of which unique categories are included in this transaction
-                if (!in_array($product_info->category, $transaction_categories)) {
-                    array_push($transaction_categories, $product_info->category);
+                if (!in_array($product_info->category_id, $transaction_categories)) {
+                    array_push($transaction_categories, $product_info->category_id);
                 }
 
                 $product_metadata = self::serializeProduct($product, $quantity, $product_info->price, SettingsHelper::getInstance()->getGst(), $pst_metadata, 0);
@@ -151,20 +152,20 @@ class TransactionController extends Controller
 
         $category_spent = $category_limit = 0.00;
         // Loop categories within this transaction
-        foreach ($transaction_categories as $category) {
-            $limit_info = UserLimitsHelper::getInfo($request->purchaser_id, $category);
+        foreach ($transaction_categories as $category_id) {
+            $limit_info = UserLimitsHelper::getInfo($request->purchaser_id, $category_id);
             $category_limit = $limit_info->limit_per;
             // Skip this category if they have unlimited. Saves time querying
             if ($category_limit == -1) {
                 continue;
             }
 
-            $category_spent = $category_spent_orig = UserLimitsHelper::findSpent($purchaser, $category, $limit_info);
+            $category_spent = $category_spent_orig = UserLimitsHelper::findSpent($purchaser, $category_id, $limit_info);
 
             // Loop all products in this transaction. If the product's category is the current one in the above loop, add it's price to category spent
             foreach ($products as $product) {
                 $product_metadata = self::deserializeProduct($product);
-                if ($product_metadata['category'] == $category) {
+                if ($product_metadata['category'] == $category_id) {
                     $tax_percent = $product_metadata['gst'];
                     if ($product_metadata['pst'] != "null") {
                         $tax_percent += $product_metadata['pst'] - 1;
@@ -173,8 +174,9 @@ class TransactionController extends Controller
                 }
             }
             // Break loop if we exceed their limit
+            // TODO: If limit is $15, but their product is $15 (before  tax), this wont work
             if ($category_spent >= $category_limit) {
-                return redirect()->back()->withInput()->with('error', 'Not enough balance in that category: ' . ucfirst($category) . ' (Limit: $' . $category_limit . ', Remaining: $' . number_format($category_limit - $category_spent_orig, 2) . ').');
+                return redirect()->back()->withInput()->with('error', 'Not enough balance in that category: ' . ucfirst(Category::find($category_id)->name) . ' (Limit: $' . number_format($category_limit, 2) . ', Remaining: $' . number_format($category_limit - $category_spent_orig, 2) . ').');
             }
         }
 
@@ -190,7 +192,7 @@ class TransactionController extends Controller
         // Save transaction in database
         $transaction = new Transaction();
         $transaction->purchaser_id = $purchaser->id;
-        $transaction->cashier_id = Auth::id();
+        $transaction->cashier_id = auth()->id();
         $transaction->products = implode(", ", $products);
         $transaction->total_price = $total_price;
         $transaction->save();
@@ -203,6 +205,7 @@ class TransactionController extends Controller
 
     public function returnOrder($id)
     {
+        // TODO: Move into Transaction class
         $transaction = Transaction::find($id);
         // This should never happen, but a good security measure
         if ($transaction->checkReturned() == 1) {
@@ -216,11 +219,13 @@ class TransactionController extends Controller
         $transaction_products = explode(", ", $transaction->products);
         foreach ($transaction_products as $product) {
             $product_metadata = self::deserializeProduct($product, false);
+
             if ($product_metadata['pst'] == "null") {
                 $total_tax = $product_metadata['gst'];
             } else {
                 $total_tax = ($product_metadata['gst'] + $product_metadata['pst']) - 1;
             }
+            
             $total_price += ($product_metadata['price'] * $product_metadata['quantity']) * $total_tax;
         }
 
@@ -233,6 +238,7 @@ class TransactionController extends Controller
 
     public function returnItem(int $item_id, int $order_id)
     {
+        // TODO: Move into Transaction class
         $transaction = Transaction::find($order_id);
         // this shouldnt happen, but worth a check
         if ($transaction->checkReturned() == 1) {

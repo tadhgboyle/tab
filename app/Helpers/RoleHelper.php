@@ -8,15 +8,15 @@ use Illuminate\Database\Eloquent\Collection;
 class RoleHelper
 {
 
-    private static ?RoleHelper $_instance = null;
+    private static RoleHelper $_instance;
 
-    private ?Collection $_roles = null;
-    private ?array $_staff_roles = null;
+    private Collection $_roles;
+    private array $_staff_roles;
 
     public static function getInstance(): RoleHelper
     {
-        if (self::$_instance == null) {
-            self::$_instance = new RoleHelper;
+        if (!isset(self::$_instance)) {
+            self::$_instance = new RoleHelper();
         }
 
         return self::$_instance;
@@ -24,7 +24,7 @@ class RoleHelper
 
     public function getRoles(string $order = 'DESC'): object
     {
-        if ($this->_roles == null) {
+        if (!isset($this->_roles)) {
             $this->_roles = Role::where('deleted', false)->orderBy('order', $order)->get();
         }
 
@@ -33,7 +33,7 @@ class RoleHelper
 
     public function getStaffRoles(): array
     {
-        if ($this->_staff_roles == null) {
+        if (!isset($this->_staff_roles)) {
             $this->_staff_roles = Role::select('id', 'name')->orderBy('order', 'ASC')->where([['staff', true], ['deleted', false]])->get()->toArray();
         }
 

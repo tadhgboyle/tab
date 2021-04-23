@@ -1,3 +1,5 @@
+// TODO: refractor
+
 const checked = [];
 let total_gst = total_pst = total_tax_percent = total_price = 0;
 const current_gst = parseFloat(document.getElementById('current_gst').value).toFixed(2);
@@ -18,7 +20,7 @@ $(document).ready(function () {
             }
 
             const info = document.getElementsByName('product[' + input.value + ']')[0].id;
-            const price = parseFloat(info.split('$')[1]);
+            const price = parseFloat(info.split('$')[1]); // TODO: Use data-price attribute
             const pst_id = document.getElementById('pst[' + input.value + ']').value;
 
             if (pst_id == 1) {
@@ -48,7 +50,7 @@ $('.clickable').click(function () {
     const quantity_id = document.getElementById('quantity[' + current_id + ']');
     const quantity = parseInt(quantity_id.value);
     const pst_id = document.getElementById('pst[' + current_id + ']').value;
-    const current_price = parseFloat($(this).attr('id').split('$')[1]);
+    const current_price = parseFloat($(this).attr('id').split('$')[1]); // TODO: Use data-price attribute
     const list_style = $(this).attr('id') + ' (x' + quantity + ')<br>';
 
     if (quantity_id == 0) {
