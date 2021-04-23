@@ -33,6 +33,10 @@ class Activity extends Model
         'end'
     ];
 
+    protected $fillable = [
+        'deleted'
+    ];
+
     private ?Collection $_current_attendees = null;
 
     // reusable function so we only query once
