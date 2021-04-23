@@ -22,6 +22,11 @@ class Transaction extends Model
         'status' => 'boolean' // TODO: Rename this to "returned"
     ];
 
+    protected $with = [
+        'purchaser',
+        'cashier'
+    ];
+
     public function purchaser()
     {
         return $this->hasOne(User::class, 'id', 'purchaser_id');
