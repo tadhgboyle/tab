@@ -2,37 +2,36 @@
 
 namespace App;
 
-use App\Http\Controllers\TransactionController;
 use Carbon\Carbon;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Collection;
-use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Support\Facades\DB;
+use Rennokki\QueryCache\Traits\QueryCacheable;
+use App\Http\Controllers\TransactionController;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    
     use QueryCacheable;
 
     protected $cacheFor = 180;
 
     protected $fillable = [
         'balance',
-        'deleted'
+        'deleted',
     ];
 
     protected $casts = [
         'name' => 'string',
         'username' => 'string',
         'balance' => 'float',
-        'deleted' => 'boolean'
+        'deleted' => 'boolean',
     ];
 
     protected $with = [
-        'role'
+        'role',
     ];
-    
-    public function role() 
+
+    public function role()
     {
         return $this->hasOne(Role::class, 'id', 'role_id');
     }
@@ -85,7 +84,7 @@ class User extends Authenticatable
     public function getActivities(): array
     {
         if ($this->_activities == null) {
-            $return = array();
+            $return = [];
 
             $activity_transactions = $this->getActivityTransactions();
             foreach ($activity_transactions as $activity) {
@@ -94,7 +93,7 @@ class User extends Authenticatable
                     'cashier' => User::find($activity->cashier_id),
                     'activity' => Activity::find($activity->activity_id),
                     'price' => $activity->activity_price,
-                    'status' => $activity->status
+                    'status' => $activity->status,
                 ];
             }
 
@@ -104,7 +103,7 @@ class User extends Authenticatable
         return $this->_activities;
     }
 
-    // Find how much a user has spent in total. 
+    // Find how much a user has spent in total.
     // Does not factor in returned items/orders.
     public function findSpent(): float
     {
@@ -131,7 +130,7 @@ class User extends Authenticatable
                 continue;
             }
 
-            $transaction_products = explode(", ", $transaction->products);
+            $transaction_products = explode(', ', $transaction->products);
             foreach ($transaction_products as $transaction_product) {
                 $product = TransactionController::deserializeProduct($transaction_product, false);
                 if ($product['returned'] < 1) {
@@ -139,7 +138,7 @@ class User extends Authenticatable
                 }
 
                 $tax = $product['gst'];
-                if ($product['pst'] != "null") {
+                if ($product['pst'] != 'null') {
                     $tax += ($product['pst'] - 1);
                 }
                 $returned += ($product['returned'] * $product['price'] * $tax);
@@ -156,7 +155,7 @@ class User extends Authenticatable
         return floatval($returned);
     }
 
-    // Find how much money a user owes. 
+    // Find how much money a user owes.
     // Taking their amount spent and subtracting the amount they have returned.
     public function findOwing(): float
     {

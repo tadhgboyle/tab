@@ -8,7 +8,6 @@ use Rennokki\QueryCache\Traits\QueryCacheable;
 
 class Category extends Model
 {
-
     use QueryCacheable;
 
     protected $cacheFor = 180;
@@ -16,12 +15,12 @@ class Category extends Model
     protected $fillable = [
         'deleted',
         'name',
-        'type'
+        'type',
     ];
 
     protected $casts = [
         'name' => 'string',
         'type' => CategoryType::class, // $category->type->name (ie: "Products Only") + $category->type->id (ie: 2)
-        'deleted' => 'boolean'
+        'deleted' => 'boolean',
     ];
 }

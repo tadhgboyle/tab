@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserLimits extends Model
 {
-
     protected $primaryKey = 'limit_id';
 
     protected $fillable = [
@@ -15,12 +14,12 @@ class UserLimits extends Model
         'category_id',
         'limit_per',
         'duration',
-        'editor_id'
+        'editor_id',
     ];
 
     protected $casts = [
         'limit_per' => 'float',
-        'category_id' => CategoryType::class
+        'category_id' => CategoryType::class,
     ];
 
     public function user()

@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Category;
-use App\Helpers\SettingsHelper;
-use App\Helpers\UserLimitsHelper;
+use Auth;
 use App\User;
 use App\Product;
+use App\Category;
 use App\Transaction;
 use Illuminate\Http\Request;
-use Auth;
+use App\Helpers\SettingsHelper;
+use App\Helpers\UserLimitsHelper;
 
 class TransactionController extends Controller
 {
-
     /**
      * Example deserialized input:
      * ID: 34
@@ -21,13 +20,13 @@ class TransactionController extends Controller
      * Price: 1.45 each
      * GST: 1.08
      * PST: 1.04
-     * Returned: 1
-     * 
+     * Returned: 1.
+     *
      * Example Output: 34*2$1.45G1.08P1.04R1
      */
     private static function serializeProduct($id, $quantity, $price, $gst, $pst, $returned): string
     {
-        return $id . "*" . $quantity . "$" . $price . "G" . $gst . "P" . $pst . "R" . $returned;
+        return $id . '*' . $quantity . '$' . $price . 'G' . $gst . 'P' . $pst . 'R' . $returned;
     }
 
     /**
@@ -38,12 +37,12 @@ class TransactionController extends Controller
      * Price: 1.45 each
      * Gst: 1.07
      * Pst: 1.05
-     * Returned: Quantity returned -- Default 0
+     * Returned: Quantity returned -- Default 0.
      */
     // TODO: Create App\Helpers\ProductHelper and move this + serializer to it
     public static function deserializeProduct(string $product, bool $full = true): array
     {
-        $product_id = strtok($product, "*");
+        $product_id = strtok($product, '*');
         if ($full) {
             $product_object = Product::find($product_id);
             $product_name = $product_object->name;
@@ -58,17 +57,17 @@ class TransactionController extends Controller
         if (preg_match('/\$(.*?)G/', $product, $match) == 1) {
             $product_price = $match[1];
         }
-        // Gst 
+        // Gst
         if (preg_match('/G(.*?)P/', $product, $match) == 1) {
             $product_gst = $match[1];
         }
-        // Pst 
+        // Pst
         if (preg_match('/P(.*?)R/', $product, $match) == 1) {
             $product_pst = $match[1];
         }
         // Returned
-        $product_returned = substr($product, strpos($product, "R") + 1);
-        $return = array(
+        $product_returned = substr($product, strpos($product, 'R') + 1);
+        $return = [
             'id' => $product_id,
             'name' => $product_name ?? '',
             'category' => $product_category ?? '',
@@ -76,15 +75,14 @@ class TransactionController extends Controller
             'price' => $product_price,
             'gst' => $product_gst,
             'pst' => $product_pst,
-            'returned' => $product_returned
-        );
+            'returned' => $product_returned,
+        ];
 
         return $return;
     }
 
     public function submit(Request $request)
     {
-
         if (!hasPermission('cashier_self_purchases')) {
             if ($request->purchaser_id == auth()->id()) {
                 return redirect('/')->with('error', 'You cannot make purchases for yourself.');
@@ -95,17 +93,17 @@ class TransactionController extends Controller
             return redirect()->back()->withInput()->with('error', 'Please select at least one item.');
         }
 
-        // For some reason, old() does not seem to work with array[] inputs in form. This will do for now... 
+        // For some reason, old() does not seem to work with array[] inputs in form. This will do for now...
         // ^ I'm sure its a silly mistake on my end
         foreach ($request->product as $product) {
             session()->flash('quantity[' . $product . ']', $request->quantity[$product]);
             session()->flash('product[' . $product . ']', true);
         }
 
-        $products = $transaction_categories = $stock_products = array();
+        $products = $transaction_categories = $stock_products = [];
         $total_price = 0;
         $quantity = 1;
-        $product_metadata = $pst_metadata = "";
+        $product_metadata = $pst_metadata = '';
         $total_tax = SettingsHelper::getInstance()->getGst();
 
         // Loop each product. Serialize it, and add it's cost to the transaction total
@@ -128,7 +126,7 @@ class TransactionController extends Controller
                     $total_tax = ($total_tax + SettingsHelper::getInstance()->getPst()) - 1;
                     $pst_metadata = SettingsHelper::getInstance()->getPst();
                 } else {
-                    $pst_metadata = "null";
+                    $pst_metadata = 'null';
                 }
 
                 // keep track of which unique categories are included in this transaction
@@ -147,7 +145,7 @@ class TransactionController extends Controller
         $purchaser = User::find($request->purchaser_id);
         $remaining_balance = $purchaser->balance - $total_price;
         if ($remaining_balance < 0) {
-            return redirect()->back()->withInput()->with('error', 'Not enough balance. ' . $purchaser->full_name . " only has $" . $purchaser->balance);
+            return redirect()->back()->withInput()->with('error', 'Not enough balance. ' . $purchaser->full_name . ' only has $' . $purchaser->balance);
         }
 
         $category_spent = $category_limit = 0.00;
@@ -167,7 +165,7 @@ class TransactionController extends Controller
                 $product_metadata = self::deserializeProduct($product);
                 if ($product_metadata['category'] == $category_id) {
                     $tax_percent = $product_metadata['gst'];
-                    if ($product_metadata['pst'] != "null") {
+                    if ($product_metadata['pst'] != 'null') {
                         $tax_percent += $product_metadata['pst'] - 1;
                     }
                     $category_spent += ($product_metadata['price'] * $product_metadata['quantity']) * $tax_percent;
@@ -193,11 +191,11 @@ class TransactionController extends Controller
         $transaction = new Transaction();
         $transaction->purchaser_id = $purchaser->id;
         $transaction->cashier_id = auth()->id();
-        $transaction->products = implode(", ", $products);
+        $transaction->products = implode(', ', $products);
         $transaction->total_price = $total_price;
         $transaction->save();
 
-        return redirect('/')->with('success', 'Order #' . $transaction->id . '. ' . $purchaser->full_name . " now has $" . number_format(round($remaining_balance, 2), 2));
+        return redirect('/')->with('success', 'Order #' . $transaction->id . '. ' . $purchaser->full_name . ' now has $' . number_format(round($remaining_balance, 2), 2));
     }
 
     // TODO: when whole transaction is returned, manually deserialize and reserialize all products with return value of their original quantity
@@ -216,16 +214,16 @@ class TransactionController extends Controller
         $purchaser = $transaction->purchaser;
 
         // Loop through products from the order and deserialize them to get their prices & taxes etc when they were purchased
-        $transaction_products = explode(", ", $transaction->products);
+        $transaction_products = explode(', ', $transaction->products);
         foreach ($transaction_products as $product) {
             $product_metadata = self::deserializeProduct($product, false);
 
-            if ($product_metadata['pst'] == "null") {
+            if ($product_metadata['pst'] == 'null') {
                 $total_tax = $product_metadata['gst'];
             } else {
                 $total_tax = ($product_metadata['gst'] + $product_metadata['pst']) - 1;
             }
-            
+
             $total_price += ($product_metadata['price'] * $product_metadata['quantity']) * $total_tax;
         }
 
@@ -250,11 +248,10 @@ class TransactionController extends Controller
         $found = false;
 
         // Loop order products until we find the matching id
-        $products = explode(", ", $transaction->products);
+        $products = explode(', ', $transaction->products);
         foreach ($products as $product_count) {
             // Only proceed if this is the requested item id
-            if (strtok($product_count, "*") == $item_id) {
-
+            if (strtok($product_count, '*') == $item_id) {
                 $order_product = self::deserializeProduct($product_count);
                 $found = true;
 
@@ -268,7 +265,7 @@ class TransactionController extends Controller
                 $total_tax = 0.00;
 
                 // Check taxes and apply correct %
-                if ($order_product['pst'] == "null") {
+                if ($order_product['pst'] == 'null') {
                     $total_tax = $order_product['gst'];
                 } else {
                     $total_tax = (($order_product['pst'] + $order_product['gst']) - 1);
@@ -283,7 +280,7 @@ class TransactionController extends Controller
                 // Update their balance
                 $user->update(['balance' => $user_balance += ($order_product['price'] * $total_tax)]);
                 // Now insert the funky replaced string where it was originally
-                $transaction->update(['products' => implode(", ", $updated_products)]);
+                $transaction->update(['products' => implode(', ', $updated_products)]);
                 return redirect()->back()->with('success', 'Successfully returned x1 ' . $order_product['name'] . ' for order #' . $order_id . '.');
             }
         }
@@ -296,7 +293,7 @@ class TransactionController extends Controller
     public function list()
     {
         return view('pages.orders.list', [
-            'transactions' => Transaction::orderBy('created_at', 'DESC')->get()
+            'transactions' => Transaction::orderBy('created_at', 'DESC')->get(),
         ]);
     }
 
@@ -307,8 +304,8 @@ class TransactionController extends Controller
             return redirect()->route('orders_list')->with('error', 'Invalid order.')->send();
         }
 
-        $transaction_items = array();
-        foreach (explode(", ", $transaction->products) as $product) {
+        $transaction_items = [];
+        foreach (explode(', ', $transaction->products) as $product) {
             $transaction_items[] = self::deserializeProduct($product);
         }
 
@@ -336,7 +333,7 @@ class TransactionController extends Controller
             'user' => $user,
             'products' => Product::orderBy('name', 'ASC')->where('deleted', false)->get(),
             'gst' => SettingsHelper::getInstance()->getGst(),
-            'pst' => SettingsHelper::getInstance()->getPst()
+            'pst' => SettingsHelper::getInstance()->getPst(),
         ]);
     }
 }

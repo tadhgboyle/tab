@@ -8,14 +8,13 @@ use Rennokki\QueryCache\Traits\QueryCacheable;
 
 class Role extends Model
 {
-    
     use QueryCacheable;
 
     protected $cacheFor = 180;
 
     protected $fillable = [
         'order', // used to drag and drop roles in Settings page
-        'deleted'
+        'deleted',
     ];
 
     protected $casts = [
@@ -24,13 +23,13 @@ class Role extends Model
         'order' => 'integer', // heierarchy system. higher order = higher priority
         'staff' => 'boolean', // determine if they should ever have a password to login with
         'permissions' => 'array', // decode json to an array automatically
-        'deleted' => 'boolean'
+        'deleted' => 'boolean',
     ];
 
-    public function getRolesAvailable(Role $compare = null): array
+    public function getRolesAvailable(?Role $compare = null): array
     {
         // TODO: Refractor
-        $return = array();
+        $return = [];
         $roles = RoleHelper::getInstance()->getRoles();
         foreach ($roles as $role) {
             if ($compare) {
