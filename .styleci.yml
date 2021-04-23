@@ -14,6 +14,7 @@ disabled:
 - elseif
 - align_double_arrow
 - blank_line_before_return
+- trailing_comma_in_multiline_array
 enabled:
 - length_ordered_imports
 - concat_with_spaces
