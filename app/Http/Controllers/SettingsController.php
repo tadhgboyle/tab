@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\CategoryHelper;
 use App\Helpers\RoleHelper;
 use Illuminate\Http\Request;
+use App\Helpers\CategoryHelper;
 use App\Helpers\SettingsHelper;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class SettingsController extends Controller
 {
-
     public static function editStatsTime(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'stats_time' => 'required'
+            'stats_time' => 'required',
         ]);
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator);
@@ -47,7 +46,7 @@ class SettingsController extends Controller
             'gst' => SettingsHelper::getInstance()->getGst(),
             'pst' => SettingsHelper::getInstance()->getPst(),
             'categories' => CategoryHelper::getInstance()->getCategories(),
-            'roles' => RoleHelper::getInstance()->getRoles('ASC')
+            'roles' => RoleHelper::getInstance()->getRoles('ASC'),
         ]);
     }
 }

@@ -19,13 +19,13 @@ class CategoryRequest extends FormRequest
                 'required',
                 'min:3',
                 'max:36',
-                ValidationRule::unique('categories')->ignore($this->get('category_id'))
+                ValidationRule::unique('categories')->ignore($this->get('category_id')),
             ],
             'type' => [
                 'required',
                 'integer',
-                ValidationRule::in([1, 2, 3])
-            ]
+                ValidationRule::in([1, 2, 3]),
+            ],
         ];
     }
 }

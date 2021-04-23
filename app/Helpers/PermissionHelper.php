@@ -7,10 +7,9 @@ use Illuminate\Support\Str;
 
 class PermissionHelper
 {
-
     private static PermissionHelper $_instance;
 
-    private array $_permissions = array();
+    private array $_permissions = [];
 
     public static function getInstance(): PermissionHelper
     {
@@ -25,54 +24,54 @@ class PermissionHelper
     {
         $this->register('Cashier', 'cashier', [
             'cashier_create' => 'Create Orders',
-            'cashier_self_purchases' => 'Create orders for themselves'
+            'cashier_self_purchases' => 'Create orders for themselves',
         ]);
 
         $this->register('Users', 'users', [
             'users_list' => 'List all Users',
             'users_view' => 'View specific User information',
-            'users_manage' => 'Edit/Create/Delete Users'
+            'users_manage' => 'Edit/Create/Delete Users',
         ]);
 
         $this->register('Product Management', 'products', [
             'products_list' => 'List all Products',
             'products_manage' => 'Edit/Create/Delete Products',
-            'products_adjust' => 'Adjust stock for Products'
+            'products_adjust' => 'Adjust stock for Products',
         ]);
 
         $this->register('Activity Management', 'activities', [
             'activities_list' => 'List all Activities',
             'activities_view' => 'View specific Activity information',
             'activities_manage' => 'Edit/Create/Delete Activities',
-            'activities_register_user' => 'Register User for Activity'
+            'activities_register_user' => 'Register User for Activity',
         ]);
 
         $this->register('Order Management', 'orders', [
             'orders_list' => 'List all Orders',
             'orders_view' => 'View specific Order information',
-            'orders_return' => 'Return whole Orders or individual items'
+            'orders_return' => 'Return whole Orders or individual items',
         ]);
 
         $this->register('Statistics', 'statistics', [
             'statistics_order_history' => 'View Order history chart',
-            'statistics_item_info' => 'View Product info chart'
+            'statistics_item_info' => 'View Product info chart',
         ]);
 
         $this->register('Settings', 'settings', [
             'settings_general' => 'Edit tax rates',
             'settings_categories_manage' => 'Edit/Create/Delete Categories',
-            'settings_roles_manage' => 'Edit/Create/Delete Roles'
+            'settings_roles_manage' => 'Edit/Create/Delete Roles',
         ]);
     }
 
     /**
-     * Registers a new permission category
+     * Registers a new permission category.
      */
     private function register(string $category_name, string $root_node, array $permissions)
     {
         $this->_permissions[$category_name] = [
             'root_node' => $root_node,
-            'permissions' => $permissions
+            'permissions' => $permissions,
         ];
     }
 
@@ -82,7 +81,7 @@ class PermissionHelper
     }
 
     /**
-     * Returns comma seperated unique category root nodes / keys 
+     * Returns comma seperated unique category root nodes / keys.
      */
     public function getCategoryKeys(): string
     {
@@ -132,13 +131,13 @@ class PermissionHelper
 
     public static function parseNodes($permissions): array
     {
-        $return = array();
+        $return = [];
 
         if (!is_array($permissions)) {
             return $return;
         }
 
-        $selected_categories = array();
+        $selected_categories = [];
         foreach ($permissions as $permission => $value) {
             if (!$value) {
                 continue;
