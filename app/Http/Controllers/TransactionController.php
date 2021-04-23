@@ -174,8 +174,9 @@ class TransactionController extends Controller
                 }
             }
             // Break loop if we exceed their limit
+            // TODO: If limit is $15, but their product is $15 (before  tax), this wont work
             if ($category_spent >= $category_limit) {
-                return redirect()->back()->withInput()->with('error', 'Not enough balance in that category: ' . ucfirst(Category::find($category_id)->name) . ' (Limit: $' . $category_limit . ', Remaining: $' . number_format($category_limit - $category_spent_orig, 2) . ').');
+                return redirect()->back()->withInput()->with('error', 'Not enough balance in that category: ' . ucfirst(Category::find($category_id)->name) . ' (Limit: $' . number_format($category_limit, 2) . ', Remaining: $' . number_format($category_limit - $category_spent_orig, 2) . ').');
             }
         }
 
@@ -191,7 +192,7 @@ class TransactionController extends Controller
         // Save transaction in database
         $transaction = new Transaction();
         $transaction->purchaser_id = $purchaser->id;
-        $transaction->cashier_id = Auth::id();
+        $transaction->cashier_id = auth()->id();
         $transaction->products = implode(", ", $products);
         $transaction->total_price = $total_price;
         $transaction->save();
@@ -204,6 +205,7 @@ class TransactionController extends Controller
 
     public function returnOrder($id)
     {
+        // TODO: Move into Transaction class
         $transaction = Transaction::find($id);
         // This should never happen, but a good security measure
         if ($transaction->checkReturned() == 1) {
@@ -217,11 +219,13 @@ class TransactionController extends Controller
         $transaction_products = explode(", ", $transaction->products);
         foreach ($transaction_products as $product) {
             $product_metadata = self::deserializeProduct($product, false);
+
             if ($product_metadata['pst'] == "null") {
                 $total_tax = $product_metadata['gst'];
             } else {
                 $total_tax = ($product_metadata['gst'] + $product_metadata['pst']) - 1;
             }
+            
             $total_price += ($product_metadata['price'] * $product_metadata['quantity']) * $total_tax;
         }
 
@@ -234,6 +238,7 @@ class TransactionController extends Controller
 
     public function returnItem(int $item_id, int $order_id)
     {
+        // TODO: Move into Transaction class
         $transaction = Transaction::find($order_id);
         // this shouldnt happen, but worth a check
         if ($transaction->checkReturned() == 1) {
