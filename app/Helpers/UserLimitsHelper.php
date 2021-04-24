@@ -2,11 +2,11 @@
 
 namespace App\Helpers;
 
-use App\User;
+use App\Models\User;
 use stdClass;
-use App\Product;
-use App\UserLimits;
-use App\Transaction;
+use App\Models\Product;
+use App\Models\UserLimits;
+use App\Models\Transaction;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\TransactionController;
 

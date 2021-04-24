@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Auth;
-use App\User;
-use App\Product;
-use App\Category;
-use App\Transaction;
+use App\Models\User;
+use App\Models\Product;
+use App\Models\Category;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Helpers\SettingsHelper;
 use App\Helpers\UserLimitsHelper;

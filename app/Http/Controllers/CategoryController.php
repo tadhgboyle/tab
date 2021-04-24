@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Category;
+use App\Models\Category;
 use App\Http\Requests\CategoryRequest;
 
 // TODO: fallback category logic similar to roles

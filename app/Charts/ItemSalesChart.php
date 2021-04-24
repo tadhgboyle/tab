@@ -2,7 +2,7 @@
 
 namespace App\Charts;
 
-use App\Product;
+use App\Models\Product;
 use Chartisan\PHP\Chartisan;
 use Illuminate\Http\Request;
 use App\Helpers\SettingsHelper;
@@ -10,7 +10,9 @@ use ConsoleTVs\Charts\BaseChart;
 
 class ItemSalesChart extends BaseChart
 {
-    public ?array $middlewares = ['auth'];
+    public array $middlewares = [
+        'auth'
+    ];
 
     public function handler(Request $request): Chartisan
     {

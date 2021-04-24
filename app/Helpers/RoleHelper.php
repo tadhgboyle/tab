@@ -2,7 +2,7 @@
 
 namespace App\Helpers;
 
-use App\Role;
+use App\Models\Role;
 use Illuminate\Database\Eloquent\Collection;
 
 class RoleHelper

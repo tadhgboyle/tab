@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Auth;
-use App\Role;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Helpers\PermissionHelper;
 use App\Http\Requests\RoleRequest;

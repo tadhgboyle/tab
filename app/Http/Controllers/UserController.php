@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Auth;
-use App\Role;
-use App\User;
-use App\Category;
-use App\UserLimits;
+use App\Models\Role;
+use App\Models\User;
+use App\Models\Category;
+use App\Models\UserLimits;
 use App\Helpers\RoleHelper;
 use App\Helpers\CategoryHelper;
 use App\Helpers\UserLimitsHelper;

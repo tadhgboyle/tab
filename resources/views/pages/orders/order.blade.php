@@ -6,7 +6,7 @@
     <div class="column is-two-thirds">
         @include('includes.messages')
         <div id="loading" align="center">
-            <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
+            <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
         </div>
         <div id="order_container" style="visibility: hidden;">
             <form method="post" id="order" action="{{ route('orders_new_form') }}">
@@ -86,5 +86,5 @@
         $('#order_container').css('visibility', 'visible');
     });
 </script>
-<script src="{{ url('item-sidebar.js') }}"></script>
+<script src="{{ url('js/item-sidebar.js') }}"></script>
 @stop

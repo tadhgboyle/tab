@@ -2,7 +2,7 @@
 @section('content')
 <h2 class="title has-text-weight-bold">Product List</h2>
 <div id="loading" align="center">
-    <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
+    <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
 </div>
 <div class="columns box">
     <div class="column" id="product_container" style="visibility: hidden;">

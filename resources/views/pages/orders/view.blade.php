@@ -23,7 +23,7 @@
     <div class="column">
         <h4 class="title has-text-weight-bold is-4">Items</h4>
         <div id="loading" align="center">
-            <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
+            <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
         </div>
         <div id="table_container" style="visibility: hidden;">
             <table id="product_list">
