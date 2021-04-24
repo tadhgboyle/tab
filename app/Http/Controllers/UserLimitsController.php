@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-class UserLimitsContoller extends Controller
+class UserLimitsController extends Controller
 {
     //
 }
