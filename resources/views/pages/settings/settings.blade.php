@@ -50,7 +50,7 @@
         <div class="box">
             <h4 class="title has-text-weight-bold is-4">Categories</h4>
             <div id="category_loading" align="center">
-                <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
+                <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
             </div>
             <div id="category_container" style="visibility: hidden;">
                 <table id="category_list">
@@ -95,7 +95,7 @@
     <div class="column box is-4">
         <h4 class="title has-text-weight-bold is-4">Roles</h4>
         <div id="role_loading" align="center">
-            <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
+            <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
         </div>
         <div id="role_container" style="visibility: hidden;">
             <table id="role_list">

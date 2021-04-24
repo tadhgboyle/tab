@@ -13,7 +13,7 @@
 <br>
 
 <div id="loading" align="center">
-    <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
+    <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
 </div>
 
 <div class="columns" id="table_container" style="visibility: hidden;">

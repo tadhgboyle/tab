@@ -2,7 +2,7 @@
 
 namespace App\Charts;
 
-use App\Transaction;
+use App\Models\Transaction;
 use Chartisan\PHP\Chartisan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -11,7 +11,9 @@ use ConsoleTVs\Charts\BaseChart;
 
 class PurchaseHistoryChart extends BaseChart
 {
-    public ?array $middlewares = ['auth']; // TODO: use HasPermission::class middleware, just dont know how to pass the permission
+    public array $middlewares = [
+        'auth'
+    ]; // TODO: use HasPermission::class middleware, just dont know how to pass the permission
 
     public function handler(Request $request): Chartisan
     {

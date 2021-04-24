@@ -25,7 +25,7 @@
     <div class="column">
         <h4 class="title has-text-weight-bold is-4">Attendees</h4>
         <div id="loading" align="center">
-            <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
+            <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
         </div>
         <div id="table_container" style="visibility: hidden;">
             <table id="attendee_list">
@@ -119,7 +119,7 @@
                     "activity": "{{ $activity->id }}"
                 },
                 beforeSend : function() {
-                    $('#search-div').html("<center><img src='{{ url('loader.gif') }}' class='loading-spinner'></img></center>");
+                    $('#search-div').html("<center><img src='{{ url('img/loader.gif') }}' class='loading-spinner'></img></center>");
                 },
                 success : function(response) {
                     $('#results').html(response);

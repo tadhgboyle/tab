@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Validator;
-use App\Product;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Helpers\CategoryHelper;
 use Illuminate\Support\Facades\DB;

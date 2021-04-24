@@ -147,8 +147,5 @@ Documentation (in the form of a printable user handbook) is being written.
 - Lazy loading of users/products (especially in cashier view).
     - Use this https://github.com/yajra/laravel-datatables
     - They should type a query first, or use some ajax to fetch data. or else it could take forever to load
+- Automatic testing
 - (Intermittent) When an error happens on order screen, it returns back with selection, but when you unselect a box it all gets NaN
-
-## Contributors:
-- nUKEmAN4
-- Locus

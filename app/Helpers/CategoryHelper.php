@@ -2,7 +2,7 @@
 
 namespace App\Helpers;
 
-use App\Category;
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Collection;
 
 class CategoryHelper

@@ -2,7 +2,7 @@
 @section('content')
 <h2 class="title has-text-weight-bold">Stock Adjustment</h2>
 <div id="loading" align="center">
-    <img src="{{ url('loader.gif') }}" alt="Loading..." class="loading-spinner" />
+    <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
 </div>
 <div class="columns box">
     <div class="column is-two-thirds" id="product_container" style="visibility: hidden;">
@@ -86,7 +86,7 @@
                 "id": $(this).attr("value")
             },
             beforeSend : function() {
-                $('#adjust_product').show().html("<center><img src='{{ url('loader.gif') }}' class='loading-spinner'></img></center>");
+                $('#adjust_product').show().html("<center><img src='{{ url('img/loader.gif') }}' class='loading-spinner'></img></center>");
             },
             success : function(response) {
                 $('#adjust_product').html(response);
