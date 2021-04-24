@@ -10,7 +10,7 @@ use ConsoleTVs\Charts\BaseChart;
 
 class ItemSalesChart extends BaseChart
 {
-    public array $middlewares = [
+    public ?array $middlewares = [
         'auth'
     ];
 

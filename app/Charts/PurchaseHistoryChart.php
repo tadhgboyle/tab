@@ -11,7 +11,7 @@ use ConsoleTVs\Charts\BaseChart;
 
 class PurchaseHistoryChart extends BaseChart
 {
-    public array $middlewares = [
+    public ?array $middlewares = [
         'auth'
     ]; // TODO: use HasPermission::class middleware, just dont know how to pass the permission
 
