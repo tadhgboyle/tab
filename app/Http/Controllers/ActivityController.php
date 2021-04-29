@@ -8,6 +8,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Route;
 use App\Http\Requests\ActivityRequest;
 
+// TODO: create total_price col which is activity_price * (gst + pst - 1)
 class ActivityController extends Controller
 {
     public function new(ActivityRequest $request)
