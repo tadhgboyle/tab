@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Http\Controllers\TransactionController;
 use Tests\TestCase;
+use App\Http\Controllers\TransactionController;
 
 class ProductSerializationTest extends TestCase
 {
@@ -34,7 +34,7 @@ class ProductSerializationTest extends TestCase
             'price' => '1.45',
             'gst' => '1.08',
             'pst' => '1.04',
-            'returned' => '1'
+            'returned' => '1',
         ], $deserialized);
     }
 
