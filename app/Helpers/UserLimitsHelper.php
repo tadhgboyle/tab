@@ -2,8 +2,8 @@
 
 namespace App\Helpers;
 
-use App\Models\User;
 use stdClass;
+use App\Models\User;
 use App\Models\Product;
 use App\Models\UserLimits;
 use Illuminate\Support\Carbon;
@@ -11,10 +11,8 @@ use App\Http\Controllers\TransactionController;
 
 class UserLimitsHelper
 {
-
     public static function canSpend(User $user, float $spending, int $category_id): bool
     {
-
         $info = self::getInfo($user->id, $category_id);
 
         if ($info->limit_per == -1) {

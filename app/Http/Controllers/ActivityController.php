@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\CategoryHelper;
 use App\Models\User;
 use App\Models\Activity;
 use Illuminate\Support\Carbon;
+use App\Helpers\CategoryHelper;
 use Illuminate\Support\Facades\Route;
 use App\Http\Requests\ActivityRequest;
 
@@ -89,7 +89,7 @@ class ActivityController extends Controller
     public function form()
     {
         $activity = Activity::find(request()->route('id'));
-        
+
         if ($activity == null) {
             $start = request()->route('date') ?? Carbon::now();
         } else {
@@ -99,7 +99,7 @@ class ActivityController extends Controller
         return view('pages.activities.form', [
             'activity' => $activity,
             'start' => $start,
-            'categories' => CategoryHelper::getInstance()->getActivityCategories()
+            'categories' => CategoryHelper::getInstance()->getActivityCategories(),
         ]);
     }
 
