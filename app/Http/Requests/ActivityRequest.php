@@ -52,7 +52,7 @@ class ActivityRequest extends FormRequest
                 'required',
                 'integer',
                 ValidationRule::in(CategoryHelper::getInstance()->getActivityCategories()->pluck('id')),
-            ]
+            ],
         ];
     }
 }
