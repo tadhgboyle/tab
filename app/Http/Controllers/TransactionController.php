@@ -23,7 +23,7 @@ class TransactionController extends Controller
      *
      * Example Output: 34*2$1.45G1.08P1.04R1
      */
-    private static function serializeProduct($id, $quantity, $price, $gst, $pst, $returned): string
+    public static function serializeProduct($id, $quantity, $price, $gst, $pst, $returned): string
     {
         return $id . '*' . $quantity . '$' . $price . 'G' . $gst . 'P' . $pst . 'R' . $returned;
     }
