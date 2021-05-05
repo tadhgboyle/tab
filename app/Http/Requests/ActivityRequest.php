@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Helpers\CategoryHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule as ValidationRule;
 
@@ -19,7 +20,7 @@ class ActivityRequest extends FormRequest
                 'required',
                 'min:3',
                 'max:255',
-                ValidationRule::unique('activities')->ignore($this->get('id')),
+                ValidationRule::unique('activities')->ignore($this->get('activity_id')),
             ],
             'location' => [
                 'min:3',
@@ -47,12 +48,11 @@ class ActivityRequest extends FormRequest
             'end' => [
                 'required',
             ],
-            // TODO
-            // 'category_id' => [
-            //     'required',
-            //     'integer',
-            //     ValidationRule::in(CategoryHelper::getInstance()->getActivityCategories()->pluck('id')),
-            // ],
+            'category_id' => [
+                'required',
+                'integer',
+                ValidationRule::in(CategoryHelper::getInstance()->getActivityCategories()->pluck('id')),
+            ]
         ];
     }
 }

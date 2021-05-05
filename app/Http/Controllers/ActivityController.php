@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\CategoryHelper;
 use App\Models\User;
 use App\Models\Activity;
 use Illuminate\Support\Carbon;
@@ -19,14 +20,11 @@ class ActivityController extends Controller
 
         $activity = new Activity();
         $activity->name = $request->name;
+        $activity->category_id = $request->category_id;
         $activity->location = $request->location;
         $activity->description = $request->description;
         $activity->unlimited_slots = $request->has('unlimited_slots');
-        if ($request->has('unlimited_slots')) {
-            $activity->slots = -1;
-        } else {
-            $activity->slots = $request->slots;
-        }
+        $activity->slots = $request->has('unlimited_slots') ? -1 : $request->slots;
         $activity->price = $request->price;
         $activity->start = $request->start;
         $activity->end = $request->end;
@@ -43,8 +41,10 @@ class ActivityController extends Controller
 
         $activity = Activity::find($request->activity_id);
 
+        // TODO: not updating, fillables?
         $activity->update([
             'name' => $request->name,
+            'category_id' => $request->category_id,
             'location' => $request->location,
             'description' => $request->description,
             'unlimited_slots' => $request->has('unlimited_slots'),
@@ -89,6 +89,7 @@ class ActivityController extends Controller
     public function form()
     {
         $activity = Activity::find(request()->route('id'));
+        
         if ($activity == null) {
             $start = request()->route('date') ?? Carbon::now();
         } else {
@@ -98,7 +99,7 @@ class ActivityController extends Controller
         return view('pages.activities.form', [
             'activity' => $activity,
             'start' => $start,
-            // TODO: 'categories' => CategoryHelper->getActivityCategories()
+            'categories' => CategoryHelper::getInstance()->getActivityCategories()
         ]);
     }
 
@@ -145,10 +146,7 @@ class ActivityController extends Controller
     {
         $activity = Activity::find(Route::current()->parameter('id'));
         $user = User::find(Route::current()->parameter('user'));
-        if ($activity->registerUser($user)) {
-            return redirect()->back()->with('success', 'Successfully registered ' . $user->full_name . ' to ' . $activity->name . '.');
-        } else {
-            return redirect()->back()->with('error', 'Could not register ' . $user->full_name . ' for ' . $activity->name . '. Is it out of slots?');
-        }
+
+        return $activity->registerUser($user);
     }
 }

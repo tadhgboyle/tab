@@ -63,7 +63,7 @@ class User extends Authenticatable
         return $this->role->hasPermission($permission);
     }
 
-    private function getActivityTransactions(): Collection
+    public function getActivityTransactions(): Collection
     {
         if ($this->_activity_transactions == null) {
             $this->_activity_transactions = DB::table('activity_transactions')->where('user_id', $this->id)->orderBy('created_at', 'DESC')->get();
