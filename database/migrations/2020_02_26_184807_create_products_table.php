@@ -17,6 +17,7 @@ class CreateProductsTable extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->float('price');
+            $table->integer('category_id');
             $table->foreign('category_id')->references('id')->on('categories');
             $table->boolean('pst')->default(false);
 

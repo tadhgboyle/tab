@@ -21,6 +21,7 @@ class CreateActivitiesTable extends Migration
             $table->boolean('unlimited_slots')->default(false);
             $table->integer('slots');
             $table->float('price');
+            $table->integer('category_id');
             $table->foreign('category_id')->references('id')->on('categories');
             $table->boolean('deleted')->default(false);
             $table->dateTime('start')->nullable();
