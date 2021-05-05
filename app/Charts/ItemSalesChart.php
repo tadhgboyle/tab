@@ -11,7 +11,7 @@ use ConsoleTVs\Charts\BaseChart;
 class ItemSalesChart extends BaseChart
 {
     public ?array $middlewares = [
-        'auth'
+        'auth',
     ];
 
     public function handler(Request $request): Chartisan

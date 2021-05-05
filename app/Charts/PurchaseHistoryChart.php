@@ -12,7 +12,7 @@ use ConsoleTVs\Charts\BaseChart;
 class PurchaseHistoryChart extends BaseChart
 {
     public ?array $middlewares = [
-        'auth'
+        'auth',
     ]; // TODO: use HasPermission::class middleware, just dont know how to pass the permission
 
     public function handler(Request $request): Chartisan
