@@ -4,9 +4,15 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Http\Controllers\TransactionController;
+use App\Models\Category;
+use App\Models\Product;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ProductSerializationTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
      * Tests that the TransactionController::serializeProduct function works.
      */
@@ -43,6 +49,27 @@ class ProductSerializationTest extends TestCase
      */
     public function testProductDeserializationFull()
     {
-        $this->assertTrue(true); // TODO
+        $category = Category::factory()->create();
+        $product = Product::factory()->create();
+
+        $serialized = $product->id . '*1$' . $product->price . 'G1.08P1.04R0';
+        
+        $deserialized = TransactionController::deserializeProduct($serialized, true);
+
+        $this->assertEquals($deserialized['name'], $product->name);
+        $this->assertEquals($deserialized['category'], $product->category_id);
+    }
+
+    /**
+     * Tests that the TransactionController::deserializeProduct function throws exception
+     * when non existant product ID is sent, and $full is true.
+     */
+    public function testProductDeserializationThrowsException()
+    {
+        $this->expectException(ModelNotFoundException::class);
+
+        $serialized = '1*1$1.50G1.08P1.04R0';
+
+        TransactionController::deserializeProduct($serialized, true);
     }
 }
