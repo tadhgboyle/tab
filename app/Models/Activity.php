@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use App\Helpers\SettingsHelper;
+use App\Helpers\UserLimitsHelper;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
@@ -34,6 +35,11 @@ class Activity extends Model
     protected $fillable = [
         'deleted',
     ];
+
+    public function category()
+    {
+        return $this->hasOne(Category::class, 'id', 'category_id');
+    }
 
     private ?Collection $_current_attendees = null;
 
@@ -100,19 +106,23 @@ class Activity extends Model
         }
     }
 
-    public function registerUser(User $user): bool
+    public function registerUser(User $user)
     {
         if ($this->isAttending($user)) {
-            return false;
+            return redirect()->back()->with('error', 'Could not register ' . $user->full_name . ' for ' . $this->name . ', they are already attending this activity.');
         }
 
         if (!$this->hasSlotsAvailable()) {
-            return false;
+            return redirect()->back()->with('error', 'Could not register ' . $user->full_name . ' for ' . $this->name . ', this activity is out of slots.');
         }
 
         $balance = ($user->balance - $this->getPrice());
         if (!($user->balance >= $balance)) {
-            return false;
+            return redirect()->back()->with('error', 'Could not register ' . $user->full_name . ' for ' . $this->name . ', they do not have enough balance.');
+        }
+
+        if (!UserLimitsHelper::canSpend($user, $this->getPrice(), $this->category_id)) {
+            return redirect()->back()->with('error', 'Could not register ' . $user->full_name . ' for ' . $this->name . ', they have reached their limit for the ' . $this->category->name . ' category.');
         }
 
         $user->update(['balance' => $balance]);
@@ -126,6 +136,6 @@ class Activity extends Model
             'updated_at' => Carbon::now(),
         ]);
 
-        return true;
+        return redirect()->back()->with('success', 'Successfully registered ' . $user->full_name . ' to ' . $this->name . '.');
     }
 }

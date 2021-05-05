@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Category;
@@ -151,6 +150,7 @@ class TransactionController extends Controller
         $category_spent = $category_limit = 0.00;
         // Loop categories within this transaction
         foreach ($transaction_categories as $category_id) {
+            // TODO: use canSpend(x)
             $limit_info = UserLimitsHelper::getInfo($request->purchaser_id, $category_id);
             $category_limit = $limit_info->limit_per;
             // Skip this category if they have unlimited. Saves time querying
@@ -173,7 +173,7 @@ class TransactionController extends Controller
             }
             // Break loop if we exceed their limit
             // TODO: If limit is $15, but their product is $15 (before  tax), this wont work
-            if ($category_spent >= $category_limit) {
+            if ($category_spent > $category_limit) {
                 return redirect()->back()->withInput()->with('error', 'Not enough balance in that category: ' . ucfirst(Category::find($category_id)->name) . ' (Limit: $' . number_format($category_limit, 2) . ', Remaining: $' . number_format($category_limit - $category_spent_orig, 2) . ').');
             }
         }

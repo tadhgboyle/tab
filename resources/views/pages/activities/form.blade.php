@@ -1,16 +1,15 @@
 @extends('layouts.default', ['page' => 'activities'])
 @section('content')
 <h2 class="title has-text-weight-bold">{{ is_null($activity) ? 'Create' : 'Edit' }} Activity</h2>
-@if(!is_null($activity)) <h4 class="subtitle"><strong>Activity:</strong> {{ $activity->name }}</h4> @endif
+@if(!is_null($activity)) <h4 class="subtitle"><strong>Activity:</strong> {{ $activity->name }} @permission('activities_view')<a href="{{ route('activities_view', $activity->id) }}">(View)</a>@endpermission</h4> @endif
 <div class="columns box">
     <div class="column is-1"></div>
 
     <div class="column is-5">
         @include('includes.messages')
-        <form action="{{ is_null($activity) ? route('activities_new_form') : route('activities_edit_form') }}" id="product_form" method="POST"
-            class="form-horizontal">
+        <form action="{{ is_null($activity) ? route('activities_new_form') : route('activities_edit_form') }}" id="product_form" method="POST" class="form-horizontal">
             @csrf
-            <input type="hidden" name="id" id="activity_id" value="{{ request()->route('id') }}">
+            <input type="hidden" name="activity_id" id="activity_id" value="{{ request()->route('id') }}">
 
             <div class="field">
                 <label class="label">Name<sup style="color: red">*</sup></label>
@@ -74,6 +73,24 @@
                     <input type="number" step="1.00" name="slots" min="1" class="input" value="{{ isset($activity->slots) ? $activity->slots : old('slots') }}">
                 </div>
             </div>
+
+            <div class="field">
+                <label class="label">Category<sup style="color: red">*</sup></label>
+                <div class="control">
+                    <div class="select">
+                        <select name="category_id" required>
+                            {{!! !isset($activity->category) ? "<option value=\"\" disabled selected>Select Category...</option>" : '' !!}}
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}"
+                                    {{ (!is_null($activity) && $activity->category_id == $category->id) || old('category') == $category->id  ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
+
         </form>
     </div>
     <div class="column is-2">

@@ -5,6 +5,7 @@
 <div class="columns box">
     <div class="column">
         @include('includes.messages')
+        <p><strong>Category:</strong> {{ $activity->category->name }}</p>
         <p><strong>Start time:</strong> {{ $activity->start->format('M jS Y h:ia') }}</p>
         <p><strong>End time:</strong> {{ $activity->end->format('M jS Y h:ia') }}</p>
         @if(!is_null($activity->description))<p><strong>Description:</strong> {{ $activity->description }}</p>@endif

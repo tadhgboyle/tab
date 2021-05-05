@@ -6,12 +6,26 @@ use App\Models\User;
 use stdClass;
 use App\Models\Product;
 use App\Models\UserLimits;
-use App\Models\Transaction;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\TransactionController;
 
 class UserLimitsHelper
 {
+
+    public static function canSpend(User $user, float $spending, int $category_id): bool
+    {
+
+        $info = self::getInfo($user->id, $category_id);
+
+        if ($info->limit_per == -1) {
+            return true;
+        }
+
+        $spent = self::findSpent($user, $category_id, $info);
+
+        return !(($spent + $spending) > $info->limit_per);
+    }
+
     // TODO clean
     public static function getInfo(?int $user_id, int $category_id): stdClass
     {
@@ -41,10 +55,11 @@ class UserLimitsHelper
         // First, if they have unlimited money for this category, let's grab all their transactions
         if ($info->limit_per == -1) {
             $transactions = $user->getTransactions();
+            $activity_transactions = $user->getActivityTransactions();
         } else {
             // Determine how far back to grab transactions from
-            // TODO: dont waste a query here
-            $transactions = Transaction::where([['created_at', '>=', Carbon::now()->subDays($info->duration == 'day' ? 1 : 7)->toDateTimeString()], ['purchaser_id', $user->id]])->get();
+            $transactions = $user->getTransactions()->where('created_at', '>=', Carbon::now()->subDays($info->duration == 'day' ? 1 : 7)->toDateTimeString());
+            $activity_transactions = $user->getActivityTransactions()->where('created_at', '>=', Carbon::now()->subDays($info->duration == 'day' ? 1 : 7)->toDateTimeString());
         }
 
         $category_spent = 0.00;
@@ -68,6 +83,14 @@ class UserLimitsHelper
                     $category_spent += ($item_info['price'] * $quantity_available) * $tax_percent;
                 }
             }
+        }
+
+        foreach ($activity_transactions as $activity_transaction) {
+            if ($activity_transaction->status) {
+                continue;
+            }
+
+            $category_spent += ($activity_transaction->activity_price * $activity_transaction->activity_gst);
         }
 
         return $category_spent;
