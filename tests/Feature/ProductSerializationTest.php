@@ -43,6 +43,6 @@ class ProductSerializationTest extends TestCase
      */
     public function testProductDeserializationFull()
     {
-        // TODO
+        $this->assertTrue(true); // TODO
     }
 }
