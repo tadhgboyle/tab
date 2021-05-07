@@ -16,8 +16,10 @@ class CreateUserLimitsTable extends Migration
         Schema::create('user_limits', function (Blueprint $table) {
             $table->bigIncrements('limit_id');
             $table->integer('user_id');
-            $table->string('category');
+            $table->integer('category_id');
+            $table->foreign('category_id')->references('id')->on('categories');
             $table->float('limit_per');
+            $table->integer('duration');
             $table->integer('editor_id');
             $table->nullableTimestamps();
         });

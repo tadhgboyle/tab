@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use App\Helpers\RoleHelper;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 
 class Role extends Model
 {
     use QueryCacheable;
+    use HasFactory;
 
     protected $cacheFor = 180;
 

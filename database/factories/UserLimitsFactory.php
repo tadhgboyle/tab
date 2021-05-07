@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\Category;
+use App\Models\UserLimits;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class CategoryFactory extends Factory
+class UserLimitsFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Category::class;
+    protected $model = UserLimits::class;
 
     /**
      * Define the model's default state.
@@ -22,8 +22,9 @@ class CategoryFactory extends Factory
     public function definition()
     {
         return [
-            'type' => 2,
-            'deleted' => false
+            'limit_per' => -1,
+            'duration' => 0,
+            'editor_id' => 1
         ];
     }
 }

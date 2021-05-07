@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use App\Helpers\SettingsHelper;
 use App\Helpers\UserLimitsHelper;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
@@ -13,6 +14,7 @@ use Rennokki\QueryCache\Traits\QueryCacheable;
 class Activity extends Model
 {
     use QueryCacheable;
+    use HasFactory;
 
     protected $cacheFor = 180;
 

@@ -23,10 +23,8 @@ class ProductFactory extends Factory
     public function definition()
     {
         return [
-            'id' => 1,
             'name' => Arr::random(['Pop', 'Chips', 'Candy Bag']),
             'price' => Arr::random([1.25, 14.99, 4.98, 5.00]),
-            'category_id' => 1,
             'pst' => Arr::random([1, 0]),
             'deleted' => false,
             'stock' => Arr::random([0, 52, 14, 422, 987]),
