@@ -3,11 +3,11 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use App\Http\Controllers\TransactionController;
-use App\Models\Category;
 use App\Models\Product;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Models\Category;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ProductSerializationTest extends TestCase
 {
@@ -59,7 +59,7 @@ class ProductSerializationTest extends TestCase
         ]);
 
         $serialized = TransactionController::serializeProduct($product->id, 1, $product->price, 1.08, 1.04, 0);
-        
+
         $deserialized = TransactionController::deserializeProduct($serialized, true);
 
         $this->assertEquals($deserialized['name'], $product->name);
