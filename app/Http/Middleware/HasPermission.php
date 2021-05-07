@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
 
 class HasPermission
 {
@@ -14,7 +15,7 @@ class HasPermission
      *
      * @return mixed
      */
-    public function handle(\Illuminate\Http\Request $request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
         if (hasPermission($request->route()->action['permission'])) {
             return $next($request);

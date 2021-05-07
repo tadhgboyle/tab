@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use App\Casts\CategoryType;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class UserLimits extends Model
 {
+    use HasFactory;
+
     protected $primaryKey = 'limit_id';
 
     protected $fillable = [

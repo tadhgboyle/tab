@@ -8,7 +8,9 @@ use App\Models\Product;
 use App\Models\UserLimits;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\TransactionController;
+use App\Models\Activity;
 
+// TODO: Move these to user model. $user->canSpendInCategory($cat_id, 5.99)
 class UserLimitsHelper
 {
     public static function canSpend(User $user, float $spending, int $category_id): bool
@@ -22,6 +24,24 @@ class UserLimitsHelper
         $spent = self::findSpent($user, $category_id, $info);
 
         return !(($spent + $spending) > $info->limit_per);
+    }
+
+    // TODO implement
+    public static function getRemaining(User $user, int $category_id): float
+    {
+        $remaining = 0.00;
+
+        $info = self::getInfo($user->id, $category_id);
+
+        if ($info->limit_per == -1) {
+            $remaining = -1;
+        } else {
+            $spent = self::findSpent($user, $category_id, $info);
+
+            $remaining = $info->limit_per - $spent;
+        }
+
+        return number_format($remaining, 2);
     }
 
     // TODO clean
@@ -88,9 +108,14 @@ class UserLimitsHelper
                 continue;
             }
 
-            $category_spent += ($activity_transaction->activity_price * $activity_transaction->activity_gst);
+            $activity = Activity::find($activity_transaction->activity_id);
+            if ($activity->category_id != $category_id) {
+                continue;
+            }
+
+            $category_spent += $activity->getPrice();
         }
 
-        return $category_spent;
+        return number_format($category_spent, 2);
     }
 }

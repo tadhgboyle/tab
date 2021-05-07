@@ -49,10 +49,16 @@ class ProductSerializationTest extends TestCase
      */
     public function testProductDeserializationFull()
     {
-        $category = Category::factory()->create();
-        $product = Product::factory()->create();
+        $category = Category::factory()->create([
+            'name' => 'Food',
+            'type' => 2
+        ]);
 
-        $serialized = $product->id . '*1$' . $product->price . 'G1.08P1.04R0';
+        $product = Product::factory()->create([
+            'category_id' => $category->id
+        ]);
+
+        $serialized = TransactionController::serializeProduct($product->id, 1, $product->price, 1.08, 1.04, 0);
         
         $deserialized = TransactionController::deserializeProduct($serialized, true);
 
@@ -68,7 +74,7 @@ class ProductSerializationTest extends TestCase
     {
         $this->expectException(ModelNotFoundException::class);
 
-        $serialized = '1*1$1.50G1.08P1.04R0';
+        $serialized = TransactionController::serializeProduct(1, 1, 1.49, 1.08, 1.04, 0);
 
         TransactionController::deserializeProduct($serialized, true);
     }
