@@ -2,26 +2,26 @@
 
 namespace Tests\Feature;
 
-use App\Helpers\UserLimitsHelper;
-use App\Http\Controllers\TransactionController;
+use Tests\TestCase;
+use App\Models\Role;
+use App\Models\User;
+use App\Models\Product;
 use App\Models\Activity;
 use App\Models\Category;
-use App\Models\Product;
-use App\Models\Role;
 use App\Models\Settings;
-use App\Models\Transaction;
-use App\Models\User;
 use App\Models\UserLimits;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\Transaction;
+use App\Helpers\UserLimitsHelper;
 use Illuminate\Support\Facades\DB;
-use Tests\TestCase;
+use App\Http\Controllers\TransactionController;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserLimitsTest extends TestCase
 {
     use RefreshDatabase;
 
     /**
-     * Test that the UserLimitsHelper::findSpent calculation is correct
+     * Test that the UserLimitsHelper::findSpent calculation is correct.
      */
     public function testFindSpentCalculationIsCorrect()
     {
@@ -67,7 +67,7 @@ class UserLimitsTest extends TestCase
 
     /**
      * Test that if a limit is set on a category, that a user cannot spend more than that limit.
-     * Tests canSpend function in UserLimitsHelper
+     * Tests canSpend function in UserLimitsHelper.
      */
     public function testUserCannotSpendOverLimitInCategory()
     {
@@ -97,7 +97,7 @@ class UserLimitsTest extends TestCase
      * - Fake role for fake user
      * - Fake User
      * - UserLimits for the fake user for each category (one is unlimited, one is limited)
-     * - Fake transactions for the fake user
+     * - Fake transactions for the fake user.
      */
     private function createFakeRecords()
     {
