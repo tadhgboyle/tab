@@ -155,7 +155,7 @@ class UserController extends Controller
         $categories = CategoryHelper::getInstance()->getCategories();
 
         foreach ($categories as $category) {
-            $info = UserLimitsHelper::getInfo($user->id, $category->id);
+            $info = UserLimitsHelper::getInfo($user, $category->id);
 
             $processed_categories[$category->id] = [
                 'name' => $category->name,
@@ -194,7 +194,7 @@ class UserController extends Controller
             $processed_categories[] = [
                 'id' => $category->id,
                 'name' => $category->name,
-                'info' => UserLimitsHelper::getInfo($user->id ?? null, $category->id),
+                'info' => $user == null ? [] : UserLimitsHelper::getInfo($user, $category->id),
             ];
         }
 
