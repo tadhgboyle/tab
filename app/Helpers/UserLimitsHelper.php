@@ -5,10 +5,10 @@ namespace App\Helpers;
 use stdClass;
 use App\Models\User;
 use App\Models\Product;
+use App\Models\Activity;
 use App\Models\UserLimits;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\TransactionController;
-use App\Models\Activity;
 
 // TODO: Move these to user model. $user->canSpendInCategory($cat_id, 5.99)
 class UserLimitsHelper
