@@ -42,7 +42,7 @@ class TransactionController extends Controller
     public static function deserializeProduct(string $product, bool $full = true): array
     {
         $product_id = strtok($product, '*');
-        
+
         if ($full) {
             $product_object = Product::findOrFail($product_id);
             $product_name = $product_object->name;
@@ -68,7 +68,7 @@ class TransactionController extends Controller
         }
 
         $product_returned = substr($product, strpos($product, 'R') + 1);
-        
+
         $return = [
             'id' => $product_id,
             'name' => $product_name ?? '',
