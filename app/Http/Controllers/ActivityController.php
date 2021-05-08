@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Requests\ActivityRequest;
 
 // TODO: create total_price col which is activity_price * (gst + pst - 1)
+// TODO: add return/cancel functionality
 class ActivityController extends Controller
 {
     public function new(ActivityRequest $request)

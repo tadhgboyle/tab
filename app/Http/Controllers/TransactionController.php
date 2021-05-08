@@ -153,9 +153,10 @@ class TransactionController extends Controller
         $category_spent = $category_limit = 0.00;
         // Loop categories within this transaction
         foreach ($transaction_categories as $category_id) {
-            // TODO: use canSpend(x)
-            $limit_info = UserLimitsHelper::getInfo($request->purchaser_id, $category_id);
+
+            $limit_info = UserLimitsHelper::getInfo($purchaser, $category_id);
             $category_limit = $limit_info->limit_per;
+
             // Skip this category if they have unlimited. Saves time querying
             if ($category_limit == -1) {
                 continue;
@@ -165,17 +166,23 @@ class TransactionController extends Controller
 
             // Loop all products in this transaction. If the product's category is the current one in the above loop, add it's price to category spent
             foreach ($products as $product) {
+
                 $product_metadata = self::deserializeProduct($product);
-                if ($product_metadata['category'] == $category_id) {
-                    $tax_percent = $product_metadata['gst'];
-                    if ($product_metadata['pst'] != 'null') {
-                        $tax_percent += $product_metadata['pst'] - 1;
-                    }
-                    $category_spent += ($product_metadata['price'] * $product_metadata['quantity']) * $tax_percent;
+
+                if ($product_metadata['category'] != $category_id) {
+                    continue;
                 }
+
+                $tax_percent = $product_metadata['gst'];
+
+                if ($product_metadata['pst'] != 'null') {
+                    $tax_percent += $product_metadata['pst'] - 1;
+                }
+
+                $category_spent += ($product_metadata['price'] * $product_metadata['quantity']) * $tax_percent;
             }
+
             // Break loop if we exceed their limit
-            // TODO: If limit is $15, but their product is $15 (before  tax), this wont work
             if ($category_spent > $category_limit) {
                 return redirect()->back()->withInput()->with('error', 'Not enough balance in that category: ' . ucfirst(Category::find($category_id)->name) . ' (Limit: $' . number_format($category_limit, 2) . ', Remaining: $' . number_format($category_limit - $category_spent_orig, 2) . ').');
             }

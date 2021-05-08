@@ -16,6 +16,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
+// TODO: test with different limit durations (day/week)
 class UserLimitsTest extends TestCase
 {
     use RefreshDatabase;
@@ -25,22 +26,27 @@ class UserLimitsTest extends TestCase
      */
     public function testFindSpentCalculationIsCorrect()
     {
-        [$user, $food_category, $merch_category, $activities_category] = $this->createFakeRecords();
+        [$user, $food_category, $merch_category, $activities_category, $waterfront_category] = $this->createFakeRecords();
 
-        $food_limit_info = UserLimitsHelper::getInfo($user->id, $food_category->id);
+        $food_limit_info = UserLimitsHelper::getInfo($user, $food_category->id);
         $food_category_spent = UserLimitsHelper::findSpent($user, $food_category->id, $food_limit_info);
 
         $this->assertEquals(12.09, $food_category_spent);
 
-        $merch_limit_info = UserLimitsHelper::getInfo($user->id, $merch_category->id);
+        $merch_limit_info = UserLimitsHelper::getInfo($user, $merch_category->id);
         $merch_category_spent = UserLimitsHelper::findSpent($user, $merch_category->id, $merch_limit_info);
 
         $this->assertEquals(60.54, $merch_category_spent);
 
-        $activities_limit_info = UserLimitsHelper::getInfo($user->id, $activities_category->id);
+        $activities_limit_info = UserLimitsHelper::getInfo($user, $activities_category->id);
         $activities_category_spent = UserLimitsHelper::findSpent($user, $activities_category->id, $activities_limit_info);
 
         $this->assertEquals(6.29, $activities_category_spent);
+
+        $waterfront_limit_info = UserLimitsHelper::getInfo($user, $waterfront_category->id);
+        $waterfront_category_spent = UserLimitsHelper::findSpent($user, $waterfront_category->id, $waterfront_limit_info);
+        // Special case, they have no limit set for the waterfront category
+        $this->assertEquals(0, $waterfront_category_spent);
     }
 
     public function testFindSpentCalculationIsCorrectAfterItemReturn()
@@ -58,7 +64,7 @@ class UserLimitsTest extends TestCase
      */
     public function testUserCanSpendUnlimitedInCategory()
     {
-        [$user, $food_category, $merch_category, $activities_category] = $this->createFakeRecords();
+        [$user, $food_category, $merch_category, $activities_category, $waterfront_category] = $this->createFakeRecords();
 
         $can_spend_1_million_merch = UserLimitsHelper::canSpend($user, 1000000.00, $merch_category->id);
         // This should be true as their merch category is unlimited
@@ -71,7 +77,7 @@ class UserLimitsTest extends TestCase
      */
     public function testUserCannotSpendOverLimitInCategory()
     {
-        [$user, $food_category, $merch_category, $activities_category] = $this->createFakeRecords();
+        [$user, $food_category, $merch_category, $activities_category, $waterfront_category] = $this->createFakeRecords();
 
         $can_spend_1_dollar_food = UserLimitsHelper::canSpend($user, 1.00, $food_category->id);
         // This should be true, as they've only spent 12.09 / 15.00 dollars, and another 1 dollar would not go past 15.
@@ -88,6 +94,10 @@ class UserLimitsTest extends TestCase
         $can_spent_5_dollars_activities = UserLimitsHelper::canSpend($user, 5.00, $activities_category->id);
         // This should be false, as they spent 6.29 / 10, and another 5 would not go over 10
         $this->assertFalse($can_spent_5_dollars_activities);
+
+        $can_spent_10_dollars_waterfront = UserLimitsHelper::canSpend($user, 10, $waterfront_category->id);
+        // This should be true, since they have no explicit limit set it defaults to unlimited
+        $this->assertTrue($can_spent_10_dollars_waterfront);
     }
 
     /**
@@ -120,7 +130,7 @@ class UserLimitsTest extends TestCase
             ]
         ]);
 
-        [$food_category, $merch_category, $activities_category] = $this->createFakeCategories();
+        [$food_category, $merch_category, $activities_category, $waterfront_category] = $this->createFakeCategories();
 
         UserLimits::factory()->create([
             'user_id' => $user->id,
@@ -175,7 +185,7 @@ class UserLimitsTest extends TestCase
 
         // TODO: General category with hat and widegame on it
 
-        return [$user, $food_category, $merch_category, $activities_category];
+        return [$user, $food_category, $merch_category, $activities_category, $waterfront_category];
     }
 
     /** @return Category[] */
@@ -194,7 +204,11 @@ class UserLimitsTest extends TestCase
             'type' => 3
         ]);
 
-        return [$food_category, $merch_category, $activities_category];
+        $waterfront_category = Category::factory()->create([
+            'name' => 'Waterfront'
+        ]);
+
+        return [$food_category, $merch_category, $activities_category, $waterfront_category];
     }
 
     /** @return Product[] */
