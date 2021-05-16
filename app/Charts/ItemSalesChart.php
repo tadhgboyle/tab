@@ -26,7 +26,7 @@ class ItemSalesChart extends BaseChart
                 continue;
             }
 
-            array_push($sales, ['name' => $product->name, 'sold' => $sold]);
+            $sales[] = ['name' => $product->name, 'sold' => $sold];
         }
 
         uasort($sales, fn ($a, $b) => $a['sold'] > $b['sold'] ? -1 : 1);

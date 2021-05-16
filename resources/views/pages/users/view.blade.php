@@ -44,7 +44,7 @@
                     </td>
                     <td>
                         <div>
-                            @switch($transaction->checkReturned())
+                            @switch($transaction->getReturnStatus())
                                 @case(0)
                                     <span class="tag is-success is-medium">Normal</span>
                                 @break
