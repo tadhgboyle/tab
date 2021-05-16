@@ -13,9 +13,11 @@ use App\Http\Controllers\TransactionController;
 // TODO: Move these to user model. $user->canSpendInCategory($cat_id, 5.99)
 class UserLimitsHelper
 {
-    public static function canSpend(User $user, float $spending, int $category_id): bool
+    public static function canSpend(User $user, float $spending, int $category_id, ?object $info = null): bool
     {
-        $info = self::getInfo($user, $category_id);
+        if ($info == null) {
+            $info = self::getInfo($user, $category_id);
+        }
 
         if ($info->limit_per == -1) {
             return true;

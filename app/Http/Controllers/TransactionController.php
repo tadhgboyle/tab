@@ -98,33 +98,33 @@ class TransactionController extends Controller
         // For some reason, old() does not seem to work with array[] inputs in form. This will do for now...
         // ^ I'm sure its a silly mistake on my end
         foreach ($request->product as $product) {
-            session()->flash('quantity[' . $product . ']', $request->quantity[$product]);
-            session()->flash('product[' . $product . ']', true);
+            session()->flash("quantity[{$product}]", $request->quantity[$product]);
+            session()->flash("product[{$product}]", true);
         }
 
-        $products = $transaction_categories = $stock_products = [];
+        $transaction_products = $transaction_categories = $stock_products = [];
         $total_price = 0;
         $quantity = 1;
         $product_metadata = $pst_metadata = '';
         $total_tax = SettingsHelper::getInstance()->getGst();
 
         // Loop each product. Serialize it, and add it's cost to the transaction total
-        foreach ($request->product as $product) {
-            $product_info = Product::find($product);
-            if (array_key_exists($product, $request->quantity)) {
-                $quantity = $request->quantity[$product];
+        foreach ($request->product as $product_id) {
+            $product = Product::find($product_id);
+            if (array_key_exists($product_id, $request->quantity)) {
+                $quantity = $request->quantity[$product_id];
                 if ($quantity < 1) {
-                    return redirect()->back()->withInput()->with('error', 'Quantity must be >= 1 for item ' . $product_info->name);
+                    return redirect()->back()->withInput()->with('error', 'Quantity must be >= 1 for item ' . $product->name);
                 }
 
                 // Stock handling
-                if (!$product_info->hasStock($quantity)) {
-                    return redirect()->back()->withInput()->with('error', 'Not enough ' . $product_info->name . ' in stock. Only ' . $product_info->stock . ' remaining.');
-                } else {
-                    array_push($stock_products, $product_info);
+                if (!$product->hasStock($quantity)) {
+                    return redirect()->back()->withInput()->with('error', 'Not enough ' . $product->name . ' in stock. Only ' . $product->stock . ' remaining.');
                 }
 
-                if ($product_info->pst) {
+                $stock_products[] = $product;
+
+                if ($product->pst) {
                     $total_tax = ($total_tax + SettingsHelper::getInstance()->getPst()) - 1;
                     $pst_metadata = SettingsHelper::getInstance()->getPst();
                 } else {
@@ -132,15 +132,15 @@ class TransactionController extends Controller
                 }
 
                 // keep track of which unique categories are included in this transaction
-                if (!in_array($product_info->category_id, $transaction_categories)) {
-                    array_push($transaction_categories, $product_info->category_id);
+                if (!in_array($product->category_id, $transaction_categories)) {
+                    $transaction_categories[] = $product->category_id;
                 }
 
-                $product_metadata = self::serializeProduct($product, $quantity, $product_info->price, SettingsHelper::getInstance()->getGst(), $pst_metadata, 0);
+                $product_metadata = self::serializeProduct($product_id, $quantity, $product->price, SettingsHelper::getInstance()->getGst(), $pst_metadata, 0);
             }
 
-            array_push($products, $product_metadata);
-            $total_price += (($product_info->price * $quantity) * $total_tax);
+            $transaction_products[] = $product_metadata;
+            $total_price += (($product->price * $quantity) * $total_tax);
             $total_tax = SettingsHelper::getInstance()->getGst();
         }
 
@@ -165,7 +165,7 @@ class TransactionController extends Controller
             $category_spent = $category_spent_orig = UserLimitsHelper::findSpent($purchaser, $category_id, $limit_info);
 
             // Loop all products in this transaction. If the product's category is the current one in the above loop, add it's price to category spent
-            foreach ($products as $product) {
+            foreach ($transaction_products as $product) {
 
                 $product_metadata = self::deserializeProduct($product);
 
@@ -183,8 +183,8 @@ class TransactionController extends Controller
             }
 
             // Break loop if we exceed their limit
-            if ($category_spent > $category_limit) {
-                return redirect()->back()->withInput()->with('error', 'Not enough balance in that category: ' . ucfirst(Category::find($category_id)->name) . ' (Limit: $' . number_format($category_limit, 2) . ', Remaining: $' . number_format($category_limit - $category_spent_orig, 2) . ').');
+            if (!UserLimitsHelper::canSpend($purchaser, $category_spent, $category_id, $limit_info)) {
+                return redirect()->back()->withInput()->with('error', 'Not enough balance in that category: ' . Category::find($category_id)->name . ' (Limit: $' . number_format($category_limit, 2) . ', Remaining: $' . number_format($category_limit - $category_spent_orig, 2) . ').');
             }
         }
 
@@ -201,103 +201,33 @@ class TransactionController extends Controller
         $transaction = new Transaction();
         $transaction->purchaser_id = $purchaser->id;
         $transaction->cashier_id = auth()->id();
-        $transaction->products = implode(', ', $products);
+        $transaction->products = implode(', ', $transaction_products);
         $transaction->total_price = $total_price;
         $transaction->save();
 
         return redirect('/')->with('success', 'Order #' . $transaction->id . '. ' . $purchaser->full_name . ' now has $' . number_format(round($remaining_balance, 2), 2));
     }
 
-    // TODO: when whole transaction is returned, manually deserialize and reserialize all products with return value of their original quantity
-    // to keep consistency with item sales chart
-
-    public function returnOrder($id)
+    public function returnOrder(int $id)
     {
-        // TODO: Move into Transaction class
         $transaction = Transaction::find($id);
-        // This should never happen, but a good security measure
-        if ($transaction->checkReturned() == 1) {
-            return redirect()->back()->with('error', 'That order has already been fully returned.');
+
+        if ($transaction == null) {
+            return redirect()->back()->with('error', 'No transaction found with that ID.');
         }
 
-        $total_tax = $total_price = 0;
-        $purchaser = $transaction->purchaser;
-
-        // Loop through products from the order and deserialize them to get their prices & taxes etc when they were purchased
-        $transaction_products = explode(', ', $transaction->products);
-        foreach ($transaction_products as $product) {
-            $product_metadata = self::deserializeProduct($product, false);
-
-            if ($product_metadata['pst'] == 'null') {
-                $total_tax = $product_metadata['gst'];
-            } else {
-                $total_tax = ($product_metadata['gst'] + $product_metadata['pst']) - 1;
-            }
-
-            $total_price += ($product_metadata['price'] * $product_metadata['quantity']) * $total_tax;
-        }
-
-        // Update their balance and set the status to 1 for the returned order
-        $purchaser->update(['balance' => ($purchaser->balance + $total_price)]);
-        $transaction->update(['status' => true]);
-
-        return redirect()->back()->with('success', 'Successfully returned order #' . $id . ' for ' . $purchaser->full_name);
+        return $transaction->return();
     }
 
     public function returnItem(int $item_id, int $order_id)
     {
-        // TODO: Move into Transaction class
         $transaction = Transaction::find($order_id);
-        // this shouldnt happen, but worth a check
-        if ($transaction->checkReturned() == 1) {
-            return redirect()->back()->with('error', 'That order has already been returned, so you cannot return an item from it.');
+
+        if ($transaction == null) {
+            return redirect()->back()->with('error', 'No transaction found with that ID.');
         }
 
-        $user = $transaction->purchaser;
-        $user_balance = $user->balance;
-        $found = false;
-
-        // Loop order products until we find the matching id
-        $products = explode(', ', $transaction->products);
-        foreach ($products as $product_count) {
-            // Only proceed if this is the requested item id
-            if (strtok($product_count, '*') == $item_id) {
-                $order_product = self::deserializeProduct($product_count);
-                $found = true;
-
-                // If it has not been returned more times than it was purchased, then ++ the returned count and refund the original cost + taxes
-                if (!($order_product['returned'] < $order_product['quantity'])) {
-                    return redirect()->back()->with('error', 'That item has already been returned the maximum amount of times for that order.');
-                }
-
-                $order_product['returned']++;
-
-                $total_tax = 0.00;
-
-                // Check taxes and apply correct %
-                if ($order_product['pst'] == 'null') {
-                    $total_tax = $order_product['gst'];
-                } else {
-                    $total_tax = (($order_product['pst'] + $order_product['gst']) - 1);
-                }
-
-                // Gets funky now. find the exact string of the original item from the string of order items and replace with the new string where the R value is ++
-                $updated_products = str_replace(
-                    $product_count,
-                    self::serializeProduct($order_product['id'], $order_product['quantity'], $order_product['price'], $order_product['gst'], $order_product['pst'], $order_product['returned']),
-                    $products
-                );
-                // Update their balance
-                $user->update(['balance' => $user_balance += ($order_product['price'] * $total_tax)]);
-                // Now insert the funky replaced string where it was originally
-                $transaction->update(['products' => implode(', ', $updated_products)]);
-                return redirect()->back()->with('success', 'Successfully returned x1 ' . $order_product['name'] . ' for order #' . $order_id . '.');
-            }
-        }
-
-        if ($found === false) {
-            return redirect()->back()->with('error', 'That item was not in the original order.');
-        }
+        return $transaction->returnItem($item_id);
     }
 
     public function list()
@@ -322,7 +252,7 @@ class TransactionController extends Controller
         return view('pages.orders.view', [
             'transaction' => $transaction,
             'transaction_items' => $transaction_items,
-            'transaction_returned' => $transaction->checkReturned(),
+            'transaction_returned' => $transaction->getReturnStatus(),
         ]);
     }
 

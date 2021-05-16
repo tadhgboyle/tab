@@ -43,12 +43,11 @@ class Activity extends Model
         return $this->hasOne(Category::class, 'id', 'category_id');
     }
 
-    private ?Collection $_current_attendees = null;
+    private Collection $_current_attendees;
 
-    // reusable function so we only query once
     private function getCurrentAttendees(): Collection
     {
-        if ($this->_current_attendees == null) {
+        if (!isset($this->_current_attendees)) {
             $this->_current_attendees = DB::table('activity_transactions')->where('activity_id', $this->id)->get('user_id');
         }
 
