@@ -15,6 +15,7 @@ class TransactionCreationService
 {
     private int $_result;
     private string $_message;
+    private float $_total_price;
 
     public function __construct(
         private Request $_request
@@ -159,6 +160,7 @@ class TransactionCreationService
 
         $this->_result = 6;
         $this->_message = 'Order #' . $transaction->id . '. ' . $purchaser->full_name . ' now has $' . number_format(round($remaining_balance, 2), 2);
+        $this->_total_price = $total_price;
         return;
     }
 
@@ -171,6 +173,11 @@ class TransactionCreationService
     {
         return $this->_message;
     }
+    
+    public function getTotalPrice(): float
+    {
+        return $this->_total_price;
+    }
 
     public function redirect()
     {
@@ -181,7 +188,7 @@ class TransactionCreationService
             case 2:
             case 3:
             case 4:
-            case 5: 
+            case 5:
                 return redirect()->back()->withInput()->with('error', $this->getMessage());
             case 6:
                 return redirect('/')->with('success', $this->getMessage());
