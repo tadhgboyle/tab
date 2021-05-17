@@ -13,7 +13,6 @@ use App\Models\Settings;
 use App\Models\Product;
 use App\Models\Category;
 
-// TODO after rewriting transaction handling
 class TransactionCreationTest extends TestCase
 {
     use RefreshDatabase;
@@ -45,19 +44,38 @@ class TransactionCreationTest extends TestCase
         $this->assertSame(2, $transactionService->getResult());
     }
 
-    public function testCannotMakeTransactionWithoutEnoughBalance()
-    {
-        $this->assertTrue(true);
-    }
-
     public function testCannotMakeTransactionWithOutOfStockItem()
     {
-        $this->assertTrue(true);
+        [$camper_user, $staff_user] = $this->createFakeRecords();
+
+        $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user->id, true, false, true));
+
+        $this->assertSame(3, $transactionService->getResult());
+    }
+
+    public function testCannotMakeTransactionWithoutEnoughBalance()
+    {
+        [$camper_user, $staff_user] = $this->createFakeRecords();
+
+        $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user->id, true, false, false, true));
+
+        $this->assertSame(4, $transactionService->getResult());
+    }
+
+    public function testCannotMakeTransactionWithoutEnoughBalanceInCategory()
+    {
+        $this->assertTrue(true); // TODO
     }
 
     public function testUserBalanceCorrectAfterTransaction()
     {
-        $this->assertTrue(true);
+        [$camper_user, $staff_user] = $this->createFakeRecords();
+
+        $camper_user_balance = $camper_user->balance;
+
+        $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user->id));
+
+        $this->assertEquals($camper_user_balance - $transactionService->getTotalPrice(), $camper_user->balance); // TODO, user balance seems to not be updated
     }
 
     public function testSuccessfulTransaction()
@@ -112,10 +130,9 @@ class TransactionCreationTest extends TestCase
         return [$camper_user, $staff_user];
     }
 
-    private function createFakeRequest(int $purchaser_id, bool $with_products = true, bool $negative_product = false): Request
+    private function createFakeRequest(int $purchaser_id, bool $with_products = true, bool $negative_product = false, bool $over_stock = false, bool $over_balance = false): Request
     {
-
-        [$chips, $hat, $coffee] = $this->createFakeProducts();
+        [$chips, $hat, $coffee] = $this->createFakeProducts($over_balance);
 
         if ($with_products) {
             $data = [
@@ -125,7 +142,7 @@ class TransactionCreationTest extends TestCase
                     $coffee->id
                 ],
                 'quantity' => [
-                    $chips->id => $negative_product ? -1 : 1,
+                    $chips->id => $negative_product ? -1 : ($over_stock ? 100 : 1),
                     $hat->id => 2,
                     $coffee->id => 1
                 ],
@@ -134,7 +151,7 @@ class TransactionCreationTest extends TestCase
         } else {
             $data = [
                 'quantity' => [
-                    $chips->id => $negative_product ? -1 : 1,
+                    $chips->id => $negative_product ? -1 : ($over_stock ? 100 : 1),
                     $hat->id => 2,
                     $coffee->id => 1
                 ],
@@ -160,16 +177,17 @@ class TransactionCreationTest extends TestCase
     }
 
     /** @return Product[] */
-    private function createFakeProducts(): array
+    private function createFakeProducts(bool $over_balance): array
     {
-
         [$food_category, $merch_category] = $this->createFakeCategories();
 
         $chips = Product::factory()->create([
             'name' => 'Chips',
-            'price' => 1.50,
+            'price' => $over_balance ? 5999.99 : 1.50,
             'pst' => false,
-            'category_id' => $food_category->id
+            'category_id' => $food_category->id,
+            'stock' => 2,
+            'unlimited_stock' => false
         ]);
 
         $hat = Product::factory()->create([

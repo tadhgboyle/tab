@@ -27,8 +27,8 @@ class ProductFactory extends Factory
             'price' => Arr::random([1.25, 14.99, 4.98, 5.00]),
             'pst' => Arr::random([1, 0]),
             'deleted' => false,
-            'stock' => Arr::random([0, 52, 14, 422, 987]),
-            'unlimited_stock' => false,
+            'stock' => 0,
+            'unlimited_stock' => true,
             'box_size' => Arr::random([-1, 5, 8]),
             'stock_override' => false,
             'creator_id' => 1
