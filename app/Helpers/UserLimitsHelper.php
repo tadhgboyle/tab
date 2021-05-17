@@ -42,13 +42,13 @@ class UserLimitsHelper
             $limit_info->duration = 'week';
             $limit_info->limit_per = -1;
         }
-    
+
         return $limit_info;
     }
 
     public static function findSpent(User $user, int $category_id, object $info): float
     {
-        // If they have unlimited money for this category, 
+        // If they have unlimited money for this category,
         // get all their transactions, as they have no limit set we dont need to worry about
         // when the transaction was created_at.
         if ($info->limit_per == -1) {
@@ -68,7 +68,6 @@ class UserLimitsHelper
             $transaction_products = explode(', ', $transaction['products']);
 
             foreach ($transaction_products as $transaction_product) {
-
                 $product = Product::find(strtok($transaction_product, '*'));
                 if ($product->category_id != $category_id) {
                     continue;
@@ -89,7 +88,6 @@ class UserLimitsHelper
         }
 
         foreach ($activity_transactions as $activity_transaction) {
-
             $activity = Activity::find($activity_transaction->activity_id);
             if ($activity->category_id != $category_id) {
                 continue;

@@ -2,16 +2,16 @@
 
 namespace Tests\Feature;
 
-use App\Models\Role;
-use App\Models\Transaction;
-use App\Models\User;
-use App\Services\TransactionCreationService;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\Request;
-use App\Models\Settings;
+use App\Models\Role;
+use App\Models\User;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Settings;
+use App\Models\Transaction;
+use Illuminate\Http\Request;
+use App\Services\TransactionCreationService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TransactionCreationTest extends TestCase
 {
