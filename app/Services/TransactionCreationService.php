@@ -1,15 +1,15 @@
-<?php 
+<?php
 
 namespace App\Services;
 
-use App\Http\Controllers\TransactionController;
-use Illuminate\Http\Request;
-use App\Models\Transaction;
-use App\Helpers\SettingsHelper;
-use App\Helpers\UserLimitsHelper;
+use App\Models\User;
 use App\Models\Product;
 use App\Models\Category;
-use App\Models\User;
+use App\Models\Transaction;
+use Illuminate\Http\Request;
+use App\Helpers\SettingsHelper;
+use App\Helpers\UserLimitsHelper;
+use App\Http\Controllers\TransactionController;
 
 class TransactionCreationService
 {
@@ -54,7 +54,6 @@ class TransactionCreationService
 
         // Loop each product. Serialize it, and add it's cost to the transaction total
         foreach ($this->_request->product as $product_id) {
-
             if (!array_key_exists($product_id, $this->_request->quantity)) {
                 continue;
             }
@@ -107,7 +106,6 @@ class TransactionCreationService
         $category_spent = $category_limit = 0.00;
         // Loop categories within this transaction
         foreach ($transaction_categories as $category_id) {
-
             $limit_info = UserLimitsHelper::getInfo($purchaser, $category_id);
             $category_limit = $limit_info->limit_per;
 
@@ -120,7 +118,6 @@ class TransactionCreationService
 
             // Loop all products in this transaction. If the product's category is the current one in the above loop, add it's price to category spent
             foreach ($transaction_products as $product) {
-
                 $product_metadata = TransactionController::deserializeProduct($product);
 
                 if ($product_metadata['category'] != $category_id) {
@@ -161,7 +158,7 @@ class TransactionCreationService
         $this->_result = 6;
         $this->_message = 'Order #' . $transaction->id . '. ' . $purchaser->full_name . ' now has $' . number_format(round($remaining_balance, 2), 2);
         $this->_total_price = $total_price;
-        return;
+
     }
 
     public function getResult(): int
@@ -173,7 +170,7 @@ class TransactionCreationService
     {
         return $this->_message;
     }
-    
+
     public function getTotalPrice(): float
     {
         return $this->_total_price;
