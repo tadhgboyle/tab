@@ -17,24 +17,27 @@ class TransactionCreationService
     private string $_message;
     private float $_total_price;
 
+    public const RESULT_NO_SELF_PURCHASE = 0;
+    public const RESULT_NO_ITEMS_SELECTED = 1;
+    public const RESULT_NEGATIVE_QUANTITY = 2;
+    public const RESULT_NO_STOCK = 3;
+    public const RESULT_NOT_ENOUGH_BALANCE = 4;
+    public const RESULT_NOT_ENOUGH_CATEGORY_BALANCE = 5;
+    public const RESULT_SUCCESS = 6;
+
     public function __construct(
         private Request $_request
     ) {
-        $this->create();
-    }
-
-    public function create()
-    {
         if (!hasPermission('cashier_self_purchases')) {
             if ($this->_request->purchaser_id == auth()->id()) {
-                $this->_result = 0;
+                $this->_result = self::RESULT_NO_SELF_PURCHASE;
                 $this->_message = 'You cannot make purchases for yourself.';
                 return;
             }
         }
 
         if (!isset($this->_request->product)) {
-            $this->_result = 1;
+            $this->_result = self::RESULT_NO_ITEMS_SELECTED;
             $this->_message = 'Please select at least one item.';
             return;
         }
@@ -62,14 +65,14 @@ class TransactionCreationService
 
             $quantity = $this->_request->quantity[$product_id];
             if ($quantity < 1) {
-                $this->_result = 2;
+                $this->_result = self::RESULT_NEGATIVE_QUANTITY;
                 $this->_message = 'Quantity must be >= 1 for item ' . $product->name;
                 return;
             }
 
             // Stock handling
             if (!$product->hasStock($quantity)) {
-                $this->_result = 3;
+                $this->_result = self::RESULT_NO_STOCK;
                 $this->_message = 'Not enough ' . $product->name . ' in stock. Only ' . $product->stock . ' remaining.';
                 return;
             }
@@ -98,7 +101,7 @@ class TransactionCreationService
         $purchaser = User::find($this->_request->purchaser_id);
         $remaining_balance = $purchaser->balance - $total_price;
         if ($remaining_balance < 0) {
-            $this->_result = 4;
+            $this->_result = self::RESULT_NOT_ENOUGH_BALANCE;
             $this->_message = 'Not enough balance. ' . $purchaser->full_name . ' only has $' . $purchaser->balance;
             return;
         }
@@ -135,7 +138,7 @@ class TransactionCreationService
 
             // Break loop if we exceed their limit
             if (!UserLimitsHelper::canSpend($purchaser, $category_spent, $category_id, $limit_info)) {
-                $this->_result = 5;
+                $this->_result = self::RESULT_NOT_ENOUGH_CATEGORY_BALANCE;
                 $this->_message = 'Not enough balance in that category: ' . Category::find($category_id)->name . ' (Limit: $' . number_format($category_limit, 2) . ', Remaining: $' . number_format($category_limit - $category_spent_orig, 2) . ').';
                 return;
             }
@@ -155,7 +158,7 @@ class TransactionCreationService
         $transaction->total_price = $total_price;
         $transaction->save();
 
-        $this->_result = 6;
+        $this->_result = self::RESULT_SUCCESS;
         $this->_message = 'Order #' . $transaction->id . '. ' . $purchaser->full_name . ' now has $' . number_format(round($remaining_balance, 2), 2);
         $this->_total_price = $total_price;
 
@@ -179,16 +182,12 @@ class TransactionCreationService
     public function redirect()
     {
         switch ($this->getResult()) {
-            case 0:
+            case self::RESULT_NO_SELF_PURCHASE:
                 return redirect('/')->with('error', $this->getMessage());
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-                return redirect()->back()->withInput()->with('error', $this->getMessage());
-            case 6:
+            case self::RESULT_SUCCESS:
                 return redirect('/')->with('success', $this->getMessage());
+            default:
+                return redirect()->back()->withInput()->with('error', $this->getMessage());
         }
     }
 }

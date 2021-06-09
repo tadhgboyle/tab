@@ -23,7 +23,7 @@ class TransactionCreationTest extends TestCase
 
         $transactionService = new TransactionCreationService($this->createFakeRequest($staff_user->id));
 
-        $this->assertSame(0, $transactionService->getResult());
+        $this->assertSame(TransactionCreationService::RESULT_NO_SELF_PURCHASE, $transactionService->getResult());
     }
 
     public function testCannotMakeTransactionWithNoProductsSelected()
@@ -32,7 +32,7 @@ class TransactionCreationTest extends TestCase
 
         $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user->id, false));
 
-        $this->assertSame(1, $transactionService->getResult());
+        $this->assertSame(TransactionCreationService::RESULT_NO_ITEMS_SELECTED, $transactionService->getResult());
     }
 
     public function testCannotMakeTransactionWithLessThanZeroQuantity()
@@ -41,7 +41,7 @@ class TransactionCreationTest extends TestCase
 
         $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user->id, true, true));
 
-        $this->assertSame(2, $transactionService->getResult());
+        $this->assertSame(TransactionCreationService::RESULT_NEGATIVE_QUANTITY, $transactionService->getResult());
     }
 
     public function testCannotMakeTransactionWithOutOfStockItem()
@@ -50,7 +50,7 @@ class TransactionCreationTest extends TestCase
 
         $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user->id, true, false, true));
 
-        $this->assertSame(3, $transactionService->getResult());
+        $this->assertSame(TransactionCreationService::RESULT_NO_STOCK, $transactionService->getResult());
     }
 
     public function testCannotMakeTransactionWithoutEnoughBalance()
@@ -59,7 +59,7 @@ class TransactionCreationTest extends TestCase
 
         $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user->id, true, false, false, true));
 
-        $this->assertSame(4, $transactionService->getResult());
+        $this->assertSame(TransactionCreationService::RESULT_NOT_ENOUGH_BALANCE, $transactionService->getResult());
     }
 
     public function testCannotMakeTransactionWithoutEnoughBalanceInCategory()
@@ -84,7 +84,7 @@ class TransactionCreationTest extends TestCase
 
         $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user->id));
 
-        $this->assertSame(6, $transactionService->getResult());
+        $this->assertSame(TransactionCreationService::RESULT_SUCCESS, $transactionService->getResult());
         $this->assertCount(1, Transaction::all());
     }
 
