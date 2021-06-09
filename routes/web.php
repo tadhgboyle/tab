@@ -65,7 +65,7 @@ Route::middleware('auth')->group(function () {
             });
 
             Route::group(['permission' => 'orders_return'], function () {
-                Route::get('/orders/return/order/{id}', [TransactionController::class, 'returnOrder'])->name('orders_return');
+                Route::get('/orders/return/order/{id}', [TransactionController::class, 'returnTransaction'])->name('orders_return');
                 Route::get('/orders/return/item/{item}/{order}', [TransactionController::class, 'returnItem'])->name('orders_return_item');
             });
         });

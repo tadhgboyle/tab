@@ -8,6 +8,7 @@ use Rennokki\QueryCache\Traits\QueryCacheable;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/** @method static Product find */
 class Product extends Model
 {
     use QueryCacheable;
