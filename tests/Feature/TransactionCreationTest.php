@@ -71,14 +71,16 @@ class TransactionCreationTest extends TestCase
     {
         [$camper_user, $staff_user] = $this->createFakeRecords();
 
-        $camper_user_balance = $camper_user->balance;
+        $camper_user_balance_before = $camper_user->balance;
 
         $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user->id));
 
-        $this->assertEquals($camper_user_balance - $transactionService->getTotalPrice(), $camper_user->balance); // TODO, user balance seems to not be updated
+        $camper_user = $camper_user->refresh();
+
+        $this->assertEquals($camper_user_balance_before - $transactionService->getTotalPrice(), $camper_user->balance);
     }
 
-    public function testSuccessfulTransaction()
+    public function testTransactionIsStored()
     {
         [$camper_user, $staff_user] = $this->createFakeRecords();
 
@@ -86,8 +88,10 @@ class TransactionCreationTest extends TestCase
 
         $this->assertSame(TransactionCreationService::RESULT_SUCCESS, $transactionService->getResult());
         $this->assertCount(1, Transaction::all());
+        $this->assertCount(1, $camper_user->getTransactions());
     }
 
+    /** @return User[] */
     private function createFakeRecords(): array
     {
         $camper_role = Role::factory()->create([

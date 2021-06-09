@@ -161,7 +161,6 @@ class TransactionCreationService
         $this->_result = self::RESULT_SUCCESS;
         $this->_message = 'Order #' . $transaction->id . '. ' . $purchaser->full_name . ' now has $' . number_format(round($remaining_balance, 2), 2);
         $this->_total_price = $total_price;
-
     }
 
     public function getResult(): int
