@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/** @method static Activity find */
 class Activity extends Model
 {
     use QueryCacheable;

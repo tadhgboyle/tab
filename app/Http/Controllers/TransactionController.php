@@ -87,7 +87,7 @@ class TransactionController extends Controller
         return (new TransactionCreationService($request))->redirect();
     }
 
-    public function returnOrder(int $id)
+    public function returnTransaction(int $id)
     {
         $transaction = Transaction::find($id);
 
