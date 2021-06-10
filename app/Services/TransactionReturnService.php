@@ -13,9 +13,14 @@ class TransactionReturnService extends TransactionService
     public const RESULT_ITEM_NOT_IN_ORDER = 3;
     public const RESULT_SUCCESS = 4;
 
-    public function __construct(int $transaction_id)
+    public function __construct(Transaction|int $transaction)
     {
-        $transaction = Transaction::find($transaction_id);
+        if ($transaction instanceof Transaction) {
+            $this->_transaction = $transaction;
+            return;
+        }
+
+        $transaction = Transaction::find($transaction);
 
         if ($transaction == null) {
             return redirect()->route('orders_list')->with('error', 'No transaction found with that ID.')->send();
@@ -69,7 +74,7 @@ class TransactionReturnService extends TransactionService
         }
 
         $purchaser = $this->_transaction->purchaser;
-        $user_balance = $this->_transaction->purchaser->balance;
+        $user_balance = $purchaser->balance;
         $found = false;
 
         // Loop order products until we find the matching id
