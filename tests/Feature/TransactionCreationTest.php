@@ -8,12 +8,12 @@ use App\Models\User;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Settings;
-use App\Models\Transaction;
 use App\Models\UserLimits;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Services\TransactionCreationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
 
 class TransactionCreationTest extends TestCase
 {
@@ -93,7 +93,7 @@ class TransactionCreationTest extends TestCase
 
         $this->assertSame(TransactionCreationService::RESULT_SUCCESS, $transactionService->getResult());
         $this->assertCount(1, Transaction::all());
-         // $this->assertCount(1, $camper_user->getTransactions()); TODO: raw DB select works, but this does not.
+        // $this->assertCount(1, $camper_user->getTransactions()); TODO: raw DB select works, but this does not.
     }
 
     /** @return User[] */
@@ -141,14 +141,13 @@ class TransactionCreationTest extends TestCase
     }
 
     private function createFakeRequest(
-        User $purchaser, 
-        bool $with_products = true, 
-        bool $negative_product = false, 
-        bool $over_stock = false, 
-        bool $over_balance = false, 
+        User $purchaser,
+        bool $with_products = true,
+        bool $negative_product = false,
+        bool $over_stock = false,
+        bool $over_balance = false,
         bool $over_category_limit = false
-    ): Request
-    {
+    ): Request {
         [$food_category, $merch_category] = $this->createFakeCategories();
 
         if ($over_category_limit) {
