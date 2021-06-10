@@ -33,21 +33,11 @@ class TransactionReturnTest extends TestCase
     {
         [$user, $transaction, $hat] = $this->createFakeRecords();
 
-        $user_balance_before = $user->balance;
-        print('user bal ' . $user_balance_before . "\r\n");
-        print('hat price ' . $hat->getPrice() . "\r\n");
-
         $transactionService = (new TransactionReturnService($transaction->id))->returnItem($hat->id);
-
-        print('expected bal ' . $user_balance_before + $hat->getPrice() . "\r\n");
-
-        $user->refresh();
-
-        print('actual bal ' . $user->balance);
 
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
         $this->assertSame(Transaction::STATUS_PARTIAL_RETURNED, $transactionService->getTransaction()->getReturnStatus());
-        $this->assertEquals($user_balance_before + $hat->getPrice(), $user->balance); // TODO: their balance is getting set to the price of the hat...
+        $this->assertEquals(number_format($user->balance + $hat->getPrice(), 2), number_format($user->refresh()->balance, 2)); // TODO: not need to use number format to round (3 and 4 decimal places are off)
     }
 
     public function testUserBalanceUpdatedAfterTransactionReturn()

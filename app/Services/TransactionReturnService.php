@@ -69,7 +69,7 @@ class TransactionReturnService extends TransactionService
         }
 
         $purchaser = $this->_transaction->purchaser;
-        $user_balance = $this->_transaction->balance;
+        $user_balance = $this->_transaction->purchaser->balance;
         $found = false;
 
         // Loop order products until we find the matching id
