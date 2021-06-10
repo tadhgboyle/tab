@@ -77,16 +77,16 @@ class TransactionReturnTest extends TestCase
     public function testCannotReturnFullyReturnedItemInTransaction()
     {
         [$user, $transaction, $hat] = $this->createFakeRecords();
+        $transaction_2_items = $this->createTwoItemTransaction($user, $hat);
 
-        $transactionService1 = (new TransactionReturnService($transaction))->returnItem($hat->id);
-        $transactionService2 = (new TransactionReturnService($transaction))->returnItem($hat->id);
-        $transactionService3 = (new TransactionReturnService($transaction))->returnItem($hat->id);
+        $transactionService1 = (new TransactionReturnService($transaction_2_items))->returnItem($hat->id);
+        $transactionService2 = (new TransactionReturnService($transaction_2_items))->returnItem($hat->id);
+        $transactionService3 = (new TransactionReturnService($transaction_2_items))->returnItem($hat->id);
 
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService1->getResult());
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService2->getResult());
-        // TODO: make new testing transaction with another product type
-        //$this->assertSame(TransactionReturnService::RESULT_ITEM_RETURNED_MAX_TIMES, $transactionService3->getResult());
-        //$this->assertSame(Transaction::STATUS_PARTIAL_RETURNED, $transactionService3->getTransaction()->getReturnStatus());
+        $this->assertSame(TransactionReturnService::RESULT_ITEM_RETURNED_MAX_TIMES, $transactionService3->getResult());
+        $this->assertSame(Transaction::STATUS_PARTIAL_RETURNED, $transaction_2_items->getReturnStatus());
     }
 
     private function createFakeRecords(): array
@@ -95,7 +95,7 @@ class TransactionReturnTest extends TestCase
 
         $user = User::factory()->create([
             'role_id' => $role->id,
-            'balance' => 30.00
+            'balance' => 300.00
         ]);
 
         $this->actingAs($user);
@@ -124,21 +124,37 @@ class TransactionReturnTest extends TestCase
             ]
         ]);
 
-        $transaction = (new TransactionCreationService($this->createFakeRequest($user, $hat)))->getTransaction(); // $26.8576 -> $3.1424
-
-        return [$user->refresh(), $transaction, $hat];
-    }
-
-    private function createFakeRequest(User $user, Product $hat): Request
-    {
-        return new Request([
-            'product' => [
+        $transaction = (new TransactionCreationService(new Request(
+            ['product' => [
                 $hat->id,
             ],
             'quantity' => [
                 $hat->id => 2,
             ],
             'purchaser_id' => $user->id
+        ])))->getTransaction(); // $26.8576 -> $3.1424
+
+        return [$user->refresh(), $transaction, $hat];
+    }
+
+    private function createTwoItemTransaction(User $user, Product $hat): Transaction
+    {
+        $sweater = Product::factory()->create([
+            'name' => 'Sweater',
+            'category_id' => $hat->category_id,
+            'price' => 39.99
         ]);
+
+        return (new TransactionCreationService(new Request([
+            'product' => [
+                $hat->id,
+                $sweater->id
+            ],
+            'quantity' => [
+                $hat->id => 2,
+                $sweater->id => 1
+            ],
+            'purchaser_id' => $user->id
+        ])))->getTransaction();
     }
 }
