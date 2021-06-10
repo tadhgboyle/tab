@@ -36,7 +36,7 @@ class TransactionReturnTest extends TestCase
         $transactionService = (new TransactionReturnService($transaction))->returnItem($hat->id);
 
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
-        $this->assertSame(Transaction::STATUS_PARTIAL_RETURNED, $transactionService->getTransaction()->getReturnStatus());
+        $this->assertSame(Transaction::STATUS_PARTIAL_RETURNED, $transaction->getReturnStatus());
         $this->assertEquals(number_format($user->balance + $hat->getPrice(), 2), number_format($user->refresh()->balance, 2)); // TODO: not need to use number format to round (3 and 4 decimal places are off)
     }
 
@@ -47,7 +47,7 @@ class TransactionReturnTest extends TestCase
         $transactionService = (new TransactionReturnService($transaction))->return();
 
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
-        $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transactionService->getTransaction()->getReturnStatus());
+        $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->getReturnStatus());
         $this->assertEquals($user->balance + $transaction->total_price, $user->refresh()->balance);
     }
 
@@ -55,11 +55,11 @@ class TransactionReturnTest extends TestCase
     {
         [$user, $transaction, $hat] = $this->createFakeRecords();
 
-        (new TransactionReturnService($transaction->id))->returnItem($hat->id);
+        (new TransactionReturnService($transaction))->returnItem($hat->id);
         $transactionService = (new TransactionReturnService($transaction))->returnItem($hat->id);
 
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
-        $this->assertSame(Transaction::STATUS_PARTIAL_RETURNED, $transactionService->getTransaction()->getReturnStatus());
+        $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->getReturnStatus());
     }
 
     public function testCannotReturnFullyReturnedTransaction()
@@ -67,11 +67,11 @@ class TransactionReturnTest extends TestCase
         [$user, $transaction, $hat] = $this->createFakeRecords();
 
         $transactionService1 = (new TransactionReturnService($transaction))->return();
-        $transactionService2 = (new TransactionReturnService($transactionService1->getTransaction()))->return();
+        $transactionService2 = (new TransactionReturnService($transaction))->return();
 
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService1->getResult());
         $this->assertSame(TransactionReturnService::RESULT_ALREADY_RETURNED, $transactionService2->getResult());
-        $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transactionService1->getTransaction()->getReturnStatus());
+        $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->getReturnStatus());
     }
 
     public function testCannotReturnFullyReturnedItemInTransaction()
