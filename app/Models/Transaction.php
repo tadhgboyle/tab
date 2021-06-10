@@ -13,7 +13,7 @@ class Transaction extends Model
     public const STATUS_NOT_RETURNED = 0;
     public const STATUS_FULLY_RETURNED = 1;
     public const STATUS_PARTIAL_RETURNED = 2;
-    
+
     use QueryCacheable;
     use HasFactory;
 
