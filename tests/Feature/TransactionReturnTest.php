@@ -2,17 +2,17 @@
 
 namespace Tests\Feature;
 
-use App\Models\Settings;
-use App\Models\Category;
-use App\Models\Product;
-use App\Models\Role;
-use App\Models\Transaction;
-use App\Models\User;
-use App\Services\TransactionCreationService;
-use App\Services\TransactionReturnService;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\Role;
+use App\Models\User;
+use App\Models\Product;
+use App\Models\Category;
+use App\Models\Settings;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Services\TransactionReturnService;
+use App\Services\TransactionCreationService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TransactionReturnTest extends TestCase
 {
@@ -43,7 +43,7 @@ class TransactionReturnTest extends TestCase
     public function testUserBalanceUpdatedAfterTransactionReturn()
     {
         [$user, $transaction, $hat] = $this->createFakeRecords();
-        
+
         $transactionService = (new TransactionReturnService($transaction))->return();
 
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());

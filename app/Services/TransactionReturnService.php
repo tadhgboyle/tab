@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Http\Controllers\TransactionController;
 use App\Models\Transaction;
 use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\TransactionController;
 
 class TransactionReturnService extends TransactionService
 {
@@ -13,7 +13,7 @@ class TransactionReturnService extends TransactionService
     public const RESULT_ITEM_NOT_IN_ORDER = 3;
     public const RESULT_SUCCESS = 4;
 
-    public function __construct(Transaction|int $transaction)
+    public function __construct(Transaction | int $transaction)
     {
         if ($transaction instanceof Transaction) {
             $this->_transaction = $transaction;

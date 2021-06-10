@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\Helpers\SettingsHelper;
 use Illuminate\Support\Carbon;
+use App\Helpers\SettingsHelper;
 use Illuminate\Database\Eloquent\Model;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use App\Http\Controllers\TransactionController;
