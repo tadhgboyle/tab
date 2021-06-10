@@ -90,7 +90,7 @@ class TransactionCreationTest extends TestCase
 
         $this->assertSame(TransactionCreationService::RESULT_SUCCESS, $transactionService->getResult());
         $this->assertCount(1, Transaction::all());
-        // $this->assertCount(1, $camper_user->getTransactions()); TODO: raw DB select works, but this does not.
+        $this->assertCount(1, $camper_user->refresh()->getTransactions());
     }
 
     /** @return User[] */
