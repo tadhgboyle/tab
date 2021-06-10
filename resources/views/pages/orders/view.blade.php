@@ -57,7 +57,7 @@
                                 @if($transaction->status == 0 && $product['returned'] < $product['quantity']) 
                                     <button class="button is-danger is-small"  onclick="openProductModal({{ $product['id'] }});">Return ({{ $product['quantity'] - $product['returned'] }})</button>
                                 @else
-                                    <div>Returned</div>
+                                    <div><i>Returned</i></div>
                                 @endif
                             </div>
                         </td>

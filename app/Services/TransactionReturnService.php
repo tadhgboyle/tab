@@ -18,7 +18,7 @@ class TransactionReturnService extends TransactionService
         $transaction = Transaction::find($transaction_id);
 
         if ($transaction == null) {
-            return redirect()->back()->with('error', 'No transaction found with that ID.');
+            return redirect()->route('orders_list')->with('error', 'No transaction found with that ID.')->send();
         }
 
         $this->_transaction = $transaction;

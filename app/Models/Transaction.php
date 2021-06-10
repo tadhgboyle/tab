@@ -78,6 +78,12 @@ class Transaction extends Model
             return self::STATUS_FULLY_RETURNED;
         }
 
+        if ($products_returned > 0) {
+            // will occur if two products are ordered with quantity of 1 and then 1 product is returned but not the other
+            // TODO: can probably add this logic above
+            return self::STATUS_PARTIAL_RETURNED;
+        }
+
         return self::STATUS_NOT_RETURNED;
     }
 }
