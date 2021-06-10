@@ -11,7 +11,6 @@ use App\Models\Settings;
 use App\Models\UserLimits;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Services\TransactionCreationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -77,12 +76,10 @@ class TransactionCreationTest extends TestCase
     {
         [$camper_user, $staff_user] = $this->createFakeRecords();
 
-        $camper_user_balance_before = $camper_user->balance;
-
         $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user));
 
         $this->assertSame(TransactionCreationService::RESULT_SUCCESS, $transactionService->getResult());
-        $this->assertEquals($camper_user_balance_before - $transactionService->getTotalPrice(), $camper_user->refresh()->balance);
+        $this->assertEquals($camper_user->balance - $transactionService->getTotalPrice(), $camper_user->refresh()->balance);
     }
 
     public function testSuccessfulTransactionIsStored()

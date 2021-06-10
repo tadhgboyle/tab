@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Helpers\SettingsHelper;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-/** @method static Product find */
+/** @method static Product find(int $id) */
 class Product extends Model
 {
     use QueryCacheable;
@@ -34,6 +35,21 @@ class Product extends Model
     public function category()
     {
         return $this->hasOne(Category::class, 'id', 'category_id');
+    }
+
+    public function getPrice(): float
+    {
+        // TODO: tax calc and implementation
+        $total_tax = 0.00;
+        if ($this->pst) {
+            $total_tax += SettingsHelper::getInstance()->getPst();
+        }
+
+        $total_tax += SettingsHelper::getInstance()->getGst();
+
+        $total_tax -= 1;
+
+        return number_format($this->price * $total_tax, 2);
     }
 
     // Used to check if items in order have enough stock BEFORE using removeStock() to remove it.
