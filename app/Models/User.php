@@ -10,7 +10,7 @@ use App\Http\Controllers\TransactionController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-/** @method static User find */
+/** @method static User find(int $id) */
 class User extends Authenticatable
 {
     use QueryCacheable;

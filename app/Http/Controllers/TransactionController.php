@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Helpers\SettingsHelper;
+use App\Services\TransactionReturnService;
 use App\Services\TransactionCreationService;
 
 class TransactionController extends Controller
@@ -87,26 +88,14 @@ class TransactionController extends Controller
         return (new TransactionCreationService($request))->redirect();
     }
 
-    public function returnTransaction(int $id)
+    public function returnTransaction(int $transaction_id)
     {
-        $transaction = Transaction::find($id);
-
-        if ($transaction == null) {
-            return redirect()->back()->with('error', 'No transaction found with that ID.');
-        }
-
-        return $transaction->return();
+        return (new TransactionReturnService($transaction_id))->return()->redirect();
     }
 
-    public function returnItem(int $item_id, int $order_id)
+    public function returnItem(int $item_id, int $transaction_id)
     {
-        $transaction = Transaction::find($order_id);
-
-        if ($transaction == null) {
-            return redirect()->back()->with('error', 'No transaction found with that ID.');
-        }
-
-        return $transaction->returnItem($item_id);
+        return (new TransactionReturnService($transaction_id))->returnItem($item_id)->redirect();
     }
 
     public function list()

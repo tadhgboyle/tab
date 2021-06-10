@@ -10,11 +10,10 @@ use Illuminate\Http\Request;
 use App\Helpers\SettingsHelper;
 use App\Helpers\UserLimitsHelper;
 use App\Http\Controllers\TransactionController;
+use Illuminate\Http\RedirectResponse;
 
-class TransactionCreationService
+class TransactionCreationService extends TransactionService
 {
-    private int $_result;
-    private string $_message;
     private float $_total_price;
 
     public const RESULT_NO_SELF_PURCHASE = 0;
@@ -161,16 +160,7 @@ class TransactionCreationService
         $this->_result = self::RESULT_SUCCESS;
         $this->_message = 'Order #' . $transaction->id . '. ' . $purchaser->full_name . ' now has $' . number_format(round($remaining_balance, 2), 2);
         $this->_total_price = $total_price;
-    }
-
-    public function getResult(): int
-    {
-        return $this->_result;
-    }
-
-    public function getMessage(): string
-    {
-        return $this->_message;
+        $this->_transaction = $transaction;
     }
 
     public function getTotalPrice(): float
@@ -178,7 +168,7 @@ class TransactionCreationService
         return $this->_total_price;
     }
 
-    public function redirect()
+    public function redirect(): RedirectResponse
     {
         switch ($this->getResult()) {
             case self::RESULT_NO_SELF_PURCHASE:
