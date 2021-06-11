@@ -1,9 +1,8 @@
 @extends('layouts.default', ['page' => 'users'])
 @section('content')
 <h2 class="title has-text-weight-bold">View User</h2>
-<h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if(!$user->deleted && hasPermission('users_manage') && $can_interact)<a href="{{ route('users_edit', $user->id) }}">(Edit)</a>@endif</h4>
+<h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if($user->deleted) <strong>(Deleted)</strong> @endif @if(!$user->deleted && hasPermission('users_manage') && $can_interact)<a href="{{ route('users_edit', $user->id) }}">(Edit)</a>@endif</h4>
 <p><strong>Role:</strong> {{ $user->role->name }}</p>
-<p><strong>Deleted:</strong> {{ $user->deleted ? 'Yes' : 'No' }}</p>
 <span><strong>Balance:</strong> ${{ number_format($user->balance, 2) }}, </span>
 <span><strong>Total spent:</strong> ${{ number_format($user->findSpent(), 2) }}, </span>
 <span><strong>Total returned:</strong> ${{ number_format($user->findReturned(), 2) }}, </span>

@@ -1,7 +1,10 @@
 // TODO: refractor
 
 const checked = [];
-let total_gst = total_pst = total_tax_percent = total_price = 0;
+let total_gst = 0;
+let total_pst = 0;
+let total_tax_percent = 0;
+let total_price = 0;
 const current_gst = parseFloat(document.getElementById('current_gst').value).toFixed(2);
 const current_pst = parseFloat(document.getElementById('current_pst').value).toFixed(2);
 const purchaser_balance = parseFloat(document.getElementById('purchaser_balance').value).toFixed(2);

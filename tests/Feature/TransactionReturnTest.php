@@ -49,6 +49,7 @@ class TransactionReturnTest extends TestCase
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
 
         $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->getReturnStatus());
+        $this->assertTrue($transaction->isReturned());
         $this->assertEquals($user->balance + $transaction->total_price, $user->refresh()->balance);
         $this->assertEquals($transaction->total_price, $user->findReturned());
     }
@@ -62,6 +63,7 @@ class TransactionReturnTest extends TestCase
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
 
         $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->getReturnStatus());
+        $this->assertTrue($transaction->isReturned());
         $this->assertEquals($transaction->total_price, $user->findReturned());
     }
 
