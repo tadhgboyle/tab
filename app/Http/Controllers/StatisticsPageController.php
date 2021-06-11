@@ -8,6 +8,9 @@ class StatisticsPageController extends Controller
 {
     public function view()
     {
-        return view('pages.statistics.statistics', ['stats_time' => SettingsHelper::getInstance()->getStatsTime()]);
+        return view('pages.statistics.statistics', [
+            'stats_time' => SettingsHelper::getInstance()->getStatsTime()
+            ]
+        );
     }
 }

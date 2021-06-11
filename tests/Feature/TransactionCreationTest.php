@@ -80,6 +80,7 @@ class TransactionCreationTest extends TestCase
 
         $this->assertSame(TransactionCreationService::RESULT_SUCCESS, $transactionService->getResult());
         $this->assertEquals($camper_user->balance - $transactionService->getTotalPrice(), $camper_user->refresh()->balance);
+        $this->assertEquals($transactionService->getTotalPrice(), $camper_user->findSpent());
     }
 
     public function testSuccessfulTransactionIsStored()
@@ -91,6 +92,7 @@ class TransactionCreationTest extends TestCase
         $this->assertSame(TransactionCreationService::RESULT_SUCCESS, $transactionService->getResult());
         $this->assertCount(1, Transaction::all());
         $this->assertCount(1, $camper_user->refresh()->getTransactions());
+        $this->assertEquals($transactionService->getTotalPrice(), $camper_user->findSpent());
     }
 
     /** @return User[] */

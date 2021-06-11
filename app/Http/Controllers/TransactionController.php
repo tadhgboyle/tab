@@ -105,9 +105,9 @@ class TransactionController extends Controller
         ]);
     }
 
-    public function view()
+    public function view(int $transaction_id)
     {
-        $transaction = Transaction::find(request()->route('id'));
+        $transaction = Transaction::find($transaction_id);
         if ($transaction == null) {
             return redirect()->route('orders_list')->with('error', 'Invalid order.')->send();
         }
