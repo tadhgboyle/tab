@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-/** @method static Role find(int $id) */
 class Role extends Model
 {
     use QueryCacheable;

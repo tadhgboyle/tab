@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-/** @method static Product find(int $id) */
 class Product extends Model
 {
     use QueryCacheable;

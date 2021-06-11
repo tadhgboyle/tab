@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-/** @method static Transaction find(int $id) */
 class Transaction extends Model
 {
     public const STATUS_NOT_RETURNED = 0;

@@ -6,7 +6,6 @@ use App\Casts\CategoryType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-/** @method static UserLimits find(int $id) */
 class UserLimits extends Model
 {
     use HasFactory;
