@@ -4,14 +4,16 @@ namespace App\Helpers;
 
 abstract class Helper
 {
-    private static Helper $_instance;
+    private static $_instances = [];
 
     final public static function getInstance(): static
     {
-        if (!isset(self::$_instance)) {
-            self::$_instance = new static();
+        $class = static::class;
+
+        if (!isset(self::$_instances[$class])) {
+            self::$_instances[$class] = new static();
         }
 
-        return self::$_instance;
+        return self::$_instances[$class];
     }
 }
