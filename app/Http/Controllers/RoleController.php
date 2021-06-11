@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Models\Role;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Helpers\PermissionHelper;
 use App\Http\Requests\RoleRequest;
@@ -32,10 +32,10 @@ class RoleController extends Controller
         $superuser = $staff && $request->has('superuser');
 
         Role::find($request->role_id)->update([
-            'name' => $request->name, 
+            'name' => $request->name,
             'order' => $request->order,
-            'staff' => $staff, 
-            'superuser' => $superuser, 
+            'staff' => $staff,
+            'superuser' => $superuser,
             'permissions' => PermissionHelper::parseNodes($request->permissions)
         ]);
 

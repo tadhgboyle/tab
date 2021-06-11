@@ -54,14 +54,14 @@ class ProductController extends Controller
         $stock_override = $request->has('stock_override');
 
         Product::where('id', $request->product_id)->update([
-            'name' => $request->name, 
-            'price' => $request->price, 
-            'category_id' => $request->category_id, 
-            'stock' => $stock, 
-            'box_size' => $request->box_size ?? -1, 
-            'unlimited_stock' => $unlimited_stock, 
-            'stock_override' => $stock_override, 
-            'pst' => $pst, 
+            'name' => $request->name,
+            'price' => $request->price,
+            'category_id' => $request->category_id,
+            'stock' => $stock,
+            'box_size' => $request->box_size ?? -1,
+            'unlimited_stock' => $unlimited_stock,
+            'stock_override' => $stock_override,
+            'pst' => $pst,
             'editor_id' => auth()->id()
         ]);
 

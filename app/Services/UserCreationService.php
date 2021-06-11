@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
-use App\Helpers\RoleHelper;
 use App\Models\User;
 use App\Models\UserLimits;
-use Illuminate\Http\RedirectResponse;
+use App\Helpers\RoleHelper;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 
 class UserCreationService extends Service
 {
@@ -15,8 +15,7 @@ class UserCreationService extends Service
 
     public function __construct(
         private Request $_request
-    )
-    {
+    ) {
         $user = new User();
         $user->full_name = $this->_request->full_name;
         $user->username = $this->_request->username ?: strtolower(str_replace(' ', '', $this->_request->full_name));
