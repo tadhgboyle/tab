@@ -133,6 +133,7 @@ class Activity extends Model
             'activity_id' => $this->id,
             'activity_price' => $this->price,
             'activity_gst' => SettingsHelper::getInstance()->getGst(),
+            'total_price' => $this->getPrice(),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);

@@ -32,13 +32,13 @@ class UserRequest extends FormRequest
             ],
             'role_id' => [
                 'required',
-                ValidationRule::in(array_column(auth()->user()->role->getRolesAvailable(), 'id')),
+                ValidationRule::in(auth()->user()->role->getRolesAvailable()->pluck('id')),
             ],
             'password' => [
                 'nullable',
                 'confirmed',
                 'min:6',
-                ValidationRule::requiredIf(in_array($this->get('role'), array_column(RoleHelper::getInstance()->getStaffRoles(), 'id'))),
+                ValidationRule::requiredIf(in_array($this->get('role'), RoleHelper::getInstance()->getStaffRoles()->pluck('id')->toArray())),
             ],
         ];
     }

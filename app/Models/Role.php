@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\RoleHelper;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -28,10 +29,10 @@ class Role extends Model
         'deleted' => 'boolean',
     ];
 
-    public function getRolesAvailable(?Role $compare = null): array
+    public function getRolesAvailable(?Role $compare = null): Collection
     {
         // TODO: Refractor
-        $return = [];
+        $return = new Collection;
         $roles = RoleHelper::getInstance()->getRoles();
         foreach ($roles as $role) {
             if ($compare) {
@@ -40,12 +41,12 @@ class Role extends Model
                 }
                 if ($this->staff || (!$this->staff && !$role->staff)) {
                     if ($compare->canInteract($role)) {
-                        $return[] = $role;
+                        $return->add($role);
                     }
                 }
             } else {
                 if ($this->canInteract($role)) {
-                    $return[] = $role;
+                    $return->add($role);
                 }
             }
         }
@@ -73,11 +74,11 @@ class Role extends Model
         }
 
         foreach ((array) $permissions as $permission) {
-            if (in_array($permission, $this->permissions)) {
-                return true;
+            if (!in_array($permission, $this->permissions)) {
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 }

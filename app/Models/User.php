@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
-{
+{ 
     use QueryCacheable;
     use HasFactory;
 
@@ -38,9 +38,9 @@ class User extends Authenticatable
         return $this->hasOne(Role::class, 'id', 'role_id');
     }
 
-    private ?Collection $_activity_transactions = null;
-    private ?Collection $_transactions = null;
-    private ?array $_activities = null;
+    private Collection $_activity_transactions;
+    private Collection $_transactions;
+    private Collection $_activities;
 
     // TODO: add a "root" user? only they can edit superadmin roles
 
@@ -67,7 +67,7 @@ class User extends Authenticatable
 
     public function getActivityTransactions(): Collection
     {
-        if ($this->_activity_transactions == null) {
+        if (!isset($this->_activity_transactions)) {
             $this->_activity_transactions = DB::table('activity_transactions')->where('user_id', $this->id)->orderBy('created_at', 'DESC')->get();
         }
 
@@ -76,30 +76,28 @@ class User extends Authenticatable
 
     public function getTransactions(): Collection
     {
-        if ($this->_transactions == null) {
+        if (!isset($this->_transactions)) {
             $this->_transactions = Transaction::where('purchaser_id', $this->id)->orderBy('created_at', 'DESC')->get();
         }
 
         return $this->_transactions;
     }
 
-    public function getActivities(): array
+    public function getActivities(): Collection
     {
-        if ($this->_activities == null) {
-            $return = [];
-
+        if (!isset($this->_activities)) {
+            $this->_activities = new Collection;
             $activity_transactions = $this->getActivityTransactions();
+
             foreach ($activity_transactions as $activity) {
-                $return[] = [
+                $this->_activities->add([
                     'created_at' => Carbon::parse($activity->created_at),
                     'cashier' => User::find($activity->cashier_id),
                     'activity' => Activity::find($activity->activity_id),
                     'price' => $activity->activity_price,
                     'returned' => $activity->returned,
-                ];
+                ]);
             }
-
-            $this->_activities = $return;
         }
 
         return $this->_activities;
@@ -113,7 +111,7 @@ class User extends Authenticatable
 
         $activity_transactions = $this->getActivityTransactions();
         foreach ($activity_transactions as $activity_transaction) {
-            $spent += ($activity_transaction->activity_price * $activity_transaction->activity_gst);
+            $spent += $activity_transaction->total_price;
         }
 
         return floatval($spent);
@@ -143,6 +141,7 @@ class User extends Authenticatable
                 if ($product['pst'] != 'null') {
                     $tax += ($product['pst'] - 1);
                 }
+
                 $returned += ($product['returned'] * $product['price'] * $tax);
             }
         }
@@ -150,7 +149,7 @@ class User extends Authenticatable
         $activity_transactions = $this->getActivityTransactions();
         foreach ($activity_transactions as $transaction) {
             if ($transaction->returned) {
-                $returned += ($transaction->activity_price * $transaction->activity_gst);
+                $returned += $transaction->total_price;
             }
         }
 

@@ -91,7 +91,7 @@ class UserController extends Controller
 
         return view('pages.users.form', [
             'user' => $user,
-            'available_roles' => auth()->user()->role->getRolesAvailable(),
+            'available_roles' => auth()->user()->role->getRolesAvailable()->all(),
             'categories' => $processed_categories,
         ]);
     }
