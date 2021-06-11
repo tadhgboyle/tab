@@ -37,8 +37,7 @@ class UserEditService extends Service
 
         // Update their category limits
         foreach ($this->_request->limit as $category_id => $limit) {
-            $duration = 0;
-            empty($this->_request->duration[$category_id]) ? $duration = 0 : $duration = $this->_request->duration[$category_id];
+            $duration = $this->_request->duration[$category_id] ?: 0;
             if (empty($limit)) {
                 $limit = -1;
             } else {

@@ -6,7 +6,6 @@ use Validator;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Helpers\CategoryHelper;
-use Illuminate\Support\Facades\DB;
 use App\Http\Requests\ProductRequest;
 
 class ProductController extends Controller
@@ -14,10 +13,7 @@ class ProductController extends Controller
     public function new(ProductRequest $request)
     {
         // Box size of -1 means they cannot receive stock via box. Instead must use normal stock
-        $box_size = -1;
-        if (!empty($request->box_size)) {
-            $box_size = $request->box_size;
-        }
+        $box_size = $request->box_size ?: -1;
 
         $unlimited_stock = $request->has('unlimited_stock');
 
@@ -39,6 +35,7 @@ class ProductController extends Controller
         $product->pst = $request->has('pst');
         $product->creator_id = auth()->id();
         $product->save();
+
         return redirect()->route('products_list')->with('success', 'Successfully created ' . $request->name . '.');
     }
 
@@ -56,9 +53,18 @@ class ProductController extends Controller
 
         $stock_override = $request->has('stock_override');
 
-        DB::table('products')
-            ->where('id', $request->product_id)
-            ->update(['name' => $request->name, 'price' => $request->price, 'category_id' => $request->category_id, 'stock' => $stock, 'box_size' => $request->box_size ?? -1, 'unlimited_stock' => $unlimited_stock, 'stock_override' => $stock_override, 'pst' => $pst, 'editor_id' => auth()->id()]);
+        Product::where('id', $request->product_id)->update([
+            'name' => $request->name, 
+            'price' => $request->price, 
+            'category_id' => $request->category_id, 
+            'stock' => $stock, 
+            'box_size' => $request->box_size ?? -1, 
+            'unlimited_stock' => $unlimited_stock, 
+            'stock_override' => $stock_override, 
+            'pst' => $pst, 
+            'editor_id' => auth()->id()
+        ]);
+
         return redirect()->route('products_list')->with('success', 'Successfully edited ' . $request->name . '.');
     }
 
