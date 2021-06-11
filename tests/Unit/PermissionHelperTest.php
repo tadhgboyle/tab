@@ -2,12 +2,11 @@
 
 namespace Tests\Unit;
 
-use App\Helpers\PermissionHelper;
 use Tests\TestCase;
+use App\Helpers\PermissionHelper;
 
 class PermissionHelperTest extends TestCase
 {
-
     public function testParseNodesReturnsEmptyArrayForInvalidInput()
     {
         $this->assertEquals([], PermissionHelper::parseNodes(null));

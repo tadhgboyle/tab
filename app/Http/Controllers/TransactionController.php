@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\ProductHelper;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Helpers\ProductHelper;
 use App\Helpers\SettingsHelper;
 use App\Services\TransactionReturnService;
 use App\Services\TransactionCreationService;

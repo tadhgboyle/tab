@@ -2,10 +2,9 @@
 
 namespace App\Services;
 
-use App\Helpers\ProductHelper;
 use App\Models\Transaction;
+use App\Helpers\ProductHelper;
 use Illuminate\Http\RedirectResponse;
-use App\Http\Controllers\TransactionController;
 
 class TransactionReturnService extends TransactionService
 {

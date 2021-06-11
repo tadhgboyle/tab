@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Helpers\ProductHelper;
 use Tests\TestCase;
 use App\Models\Product;
 use App\Models\Category;
+use App\Helpers\ProductHelper;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
