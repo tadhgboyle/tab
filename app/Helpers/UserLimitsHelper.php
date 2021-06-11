@@ -8,7 +8,6 @@ use App\Models\Product;
 use App\Models\Activity;
 use App\Models\UserLimits;
 use Illuminate\Support\Carbon;
-use App\Http\Controllers\TransactionController;
 
 // TODO: Move these to user model. $user->canSpendInCategory($cat_id, 5.99)
 class UserLimitsHelper

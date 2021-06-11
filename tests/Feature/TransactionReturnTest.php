@@ -138,11 +138,12 @@ class TransactionReturnTest extends TestCase
             ['product' => [
                 $hat->id,
             ],
-            'quantity' => [
-                $hat->id => 2,
-            ],
-            'purchaser_id' => $user->id
-        ])))->getTransaction(); // $26.8576 -> $3.1424
+                'quantity' => [
+                    $hat->id => 2,
+                ],
+                'purchaser_id' => $user->id
+            ]
+        )))->getTransaction(); // $26.8576 -> $3.1424
 
         return [$user->refresh(), $transaction, $hat];
     }
