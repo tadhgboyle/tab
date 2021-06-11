@@ -19,8 +19,8 @@ class PurchaseHistoryChart extends BaseChart
     {
         $stats_time = Carbon::now()->subDays(SettingsHelper::getInstance()->getStatsTime())->toDateTimeString();
 
-        $normal_data = Transaction::where([['created_at', '>=', $stats_time], ['status', 0]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
-        $returned_data = Transaction::where([['created_at', '>=', $stats_time], ['status', 1]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
+        $normal_data = Transaction::where([['created_at', '>=', $stats_time], ['returned', false]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
+        $returned_data = Transaction::where([['created_at', '>=', $stats_time], ['returned', true]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
 
         $normal_orders = $returned_orders = $labels = [];
 

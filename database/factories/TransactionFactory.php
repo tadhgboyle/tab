@@ -22,7 +22,7 @@ class TransactionFactory extends Factory
     public function definition()
     {
         return [
-            'status' => false,
+            'returned' => false,
             'created_at' => now()
         ];
     }
