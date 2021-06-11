@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Helpers\ProductHelper;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
@@ -12,9 +11,9 @@ use App\Models\Category;
 use App\Models\Settings;
 use App\Models\UserLimits;
 use App\Models\Transaction;
+use App\Helpers\ProductHelper;
 use App\Helpers\UserLimitsHelper;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\TransactionController;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 // TODO: test with different limit durations (day/week)

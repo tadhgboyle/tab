@@ -75,5 +75,4 @@ class ProductHelper
 
         return $return;
     }
-
 }

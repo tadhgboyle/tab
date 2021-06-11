@@ -7,7 +7,6 @@ use Illuminate\Support\Carbon;
 use App\Helpers\SettingsHelper;
 use Illuminate\Database\Eloquent\Model;
 use Rennokki\QueryCache\Traits\QueryCacheable;
-use App\Http\Controllers\TransactionController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /** @method static Product find(int $id) */

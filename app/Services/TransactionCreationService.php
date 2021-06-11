@@ -2,16 +2,15 @@
 
 namespace App\Services;
 
-use App\Helpers\ProductHelper;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Helpers\ProductHelper;
 use App\Helpers\SettingsHelper;
 use App\Helpers\UserLimitsHelper;
 use Illuminate\Http\RedirectResponse;
-use App\Http\Controllers\TransactionController;
 
 class TransactionCreationService extends TransactionService
 {
