@@ -12,8 +12,10 @@ use App\Helpers\SettingsHelper;
 use App\Helpers\UserLimitsHelper;
 use Illuminate\Http\RedirectResponse;
 
-class TransactionCreationService extends TransactionService
+class TransactionCreationService extends Service
 {
+    use TransactionService;
+
     private float $_total_price;
 
     public const RESULT_NO_SELF_PURCHASE = 0;
