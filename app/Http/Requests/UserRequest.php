@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\Helpers\RoleHelper;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule as ValidationRule;
 
@@ -33,7 +32,7 @@ class UserRequest extends FormRequest
             ],
             'role_id' => [
                 'required',
-                ValidationRule::in(array_column(Auth::user()->role->getRolesAvailable(), 'id')),
+                ValidationRule::in(array_column(auth()->user()->role->getRolesAvailable(), 'id')),
             ],
             'password' => [
                 'nullable',

@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
+use App\Models\User;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Helpers\PermissionHelper;
 use App\Http\Requests\RoleRequest;
-use Illuminate\Support\Facades\DB;
 
 class RoleController extends Controller
 {
@@ -32,9 +31,13 @@ class RoleController extends Controller
         $staff = $request->has('staff');
         $superuser = $staff && $request->has('superuser');
 
-        DB::table('roles')
-            ->where('id', $request->role_id)
-            ->update(['name' => $request->name, 'order' => $request->order, 'superuser' => $superuser, 'staff' => $staff, 'permissions' => PermissionHelper::parseNodes($request->permissions)]);
+        Role::find($request->role_id)->update([
+            'name' => $request->name, 
+            'order' => $request->order,
+            'staff' => $staff, 
+            'superuser' => $superuser, 
+            'permissions' => PermissionHelper::parseNodes($request->permissions)
+        ]);
 
         return redirect()->route('settings')->with('success', 'Edited role ' . $request->name . '.');
     }
@@ -61,7 +64,8 @@ class RoleController extends Controller
                 ];
             }
 
-            DB::table('users')->where('role_id', $old_role->id)->update($fields);
+            User::where('role_id', $old_role->id)->update($fields);
+
             $old_role->update(['deleted' => true]);
 
             $message = 'Deleted role ' . $old_role->name . ', and placed all it\'s users into ' . $new_role->name . '.';
@@ -75,12 +79,12 @@ class RoleController extends Controller
         $role = Role::find(request()->route('id'));
 
         if (!is_null($role)) {
-            if (!Auth::user()->role->canInteract($role)) {
+            if (!auth()->user()->role->canInteract($role)) {
                 return redirect()->route('settings')->with('error', 'You cannot interact with that role.')->send();
             }
 
-            $affected_users = DB::table('users')->where('role_id', $role->id)->count();
-            $available_roles = $role->getRolesAvailable(Auth::user()->role);
+            $affected_users = User::where('role_id', $role->id)->count();
+            $available_roles = $role->getRolesAvailable(auth()->user()->role);
         }
 
         return view('pages.settings.roles.form', [
