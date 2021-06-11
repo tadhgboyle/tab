@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\ProductHelper;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Category;
@@ -90,7 +91,7 @@ class TransactionCreationService extends TransactionService
                 $transaction_categories[] = $product->category_id;
             }
 
-            $product_metadata = TransactionController::serializeProduct($product_id, $quantity, $product->price, SettingsHelper::getInstance()->getGst(), $pst_metadata, 0);
+            $product_metadata = ProductHelper::serializeProduct($product_id, $quantity, $product->price, SettingsHelper::getInstance()->getGst(), $pst_metadata, 0);
 
             $transaction_products[] = $product_metadata;
             $total_price += (($product->price * $quantity) * $total_tax);
@@ -120,7 +121,7 @@ class TransactionCreationService extends TransactionService
 
             // Loop all products in this transaction. If the product's category is the current one in the above loop, add it's price to category spent
             foreach ($transaction_products as $product) {
-                $product_metadata = TransactionController::deserializeProduct($product);
+                $product_metadata = ProductHelper::deserializeProduct($product);
 
                 if ($product_metadata['category'] != $category_id) {
                     continue;

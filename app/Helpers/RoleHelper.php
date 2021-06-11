@@ -5,21 +5,10 @@ namespace App\Helpers;
 use App\Models\Role;
 use Illuminate\Database\Eloquent\Collection;
 
-class RoleHelper
+class RoleHelper extends Helper
 {
-    private static RoleHelper $_instance;
-
     private Collection $_roles;
     private array $_staff_roles;
-
-    public static function getInstance(): RoleHelper
-    {
-        if (!isset(self::$_instance)) {
-            self::$_instance = new RoleHelper();
-        }
-
-        return self::$_instance;
-    }
 
     public function getRoles(string $order = 'DESC'): object
     {

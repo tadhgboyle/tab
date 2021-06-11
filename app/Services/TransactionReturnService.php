@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\ProductHelper;
 use App\Models\Transaction;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\TransactionController;
@@ -46,7 +47,7 @@ class TransactionReturnService extends TransactionService
         // Loop through products from the order and deserialize them to get their prices & taxes etc when they were purchased
         $transaction_products = explode(', ', $this->_transaction->products);
         foreach ($transaction_products as $product) {
-            $product_metadata = TransactionController::deserializeProduct($product, false);
+            $product_metadata = ProductHelper::deserializeProduct($product, false);
 
             if ($product_metadata['pst'] == 'null') {
                 $total_tax = $product_metadata['gst'];
@@ -82,7 +83,7 @@ class TransactionReturnService extends TransactionService
         foreach ($products as $product_count) {
             // Only proceed if this is the requested item id
             if (strtok($product_count, '*') == $item_id) {
-                $order_product = TransactionController::deserializeProduct($product_count);
+                $order_product = ProductHelper::deserializeProduct($product_count);
                 $found = true;
 
                 // If it has not been returned more times than it was purchased, then ++ the returned count and refund the original cost + taxes
@@ -106,7 +107,7 @@ class TransactionReturnService extends TransactionService
                 // Gets funky now. find the exact string of the original item from the string of order items and replace with the new string where the R value is ++
                 $updated_products = str_replace(
                     $product_count,
-                    TransactionController::serializeProduct($order_product['id'], $order_product['quantity'], $order_product['price'], $order_product['gst'], $order_product['pst'], $order_product['returned']),
+                    ProductHelper::serializeProduct($order_product['id'], $order_product['quantity'], $order_product['price'], $order_product['gst'], $order_product['pst'], $order_product['returned']),
                     $products
                 );
                 // Update their balance

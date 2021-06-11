@@ -4,22 +4,11 @@ namespace App\Helpers;
 
 use App\Models\Settings;
 
-class SettingsHelper
+class SettingsHelper extends Helper
 {
-    private static SettingsHelper $_instance;
-
     private float $_gst;
     private float $_pst;
     private int $_stats_time;
-
-    public static function getInstance(): SettingsHelper
-    {
-        if (!isset(self::$_instance)) {
-            self::$_instance = new SettingsHelper();
-        }
-
-        return self::$_instance;
-    }
 
     public function getGst(): float
     {

@@ -5,22 +5,11 @@ namespace App\Helpers;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Collection;
 
-class CategoryHelper
+class CategoryHelper extends Helper
 {
-    private static CategoryHelper $_instance;
-
     private Collection $_categories;
     private Collection $_product_categories;
     private Collection $_activity_categories;
-
-    public static function getInstance(): CategoryHelper
-    {
-        if (!isset(self::$_instance)) {
-            self::$_instance = new CategoryHelper();
-        }
-
-        return self::$_instance;
-    }
 
     public function getCategories(): Collection
     {

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\ProductHelper;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -135,7 +136,7 @@ class User extends Authenticatable
 
             $transaction_products = explode(', ', $transaction->products);
             foreach ($transaction_products as $transaction_product) {
-                $product = TransactionController::deserializeProduct($transaction_product, false);
+                $product = ProductHelper::deserializeProduct($transaction_product, false);
                 if ($product['returned'] < 1) {
                     continue;
                 }
