@@ -6,8 +6,10 @@ use App\Models\Transaction;
 use App\Helpers\ProductHelper;
 use Illuminate\Http\RedirectResponse;
 
-class TransactionReturnService extends TransactionService
+class TransactionReturnService extends Service
 {
+    use TransactionService;
+
     public const RESULT_ALREADY_RETURNED = 1;
     public const RESULT_ITEM_RETURNED_MAX_TIMES = 2;
     public const RESULT_ITEM_NOT_IN_ORDER = 3;
