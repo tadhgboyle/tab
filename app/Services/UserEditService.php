@@ -7,8 +7,8 @@ use App\Models\User;
 use App\Models\Category;
 use App\Models\UserLimits;
 use App\Helpers\RoleHelper;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 
 class UserEditService extends Service
 {
@@ -20,8 +20,7 @@ class UserEditService extends Service
 
     public function __construct(
         private Request $_request
-    )
-    {
+    ) {
         if (!in_array($this->_request->role_id, array_column(auth()->user()->role->getRolesAvailable(), 'id'))) {
             $this->_result = self::RESULT_CANT_MANAGE_THAT_ROLE;
             $this->_message = 'You cannot manage users with that role.';
@@ -57,7 +56,7 @@ class UserEditService extends Service
         // If same role or changing from one staff role to another
         if (($old_role == $new_role) || (in_array($old_role, $staff_roles) && in_array($new_role, $staff_roles))) {
             $user->update($this->_request->all(['full_name', 'user_name', 'balance', 'role_id']));
-    
+
             $this->_result = self::RESULT_SUCCESS;
             $this->_message = 'Updated user ' . $this->_request->full_name . '.';
             return;
@@ -86,16 +85,16 @@ class UserEditService extends Service
         }
 
         $user->update([
-            'full_name' => $this->_request->full_name, 
-            'username' => $this->_request->username, 
-            'balance' => $this->_request->balance, 
-            'role_id' => $this->_request->role_id, 
+            'full_name' => $this->_request->full_name,
+            'username' => $this->_request->username,
+            'balance' => $this->_request->balance,
+            'role_id' => $this->_request->role_id,
             'password' => $password
         ]);
 
         $this->_result = self::RESULT_SUCCESS;
         $this->_message = 'Updated user ' . $this->_request->full_name . '.';
-        return;
+
     }
 
     public function redirect(): RedirectResponse
