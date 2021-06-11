@@ -137,7 +137,7 @@
                             </td>
                             <td>
                                 <div>
-                                    @switch($transaction['status'])
+                                    @switch($transaction['returned'])
                                         @case(0)
                                             <span class="tag is-success is-medium">Normal</span>
                                         @break

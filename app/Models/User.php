@@ -95,7 +95,7 @@ class User extends Authenticatable
                     'cashier' => User::find($activity->cashier_id),
                     'activity' => Activity::find($activity->activity_id),
                     'price' => $activity->activity_price,
-                    'status' => $activity->status,
+                    'returned' => $activity->returned,
                 ];
             }
 
@@ -127,7 +127,7 @@ class User extends Authenticatable
 
         $transactions = $this->getTransactions();
         foreach ($transactions as $transaction) {
-            if ($transaction->status) {
+            if ($transaction->returned) {
                 $returned += $transaction->total_price;
                 continue;
             }
@@ -149,7 +149,7 @@ class User extends Authenticatable
 
         $activity_transactions = $this->getActivityTransactions();
         foreach ($activity_transactions as $transaction) {
-            if ($transaction->status) {
+            if ($transaction->returned) {
                 $returned += ($transaction->activity_price * $transaction->activity_gst);
             }
         }

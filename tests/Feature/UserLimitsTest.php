@@ -179,7 +179,7 @@ class UserLimitsTest extends TestCase
             'activity_id' => $widegame->id,
             'activity_price' => $widegame->getPrice(),
             'activity_gst' => 1.05,
-            'status' => false,
+            'returned' => false,
             'created_at' => now()
         ]);
 

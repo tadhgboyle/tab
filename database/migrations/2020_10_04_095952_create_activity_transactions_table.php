@@ -20,7 +20,7 @@ class CreateActivityTransactionsTable extends Migration
             $table->integer('activity_id');
             $table->float('activity_price');
             $table->float('activity_gst');
-            $table->boolean('status')->default(false);
+            $table->boolean('returned')->default(false);
             $table->timestamps();
         });
     }

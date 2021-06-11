@@ -60,7 +60,7 @@ class TransactionReturnService extends Service
         }
 
         $purchaser->update(['balance' => ($purchaser->balance + $total_price)]);
-        $this->_transaction->update(['status' => true]);
+        $this->_transaction->update(['returned' => true]);
 
         $this->_result = self::RESULT_SUCCESS;
         $this->_message = 'Successfully returned order #' . $this->_transaction->id . ' for ' . $purchaser->full_name;

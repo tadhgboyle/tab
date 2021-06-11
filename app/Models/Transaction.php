@@ -20,11 +20,11 @@ class Transaction extends Model
 
     protected $fillable = [
         'products', // TODO: can we auto explode(',') this?
-        'status',
+        'returned',
     ];
 
     protected $casts = [
-        'status' => 'boolean', // TODO: Rename this to "returned"
+        'returned' => 'boolean',
     ];
 
     protected $with = [
@@ -49,7 +49,7 @@ class Transaction extends Model
 
     public function getReturnStatus(): int
     {
-        if ($this->status) {
+        if ($this->returned) {
             return self::STATUS_FULLY_RETURNED;
         }
 
@@ -73,7 +73,7 @@ class Transaction extends Model
 
         if ($products_returned >= $product_count) {
             // incase something went wrong and the status wasnt updated earlier, do it now
-            $this->update(['status' => true]);
+            $this->update(['returned' => true]);
             return self::STATUS_FULLY_RETURNED;
         }
 

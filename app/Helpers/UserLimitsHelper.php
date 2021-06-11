@@ -51,11 +51,11 @@ class UserLimitsHelper
         // get all their transactions, as they have no limit set we dont need to worry about
         // when the transaction was created_at.
         if ($info->limit_per == -1) {
-            $transactions = $user->getTransactions()->where('status', false);
-            $activity_transactions = $user->getActivityTransactions('status', false);
+            $transactions = $user->getTransactions()->where('returned', false);
+            $activity_transactions = $user->getActivityTransactions('returned', false);
         } else {
-            $transactions = $user->getTransactions()->where('created_at', '>=', Carbon::now()->subDays($info->duration == 'day' ? 1 : 7)->toDateTimeString())->where('status', false);
-            $activity_transactions = $user->getActivityTransactions()->where('created_at', '>=', Carbon::now()->subDays($info->duration == 'day' ? 1 : 7)->toDateTimeString())->where('status', false);
+            $transactions = $user->getTransactions()->where('created_at', '>=', Carbon::now()->subDays($info->duration == 'day' ? 1 : 7)->toDateTimeString())->where('returned', false);
+            $activity_transactions = $user->getActivityTransactions()->where('created_at', '>=', Carbon::now()->subDays($info->duration == 'day' ? 1 : 7)->toDateTimeString())->where('returned', false);
         }
 
         $category_spent = 0.00;
