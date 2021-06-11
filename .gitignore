@@ -14,4 +14,5 @@ yarn-error.log
 **/.DS_Store
 storage/debugbar/
 _ide_helper_models.php
+_ide_helper.php
 .gitignore
