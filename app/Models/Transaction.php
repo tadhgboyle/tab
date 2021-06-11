@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Helpers\ProductHelper;
 use Illuminate\Database\Eloquent\Model;
 use Rennokki\QueryCache\Traits\QueryCacheable;
-use App\Http\Controllers\TransactionController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /** @method static Transaction find(int $id) */

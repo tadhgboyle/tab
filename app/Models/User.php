@@ -2,12 +2,11 @@
 
 namespace App\Models;
 
-use App\Helpers\ProductHelper;
 use Carbon\Carbon;
+use App\Helpers\ProductHelper;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Rennokki\QueryCache\Traits\QueryCacheable;
-use App\Http\Controllers\TransactionController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
