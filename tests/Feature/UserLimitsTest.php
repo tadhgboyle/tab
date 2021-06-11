@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Helpers\ProductHelper;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
@@ -157,8 +158,8 @@ class UserLimitsTest extends TestCase
             'purchaser_id' => $user->id,
             'cashier_id' => $user->id,
             'products' => implode(', ', [
-                TransactionController::serializeProduct($skittles->id, 2, $skittles->price, 1.05, 'null', 0),
-                TransactionController::serializeProduct($hat->id, 1, $hat->price, 1.05, 'null', 0)
+                ProductHelper::serializeProduct($skittles->id, 2, $skittles->price, 1.05, 'null', 0),
+                ProductHelper::serializeProduct($hat->id, 1, $hat->price, 1.05, 'null', 0)
             ]),
             'total_price' => 3.15 // TODO
         ]);
@@ -167,8 +168,8 @@ class UserLimitsTest extends TestCase
             'purchaser_id' => $user->id,
             'cashier_id' => $user->id,
             'products' => implode(', ', [
-                TransactionController::serializeProduct($sweater->id, 1, $sweater->price, 1.05, 1.07, 0),
-                TransactionController::serializeProduct($coffee->id, 2, $coffee->price, 1.05, 1.07, 0)
+                ProductHelper::serializeProduct($sweater->id, 1, $sweater->price, 1.05, 1.07, 0),
+                ProductHelper::serializeProduct($coffee->id, 2, $coffee->price, 1.05, 1.07, 0)
             ]),
             'total_price' => 44.79 // TODO
         ]);

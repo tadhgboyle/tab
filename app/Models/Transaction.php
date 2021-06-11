@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\ProductHelper;
 use Illuminate\Database\Eloquent\Model;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use App\Http\Controllers\TransactionController;
@@ -59,7 +60,7 @@ class Transaction extends Model
 
         $products = explode(', ', $this->products);
         foreach ($products as $product) {
-            $product_info = TransactionController::deserializeProduct($product, false);
+            $product_info = ProductHelper::deserializeProduct($product, false);
             if ($product_info['returned'] >= $product_info['quantity']) {
                 $products_returned++;
             } else {

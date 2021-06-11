@@ -5,20 +5,9 @@ namespace App\Helpers;
 use App\Models\Role;
 use Illuminate\Support\Str;
 
-class PermissionHelper
+class PermissionHelper extends Helper
 {
-    private static PermissionHelper $_instance;
-
     private array $_permissions = [];
-
-    public static function getInstance(): PermissionHelper
-    {
-        if (!isset(self::$_instance)) {
-            self::$_instance = new PermissionHelper();
-        }
-
-        return self::$_instance;
-    }
 
     public function __construct()
     {

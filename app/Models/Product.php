@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\ProductHelper;
 use Illuminate\Support\Carbon;
 use App\Helpers\SettingsHelper;
 use Illuminate\Database\Eloquent\Model;
@@ -111,7 +112,7 @@ class Product extends Model
                     continue;
                 }
 
-                $deserialized_product = TransactionController::deserializeProduct($transaction_product, false);
+                $deserialized_product = ProductHelper::deserializeProduct($transaction_product, false);
                 $sold += ($deserialized_product['quantity'] - $deserialized_product['returned']);
             }
         }

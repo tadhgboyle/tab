@@ -73,7 +73,7 @@ class UserLimitsHelper
                     continue;
                 }
 
-                $item_info = TransactionController::deserializeProduct($transaction_product, false);
+                $item_info = ProductHelper::deserializeProduct($transaction_product, false);
 
                 $tax_percent = $item_info['gst'];
 
