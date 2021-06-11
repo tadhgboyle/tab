@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use Illuminate\Http\Request;
 use App\Http\Requests\CategoryRequest;
 
-// TODO: fallback category logic similar to roles
 class CategoryController extends Controller
 {
     public function form()
@@ -36,7 +36,8 @@ class CategoryController extends Controller
         return redirect()->route('settings')->with('success', 'Updated category ' . $request->name . '.');
     }
 
-    public function delete(CategoryRequest $request)
+    // TODO: fallback category logic similar to roles
+    public function delete(Request $request)
     {
         $category = Category::find($request->category_id);
 
