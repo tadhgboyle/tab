@@ -84,7 +84,7 @@ class RoleController extends Controller
             }
 
             $affected_users = User::where('role_id', $role->id)->count();
-            $available_roles = $role->getRolesAvailable(auth()->user()->role);
+            $available_roles = $role->getRolesAvailable(auth()->user()->role)->all();
         }
 
         return view('pages.settings.roles.form', [

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 class RoleHelper extends Helper
 {
     private Collection $_roles;
-    private array $_staff_roles;
+    private Collection $_staff_roles;
 
     public function getRoles(string $order = 'DESC'): object
     {
@@ -19,10 +19,10 @@ class RoleHelper extends Helper
         return $this->_roles;
     }
 
-    public function getStaffRoles(): array
+    public function getStaffRoles(): Collection
     {
         if (!isset($this->_staff_roles)) {
-            $this->_staff_roles = Role::select('id', 'name')->orderBy('order', 'ASC')->where([['staff', true], ['deleted', false]])->get()->toArray();
+            $this->_staff_roles = Role::select('id', 'name')->orderBy('order', 'ASC')->where([['staff', true], ['deleted', false]])->get();
         }
 
         return $this->_staff_roles;

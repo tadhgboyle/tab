@@ -21,7 +21,7 @@ class UserEditService extends Service
     public function __construct(
         private Request $_request
     ) {
-        if (!in_array($this->_request->role_id, array_column(auth()->user()->role->getRolesAvailable(), 'id'))) {
+        if (!in_array($this->_request->role_id, auth()->user()->role->getRolesAvailable()->pluck('id'))) {
             $this->_result = self::RESULT_CANT_MANAGE_THAT_ROLE;
             $this->_message = 'You cannot manage users with that role.';
             return;
@@ -32,7 +32,7 @@ class UserEditService extends Service
         $old_role = $user->role->name;
 
         $new_role = Role::find($this->_request->role_id)->name;
-        $staff_roles = array_column(RoleHelper::getInstance()->getStaffRoles(), 'name');
+        $staff_roles = RoleHelper::getInstance()->getStaffRoles()->pluck('name')->toArray();
 
         // Update their category limits
         foreach ($this->_request->limit as $category_id => $limit) {
