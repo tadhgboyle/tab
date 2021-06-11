@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-/** @method static Category find(int $id) */
 class Category extends Model
 {
     use QueryCacheable;

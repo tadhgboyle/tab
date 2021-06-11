@@ -13,3 +13,5 @@ yarn-error.log
 /.vscode/
 **/.DS_Store
 storage/debugbar/
+_ide_helper_models.php
+.gitignore
