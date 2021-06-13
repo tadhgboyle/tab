@@ -65,7 +65,7 @@ class UserLimitsTest extends TestCase
      */
     public function testUserCanSpendUnlimitedInCategory()
     {
-        [$user, $food_category, $merch_category, $activities_category, $waterfront_category] = $this->createFakeRecords();
+        [$user, , $merch_category] = $this->createFakeRecords();
 
         $can_spend_1_million_merch = UserLimitsHelper::canSpend($user, 1000000.00, $merch_category->id);
         // This should be true as their merch category is unlimited
@@ -78,7 +78,7 @@ class UserLimitsTest extends TestCase
      */
     public function testUserCannotSpendOverLimitInCategory()
     {
-        [$user, $food_category, $merch_category, $activities_category, $waterfront_category] = $this->createFakeRecords();
+        [$user, $food_category, , $activities_category, $waterfront_category] = $this->createFakeRecords();
 
         $can_spend_1_dollar_food = UserLimitsHelper::canSpend($user, 1.00, $food_category->id);
         // This should be true, as they've only spent 12.09 / 15.00 dollars, and another 1 dollar would not go past 15.
