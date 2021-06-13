@@ -38,7 +38,7 @@ class UserRequest extends FormRequest
                 'nullable',
                 'confirmed',
                 'min:6',
-                ValidationRule::requiredIf(in_array($this->get('role'), RoleHelper::getInstance()->getStaffRoles()->pluck('id')->toArray())),
+                ValidationRule::requiredIf(RoleHelper::getInstance()->isStaffRole($this->get('role_id'))),
             ],
         ];
     }

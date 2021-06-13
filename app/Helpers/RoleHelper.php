@@ -10,7 +10,7 @@ class RoleHelper extends Helper
     private Collection $_roles;
     private Collection $_staff_roles;
 
-    public function getRoles(string $order = 'DESC'): object
+    public function getRoles(string $order = 'DESC'): Collection
     {
         if (!isset($this->_roles)) {
             $this->_roles = Role::where('deleted', false)->orderBy('order', $order)->get();
@@ -19,10 +19,27 @@ class RoleHelper extends Helper
         return $this->_roles;
     }
 
+    public function isStaffRole(int $role_id): bool
+    {
+        foreach ($this->getStaffRoles() as $role) {
+            if ($role->id == $role_id) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function getStaffRoles(): Collection
     {
         if (!isset($this->_staff_roles)) {
-            $this->_staff_roles = Role::select('id', 'name')->orderBy('order', 'ASC')->where([['staff', true], ['deleted', false]])->get();
+            $this->_staff_roles = new Collection();
+
+            foreach ($this->getRoles() as $role) {
+                if ($role->staff) {
+                    $this->_staff_roles->add($role);
+                }
+            }
         }
 
         return $this->_staff_roles;

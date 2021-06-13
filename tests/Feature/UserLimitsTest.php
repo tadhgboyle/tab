@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 // TODO: test with different limit durations (day/week)
+// TODO: test when categories are made after user is made
 class UserLimitsTest extends TestCase
 {
     use RefreshDatabase;
@@ -136,7 +137,7 @@ class UserLimitsTest extends TestCase
             'user_id' => $user->id,
             'category_id' => $food_category->id,
             'limit_per' => 15,
-            'duration' => 0
+            'duration' => UserLimits::LIMIT_DAILY
         ]);
 
         UserLimits::factory()->create([

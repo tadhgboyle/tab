@@ -81,12 +81,12 @@
 
         @foreach($categories as $category)
             <div class="field">
-                <label class="label">{{ ucfirst($category['name']) }} Limit</label>
+                <label class="label">{{ $category['name'] }} Limit</label>
                 <div class="control has-icons-left">
                     <span class="icon is-small is-left">
                         <i class="fas fa-dollar-sign"></i>
                     </span>
-                    <input type="number" step="0.01" name="limit[{{ $category['id'] }}]" class="input" placeholder="Limit" value="{{ $user != null ? number_format($category['info']->limit_per, 2) : 0.00}}">
+                    <input type="number" step="0.01" name="limit[{{ $category['id'] }}]" class="input" placeholder="Limit" value="{{ $user != null ? number_format($category['info']->limit_per, 2) : -1.00}}" required>
                 </div>
                 <div class="control">
                     <label class="radio">
