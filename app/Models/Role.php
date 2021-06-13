@@ -32,7 +32,7 @@ class Role extends Model
     public function getRolesAvailable(?Role $compare = null): Collection
     {
         // TODO: Refractor
-        $return = new Collection;
+        $return = new Collection();
         $roles = RoleHelper::getInstance()->getRoles();
         foreach ($roles as $role) {
             if ($compare) {

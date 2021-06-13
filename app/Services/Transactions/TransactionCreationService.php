@@ -2,10 +2,10 @@
 
 namespace App\Services\Transactions;
 
-use App\Services\Service;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Category;
+use App\Services\Service;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Helpers\ProductHelper;

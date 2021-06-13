@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
-{ 
+{
     use QueryCacheable;
     use HasFactory;
 
@@ -86,7 +86,7 @@ class User extends Authenticatable
     public function getActivities(): Collection
     {
         if (!isset($this->_activities)) {
-            $this->_activities = new Collection;
+            $this->_activities = new Collection();
             $activity_transactions = $this->getActivityTransactions();
 
             foreach ($activity_transactions as $activity) {
