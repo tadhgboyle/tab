@@ -15,7 +15,7 @@ class UserCreationService extends Service
 {
     use UserService;
 
-    public const RESULT_NEGATIVE_LIMIT = 0;
+    public const RESULT_INVALID_LIMIT = 0;
     public const RESULT_SUCCESS = 1;
 
     public function __construct(
@@ -42,7 +42,7 @@ class UserCreationService extends Service
         $user->role_id = $this->_request->role_id;
 
         // TODO: This returns true if there is only 1 role which is a non-staff role... 
-        if (in_array($this->_request->role_id, RoleHelper::getInstance()->getStaffRoles()->pluck('id')->toArray())) {
+        if (RoleHelper::getInstance()->isStaffRole($this->_request->role_id)) {
             $user->password = bcrypt($this->_request->password);
         }
 
@@ -50,20 +50,28 @@ class UserCreationService extends Service
 
         // Update their category limits
         foreach ($this->_request->limit as $category_id => $limit) {
+
             // Default to limit per day rather than week if not specified
-            $duration = $this->_request->duration[$category_id] ?: 0;
-            // Default to unlimited limit if not specified
-            $limit ?: -1;
+            $duration = $this->_request->duration[$category_id] ?? UserLimits::LIMIT_DAILY;
+
+            // Default to -1 if limit not typed in
+            if ($limit == null || !isset($limit) || empty($limit)) {
+                $limit = -1;
+            }
+
             if ($limit < -1) {
                 $this->_message = 'Limit must be -1 or above for ' . Category::find($category_id)->name . '. (-1 means no limit)';
-                $this->_result = self::RESULT_NEGATIVE_LIMIT;
+                $this->_result = self::RESULT_INVALID_LIMIT;
                 return;
             }
 
-            UserLimits::updateOrCreate(
-                ['user_id' => $user->id, 'category_id' => $category_id],
-                ['limit_per' => $limit, 'duration' => $duration, 'editor_id' => auth()->id()]
-            );
+            UserLimits::create([
+                'user_id' => $user->id, 
+                'category_id' => $category_id,
+                'limit_per' => $limit, 
+                'duration' => $duration, 
+                'editor_id' => auth()->id()
+            ]);
         }
 
         $this->_result = self::RESULT_SUCCESS;

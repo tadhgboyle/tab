@@ -86,7 +86,7 @@
                         @foreach($categories as $category)
                             <tr>
                                 <td>
-                                    <div>{{ ucfirst($category['name']) }}</div>
+                                    <div>{{ $category['name'] }}</div>
                                 </td>
                                 <td>
                                     <div>{!! $category['limit'] == -1 ? "<i>Unlimited</i>" : "$" . number_format($category['limit'], 2) . "/" . $category['duration'] !!}</div>

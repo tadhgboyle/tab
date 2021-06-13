@@ -35,10 +35,12 @@ class UserLimitsHelper
 
         if ($info->count()) {
             $info = $info->first();
-            $limit_info->duration = $info->duration == 0 ? 'day' : 'week';
+            $limit_info->duration = $info->duration == UserLimits::LIMIT_DAILY ? 'day' : 'week';
+            $limit_info->duration_int = (int) $info->duration;
             $limit_info->limit_per = $info->limit_per;
         } else {
             $limit_info->duration = 'week';
+            $limit_info->duration_int = (int) UserLimits::LIMIT_WEEKLY;
             $limit_info->limit_per = -1;
         }
 
