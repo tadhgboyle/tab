@@ -3,9 +3,9 @@
 namespace App\Services\Users;
 
 use DB;
-use App\Services\Service;
 use App\Models\User;
 use App\Models\Category;
+use App\Services\Service;
 use App\Models\UserLimits;
 use App\Helpers\RoleHelper;
 use Illuminate\Http\Request;
@@ -21,7 +21,6 @@ class UserCreationService extends Service
     public function __construct(
         private Request $_request
     ) {
-
         $user = new User();
         $user->full_name = $this->_request->full_name;
         $user->username = $this->_request->username ?: strtolower(str_replace(' ', '', $this->_request->full_name));
@@ -41,7 +40,7 @@ class UserCreationService extends Service
         $user->balance = $this->_request->balance ?: 0;
         $user->role_id = $this->_request->role_id;
 
-        // TODO: This returns true if there is only 1 role which is a non-staff role... 
+        // TODO: This returns true if there is only 1 role which is a non-staff role...
         if (RoleHelper::getInstance()->isStaffRole($this->_request->role_id)) {
             $user->password = bcrypt($this->_request->password);
         }
@@ -66,10 +65,10 @@ class UserCreationService extends Service
             }
 
             UserLimits::create([
-                'user_id' => $user->id, 
+                'user_id' => $user->id,
                 'category_id' => $category_id,
-                'limit_per' => $limit, 
-                'duration' => $duration, 
+                'limit_per' => $limit,
+                'duration' => $duration,
                 'editor_id' => auth()->id()
             ]);
         }
