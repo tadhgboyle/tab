@@ -20,7 +20,7 @@ class TransactionCreationTest extends TestCase
 
     public function testCannotCreateOrderForSelfWithoutPermission()
     {
-        [$camper_user, $staff_user] = $this->createFakeRecords();
+        [, $staff_user] = $this->createFakeRecords();
 
         $transactionService = new TransactionCreationService($this->createFakeRequest($staff_user));
 
@@ -29,7 +29,7 @@ class TransactionCreationTest extends TestCase
 
     public function testCannotMakeTransactionWithNoProductsSelected()
     {
-        [$camper_user, $staff_user] = $this->createFakeRecords();
+        [$camper_user] = $this->createFakeRecords();
 
         $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user, with_products: false));
 
@@ -38,7 +38,7 @@ class TransactionCreationTest extends TestCase
 
     public function testCannotMakeTransactionWithLessThanZeroQuantity()
     {
-        [$camper_user, $staff_user] = $this->createFakeRecords();
+        [$camper_user] = $this->createFakeRecords();
 
         $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user, negative_product: true));
 
@@ -47,7 +47,7 @@ class TransactionCreationTest extends TestCase
 
     public function testCannotMakeTransactionWithOutOfStockItem()
     {
-        [$camper_user, $staff_user] = $this->createFakeRecords();
+        [$camper_user] = $this->createFakeRecords();
 
         $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user, over_stock: true));
 
@@ -56,7 +56,7 @@ class TransactionCreationTest extends TestCase
 
     public function testCannotMakeTransactionWithoutEnoughBalance()
     {
-        [$camper_user, $staff_user] = $this->createFakeRecords();
+        [$camper_user] = $this->createFakeRecords();
 
         $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user, over_balance: true));
 
@@ -65,7 +65,7 @@ class TransactionCreationTest extends TestCase
 
     public function testCannotMakeTransactionWithoutEnoughBalanceInCategory()
     {
-        [$camper_user, $staff_user] = $this->createFakeRecords();
+        [$camper_user] = $this->createFakeRecords();
 
         $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user, over_category_limit: true));
 
@@ -74,7 +74,7 @@ class TransactionCreationTest extends TestCase
 
     public function testUserBalanceCorrectAfterTransaction()
     {
-        [$camper_user, $staff_user] = $this->createFakeRecords();
+        [$camper_user] = $this->createFakeRecords();
 
         $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user));
 
@@ -85,7 +85,7 @@ class TransactionCreationTest extends TestCase
 
     public function testSuccessfulTransactionIsStored()
     {
-        [$camper_user, $staff_user] = $this->createFakeRecords();
+        [$camper_user] = $this->createFakeRecords();
 
         $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user));
 

@@ -33,7 +33,7 @@ class UserCreationTest extends TestCase
 
     public function testUsernameProperlyFormattedOnDuplicateUsername()
     {
-        [$superadmin_role, $camper_role] = $this->createRoles();
+        [, $camper_role] = $this->createRoles();
 
         new UserCreationService($this->createRequest(
             full_name: 'Tadhg Boyle',
@@ -52,7 +52,7 @@ class UserCreationTest extends TestCase
 
     public function testHasPasswordWhenRoleIsStaff()
     {
-        [$superadmin_role, $camper_role] = $this->createRoles();
+        [$superadmin_role] = $this->createRoles();
 
         $userService = new UserCreationService($this->createRequest(
             full_name: 'Tadhg Boyle',
@@ -68,7 +68,7 @@ class UserCreationTest extends TestCase
 
     public function testDoesNotHavePasswordWhenRoleIsNotStaff()
     {
-        [$superadmin_role, $camper_role] = $this->createRoles();
+        [, $camper_role] = $this->createRoles();
 
         $user = (new UserCreationService($this->createRequest(
             full_name: 'Tadhg Boyle',
@@ -99,15 +99,17 @@ class UserCreationTest extends TestCase
             password: 'password',
             limit: [
                 $merch_category->id => 25,
-                $candy_category->id => null
+                $candy_category->id => 15
             ],
             duration: [
-
+                $merch_category->id => UserLimits::LIMIT_DAILY,
+                $candy_category->id => UserLimits::LIMIT_WEEKLY
             ]
         ));
 
         $this->assertSame(UserCreationService::RESULT_SUCCESS, $userService->getResult());
-        $this->assertSame(-1.0, UserLimitsHelper::getInfo($userService->getUser(), $candy_category->id)->limit_per);
+        $this->assertSame(UserLimits::LIMIT_DAILY, UserLimitsHelper::getInfo($userService->getUser(), $merch_category->id)->duration_int);
+        $this->assertSame(UserLimits::LIMIT_WEEKLY, UserLimitsHelper::getInfo($userService->getUser(), $candy_category->id)->duration_int);
     }
 
     public function testInvalidLimitGivesError()

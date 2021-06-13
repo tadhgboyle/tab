@@ -20,7 +20,7 @@ class TransactionReturnTest extends TestCase
 
     public function testCanReturnTransaction()
     {
-        [$user, $transaction, $hat] = $this->createFakeRecords();
+        [, $transaction] = $this->createFakeRecords();
 
         $transactionService = (new TransactionReturnService($transaction))->return();
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
@@ -43,7 +43,7 @@ class TransactionReturnTest extends TestCase
 
     public function testUserBalanceUpdatedAfterTransactionReturn()
     {
-        [$user, $transaction, $hat] = $this->createFakeRecords();
+        [$user, $transaction] = $this->createFakeRecords();
 
         $transactionService = (new TransactionReturnService($transaction))->return();
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
@@ -69,7 +69,7 @@ class TransactionReturnTest extends TestCase
 
     public function testCannotReturnFullyReturnedTransaction()
     {
-        [$user, $transaction, $hat] = $this->createFakeRecords();
+        [$user, $transaction] = $this->createFakeRecords();
 
         $transactionService1 = (new TransactionReturnService($transaction))->return();
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService1->getResult());
@@ -83,7 +83,7 @@ class TransactionReturnTest extends TestCase
 
     public function testCannotReturnFullyReturnedItemInTransaction()
     {
-        [$user, $transaction, $hat] = $this->createFakeRecords();
+        [$user, , $hat] = $this->createFakeRecords();
         $transaction_2_items = $this->createTwoItemTransaction($user, $hat);
 
         $transactionService1 = (new TransactionReturnService($transaction_2_items))->returnItem($hat->id);
