@@ -25,7 +25,8 @@ class RoleFactory extends Factory
             'name' => 'Superadmin',
             'superuser' => true,
             'order' => 1,
-            'staff' => true
+            'staff' => true,
+            'deleted' => false
         ];
     }
 }

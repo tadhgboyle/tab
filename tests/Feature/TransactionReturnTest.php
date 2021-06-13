@@ -135,9 +135,10 @@ class TransactionReturnTest extends TestCase
         ]);
 
         $transaction = (new TransactionCreationService(new Request(
-            ['product' => [
-                $hat->id,
-            ],
+            [
+                'product' => [
+                    $hat->id,
+                ],
                 'quantity' => [
                     $hat->id => 2,
                 ],

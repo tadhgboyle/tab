@@ -12,15 +12,21 @@ use Illuminate\Http\RedirectResponse;
 
 class UserEditService extends Service
 {
+    use UserService;
+
     public const RESULT_CANT_MANAGE_THAT_ROLE = 0;
     public const RESULT_NEGATIVE_LIMIT = 1;
     public const RESULT_CONFIRM_PASSWORD = 2;
     public const RESULT_ENTER_PASSWORD = 3;
     public const RESULT_SUCCESS = 4;
 
-    public function __construct(
-        private Request $_request
-    ) {
+    private Request $_request;
+
+    public function __construct(Request $request) {
+
+        $this->_request = $request;
+        $this->_user = User::find($this->_request->id);
+
         if (!in_array($this->_request->role_id, auth()->user()->role->getRolesAvailable()->pluck('id'))) {
             $this->_result = self::RESULT_CANT_MANAGE_THAT_ROLE;
             $this->_message = 'You cannot manage users with that role.';
@@ -28,8 +34,7 @@ class UserEditService extends Service
         }
 
         $password = null;
-        $user = User::find($this->_request->id);
-        $old_role = $user->role->name;
+        $old_role = $this->_user->role->name;
 
         $new_role = Role::find($this->_request->role_id)->name;
         $staff_roles = RoleHelper::getInstance()->getStaffRoles()->pluck('name')->toArray();
@@ -55,7 +60,7 @@ class UserEditService extends Service
         // TODO: This next part is fucking terrifying. Probably can find a better solution.
         // If same role or changing from one staff role to another
         if (($old_role == $new_role) || (in_array($old_role, $staff_roles) && in_array($new_role, $staff_roles))) {
-            $user->update($this->_request->all(['full_name', 'user_name', 'balance', 'role_id']));
+            $this->_user->update($this->_request->all(['full_name', 'user_name', 'balance', 'role_id']));
 
             $this->_result = self::RESULT_SUCCESS;
             $this->_message = 'Updated user ' . $this->_request->full_name . '.';
@@ -84,7 +89,7 @@ class UserEditService extends Service
             }
         }
 
-        $user->update([
+        $this->_user->update([
             'full_name' => $this->_request->full_name,
             'username' => $this->_request->username,
             'balance' => $this->_request->balance,
