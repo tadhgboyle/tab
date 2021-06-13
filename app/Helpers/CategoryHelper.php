@@ -26,7 +26,7 @@ class CategoryHelper extends Helper
         if (!isset($this->_product_categories)) {
             $categories = $this->getCategories();
 
-            $this->_product_categories = new Collection;
+            $this->_product_categories = new Collection();
 
             foreach ($categories as $category) {
                 if (!in_array($category->type->id, [1, 2])) {
@@ -45,7 +45,7 @@ class CategoryHelper extends Helper
         if (!isset($this->_activity_categories)) {
             $categories = $this->getCategories();
 
-            $this->_activity_categories = new Collection;
+            $this->_activity_categories = new Collection();
 
             foreach ($categories as $category) {
                 if (!in_array($category->type->id, [1, 3])) {

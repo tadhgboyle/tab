@@ -2,10 +2,10 @@
 
 namespace App\Services\Users;
 
-use App\Services\Service;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Category;
+use App\Services\Service;
 use App\Models\UserLimits;
 use App\Helpers\RoleHelper;
 use Illuminate\Http\Request;
@@ -23,8 +23,8 @@ class UserEditService extends Service
 
     private Request $_request;
 
-    public function __construct(Request $request) {
-
+    public function __construct(Request $request)
+    {
         $this->_request = $request;
         $this->_user = User::find($this->_request->id);
 
@@ -100,7 +100,6 @@ class UserEditService extends Service
 
         $this->_result = self::RESULT_SUCCESS;
         $this->_message = 'Updated user ' . $this->_request->full_name . '.';
-
     }
 
     public function redirect(): RedirectResponse
