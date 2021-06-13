@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Users;
 
 use DB;
+use App\Services\Service;
 use App\Models\User;
 use App\Models\Category;
 use App\Models\UserLimits;
 use App\Helpers\RoleHelper;
-use Arr;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 

@@ -7,7 +7,7 @@ use App\Models\Category;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\UserLimits;
-use App\Services\UserCreationService;
+use App\Services\Users\UserCreationService;
 use Hash;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;

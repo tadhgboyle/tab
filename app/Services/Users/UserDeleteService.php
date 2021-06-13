@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Users;
 
+use App\Services\Service;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 
