@@ -7,6 +7,7 @@ use App\Helpers\CategoryHelper;
 use App\Helpers\UserLimitsHelper;
 use App\Services\UserEditService;
 use App\Http\Requests\UserRequest;
+use App\Services\UserDeleteService;
 use App\Services\UserCreationService;
 
 class UserController extends Controller
@@ -23,9 +24,7 @@ class UserController extends Controller
 
     public function delete($id)
     {
-        $user = User::find($id);
-        $user->update(['deleted' => true]);
-        return redirect()->route('users_list')->with('success', 'Deleted user ' . $user->full_name . '.');
+        return (new UserDeleteService($id))->redirect();
     }
 
     public function list()
