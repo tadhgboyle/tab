@@ -96,7 +96,6 @@ class UserCreationTest extends TestCase
         $userService = new UserCreationService($this->createRequest(
             full_name: 'Tadhg Boyle',
             role_id: $camper_role->id,
-            password: 'password',
             limit: [
                 $merch_category->id => 25,
                 $candy_category->id => 15
@@ -108,6 +107,10 @@ class UserCreationTest extends TestCase
         ));
 
         $this->assertSame(UserCreationService::RESULT_SUCCESS, $userService->getResult());
+
+        $this->assertSame(25.0, UserLimitsHelper::getInfo($userService->getUser(), $merch_category->id)->limit_per);
+        $this->assertSame(15.0, UserLimitsHelper::getInfo($userService->getUser(), $candy_category->id)->limit_per);
+
         $this->assertSame(UserLimits::LIMIT_DAILY, UserLimitsHelper::getInfo($userService->getUser(), $merch_category->id)->duration_int);
         $this->assertSame(UserLimits::LIMIT_WEEKLY, UserLimitsHelper::getInfo($userService->getUser(), $candy_category->id)->duration_int);
     }
