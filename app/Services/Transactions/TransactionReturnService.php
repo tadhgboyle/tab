@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Transactions;
 
+use App\Services\Service;
 use App\Models\Transaction;
 use App\Helpers\ProductHelper;
 use Illuminate\Http\RedirectResponse;

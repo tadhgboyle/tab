@@ -7,8 +7,8 @@ use App\Helpers\CategoryHelper;
 use App\Helpers\UserLimitsHelper;
 use App\Services\UserEditService;
 use App\Http\Requests\UserRequest;
-use App\Services\UserDeleteService;
-use App\Services\UserCreationService;
+use App\Services\Users\UserDeleteService;
+use App\Services\Users\UserCreationService;
 
 class UserController extends Controller
 {

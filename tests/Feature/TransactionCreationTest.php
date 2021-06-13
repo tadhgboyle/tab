@@ -11,7 +11,7 @@ use App\Models\Settings;
 use App\Models\UserLimits;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
-use App\Services\TransactionCreationService;
+use App\Services\Transactions\TransactionCreationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TransactionCreationTest extends TestCase

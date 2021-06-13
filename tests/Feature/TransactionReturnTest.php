@@ -10,8 +10,8 @@ use App\Models\Category;
 use App\Models\Settings;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
-use App\Services\TransactionReturnService;
-use App\Services\TransactionCreationService;
+use App\Services\Transactions\TransactionReturnService;
+use App\Services\Transactions\TransactionCreationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TransactionReturnTest extends TestCase
