@@ -2,16 +2,16 @@
 
 namespace Tests\Feature;
 
-use App\Helpers\UserLimitsHelper;
-use App\Models\Category;
+use Hash;
+use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Category;
 use App\Models\UserLimits;
-use App\Services\Users\UserCreationService;
-use Hash;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
-use Tests\TestCase;
+use App\Helpers\UserLimitsHelper;
+use App\Services\Users\UserCreationService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserCreationTest extends TestCase
 {
@@ -185,7 +185,7 @@ class UserCreationTest extends TestCase
         $this->assertSame(UserLimits::LIMIT_DAILY, UserLimitsHelper::getInfo($userService->getUser(), $merch_category->id)->duration_int);
     }
 
-    private function createRequest(string $full_name = null, string $username = null, float $balance = 0, int $role_id = null, string $password = null, array $limit = [], array $duration = []): Request
+    private function createRequest(?string $full_name = null, ?string $username = null, float $balance = 0, ?int $role_id = null, ?string $password = null, array $limit = [], array $duration = []): Request
     {
         return new Request([
             'full_name' => $full_name,

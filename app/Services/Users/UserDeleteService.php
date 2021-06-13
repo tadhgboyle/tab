@@ -2,8 +2,8 @@
 
 namespace App\Services\Users;
 
-use App\Services\Service;
 use App\Models\User;
+use App\Services\Service;
 use Illuminate\Http\RedirectResponse;
 
 class UserDeleteService extends Service
@@ -16,9 +16,7 @@ class UserDeleteService extends Service
     {
         if ($user instanceof User) {
             $this->_user = $user;
-
         } else {
-            
             $user = User::find($user);
 
             if ($user == null) {
