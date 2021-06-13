@@ -41,6 +41,7 @@ class UserEditService extends Service
         $staff_roles = RoleHelper::getInstance()->getStaffRoles()->pluck('name')->toArray();
 
         // Update their category limits
+        // TODO: use UserLimitsHelper
         foreach ($this->_request->limit as $category_id => $limit) {
             $duration = $this->_request->duration[$category_id] ?: 0;
             if (empty($limit)) {

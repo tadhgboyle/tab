@@ -3,15 +3,52 @@
 namespace App\Helpers;
 
 use stdClass;
+use App\Models\Category;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Activity;
 use App\Models\UserLimits;
+use App\Services\Users\UserCreationService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
 // TODO: Move these to user model. $user->canSpendInCategory($cat_id, 5.99)
 class UserLimitsHelper
 {
+    public static function createOrEditFromRequest(Request $request, User $user): array
+    {
+        foreach ($request->limit as $category_id => $limit) {
+
+            // Default to limit per day rather than week if not specified
+            $duration = $request->duration[$category_id] ?? UserLimits::LIMIT_DAILY;
+
+            // Default to -1 if limit not typed in
+            if ($limit == null || !isset($limit) || empty($limit)) {
+                $limit = -1;
+            }
+
+            if ($limit < -1) {
+                $message = 'Limit must be -1 or above for ' . Category::find($category_id)->name . '. (-1 means no limit)';
+                $result = UserCreationService::RESULT_INVALID_LIMIT;
+                return [$message, $result];
+            }
+
+            UserLimits::updateOrCreate(
+                [
+                    'user_id' => $user->id,
+                    'category_id' => $category_id,
+                ], 
+                [
+                    'limit_per' => $limit,
+                    'duration' => $duration,
+                    'editor_id' => auth()->id()
+                ]
+            );
+        }
+
+        return [null, null];
+    }
+
     public static function canSpend(User $user, float $spending, int $category_id, ?object $info = null): bool
     {
         if ($info == null) {

@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Services\Service;
 use App\Models\UserLimits;
 use App\Helpers\RoleHelper;
+use App\Helpers\UserLimitsHelper;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 
@@ -48,29 +49,12 @@ class UserCreationService extends Service
         $user->save();
 
         // Update their category limits
-        foreach ($this->_request->limit as $category_id => $limit) {
+        [$message, $result] = UserLimitsHelper::createOrEditFromRequest($this->_request, $user);
 
-            // Default to limit per day rather than week if not specified
-            $duration = $this->_request->duration[$category_id] ?? UserLimits::LIMIT_DAILY;
-
-            // Default to -1 if limit not typed in
-            if ($limit == null || !isset($limit) || empty($limit)) {
-                $limit = -1;
-            }
-
-            if ($limit < -1) {
-                $this->_message = 'Limit must be -1 or above for ' . Category::find($category_id)->name . '. (-1 means no limit)';
-                $this->_result = self::RESULT_INVALID_LIMIT;
-                return;
-            }
-
-            UserLimits::create([
-                'user_id' => $user->id,
-                'category_id' => $category_id,
-                'limit_per' => $limit,
-                'duration' => $duration,
-                'editor_id' => auth()->id()
-            ]);
+        if (!is_null($message) && !is_null($result)) {
+            $this->_message = $message;
+            $this->_result = $result;
+            return;
         }
 
         $this->_result = self::RESULT_SUCCESS;
