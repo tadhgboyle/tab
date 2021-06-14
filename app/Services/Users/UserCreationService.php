@@ -40,7 +40,7 @@ class UserCreationService extends Service
         $user->role_id = $this->_request->role_id;
 
         // TODO: This returns true if there is only 1 role which is a non-staff role...
-        if (RoleHelper::getInstance()->isStaffRole($this->_request->role_id)) {
+        if (RoleHelper::getInstance(true)->isStaffRole($this->_request->role_id)) {
             $user->password = bcrypt($this->_request->password);
         }
 
