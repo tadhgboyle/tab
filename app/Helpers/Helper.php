@@ -6,11 +6,11 @@ abstract class Helper
 {
     private static $_instances = [];
 
-    final public static function getInstance(): static
+    final public static function getInstance(bool $new = false): static
     {
         $class = static::class;
 
-        if (!isset(self::$_instances[$class])) {
+        if ($new || !isset(self::$_instances[$class])) {
             self::$_instances[$class] = new static();
         }
 

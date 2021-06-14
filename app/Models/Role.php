@@ -33,7 +33,7 @@ class Role extends Model
     {
         // TODO: Refractor
         $return = new Collection();
-        $roles = RoleHelper::getInstance()->getRoles();
+        $roles = RoleHelper::getInstance(true)->getRoles();
         foreach ($roles as $role) {
             if ($compare) {
                 if ($this->id == $role->id) {

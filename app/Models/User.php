@@ -18,12 +18,16 @@ class User extends Authenticatable
     protected $cacheFor = 180;
 
     protected $fillable = [
+        'full_name',
+        'username',
         'balance',
+        'password',
+        'role_id',
         'deleted',
     ];
 
     protected $casts = [
-        'name' => 'string',
+        'full_name' => 'string',
         'username' => 'string',
         'balance' => 'float',
         'deleted' => 'boolean',
