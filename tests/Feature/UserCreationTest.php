@@ -8,8 +8,8 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Category;
 use App\Models\UserLimits;
-use Illuminate\Http\Request;
 use App\Helpers\UserLimitsHelper;
+use App\Http\Requests\UserRequest;
 use App\Services\Users\UserCreationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -47,7 +47,7 @@ class UserCreationTest extends TestCase
         $user = $userService->getUser();
 
         $this->assertSame(UserCreationService::RESULT_SUCCESS, $userService->getResult());
-        $this->assertMatchesRegularExpression('/^tadhgboyle(?:[1-9]\d?|100)$/', $user->username);
+        $this->assertMatchesRegularExpression('/^tadhgboyle(?:[0-9]\d?|100)$/', $user->username);
     }
 
     public function testHasPasswordWhenRoleIsStaff()
@@ -77,6 +77,18 @@ class UserCreationTest extends TestCase
         )))->getUser();
 
         $this->assertEmpty($user->password);
+    }
+
+    public function testBalanceIsZeroIfNotSupplied()
+    {
+        [, $camper_role] = $this->createRoles();
+
+        $user = (new UserCreationService($this->createRequest(
+            full_name: 'Tadhg Boyle',
+            role_id: $camper_role->id,
+        )))->getUser();
+
+        $this->assertSame(0.0, $user->balance);
     }
 
     public function testLimitsAndDurationsCorrectlyStoredIfValid()
@@ -188,9 +200,9 @@ class UserCreationTest extends TestCase
         $this->assertSame(UserLimits::LIMIT_DAILY, UserLimitsHelper::getInfo($userService->getUser(), $merch_category->id)->duration_int);
     }
 
-    private function createRequest(?string $full_name = null, ?string $username = null, float $balance = 0, ?int $role_id = null, ?string $password = null, array $limit = [], array $duration = []): Request
+    private function createRequest(?string $full_name = null, ?string $username = null, float $balance = 0, ?int $role_id = null, ?string $password = null, array $limit = [], array $duration = []): UserRequest
     {
-        return new Request([
+        return new UserRequest([
             'full_name' => $full_name,
             'username' => $username,
             'balance' => $balance,

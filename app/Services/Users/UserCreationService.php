@@ -9,7 +9,7 @@ use App\Services\Service;
 use App\Models\UserLimits;
 use App\Helpers\RoleHelper;
 use App\Helpers\UserLimitsHelper;
-use Illuminate\Http\Request;
+use App\Http\Requests\UserRequest;
 use Illuminate\Http\RedirectResponse;
 
 class UserCreationService extends Service
@@ -20,7 +20,7 @@ class UserCreationService extends Service
     public const RESULT_SUCCESS = 1;
 
     public function __construct(
-        private Request $_request
+        private UserRequest $_request
     ) {
         $user = new User();
         $user->full_name = $this->_request->full_name;

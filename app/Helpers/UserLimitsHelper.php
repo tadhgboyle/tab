@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Http\Requests\UserRequest;
 use stdClass;
 use App\Models\Category;
 use App\Models\User;
@@ -9,14 +10,17 @@ use App\Models\Product;
 use App\Models\Activity;
 use App\Models\UserLimits;
 use App\Services\Users\UserCreationService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
 // TODO: Move these to user model. $user->canSpendInCategory($cat_id, 5.99)
 class UserLimitsHelper
 {
-    public static function createOrEditFromRequest(Request $request, User $user): array
+    public static function createOrEditFromRequest(UserRequest $request, User $user): array
     {
+        if ($request->limit == null) {
+            return [null, null];
+        }
+
         foreach ($request->limit as $category_id => $limit) {
 
             // Default to limit per day rather than week if not specified
