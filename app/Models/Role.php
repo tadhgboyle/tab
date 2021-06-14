@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App;
 use App\Helpers\RoleHelper;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -39,7 +38,7 @@ class Role extends Model
      * @param Role $compare If provided, Roles will only be added if:
      * - They are not this Role
      * - This Role is staff OR (this Role is not staff AND the other Role is not staff)
-     * - And t
+     * - And finally that the `$compare` Role can interact with it
      * @return Collection Roles available for this Role to manage.
      */
     public function getRolesAvailable(?Role $compare = null): Collection

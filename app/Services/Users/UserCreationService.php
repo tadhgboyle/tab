@@ -40,7 +40,6 @@ class UserCreationService extends Service
         $user->balance = $this->_request->balance ?: 0;
         $user->role_id = $this->_request->role_id;
 
-        // TODO: This returns true if there is only 1 role which is a non-staff role...
         if (RoleHelper::getInstance()->isStaffRole($this->_request->role_id)) {
             $user->password = bcrypt($this->_request->password);
         }
@@ -56,7 +55,7 @@ class UserCreationService extends Service
         }
 
         $this->_result = self::RESULT_SUCCESS;
-        $this->_message = 'Created user ' . $user->full_name . '.';
+        $this->_message = "Created user {$user->full_name}";
         $this->_user = $user;
     }
 

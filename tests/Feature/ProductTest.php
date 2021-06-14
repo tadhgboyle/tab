@@ -9,13 +9,12 @@ use App\Helpers\ProductHelper;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class ProductSerializationTest extends TestCase
+class ProductTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * Tests that the ProductHelper::serializeProduct function works.
-     */
+    // TODO: stock tests
+
     public function testProductSerialization()
     {
         $serialized = ProductHelper::serializeProduct(34, 2, 1.45, 1.08, 1.04, 1);
@@ -23,9 +22,6 @@ class ProductSerializationTest extends TestCase
         $this->assertEquals('34*2$1.45G1.08P1.04R1', $serialized);
     }
 
-    /**
-     * Tests that the ProductHelper::deserializeProduct function works, does not access database.
-     */
     public function testProductDeserializationNotFull()
     {
         $serialized = '34*2$1.45G1.08P1.04R1';
@@ -44,9 +40,6 @@ class ProductSerializationTest extends TestCase
         ], $deserialized);
     }
 
-    /**
-     * Tests that the ProductHelper::deserializeProduct function works, accesses database.
-     */
     public function testProductDeserializationFull()
     {
         $category = Category::factory()->create([
@@ -66,10 +59,6 @@ class ProductSerializationTest extends TestCase
         $this->assertEquals($deserialized['category'], $product->category_id);
     }
 
-    /**
-     * Tests that the ProductHelper::deserializeProduct function throws exception
-     * when non existant product ID is sent, and $full is true.
-     */
     public function testProductDeserializationThrowsException()
     {
         $this->expectException(ModelNotFoundException::class);

@@ -29,7 +29,7 @@ class UserDeleteService extends Service
         $user->update(['deleted' => true]);
 
         $this->_result = self::RESULT_SUCCESS;
-        $this->_message = 'Deleted user ' . $user->full_name . '.';
+        $this->_message = "Deleted user {$user->full_name}";
     }
 
     public function redirect(): RedirectResponse
