@@ -13,6 +13,7 @@ use App\Helpers\SettingsHelper;
 use App\Helpers\UserLimitsHelper;
 use Illuminate\Http\RedirectResponse;
 
+// TODO: Test stock stuff
 class TransactionCreationService extends Service
 {
     use TransactionService;
@@ -68,14 +69,14 @@ class TransactionCreationService extends Service
             $quantity = $this->_request->quantity[$product_id];
             if ($quantity < 1) {
                 $this->_result = self::RESULT_NEGATIVE_QUANTITY;
-                $this->_message = 'Quantity must be >= 1 for item ' . $product->name;
+                $this->_message = "Quantity must be >= 1 for item {$product->name}";
                 return;
             }
 
             // Stock handling
             if (!$product->hasStock($quantity)) {
                 $this->_result = self::RESULT_NO_STOCK;
-                $this->_message = 'Not enough ' . $product->name . ' in stock. Only ' . $product->stock . ' remaining.';
+                $this->_message = "Not enough {$product->name} in stock. Only {$product->stock} remaining.";
                 return;
             }
 
@@ -104,7 +105,7 @@ class TransactionCreationService extends Service
         $remaining_balance = $purchaser->balance - $total_price;
         if ($remaining_balance < 0) {
             $this->_result = self::RESULT_NOT_ENOUGH_BALANCE;
-            $this->_message = 'Not enough balance. ' . $purchaser->full_name . ' only has $' . $purchaser->balance;
+            $this->_message = "Not enough balance. {$purchaser->full_name} only has $ {$purchaser->balance}";
             return;
         }
 

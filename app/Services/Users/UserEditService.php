@@ -56,7 +56,7 @@ class UserEditService extends Service
             ]);
 
             $this->_result = self::RESULT_SUCCESS_IGNORED_PASSWORD;
-            $this->_message = 'Updated user ' . $this->_request->full_name . '.';
+            $this->_message = "Updated user {$this->_request->full_name}";
             return;
         }
 
@@ -89,7 +89,7 @@ class UserEditService extends Service
         ]);
 
         $this->_result = self::RESULT_SUCCESS_APPLIED_PASSWORD;
-        $this->_message = 'Updated user ' . $this->_request->full_name . '.';
+        $this->_message = "Updated user {$this->_request->full_name}";
     }
 
     public function redirect(): RedirectResponse
