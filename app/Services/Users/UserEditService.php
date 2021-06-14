@@ -15,7 +15,7 @@ class UserEditService extends Service
     use UserService;
 
     public const RESULT_CANT_MANAGE_THAT_ROLE = 0;
-    public const RESULT_NEGATIVE_LIMIT = 1;
+    public const RESULT_INVALID_LIMIT = 1;
     public const RESULT_CONFIRM_PASSWORD = 2;
     public const RESULT_ENTER_PASSWORD = 3;
     public const RESULT_SUCCESS_IGNORED_PASSWORD = 4;
@@ -27,6 +27,7 @@ class UserEditService extends Service
     {
         $this->_request = $request;
         $user = User::find($this->_request->id);
+        $this->_user = $user;
 
         if (!auth()->user()->role->getRolesAvailable()->pluck('id')->contains($this->_request->role_id)) {
             $this->_result = self::RESULT_CANT_MANAGE_THAT_ROLE;
@@ -38,7 +39,7 @@ class UserEditService extends Service
         $new_role = Role::find($this->_request->role_id);
 
         // Update their category limits
-        [$message, $result] = UserLimitsHelper::createOrEditFromRequest($this->_request, $user);
+        [$message, $result] = UserLimitsHelper::createOrEditFromRequest($this->_request, $user, $this::class);
         if (!is_null($message) && !is_null($result)) {
             $this->_message = $message;
             $this->_result = $result;
@@ -56,12 +57,10 @@ class UserEditService extends Service
 
             $this->_result = self::RESULT_SUCCESS_IGNORED_PASSWORD;
             $this->_message = 'Updated user ' . $this->_request->full_name . '.';
-            $this->_user = $user;
             return;
         }
 
         // Determine if their password should be kept or removed
-        $password = null;
         if (!RoleHelper::getInstance()->isStaffRole($old_role->id) && RoleHelper::getInstance()->isStaffRole($new_role->id)) {
             // TODO: should be able to remove these using the UserRequest and 'confirmed' and 'requiredIf' validation rules
             if (empty($this->_request->password)) {
@@ -77,6 +76,8 @@ class UserEditService extends Service
             }
 
             $password = bcrypt($this->_request->password);
+        } else {
+            $password = null;
         }
 
         $user->update([
@@ -89,7 +90,6 @@ class UserEditService extends Service
 
         $this->_result = self::RESULT_SUCCESS_APPLIED_PASSWORD;
         $this->_message = 'Updated user ' . $this->_request->full_name . '.';
-        $this->_user = $user;
     }
 
     public function redirect(): RedirectResponse

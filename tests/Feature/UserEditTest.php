@@ -69,6 +69,23 @@ class UserEditTest extends TestCase
         }
     }
 
+    public function testPasswordRemovedIfNewRoleIsNotStaff()
+    {
+        $this->actingAs($this->_superadmin_user);
+
+        $userService = new UserEditService($this->createRequest(
+            id: $this->_cashier_user->id,
+            role_id: $this->_camper_role->id,
+            full_name: $this->_cashier_user->full_name,
+            username: $this->_cashier_user->username,
+            password: 'should_be_ignored'
+        ));
+        $user = $userService->getUser();
+
+        $this->assertSame(UserEditService::RESULT_SUCCESS_APPLIED_PASSWORD, $userService->getResult());
+        $this->assertNull($user->password);
+    }
+
     private function createRequest(int $id, ?string $full_name = null, ?string $username = null, float $balance = 0, ?int $role_id = null, ?string $password = null, array $limit = [], array $duration = []): UserRequest
     {
         return new UserRequest([
