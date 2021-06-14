@@ -67,7 +67,7 @@ class Role extends Model
         return $this->order < $subject->order;
     }
 
-    public function hasPermission($permissions): bool
+    public function hasPermission(string|array $permissions): bool
     {
         if ($this->superuser) {
             return true;
