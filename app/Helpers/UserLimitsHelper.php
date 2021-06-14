@@ -2,16 +2,16 @@
 
 namespace App\Helpers;
 
-use App\Http\Requests\UserRequest;
 use stdClass;
-use App\Models\Category;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Activity;
+use App\Models\Category;
 use App\Models\UserLimits;
-use App\Services\Users\UserCreationService;
 use App\Services\Users\UserEditService;
 use Illuminate\Support\Carbon;
+use App\Http\Requests\UserRequest;
+use App\Services\Users\UserCreationService;
 
 // TODO: Move these to user model. $user->canSpendInCategory($cat_id, 5.99)
 class UserLimitsHelper
@@ -44,7 +44,7 @@ class UserLimitsHelper
                 [
                     'user_id' => $user->id,
                     'category_id' => $category_id,
-                ], 
+                ],
                 [
                     'limit_per' => $limit,
                     'duration' => $duration,

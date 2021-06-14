@@ -2,14 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Helpers\RoleHelper;
-use App\Http\Requests\UserRequest;
-use App\Models\Role;
-use App\Models\User;
-use App\Services\Users\UserCreationService;
-use App\Services\Users\UserEditService;
 use Hash;
 use Tests\TestCase;
+use App\Models\Role;
+use App\Models\User;
+use App\Http\Requests\UserRequest;
+use App\Services\Users\UserEditService;
+use App\Services\Users\UserCreationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserEditTest extends TestCase
