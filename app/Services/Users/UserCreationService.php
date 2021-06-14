@@ -4,9 +4,7 @@ namespace App\Services\Users;
 
 use DB;
 use App\Models\User;
-use App\Models\Category;
 use App\Services\Service;
-use App\Models\UserLimits;
 use App\Helpers\RoleHelper;
 use App\Helpers\UserLimitsHelper;
 use App\Http\Requests\UserRequest;
@@ -49,8 +47,7 @@ class UserCreationService extends Service
         $user->save();
 
         // Update their category limits
-        [$message, $result] = UserLimitsHelper::createOrEditFromRequest($this->_request, $user);
-
+        [$message, $result] = UserLimitsHelper::createOrEditFromRequest($this->_request, $user, $this::class);
         if (!is_null($message) && !is_null($result)) {
             $this->_message = $message;
             $this->_result = $result;

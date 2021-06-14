@@ -10,12 +10,13 @@ use App\Models\Product;
 use App\Models\Activity;
 use App\Models\UserLimits;
 use App\Services\Users\UserCreationService;
+use App\Services\Users\UserEditService;
 use Illuminate\Support\Carbon;
 
 // TODO: Move these to user model. $user->canSpendInCategory($cat_id, 5.99)
 class UserLimitsHelper
 {
-    public static function createOrEditFromRequest(UserRequest $request, User $user): array
+    public static function createOrEditFromRequest(UserRequest $request, User $user, string $class): array
     {
         if ($request->limit == null) {
             return [null, null];
@@ -33,7 +34,9 @@ class UserLimitsHelper
 
             if ($limit < -1) {
                 $message = 'Limit must be -1 or above for ' . Category::find($category_id)->name . '. (-1 means no limit)';
-                $result = UserCreationService::RESULT_INVALID_LIMIT;
+                $result = ($class == UserCreationService::class) 
+                            ? UserCreationService::RESULT_INVALID_LIMIT 
+                            : UserEditService::RESULT_INVALID_LIMIT;
                 return [$message, $result];
             }
 
