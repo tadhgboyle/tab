@@ -6,7 +6,6 @@ use DB;
 use App\Models\User;
 use App\Models\Category;
 use App\Services\Service;
-use App\Models\UserLimits;
 use App\Helpers\RoleHelper;
 use App\Helpers\UserLimitsHelper;
 use App\Http\Requests\UserRequest;
