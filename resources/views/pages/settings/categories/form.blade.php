@@ -1,6 +1,9 @@
 
 @extends('layouts.default')
 @section('content')
+@php
+use App\Casts\CategoryType;
+@endphp
 <h2 class="title has-text-weight-bold">{{ is_null($category) ? 'Create' : 'Edit' }} Category</h2>
 <div class="columns">
     <div class="column"></div>
@@ -21,9 +24,9 @@
                     <div class="select" id="type">
                         <select name="type" class="input" required>
                             {{!! is_null($category) ? "<option value=\"\" disabled selected>Select Type...</option>" : '' !!}}
-                            <option value="1" {{ (!is_null($category) && $category->type->id == 1) || old('type') == 1 ? "selected" : "" }}>Products + Activities</option>
-                            <option value="2" {{ (!is_null($category) && $category->type->id == 2) || old('type') == 2 ? "selected" : "" }}>Products</option>
-                            <option value="3" {{ (!is_null($category) && $category->type->id == 3) || old('type') == 3 ? "selected" : "" }}>Activities</option>
+                            <option value="1" {{ (!is_null($category) && $category->type->id == CategoryType::TYPE_PRODUCTS_ACTIVITIES) || old('type') == CategoryType::TYPE_PRODUCTS_ACTIVITIES ? "selected" : "" }}>Products + Activities</option>
+                            <option value="2" {{ (!is_null($category) && $category->type->id == CategoryType::TYPE_PRODUCTS) || old('type') == CategoryType::TYPE_PRODUCTS ? "selected" : "" }}>Products</option>
+                            <option value="3" {{ (!is_null($category) && $category->type->id == CategoryType::TYPE_ACTIVITIES) || old('type') == CategoryType::TYPE_ACTIVITIES ? "selected" : "" }}>Activities</option>
                         </select>
                     </div>
                 </div>

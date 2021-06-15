@@ -25,9 +25,4 @@ class Category extends Model
         'type' => CategoryType::class, // $category->type->name (ie: "Products Only") + $category->type->id (ie: 2)
         'deleted' => 'boolean',
     ];
-
-    public function getNameAttribute($value)
-    {
-        return ucfirst($value);
-    }
 }

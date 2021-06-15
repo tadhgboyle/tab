@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class UserLimits extends Model
 {
-    // TODO: replace nums with these
     public const LIMIT_DAILY = 0;
     public const LIMIT_WEEKLY = 1;
 

@@ -46,20 +46,20 @@ class Role extends Model
         $return = new Collection();
         $roles = RoleHelper::getInstance()->getRoles();
         foreach ($roles as $role) {
-            if ($compare) {
-                if ($this->id == $role->id) {
-                    continue;
-                }
-                if ($this->staff || (!$this->staff && !$role->staff)) {
-                    if ($compare->canInteract($role)) {
-                        $return->add($role);
-                    }
+            if (!$compare) {
+                if ($this->canInteract($role)) {
+                    $return->add($role);
                 }
                 continue;
             }
 
-            if ($this->canInteract($role)) {
-                $return->add($role);
+            if ($this->id == $role->id) {
+                continue;
+            }
+            if ($this->staff || (!$this->staff && !$role->staff)) {
+                if ($compare->canInteract($role)) {
+                    $return->add($role);
+                }
             }
         }
 

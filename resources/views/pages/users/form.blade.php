@@ -86,7 +86,7 @@
                     <span class="icon is-small is-left">
                         <i class="fas fa-dollar-sign"></i>
                     </span>
-                    <input type="number" step="0.01" name="limit[{{ $category['id'] }}]" class="input" placeholder="Limit" value="{{ $user != null ? number_format($category['info']->limit_per, 2) : -1.00}}" required>
+                    <input type="number" step="0.01" name="limit[{{ $category['id'] }}]" class="input" placeholder="Limit" value="{{ $user != null ? number_format($category['info']->limit_per, 2, '.', '') : -1.00}}" required>
                 </div>
                 <div class="control">
                     <label class="radio">
