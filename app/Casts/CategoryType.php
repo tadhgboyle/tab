@@ -7,6 +7,10 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
 class CategoryType implements CastsAttributes
 {
+    public const TYPE_PRODUCTS_ACTIVITIES = 1;
+    public const TYPE_PRODUCTS = 2;
+    public const TYPE_ACTIVITIES = 3;
+
     /**
      * Cast the given value.
      *
@@ -26,14 +30,14 @@ class CategoryType implements CastsAttributes
         return $return;
     }
 
-    private function getName($type): string
+    private function getName(int $type): string
     {
         switch ($type) {
-            case 1:
+            case self::TYPE_PRODUCTS_ACTIVITIES:
                 return 'Products & Activities';
-            case 2:
+            case self::TYPE_PRODUCTS:
                 return 'Products';
-            case 3:
+            case self::TYPE_ACTIVITIES:
                 return 'Activities';
             default:
                 return $type;

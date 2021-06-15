@@ -4,7 +4,7 @@ if (!function_exists('hasPermission')) {
     /**
      * Check if the logged in user has specified permission.
      *
-     * @param $permission
+     * @param string|array $permission
      *
      * @return bool
      */

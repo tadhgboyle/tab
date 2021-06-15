@@ -140,7 +140,7 @@ class UserLimitsHelper
                 continue;
             }
 
-            $category_spent += $activity->getPrice();
+            $category_spent += $activity_transaction->total_price;
         }
 
         return number_format($category_spent, 2);

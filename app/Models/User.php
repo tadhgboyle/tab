@@ -107,22 +107,22 @@ class User extends Authenticatable
         return $this->_activities;
     }
 
-    // Find how much a user has spent in total.
-    // Does not factor in returned items/orders.
+    /**
+     * Find how much a user has spent in total.
+     * Does not factor in returned items/orders.
+     */
     public function findSpent(): float
     {
-        $spent = $this->getTransactions()->sum('total_price');
-
-        $activity_transactions = $this->getActivityTransactions();
-        foreach ($activity_transactions as $activity_transaction) {
-            $spent += $activity_transaction->total_price;
-        }
-
-        return floatval($spent);
+        return floatval(
+            $this->getTransactions()->sum('total_price') 
+            + $this->getActivityTransactions()->sum('total_price')
+        );
     }
 
-    // Find how much a user has returned in total.
-    // This will see if a whole order has been returned, or if not, check all items in an unreturned order.
+    /**
+     * Find how much a user has returned in total.
+     * This will see if a whole order has been returned, or if not, check all items in an unreturned order.
+     */
     public function findReturned(): float
     {
         $returned = 0.00;
@@ -150,18 +150,15 @@ class User extends Authenticatable
             }
         }
 
-        $activity_transactions = $this->getActivityTransactions();
-        foreach ($activity_transactions as $transaction) {
-            if ($transaction->returned) {
-                $returned += $transaction->total_price;
-            }
-        }
+        $returned += $this->getActivityTransactions()->where('returned', true)->sum('total_price');
 
         return floatval($returned);
     }
 
-    // Find how much money a user owes.
-    // Taking their amount spent and subtracting the amount they have returned.
+    /**
+     * Find how much money a user owes.
+     * Taking their amount spent and subtracting the amount they have returned.
+     */
     public function findOwing(): float
     {
         return floatval($this->findSpent() - $this->findReturned());

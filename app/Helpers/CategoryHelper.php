@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use App\Casts\CategoryType;
+use Arr;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -22,19 +24,8 @@ class CategoryHelper extends Helper
 
     public function getProductCategories(): Collection
     {
-        // Cleaner to use getCategories()->whereIn(), but that doesnt work with the CategoryType cast
         if (!isset($this->_product_categories)) {
-            $categories = $this->getCategories();
-
-            $this->_product_categories = new Collection();
-
-            foreach ($categories as $category) {
-                if (!in_array($category->type->id, [1, 2])) {
-                    continue;
-                }
-
-                $this->_product_categories->add($category);
-            }
+            $this->_product_categories = $this->getCategoriesWithType([CategoryType::TYPE_PRODUCTS_ACTIVITIES, CategoryType::TYPE_PRODUCTS]);
         }
 
         return $this->_product_categories;
@@ -43,19 +34,16 @@ class CategoryHelper extends Helper
     public function getActivityCategories(): Collection
     {
         if (!isset($this->_activity_categories)) {
-            $categories = $this->getCategories();
-
-            $this->_activity_categories = new Collection();
-
-            foreach ($categories as $category) {
-                if (!in_array($category->type->id, [1, 3])) {
-                    continue;
-                }
-
-                $this->_activity_categories->add($category);
-            }
+            $this->_activity_categories = $this->getCategoriesWithType([CategoryType::TYPE_PRODUCTS_ACTIVITIES, CategoryType::TYPE_ACTIVITIES]);
         }
 
         return $this->_activity_categories;
+    }
+
+    private function getCategoriesWithType(array $types): Collection
+    {
+        return new Collection(Arr::where($this->getCategories()->all(), function (Category $category) use ($types) {
+            return in_array($category->type->id, $types);
+        }));
     }
 }

@@ -18,13 +18,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 // TODO: test with different limit durations (day/week)
 // TODO: test when categories are made after user is made
+// TODO: activity transaction stuff
 class UserLimitsTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * Test that the UserLimitsHelper::findSpent calculation is correct.
-     */
     public function testFindSpentCalculationIsCorrect()
     {
         [$user, $food_category, $merch_category, $activities_category, $waterfront_category] = $this->createFakeRecords();
@@ -42,7 +40,7 @@ class UserLimitsTest extends TestCase
         $activities_limit_info = UserLimitsHelper::getInfo($user, $activities_category->id);
         $activities_category_spent = UserLimitsHelper::findSpent($user, $activities_category->id, $activities_limit_info);
 
-        $this->assertEquals(6.29, $activities_category_spent);
+        $this->assertEquals(6.6, $activities_category_spent);
 
         $waterfront_limit_info = UserLimitsHelper::getInfo($user, $waterfront_category->id);
         $waterfront_category_spent = UserLimitsHelper::findSpent($user, $waterfront_category->id, $waterfront_limit_info);
@@ -60,10 +58,7 @@ class UserLimitsTest extends TestCase
         $this->assertTrue(true); // TODO after rewriting transaction handling
     }
 
-    /**
-     * Test that if a user has no limit (-1) set for a category, that they can spend as much as they want.
-     */
-    public function testUserCanSpendUnlimitedInCategory()
+    public function testUserCanSpendUnlimitedInCategoryIfNegativeOneIsLimit()
     {
         [$user, , $merch_category] = $this->createFakeRecords();
 
@@ -72,10 +67,6 @@ class UserLimitsTest extends TestCase
         $this->assertTrue($can_spend_1_million_merch);
     }
 
-    /**
-     * Test that if a limit is set on a category, that a user cannot spend more than that limit.
-     * Tests canSpend function in UserLimitsHelper.
-     */
     public function testUserCannotSpendOverLimitInCategory()
     {
         [$user, $food_category, , $activities_category, $waterfront_category] = $this->createFakeRecords();
