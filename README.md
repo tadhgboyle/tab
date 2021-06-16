@@ -104,8 +104,6 @@ Documentation (in the form of a printable user handbook) is being written.
 
 *High to Low priority sort*
 - Fix everything in Issues/Bugs
-- Add database seeders.
-- Update all migrations.
 - Use https://github.com/cknow/laravel-money and update codebase to not store periods in DB for money.
 - Let products be purchasable by a parent only.
     - Will require a boolean attribute in users table "parent"
@@ -132,7 +130,6 @@ Documentation (in the form of a printable user handbook) is being written.
     - (Todo) User's favorite items (Charts).
 - Add sales/discounts to item for period of time (automatic or button)
 - Add auditing/tracking of everything
-    - Remove "editor_id" from models
     - Role changes
     - New users
     - Price changes

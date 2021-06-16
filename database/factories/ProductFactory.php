@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\Product;
-use Illuminate\Support\Arr;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ProductFactory extends Factory
@@ -23,14 +22,12 @@ class ProductFactory extends Factory
     public function definition()
     {
         return [
-            'name' => Arr::random(['Pop', 'Chips', 'Candy Bag']),
-            'price' => Arr::random([1.25, 14.99, 4.98, 5.00]),
-            'pst' => Arr::random([1, 0]),
-            'stock' => 0,
-            'unlimited_stock' => true,
-            'box_size' => Arr::random([-1, 5, 8]),
-            'stock_override' => false,
-            'creator_id' => 1
+            'price' => $this->faker->randomFloat(2, 0.00, 50.00),
+            'pst' => $this->faker->boolean,
+            'stock' => $this->faker->numberBetween(10, 300),
+            'unlimited_stock' => $this->faker->boolean,
+            'box_size' => $this->faker->boolean ? -1 : $this->faker->numberBetween(4, 25),
+            'stock_override' => $this->faker->boolean,
         ];
     }
 }

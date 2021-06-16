@@ -20,7 +20,6 @@ class UserLimits extends Model
         'category_id',
         'limit_per',
         'duration',
-        'editor_id',
     ];
 
     protected $casts = [
@@ -29,11 +28,6 @@ class UserLimits extends Model
     ];
 
     public function user()
-    {
-        return $this->hasOne(User::class, 'id');
-    }
-
-    public function editor()
     {
         return $this->hasOne(User::class, 'id');
     }

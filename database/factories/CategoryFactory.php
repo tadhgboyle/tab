@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Casts\CategoryType;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -22,7 +23,7 @@ class CategoryFactory extends Factory
     public function definition()
     {
         return [
-            'type' => 2,
+            'type' => CategoryType::TYPE_PRODUCTS,
         ];
     }
 }

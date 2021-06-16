@@ -125,12 +125,10 @@ class TransactionCreationTest extends TestCase
             [
                 'setting' => 'gst',
                 'value' => '1.05',
-                'editor_id' => $staff_user->id
             ],
             [
                 'setting' => 'pst',
                 'value' => '1.07',
-                'editor_id' => $staff_user->id
             ]
         ]);
 

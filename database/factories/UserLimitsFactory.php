@@ -24,7 +24,6 @@ class UserLimitsFactory extends Factory
         return [
             'limit_per' => -1,
             'duration' => UserLimits::LIMIT_DAILY,
-            'editor_id' => 1
         ];
     }
 }
