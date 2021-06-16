@@ -246,12 +246,10 @@ class UserLimitsTest extends TestCase
             [
                 'setting' => 'gst',
                 'value' => '1.05',
-                'editor_id' => $user->id
             ],
             [
                 'setting' => 'pst',
                 'value' => '1.07',
-                'editor_id' => $user->id
             ]
         ]);
 
@@ -266,7 +264,8 @@ class UserLimitsTest extends TestCase
 
         UserLimits::factory()->create([
             'user_id' => $user->id,
-            'category_id' => $merch_category->id
+            'category_id' => $merch_category->id,
+            'limit_per' => -1
         ]);
 
         UserLimits::factory()->create([

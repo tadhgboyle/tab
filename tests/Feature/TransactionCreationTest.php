@@ -125,12 +125,10 @@ class TransactionCreationTest extends TestCase
             [
                 'setting' => 'gst',
                 'value' => '1.05',
-                'editor_id' => $staff_user->id
             ],
             [
                 'setting' => 'pst',
                 'value' => '1.07',
-                'editor_id' => $staff_user->id
             ]
         ]);
 
@@ -221,7 +219,8 @@ class TransactionCreationTest extends TestCase
             'pst' => false,
             'category_id' => $food_category->id,
             'stock' => 2,
-            'unlimited_stock' => false
+            'unlimited_stock' => false,
+            'stock_override' => false
         ]);
 
         $hat = Product::factory()->create([

@@ -14,14 +14,13 @@ class CreateUserLimitsTable extends Migration
     public function up()
     {
         Schema::create('user_limits', function (Blueprint $table) {
-            $table->bigIncrements('limit_id');
+            $table->id('limit_id');
             $table->integer('user_id');
-            $table->integer('category_id');
+            $table->unsignedBigInteger('category_id');
             $table->foreign('category_id')->references('id')->on('categories');
             $table->float('limit_per');
             $table->integer('duration');
-            $table->integer('editor_id');
-            $table->nullableTimestamps();
+            $table->timestamps();
         });
     }
 
