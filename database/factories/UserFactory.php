@@ -22,11 +22,11 @@ class UserFactory extends Factory
      */
     public function definition()
     {
-        $full_name = $this->faker->unique()->name();
+        $full_name = $this->faker->unique()->firstName . ' ' . $this->faker->lastName;
 
         return [
             'full_name' => $full_name,
-            'username' => $this->faker->boolean ? $this->faker->userName : Str::of($full_name)->lower()->replace(' ', ''),
+            'username' => Str::of($full_name)->lower()->replace(' ', '') . ($this->faker->boolean(25) ? $this->faker->numberBetween(1, 100) : ''),
             'balance' => $this->faker->randomFloat(2, 10, 1000)
         ];
     }

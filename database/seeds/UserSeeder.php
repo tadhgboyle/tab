@@ -28,7 +28,7 @@ class UserSeeder extends Seeder
             'password' => bcrypt('123456')
         ])->create();
 
-        User::factory()->count(80)->state([
+        User::factory()->count(100)->state([
             'role_id' => $camper_role->id
         ])->create();
     }
