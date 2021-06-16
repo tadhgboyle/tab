@@ -6,6 +6,7 @@ use App\Models\Product;
 use Chartisan\PHP\Chartisan;
 use Illuminate\Http\Request;
 use App\Helpers\SettingsHelper;
+use Arr;
 use ConsoleTVs\Charts\BaseChart;
 
 class ItemSalesChart extends BaseChart
@@ -20,6 +21,7 @@ class ItemSalesChart extends BaseChart
 
         $products = Product::all();
         $stats_time = SettingsHelper::getInstance()->getStatsTime();
+
         foreach ($products as $product) {
             $sold = $product->findSold($stats_time);
             if ($sold < 1) {
@@ -30,6 +32,7 @@ class ItemSalesChart extends BaseChart
         }
 
         uasort($sales, fn ($a, $b) => $a['sold'] > $b['sold'] ? -1 : 1);
+        $sales = array_slice($sales, 0, 50);
 
         return Chartisan::build()
             ->labels(array_column($sales, 'name'))
