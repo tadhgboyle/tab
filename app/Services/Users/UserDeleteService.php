@@ -12,19 +12,15 @@ class UserDeleteService extends Service
 
     public const RESULT_SUCCESS = 0;
 
-    public function __construct(User | int $user)
+    public function __construct(int $user_id)
     {
-        if ($user instanceof User) {
-            $this->_user = $user;
-        } else {
-            $user = User::find($user);
+        $user = User::find($user_id);
 
-            if ($user == null) {
-                return redirect()->route('users_list')->with('error', 'No user found with that ID.')->send();
-            }
-
-            $this->_user = $user;
+        if ($user == null) {
+            return redirect()->route('users_list')->with('error', 'No user found with that ID.')->send();
         }
+
+        $this->_user = $user;
 
         $user->update(['deleted' => true]);
 

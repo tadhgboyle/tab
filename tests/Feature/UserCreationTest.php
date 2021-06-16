@@ -6,9 +6,6 @@ use Hash;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
-use App\Models\Category;
-use App\Models\UserLimits;
-use App\Helpers\UserLimitsHelper;
 use App\Http\Requests\UserRequest;
 use App\Services\Users\UserCreationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -89,115 +86,6 @@ class UserCreationTest extends TestCase
         )))->getUser();
 
         $this->assertSame(0.0, $user->balance);
-    }
-
-    public function testLimitsAndDurationsCorrectlyStoredIfValid()
-    {
-        [$superadmin_role, $camper_role] = $this->createRoles();
-
-        $this->actingAs($this->createSuperadminUser($superadmin_role));
-
-        $candy_category = Category::factory()->create([
-            'name' => 'Candy'
-        ]);
-
-        $merch_category = Category::factory()->create([
-            'name' => 'Merch'
-        ]);
-
-        $userService = new UserCreationService($this->createRequest(
-            full_name: 'Tadhg Boyle',
-            role_id: $camper_role->id,
-            limit: [
-                $merch_category->id => 25,
-                $candy_category->id => 15
-            ],
-            duration: [
-                $merch_category->id => UserLimits::LIMIT_DAILY,
-                $candy_category->id => UserLimits::LIMIT_WEEKLY
-            ]
-        ));
-
-        $this->assertSame(UserCreationService::RESULT_SUCCESS, $userService->getResult());
-
-        $this->assertSame(25.0, UserLimitsHelper::getInfo($userService->getUser(), $merch_category->id)->limit_per);
-        $this->assertSame(15.0, UserLimitsHelper::getInfo($userService->getUser(), $candy_category->id)->limit_per);
-
-        $this->assertSame(UserLimits::LIMIT_DAILY, UserLimitsHelper::getInfo($userService->getUser(), $merch_category->id)->duration_int);
-        $this->assertSame(UserLimits::LIMIT_WEEKLY, UserLimitsHelper::getInfo($userService->getUser(), $candy_category->id)->duration_int);
-    }
-
-    public function testInvalidLimitGivesError()
-    {
-        [$superadmin_role, $camper_role] = $this->createRoles();
-
-        $this->actingAs($this->createSuperadminUser($superadmin_role));
-
-        $candy_category = Category::factory()->create([
-            'name' => 'Candy'
-        ]);
-
-        $userService = new UserCreationService($this->createRequest(
-            full_name: 'Tadhg Boyle',
-            role_id: $camper_role->id,
-            password: 'password',
-            limit: [
-                $candy_category->id => -2
-            ]
-        ));
-
-        $this->assertSame(UserCreationService::RESULT_INVALID_LIMIT, $userService->getResult());
-    }
-
-    public function testNoLimitProvidedDefaultsToNegativeOne()
-    {
-        [$superadmin_role, $camper_role] = $this->createRoles();
-
-        $this->actingAs($this->createSuperadminUser($superadmin_role));
-
-        $candy_category = Category::factory()->create([
-            'name' => 'Candy'
-        ]);
-
-        $merch_category = Category::factory()->create([
-            'name' => 'Merch'
-        ]);
-
-        $userService = new UserCreationService($this->createRequest(
-            full_name: 'Tadhg Boyle',
-            role_id: $camper_role->id,
-            password: 'password',
-            limit: [
-                $merch_category->id => 25,
-                $candy_category->id => null
-            ]
-        ));
-
-        $this->assertSame(UserCreationService::RESULT_SUCCESS, $userService->getResult());
-        $this->assertSame(-1.0, UserLimitsHelper::getInfo($userService->getUser(), $candy_category->id)->limit_per);
-    }
-
-    public function testNoDurationProvidedDefaultsToDaily()
-    {
-        [$superadmin_role, $camper_role] = $this->createRoles();
-
-        $this->actingAs($this->createSuperadminUser($superadmin_role));
-
-        $merch_category = Category::factory()->create([
-            'name' => 'Merch'
-        ]);
-
-        $userService = new UserCreationService($this->createRequest(
-            full_name: 'Tadhg Boyle',
-            role_id: $camper_role->id,
-            password: 'password',
-            limit: [
-                $merch_category->id => 25,
-            ]
-        ));
-
-        $this->assertSame(UserCreationService::RESULT_SUCCESS, $userService->getResult());
-        $this->assertSame(UserLimits::LIMIT_DAILY, UserLimitsHelper::getInfo($userService->getUser(), $merch_category->id)->duration_int);
     }
 
     private function createRequest(?string $full_name = null, ?string $username = null, float $balance = 0, ?int $role_id = null, ?string $password = null, array $limit = [], array $duration = []): UserRequest

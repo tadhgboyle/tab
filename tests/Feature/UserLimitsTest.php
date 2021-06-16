@@ -13,6 +13,8 @@ use App\Models\UserLimits;
 use App\Models\Transaction;
 use App\Helpers\ProductHelper;
 use App\Helpers\UserLimitsHelper;
+use App\Http\Requests\UserRequest;
+use App\Services\Users\UserCreationService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -92,6 +94,139 @@ class UserLimitsTest extends TestCase
         $this->assertTrue($can_spent_10_dollars_waterfront);
     }
 
+    public function testLimitsAndDurationsCorrectlyStoredIfValidFromUserRequest()
+    {
+        [$superadmin_role] = $this->createRoles();
+
+        $user = $this->createSuperadminUser($superadmin_role);
+
+        $this->actingAs($user);
+
+        $candy_category = Category::factory()->create([
+            'name' => 'Candy'
+        ]);
+
+        $merch_category = Category::factory()->create([
+            'name' => 'Merch'
+        ]);
+
+        [$message, $result] = UserLimitsHelper::createOrEditFromRequest(new UserRequest([
+            'limit' => [
+                $merch_category->id => 25,
+                $candy_category->id => 15
+            ],
+            'duration' => [
+                $merch_category->id => UserLimits::LIMIT_DAILY,
+                $candy_category->id => UserLimits::LIMIT_WEEKLY
+            ]
+        ]), $user, UserCreationService::class);
+
+        $this->assertNull($message);
+        $this->assertNull($result);
+
+        $this->assertSame(25.0, UserLimitsHelper::getInfo($user, $merch_category->id)->limit_per);
+        $this->assertSame(15.0, UserLimitsHelper::getInfo($user, $candy_category->id)->limit_per);
+
+        $this->assertSame(UserLimits::LIMIT_DAILY, UserLimitsHelper::getInfo($user, $merch_category->id)->duration_int);
+        $this->assertSame(UserLimits::LIMIT_WEEKLY, UserLimitsHelper::getInfo($user, $candy_category->id)->duration_int);
+    }
+
+    public function testInvalidLimitGivesErrorFromUserRequest()
+    {
+        [$superadmin_role] = $this->createRoles();
+
+        $user = $this->createSuperadminUser($superadmin_role);
+
+        $this->actingAs($user);
+
+        $candy_category = Category::factory()->create([
+            'name' => 'Candy'
+        ]);
+
+        [$message, $result] = UserLimitsHelper::createOrEditFromRequest(new UserRequest([
+            'limit' => [
+                $candy_category->id => -2
+            ]
+        ]), $user, UserCreationService::class);
+
+        $this->assertSame(UserCreationService::RESULT_INVALID_LIMIT, $result);
+    }
+
+    public function testNoLimitProvidedDefaultsToNegativeOneFromUserRequest()
+    {
+        [$superadmin_role] = $this->createRoles();
+
+        $user = $this->createSuperadminUser($superadmin_role);
+
+        $this->actingAs($user);
+
+        $candy_category = Category::factory()->create([
+            'name' => 'Candy'
+        ]);
+
+        $merch_category = Category::factory()->create([
+            'name' => 'Merch'
+        ]);
+
+        [$message, $result] = UserLimitsHelper::createOrEditFromRequest(new UserRequest([
+            'limit' => [
+                $merch_category->id => 25,
+                $candy_category->id => null
+            ]
+        ]), $user, UserCreationService::class);
+
+        $this->assertNull($message);
+        $this->assertNull($result);
+
+        $this->assertSame(-1.0, UserLimitsHelper::getInfo($user, $candy_category->id)->limit_per);
+    }
+
+    public function testNoDurationProvidedDefaultsToDailyFromUserRequest()
+    {
+        [$superadmin_role] = $this->createRoles();
+
+        $user = $this->createSuperadminUser($superadmin_role);
+
+        $this->actingAs($user);
+
+        $merch_category = Category::factory()->create([
+            'name' => 'Merch'
+        ]);
+
+        [$message, $result] = UserLimitsHelper::createOrEditFromRequest(new UserRequest([
+            'limit' => [
+                $merch_category->id => 25,
+            ]
+        ]), $user, UserCreationService::class);
+
+        $this->assertNull($message);
+        $this->assertNull($result);
+
+        $this->assertSame(UserLimits::LIMIT_DAILY, UserLimitsHelper::getInfo($user, $merch_category->id)->duration_int);
+    }
+
+    /** @return Role[] */
+    private function createRoles(): array
+    {
+        $superadmin_role = Role::factory()->create();
+
+        $camper_role = Role::factory()->create([
+            'name' => 'Camper',
+            'staff' => false,
+            'superuser' => false,
+            'order' => 2
+        ]);
+
+        return [$superadmin_role, $camper_role];
+    }
+
+    private function createSuperadminUser(Role $superadmin_role): User
+    {
+        return User::factory()->create([
+            'role_id' => $superadmin_role->id
+        ]);
+    }
+
     /**
      * Creates the following records in db:
      * - Food category (5$ a day)
@@ -103,11 +238,9 @@ class UserLimitsTest extends TestCase
      */
     private function createFakeRecords()
     {
-        $role = Role::factory()->create();
+        [$superadmin_role] = $this->createRoles();
 
-        $user = User::factory()->create([
-            'role_id' => $role->id
-        ]);
+        $user = $this->createSuperadminUser($superadmin_role);
 
         Settings::factory()->createMany([
             [
