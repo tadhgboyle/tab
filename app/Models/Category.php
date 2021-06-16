@@ -6,16 +6,17 @@ use App\Casts\CategoryType;
 use Illuminate\Database\Eloquent\Model;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
 {
     use QueryCacheable;
     use HasFactory;
+    use SoftDeletes;
 
     protected $cacheFor = 180;
 
     protected $fillable = [
-        'deleted',
         'name',
         'type',
     ];
@@ -23,6 +24,5 @@ class Category extends Model
     protected $casts = [
         'name' => 'string',
         'type' => CategoryType::class, // $category->type->name (ie: "Products Only") + $category->type->id (ie: 2)
-        'deleted' => 'boolean',
     ];
 }

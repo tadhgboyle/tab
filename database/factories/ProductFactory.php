@@ -26,7 +26,6 @@ class ProductFactory extends Factory
             'name' => Arr::random(['Pop', 'Chips', 'Candy Bag']),
             'price' => Arr::random([1.25, 14.99, 4.98, 5.00]),
             'pst' => Arr::random([1, 0]),
-            'deleted' => false,
             'stock' => 0,
             'unlimited_stock' => true,
             'box_size' => Arr::random([-1, 5, 8]),

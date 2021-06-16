@@ -20,9 +20,6 @@ class CreateProductsTable extends Migration
             $table->integer('category_id');
             $table->foreign('category_id')->references('id')->on('categories');
             $table->boolean('pst')->default(false);
-
-            $table->boolean('deleted')->default(false);
-
             $table->integer('stock');
             // true/false if this product has unlimited stock (since -1 could be a valid inventory count)
             // This will override any stock count
@@ -30,10 +27,10 @@ class CreateProductsTable extends Migration
             $table->integer('box_size');
             // Allow to bypass the stock count
             $table->boolean('stock_override');
-
             $table->integer('creator_id');
             $table->integer('editor_id')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
