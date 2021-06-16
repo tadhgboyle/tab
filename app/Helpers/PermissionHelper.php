@@ -44,6 +44,7 @@ class PermissionHelper extends Helper
         $this->register('Statistics', 'statistics', [
             'statistics_order_history' => 'View Order history chart',
             'statistics_item_info' => 'View Product info chart',
+            'statistics_activity_info' => 'View Activity info chart',
         ]);
 
         $this->register('Settings', 'settings', [
