@@ -10,7 +10,7 @@ abstract class Helper
 
     /**
      * Get the instance of the child helper class.
-     * 
+     *
      * @return static Instance of child class.
      */
     final public static function getInstance(): static

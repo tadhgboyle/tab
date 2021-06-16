@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
+use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\Users\UserDeleteService;
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserDeleteTest extends TestCase

@@ -33,12 +33,14 @@ class Role extends Model
      * Get a set of all Roles which this Role has permission to interact with.
      * If $compare is provided, this will be limited to Roles which the currently logged in user's Role can also interact with as well.
      * This is so that when users delete old Roles, they cannot promote users in the old Role to a Role higher than their current role.
+     *
      * @see canInteract
-     * 
+     *
      * @param Role $compare If provided, Roles will only be added if:
      * - They are not this Role
      * - This Role is staff OR (this Role is not staff AND the other Role is not staff)
      * - And finally that the `$compare` Role can interact with it
+     *
      * @return Collection Roles available for this Role to manage.
      */
     public function getRolesAvailable(?Role $compare = null): Collection
@@ -73,8 +75,9 @@ class Role extends Model
      * - Superuser Roles can interact with all roles
      * - Non-superuser Roles cannot interact with Superuser roles
      * - If none of the above applies, it is then determined by if this Role has a higher order (hierarchy) than the $subject Role.
-     * 
+     *
      * @param Role $subject Role to examine if this Role should interact with.
+     *
      * @return bool Whether this Role can interact with $subject Role.
      */
     public function canInteract(Role $subject): bool
@@ -98,11 +101,12 @@ class Role extends Model
      * Determine if this Role has supplied permission(s).
      * If an array is supplied, this will only return true if this Role has *all* the permissions.
      * Will always return true if this Role is a superuser.
-     * 
+     *
      * @param string|array $permissions A string or array of permission nodes to check.
+     *
      * @return bool Whether this Role has these permissions or not.
      */
-    public function hasPermission(string|array $permissions): bool
+    public function hasPermission(string | array $permissions): bool
     {
         if ($this->superuser) {
             return true;
