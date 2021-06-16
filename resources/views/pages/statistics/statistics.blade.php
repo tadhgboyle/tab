@@ -33,6 +33,7 @@
     <div class="column is-half">
         @permission('statistics_item_info')
         <h4 class="title has-text-weight-bold is-4">Item Info</h4>
+        <h6 class="subtitle">(Only top 50 products are shown)</h6>
         <div>
             <div id="item_sales_chart" style="height: 400px;"></div>
         </div>
