@@ -10,11 +10,13 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Activity extends Model
 {
     use QueryCacheable;
     use HasFactory;
+    use SoftDeletes;
 
     protected $cacheFor = 180;
 
@@ -26,16 +28,11 @@ class Activity extends Model
         'slots' => 'integer',
         'price' => 'float',
         'pst' => 'boolean',
-        'deleted' => 'boolean',
     ];
 
     protected $dates = [
         'start',
         'end',
-    ];
-
-    protected $fillable = [
-        'deleted',
     ];
 
     public function category()

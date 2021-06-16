@@ -17,8 +17,8 @@ class CreateCategoriesTable extends Migration
             $table->id();
             $table->string('name');
             $table->integer('type')->default(1); // 1 = products + activities, 2 = products only, 3 = activities only
-            $table->boolean('deleted')->default(false);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

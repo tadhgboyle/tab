@@ -22,7 +22,7 @@ class UserDeleteService extends Service
 
         $this->_user = $user;
 
-        $user->update(['deleted' => true]);
+        $user->delete();
 
         $this->_result = self::RESULT_SUCCESS;
         $this->_message = "Deleted user {$user->full_name}";

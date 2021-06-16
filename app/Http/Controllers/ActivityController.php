@@ -60,7 +60,9 @@ class ActivityController extends Controller
     public function delete(int $id)
     {
         $activity = Activity::find($id);
-        $activity->update(['deleted' => true]);
+
+        $activity->delete();
+
         return redirect()->route('activities_list')->with('success', 'Deleted activity ' . $activity->name . '.');
     }
 
@@ -105,7 +107,7 @@ class ActivityController extends Controller
 
     public static function getAll()
     {
-        $activities = Activity::where('deleted', false)->get(['id', 'name', 'start', 'end']);
+        $activities = Activity::all(['id', 'name', 'start', 'end']);
         $return = [];
 
         foreach ($activities as $activity) {
@@ -122,7 +124,7 @@ class ActivityController extends Controller
 
     public static function ajaxInit()
     {
-        $users = User::where([['full_name', 'LIKE', '%' . \Request::get('search') . '%'], ['deleted', false]])->limit(5)->get();
+        $users = User::where('full_name', 'LIKE', '%' . \Request::get('search') . '%')->limit(5)->get();
         $output = '';
 
         if (count($users)) {
