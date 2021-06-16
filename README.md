@@ -10,8 +10,6 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
 - :white_check_mark::x: [Switchery](https://github.com/abpetkov/switchery) for the simple to use & nice looking Switches replacement for ugly HTML checkboxes.
 - :calendar: [FullCalendar](https://fullcalendar.io) for their simple and responsive calendar library.
 
-*Note: Some migrations are not up to date. I am manually editing my local MySQL tables and will update migrations when it is more stable.*
-
 Documentation (in the form of a printable user handbook) is being written. 
 
 ## Features (so far):
@@ -114,10 +112,9 @@ Documentation (in the form of a printable user handbook) is being written.
 - Rework how to select items and quantities. Right now it is somewhat not intuitive. New system:
     - **Similar to GBBC tab, click an item to add it to a list of all items. Click more times for more quantity**
 - Complete inventory features
-    - Remaining:
-        - "Set stock" in adjust page as well as add/subtract.
-        - Add product option if stock should be added back upon return or not.
-- Change user list to display deleted users (with toggle) & add an undelete function. (All for products as well).
+    - "Set stock" in adjust page as well as add/subtract.
+    - Add product option if stock should be added back upon return or not.
+- Change user list to display deleted users (with toggle) & implement un-deleting (for products as well).
     - Livewire?
 - Create user "pay out" page, which will be used to mark how much a user has paid off of their owing amount.
     - Track what payment method was used, as well as the transaction # + more details (depending on how they pay)
@@ -143,7 +140,6 @@ Documentation (in the form of a printable user handbook) is being written.
     - Serialize so if it gets returned they get the discount back
 
 ## Issues/Bugs:
-- Form error messages are not being translated
 - Clicking on a date to make new activity subtracts 1 from the day
 - Lazy loading of users/products (especially in cashier view).
     - Use this https://github.com/yajra/laravel-datatables
