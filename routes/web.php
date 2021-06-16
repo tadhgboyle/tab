@@ -31,7 +31,7 @@ Route::post('/login/auth', [LoginController::class, 'auth'])->name('login_auth')
 Route::middleware('auth')->group(function () {
     Route::get('/', function () {
         if (hasPermission('cashier')) {
-            return view('pages.index', ['users' => User::query()->when(!hasPermission('cashier_self_purchases'), function ($query) {
+            return view('pages.index', ['users' => User::query()->unless(hasPermission('cashier_self_purchases'), function ($query) {
                 $query->where('users.id', '!=', auth()->id());
             })->select(['id', 'full_name', 'balance'])->get()]);
         } else {
