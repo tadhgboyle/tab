@@ -24,10 +24,11 @@ class UserSeeder extends Seeder
         ])->create();
 
         User::factory()->count(5)->state([
-            'role_id' => $cashier_role->id
+            'role_id' => $cashier_role->id,
+            'password' => bcrypt('123456')
         ])->create();
 
-        User::factory()->count(50)->state([
+        User::factory()->count(80)->state([
             'role_id' => $camper_role->id
         ])->create();
     }

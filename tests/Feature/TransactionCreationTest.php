@@ -219,7 +219,8 @@ class TransactionCreationTest extends TestCase
             'pst' => false,
             'category_id' => $food_category->id,
             'stock' => 2,
-            'unlimited_stock' => false
+            'unlimited_stock' => false,
+            'stock_override' => false
         ]);
 
         $hat = Product::factory()->create([

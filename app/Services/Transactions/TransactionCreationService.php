@@ -159,6 +159,9 @@ class TransactionCreationService extends Service
         $transaction->cashier_id = auth()->id();
         $transaction->products = implode(', ', $transaction_products);
         $transaction->total_price = $total_price;
+        if ($this->_request->exists('created_at')) {
+            $transaction->created_at = $this->_request->created_at;
+        }
         $transaction->save();
 
         $this->_result = self::RESULT_SUCCESS;
