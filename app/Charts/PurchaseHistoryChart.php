@@ -15,6 +15,7 @@ class PurchaseHistoryChart extends BaseChart
         'auth',
     ]; // TODO: use HasPermission::class middleware, just dont know how to pass the permission
 
+    // TODO: Semi-Returned orders?
     public function handler(Request $request): Chartisan
     {
         $stats_time = Carbon::now()->subDays(SettingsHelper::getInstance()->getStatsTime())->toDateTimeString();

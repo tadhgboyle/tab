@@ -154,12 +154,16 @@
 
     $(document).ready(function() {
         const date = new Date('{{ $start }}');
+        date.setDate(date.getDate() + 1)
+
         @if(is_null($activity))
             flatpickr('#start', { defaultDate: date, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: 'today' });
         @else
             flatpickr('#start', { defaultDate: date, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K' });
         @endif
+
         flatpickr('#end', { enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: date });
+
         updatedUnlimitedSlots($('input[type=checkbox][name=unlimited_slots]').prop('checked'));
     });
         
