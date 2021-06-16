@@ -27,7 +27,7 @@ class UserLimitsFactory extends Factory
     public function definition()
     {
         return [
-            'limit_per' => $this->faker->boolean(25) ? -1 : $this->faker->numberBetween(5, 75),
+            'limit_per' => $this->faker->boolean(25) ? -1 : $this->faker->numberBetween(5, 150),
             'duration' => $this->faker->randomElement(static::$durations),
         ];
     }

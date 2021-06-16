@@ -33,7 +33,7 @@ class TransactionSeeder extends Seeder
                 $cashier = $users->shuffle()->whereIn('role_id', [1, 2])->first();
                 Auth::login($cashier);
 
-                $product_ids = $products_all->random(rand(4, 7))->pluck('id');
+                $product_ids = $products_all->random(rand(2, 4))->pluck('id');
     
                 $quantity = [];
                 foreach ($product_ids as $product_id) {

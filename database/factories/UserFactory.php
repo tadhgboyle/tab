@@ -27,7 +27,7 @@ class UserFactory extends Factory
         return [
             'full_name' => $full_name,
             'username' => $this->faker->boolean ? $this->faker->userName : Str::of($full_name)->lower()->replace(' ', ''),
-            'balance' => $this->faker->randomFloat(2, 10, 500)
+            'balance' => $this->faker->randomFloat(2, 10, 1000)
         ];
     }
 }
