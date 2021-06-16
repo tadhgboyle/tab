@@ -2,7 +2,6 @@
 
 namespace App\Services\Users;
 
-use App;
 use DB;
 use App\Models\User;
 use App\Services\Service;

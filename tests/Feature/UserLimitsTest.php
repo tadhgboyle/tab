@@ -14,8 +14,8 @@ use App\Models\Transaction;
 use App\Helpers\ProductHelper;
 use App\Helpers\UserLimitsHelper;
 use App\Http\Requests\UserRequest;
-use App\Services\Users\UserCreationService;
 use Illuminate\Support\Facades\DB;
+use App\Services\Users\UserCreationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 // TODO: test with different limit durations (day/week)
