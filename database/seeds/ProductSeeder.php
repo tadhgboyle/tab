@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Product;
-use Faker\Factory;
 use Illuminate\Database\Seeder;
 
 class ProductSeeder extends Seeder
@@ -11,7 +10,7 @@ class ProductSeeder extends Seeder
     // TODO: implement these names. Faker unique() seems to not work here
     private static array $foodNames = [
         'Pop', 'Chips', 'Candy Bag', 'Slurpee (Small)', 'Slurpee (Large)', 'Coffee',
-        'Hot Dog', 'Ice Cream (1 scoop)', 'Ice Cream (2 scoops)', 'Ice Cream (3 scoops)', 
+        'Hot Dog', 'Ice Cream (1 scoop)', 'Ice Cream (2 scoops)', 'Ice Cream (3 scoops)',
         'Chocolate Bar', 'M&Ms', 'Skittles', 'Nerds', 'Gatorade', 'Ice Cream Sandwich', 'Rockets'
     ];
 
@@ -21,7 +20,7 @@ class ProductSeeder extends Seeder
     ];
 
     private static array $generalNames = [
-        'Ceramic', 'Tube Ride', 'Sunscreen', 'Tooth Brush', 'Boat Rental', 
+        'Ceramic', 'Tube Ride', 'Sunscreen', 'Tooth Brush', 'Boat Rental',
         'Wakeboard (1 hour)', 'Floss', 'Tye Die Kit', 'Smores Kit',
         'Family Photo', 'Computer Pass (1 hour)'
     ];
