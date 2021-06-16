@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
+use Str;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Str;
 
 class UserFactory extends Factory
 {

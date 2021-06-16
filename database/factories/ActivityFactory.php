@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\Activity;
 use Carbon\Carbon;
+use App\Models\Activity;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ActivityFactory extends Factory
@@ -16,7 +16,7 @@ class ActivityFactory extends Factory
     protected $model = Activity::class;
 
     private static array $activityNames = [
-        'Fireside', 'Soccer Game', 'Football Game', 'Hockey Game', 'Scavanger Hunt', 
+        'Fireside', 'Soccer Game', 'Football Game', 'Hockey Game', 'Scavanger Hunt',
         'Canoeing', 'Paintball', 'Surprise', 'Nail Painting', 'Widegame', 'Ski School',
         'Beach Games', 'Carnival'
     ];
