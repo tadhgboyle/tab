@@ -31,7 +31,8 @@ class RoleSeeder extends Seeder
             'name' => 'Camper',
             'staff' => false,
             'superuser' => false,
-            'order' => 3
+            'order' => 3,
+            'permissions' => []
         ]);
 
         return [$superuser_role, $cashier_role, $camper_role];

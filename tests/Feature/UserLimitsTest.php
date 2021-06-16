@@ -264,7 +264,8 @@ class UserLimitsTest extends TestCase
 
         UserLimits::factory()->create([
             'user_id' => $user->id,
-            'category_id' => $merch_category->id
+            'category_id' => $merch_category->id,
+            'limit_per' => -1
         ]);
 
         UserLimits::factory()->create([

@@ -48,6 +48,7 @@ class ProductTest extends TestCase
         ]);
 
         $product = Product::factory()->create([
+            'name' => 'Fake Item',
             'category_id' => $category->id
         ]);
 
