@@ -3,9 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\Product;
-use App\Models\Transaction;
 use App\Models\User;
 use App\Services\Transactions\TransactionCreationService;
+use App\Services\Transactions\TransactionReturnService;
+use Arr;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
@@ -39,27 +40,37 @@ class TransactionSeeder extends Seeder
                     $quantity[$product_id] = rand(1, 3);
                 }
 
-                new TransactionCreationService(new Request([
+                $service = new TransactionCreationService(new Request([
                     'purchaser_id' => $user->id,
                     'cashier_id' => $cashier->id,
                     'product' => $product_ids,
                     'quantity' => $quantity,
                     'created_at' => Carbon::now()->addMinutes(rand(-4000, 4000))
                 ]));
+
+                if ($service->getResult() != TransactionCreationService::RESULT_SUCCESS) {
+                    continue;
+                }
+
+                $transaction = $service->getTransaction();
+
+                if (rand(0, 3) == 3) {
+
+                    if (rand(0, 1) == 1) {
+                        
+                        (new TransactionReturnService($transaction))->return();
+
+                    } else {
+
+                        $product_id = Arr::random($product_ids->all());
+                        $returning = rand(0, $quantity[$product_id]);
+
+                        for ($i = 0; $i <= $returning; $i++) { 
+                            (new TransactionReturnService($transaction))->returnItem($product_id);
+                        }
+                    }
+                }
             }
-        }
-
-        $this->generateReturns();
-    }
-
-    private function generateReturns()
-    {
-        $transactions = Transaction::all();
-
-        foreach ($transactions as $transaction) {
-
-
-
         }
     }
 }
