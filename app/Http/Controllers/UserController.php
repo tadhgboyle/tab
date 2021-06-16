@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Helpers\CategoryHelper;
 use App\Helpers\UserLimitsHelper;
-use App\Services\UserEditService;
 use App\Http\Requests\UserRequest;
+use App\Services\Users\UserEditService;
 use App\Services\Users\UserDeleteService;
 use App\Services\Users\UserCreationService;
 
@@ -22,9 +22,9 @@ class UserController extends Controller
         return (new UserEditService($request))->redirect();
     }
 
-    public function delete($id)
+    public function delete(int $user_id)
     {
-        return (new UserDeleteService($id))->redirect();
+        return (new UserDeleteService($user_id))->redirect();
     }
 
     public function list()

@@ -16,10 +16,8 @@ class UserEditService extends Service
 
     public const RESULT_CANT_MANAGE_THAT_ROLE = 0;
     public const RESULT_INVALID_LIMIT = 1;
-    public const RESULT_CONFIRM_PASSWORD = 2;
-    public const RESULT_ENTER_PASSWORD = 3;
-    public const RESULT_SUCCESS_IGNORED_PASSWORD = 4;
-    public const RESULT_SUCCESS_APPLIED_PASSWORD = 5;
+    public const RESULT_SUCCESS_IGNORED_PASSWORD = 2;
+    public const RESULT_SUCCESS_APPLIED_PASSWORD = 3;
 
     private UserRequest $_request;
 
@@ -60,21 +58,8 @@ class UserEditService extends Service
             return;
         }
 
-        // Determine if their password should be kept or removed
+        // Determine if their password should be created or removed
         if (!RoleHelper::getInstance()->isStaffRole($old_role->id) && RoleHelper::getInstance()->isStaffRole($new_role->id)) {
-            // TODO: should be able to remove these using the UserRequest and 'confirmed' and 'requiredIf' validation rules
-            if (empty($this->_request->password)) {
-                $this->_result = self::RESULT_ENTER_PASSWORD;
-                $this->_message = 'Please enter a password.';
-                return;
-            }
-
-            if ($this->_request->password != $this->_request->password_confirmation) {
-                $this->_result = self::RESULT_CONFIRM_PASSWORD;
-                $this->_message = 'Please confirm the password.';
-                return;
-            }
-
             $password = bcrypt($this->_request->password);
         } else {
             $password = null;
