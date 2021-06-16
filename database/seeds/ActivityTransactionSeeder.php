@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Auth;
-use App\Models\Activity;
 use App\Models\User;
+use App\Models\Activity;
 use Illuminate\Database\Seeder;
 
 class ActivityTransactionSeeder extends Seeder
@@ -20,16 +20,13 @@ class ActivityTransactionSeeder extends Seeder
         $users = User::all();
 
         foreach ($users as $user) {
-
             $user_activites = $activities->shuffle()->random(rand(0, 2));
 
             foreach ($user_activites as $activity) {
-
                 $cashier = $users->shuffle()->whereIn('role_id', [1, 2])->first();
                 Auth::login($cashier);
 
                 $activity->registerUser($user);
-
             }
         }
     }
