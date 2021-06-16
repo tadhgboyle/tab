@@ -31,9 +31,9 @@ class DatabaseSeeder extends Seeder
 
         $this->resolve(ActivitySeeder::class)->run($categories);
 
-        $this->resolve(TransactionSeeder::class)->run();
-
         $this->resolve(UserLimitsSeeder::class)->run();
+
+        $this->resolve(TransactionSeeder::class)->run();
 
         // Activity Transactions
     }
