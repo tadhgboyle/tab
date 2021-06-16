@@ -42,7 +42,7 @@ class Activity extends Model
 
     private Collection $_current_attendees;
 
-    private function getCurrentAttendees(): Collection
+    public function getCurrentAttendees(): Collection
     {
         if (!isset($this->_current_attendees)) {
             $this->_current_attendees = DB::table('activity_transactions')->where('activity_id', $this->id)->get('user_id');

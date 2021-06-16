@@ -38,6 +38,16 @@
         </div>
         @endpermission
     </div>
+    <div class="column is-half">
+        @permission('statistics_activity_info')
+        <h4 class="title has-text-weight-bold is-4">Activity Info</h4>
+        <div>
+            <div id="activity_sales_chart" style="height: 400px;"></div>
+        </div>
+        @endpermission
+    </div>
+    <div class="column is-half">
+    </div>
 </div>
 
 <script src="https://unpkg.com/echarts/dist/echarts.min.js"></script>
@@ -58,6 +68,16 @@
         new Chartisan({
             el: '#item_sales_chart',
             url: "@chart('item_sales_chart')",
+            hooks: new ChartisanHooks()
+                .legend()
+                .tooltip()
+        });
+    @endpermission
+
+    @permission('statistics_item_info')
+        new Chartisan({
+            el: '#activity_sales_chart',
+            url: "@chart('activity_sales_chart')",
             hooks: new ChartisanHooks()
                 .legend()
                 .tooltip()
