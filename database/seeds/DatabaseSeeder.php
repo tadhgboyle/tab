@@ -1,6 +1,7 @@
 <?php
 
 use Database\Seeders\ActivitySeeder;
+use Database\Seeders\ActivityTransactionSeeder;
 use Database\Seeders\CategorySeeder;
 use Database\Seeders\ProductSeeder;
 use Database\Seeders\RoleSeeder;
@@ -35,6 +36,6 @@ class DatabaseSeeder extends Seeder
 
         $this->resolve(TransactionSeeder::class)->run();
 
-        // Activity Transactions
+        $this->resolve(ActivityTransactionSeeder::class)->run();
     }
 }
