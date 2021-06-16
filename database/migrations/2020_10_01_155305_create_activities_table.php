@@ -16,16 +16,16 @@ class CreateActivitiesTable extends Migration
         Schema::create('activities', function (Blueprint $table) {
             $table->id();
             $table->string('name', 36);
-            $table->string('location', 36)->nullable();
+            $table->string('location', 255)->nullable();
             $table->string('description', 255)->nullable();
-            $table->boolean('unlimited_slots')->default(false);
+            $table->boolean('unlimited_slots');
             $table->integer('slots');
             $table->float('price');
-            $table->float('pst');
-            $table->integer('category_id');
+            $table->boolean('pst');
+            $table->unsignedBigInteger('category_id');
             $table->foreign('category_id')->references('id')->on('categories');
-            $table->dateTime('start')->nullable();
-            $table->dateTime('end')->nullable();
+            $table->dateTime('start');
+            $table->dateTime('end');
             $table->timestamps();
             $table->softDeletes();
         });

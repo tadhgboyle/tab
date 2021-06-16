@@ -48,7 +48,6 @@ class UserLimitsHelper
                 [
                     'limit_per' => $limit,
                     'duration' => $duration,
-                    'editor_id' => auth()->id()
                 ]
             );
         }

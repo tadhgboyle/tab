@@ -33,7 +33,6 @@ class ProductController extends Controller
         $product->unlimited_stock = $unlimited_stock;
         $product->stock_override = $request->has('stock_override');
         $product->pst = $request->has('pst');
-        $product->creator_id = auth()->id();
         $product->save();
 
         return redirect()->route('products_list')->with('success', 'Successfully created ' . $request->name . '.');
@@ -62,7 +61,6 @@ class ProductController extends Controller
             'unlimited_stock' => $unlimited_stock,
             'stock_override' => $stock_override,
             'pst' => $pst,
-            'editor_id' => auth()->id()
         ]);
 
         return redirect()->route('products_list')->with('success', 'Successfully edited ' . $request->name . '.');

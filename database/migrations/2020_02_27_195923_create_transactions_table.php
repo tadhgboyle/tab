@@ -15,8 +15,10 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->integer('purchaser_id');
-            $table->integer('cashier_id');
+            $table->unsignedBigInteger('purchaser_id');
+            $table->foreign('purchaser_id')->references('id')->on('users');
+            $table->unsignedBigInteger('cashier_id');
+            $table->foreign('cashier_id')->references('id')->on('users');
             $table->string('products');
             $table->float('total_price');
             $table->tinyInteger('returned')->default(0);

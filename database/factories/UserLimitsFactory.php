@@ -14,6 +14,11 @@ class UserLimitsFactory extends Factory
      */
     protected $model = UserLimits::class;
 
+    private static array $durations = [
+        UserLimits::LIMIT_DAILY,
+        UserLimits::LIMIT_WEEKLY
+    ];
+
     /**
      * Define the model's default state.
      *
@@ -22,9 +27,8 @@ class UserLimitsFactory extends Factory
     public function definition()
     {
         return [
-            'limit_per' => -1,
-            'duration' => UserLimits::LIMIT_DAILY,
-            'editor_id' => 1
+            'limit_per' => $this->faker->boolean(25) ? -1 : $this->faker->numberBetween(5, 150),
+            'duration' => $this->faker->randomElement(static::$durations),
         ];
     }
 }
