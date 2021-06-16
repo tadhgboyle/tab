@@ -27,8 +27,6 @@ class CreateProductsTable extends Migration
             $table->integer('box_size');
             // Allow to bypass the stock count
             $table->boolean('stock_override');
-            $table->integer('creator_id');
-            $table->integer('editor_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

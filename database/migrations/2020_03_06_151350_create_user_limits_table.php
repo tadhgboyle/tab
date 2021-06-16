@@ -20,8 +20,7 @@ class CreateUserLimitsTable extends Migration
             $table->foreign('category_id')->references('id')->on('categories');
             $table->float('limit_per');
             $table->integer('duration');
-            $table->integer('editor_id');
-            $table->nullableTimestamps();
+            $table->timestamps();
         });
     }
 

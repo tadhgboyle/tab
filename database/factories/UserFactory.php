@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Str;
 
 class UserFactory extends Factory
 {
@@ -21,11 +22,12 @@ class UserFactory extends Factory
      */
     public function definition()
     {
+        $full_name = $this->faker->unique()->name();
+
         return [
-            'full_name' => $this->faker->name(),
-            'username' => $this->faker->userName,
-            'balance' => $this->faker->numberBetween(10, 500),
-            'password' => '$2y$10$/7i2HBJUlF6GzapYti0xhO82PH6xfGmOWRuOBdN0nCfjZXqSCaVvC', // "123456"
+            'full_name' => $full_name,
+            'username' => $this->faker->boolean ? $this->faker->userName : Str::of($full_name)->lower()->replace(' ', ''),
+            'balance' => $this->faker->randomFloat(2, 10, 500)
         ];
     }
 }

@@ -246,12 +246,10 @@ class UserLimitsTest extends TestCase
             [
                 'setting' => 'gst',
                 'value' => '1.05',
-                'editor_id' => $user->id
             ],
             [
                 'setting' => 'pst',
                 'value' => '1.07',
-                'editor_id' => $user->id
             ]
         ]);
 
