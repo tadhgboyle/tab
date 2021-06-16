@@ -2,10 +2,10 @@
 
 namespace App\Charts;
 
+use App\Models\Activity;
 use Chartisan\PHP\Chartisan;
 use Illuminate\Http\Request;
 use App\Helpers\SettingsHelper;
-use App\Models\Activity;
 use ConsoleTVs\Charts\BaseChart;
 
 class ActivitySalesChart extends BaseChart

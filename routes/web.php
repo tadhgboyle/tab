@@ -11,6 +11,7 @@
 |
 */
 
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\HasPermission;
 use App\Http\Controllers\RoleController;
@@ -22,7 +23,6 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\StatisticsPageController;
-use App\Models\User;
 
 Route::get('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/login/auth', [LoginController::class, 'auth'])->name('login_auth');

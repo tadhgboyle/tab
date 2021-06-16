@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Casts\CategoryType;
 use App\Models\Category;
+use App\Casts\CategoryType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CategoryFactory extends Factory
