@@ -114,7 +114,7 @@ class User extends Authenticatable
     public function findSpent(): float
     {
         return floatval(
-            $this->getTransactions()->sum('total_price') 
+            $this->getTransactions()->sum('total_price')
             + $this->getActivityTransactions()->sum('total_price')
         );
     }

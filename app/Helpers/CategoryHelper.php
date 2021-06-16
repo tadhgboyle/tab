@@ -2,9 +2,9 @@
 
 namespace App\Helpers;
 
-use App\Casts\CategoryType;
 use Arr;
 use App\Models\Category;
+use App\Casts\CategoryType;
 use Illuminate\Database\Eloquent\Collection;
 
 class CategoryHelper extends Helper
