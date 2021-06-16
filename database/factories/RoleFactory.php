@@ -26,7 +26,6 @@ class RoleFactory extends Factory
             'superuser' => true,
             'order' => 1,
             'staff' => true,
-            'deleted' => false
         ];
     }
 }

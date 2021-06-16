@@ -18,7 +18,7 @@ class ItemSalesChart extends BaseChart
     {
         $sales = [];
 
-        $products = Product::where('deleted', false)->get();
+        $products = Product::all();
         $stats_time = SettingsHelper::getInstance()->getStatsTime();
         foreach ($products as $product) {
             $sold = $product->findSold($stats_time);

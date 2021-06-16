@@ -69,7 +69,7 @@ class TransactionController extends Controller
 
         return view('pages.orders.order', [
             'user' => $user,
-            'products' => Product::orderBy('name', 'ASC')->where('deleted', false)->get(),
+            'products' => Product::orderBy('name', 'ASC')->get(),
             'gst' => SettingsHelper::getInstance()->getGst(),
             'pst' => SettingsHelper::getInstance()->getPst(),
         ]);

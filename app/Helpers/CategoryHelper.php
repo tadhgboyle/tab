@@ -16,7 +16,7 @@ class CategoryHelper extends Helper
     public function getCategories(): Collection
     {
         if (!isset($this->_categories)) {
-            $this->_categories = Category::where('deleted', false)->orderBy('name', 'DESC')->get();
+            $this->_categories = Category::orderBy('name', 'DESC')->get();
         }
 
         return $this->_categories;

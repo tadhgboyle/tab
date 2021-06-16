@@ -30,7 +30,7 @@ class UserController extends Controller
     public function list()
     {
         return view('pages.users.list', [
-            'users' => User::where('deleted', false)->get(),
+            'users' => User::all(),
         ]);
     }
 
@@ -68,7 +68,7 @@ class UserController extends Controller
     {
         $user = User::find(request()->route('id'));
         if ($user != null) {
-            if ($user->deleted) {
+            if ($user->trashed()) {
                 return redirect()->route('users_list')->with('error', 'That user has been deleted.')->send();
             }
 
