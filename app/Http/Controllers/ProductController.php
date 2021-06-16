@@ -71,14 +71,16 @@ class ProductController extends Controller
     public function delete($id)
     {
         $product = Product::find($id);
-        $product->update(['deleted' => true]);
+
+        $product->delete();
+
         return redirect()->route('products_list')->with('success', 'Successfully deleted ' . $product->name . '.');
     }
 
     public function list()
     {
         return view('pages.products.list', [
-            'products' => Product::where('deleted', false)->get(),
+            'products' => Product::all(),
         ]);
     }
 
@@ -93,7 +95,7 @@ class ProductController extends Controller
     public function adjustList()
     {
         return view('pages.products.adjust.list', [
-            'products' => Product::where('deleted', false)->get(),
+            'products' => Product::all(),
         ]);
     }
 

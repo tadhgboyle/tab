@@ -1,7 +1,7 @@
 @extends('layouts.default', ['page' => 'activities'])
 @section('content')
 <h2 class="title has-text-weight-bold">View Activity</h2>
-<h4 class="subtitle"><strong>Activity:</strong> {{ $activity->name }} @if(!$activity->deleted && $activities_manage)<a href="{{ route('activities_edit', $activity->id) }}">(Edit)</a>@endif</h4>
+<h4 class="subtitle"><strong>Activity:</strong> {{ $activity->name }} @if(!$activity->trashed() && $activities_manage)<a href="{{ route('activities_edit', $activity->id) }}">(Edit)</a>@endif</h4>
 <div class="columns box">
     <div class="column">
         @include('includes.messages')

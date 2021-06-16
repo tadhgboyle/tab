@@ -8,11 +8,13 @@ use App\Helpers\SettingsHelper;
 use Illuminate\Database\Eloquent\Model;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
     use QueryCacheable;
     use HasFactory;
+    use SoftDeletes;
 
     protected $cacheFor = 180;
 
@@ -20,7 +22,6 @@ class Product extends Model
         'name' => 'string',
         'price' => 'float',
         'pst' => 'boolean',
-        'deleted' => 'boolean',
         'stock' => 'integer',
         'unlimited_stock' => 'boolean', // stock is never checked
         'stock_override' => 'boolean', // stock can go negative

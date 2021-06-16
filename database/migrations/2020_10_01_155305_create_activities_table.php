@@ -24,10 +24,10 @@ class CreateActivitiesTable extends Migration
             $table->float('pst');
             $table->integer('category_id');
             $table->foreign('category_id')->references('id')->on('categories');
-            $table->boolean('deleted')->default(false);
             $table->dateTime('start')->nullable();
             $table->dateTime('end')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

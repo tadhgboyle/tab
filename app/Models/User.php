@@ -8,12 +8,14 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
     use QueryCacheable;
     use HasFactory;
+    use SoftDeletes;
 
     protected $cacheFor = 180;
 
@@ -22,15 +24,13 @@ class User extends Authenticatable
         'username',
         'balance',
         'password',
-        'role_id',
-        'deleted',
+        'role_id'
     ];
 
     protected $casts = [
         'full_name' => 'string',
         'username' => 'string',
-        'balance' => 'float',
-        'deleted' => 'boolean',
+        'balance' => 'float'
     ];
 
     protected $with = [

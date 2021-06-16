@@ -11,7 +11,6 @@
 |
 */
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\HasPermission;
 use App\Http\Controllers\RoleController;
@@ -23,6 +22,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\StatisticsPageController;
+use App\Models\User;
 
 Route::get('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/login/auth', [LoginController::class, 'auth'])->name('login_auth');
@@ -31,7 +31,7 @@ Route::post('/login/auth', [LoginController::class, 'auth'])->name('login_auth')
 Route::middleware('auth')->group(function () {
     Route::get('/', function () {
         if (hasPermission('cashier')) {
-            return view('pages.index', ['users' => DB::table('users')->where('deleted', false)->when(!hasPermission('cashier_self_purchases'), function ($query) {
+            return view('pages.index', ['users' => User::query()->when(!hasPermission('cashier_self_purchases'), function ($query) {
                 $query->where('users.id', '!=', auth()->id());
             })->select(['id', 'full_name', 'balance'])->get()]);
         } else {

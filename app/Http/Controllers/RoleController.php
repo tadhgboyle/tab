@@ -47,7 +47,7 @@ class RoleController extends Controller
         // TODO: add same validation from frontend
         $old_role = Role::find($request->old_role);
         if (!$request->has('new_role')) {
-            $old_role->update(['deleted' => true]);
+            $old_role->delete();
 
             $message = 'Deleted role ' . $old_role->name . '.';
         } else {
@@ -66,7 +66,7 @@ class RoleController extends Controller
 
             User::where('role_id', $old_role->id)->update($fields);
 
-            $old_role->update(['deleted' => true]);
+            $old_role->delete();
 
             $message = 'Deleted role ' . $old_role->name . ', and placed all it\'s users into ' . $new_role->name . '.';
         }

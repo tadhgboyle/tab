@@ -19,7 +19,7 @@ class UserDeleteTest extends TestCase
         $userService = new UserDeleteService($user->id);
 
         $this->assertSame(UserDeleteService::RESULT_SUCCESS, $userService->getResult());
-        $this->assertTrue($user->refresh()->deleted);
+        $this->assertTrue($user->refresh()->trashed());
     }
 
     private function createUser(): User

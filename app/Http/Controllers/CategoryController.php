@@ -43,7 +43,7 @@ class CategoryController extends Controller
     {
         $category = Category::find($category_id);
 
-        $category->update(['deleted' => true]);
+        $category->delete();
 
         return redirect()->route('settings')->with('success', "Deleted category {$category->name}.");
     }

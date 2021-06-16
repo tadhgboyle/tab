@@ -104,7 +104,6 @@ Documentation (in the form of a printable user handbook) is being written.
 
 *High to Low priority sort*
 - Fix everything in Issues/Bugs
-- Convert to use built in `SoftDeletes` trait.
 - Add database seeders.
 - Update all migrations.
 - Use https://github.com/cknow/laravel-money and update codebase to not store periods in DB for money.

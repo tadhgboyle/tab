@@ -7,17 +7,18 @@ use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Role extends Model
 {
     use QueryCacheable;
     use HasFactory;
+    use SoftDeletes;
 
     protected $cacheFor = 180;
 
     protected $fillable = [
         'order', // used to drag and drop roles in Settings page
-        'deleted',
     ];
 
     protected $casts = [
@@ -26,7 +27,6 @@ class Role extends Model
         'order' => 'integer', // heierarchy system. higher order = higher priority
         'staff' => 'boolean', // determine if they should ever have a password to login with
         'permissions' => 'array', // decode json to an array automatically
-        'deleted' => 'boolean',
     ];
 
     /**

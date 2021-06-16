@@ -23,7 +23,6 @@ class CategoryFactory extends Factory
     {
         return [
             'type' => 2,
-            'deleted' => false
         ];
     }
 }

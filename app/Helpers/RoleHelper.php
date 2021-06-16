@@ -13,7 +13,7 @@ class RoleHelper extends Helper
     public function getRoles(string $order = 'DESC'): Collection
     {
         if (!isset($this->_roles)) {
-            $this->_roles = Role::where('deleted', false)->orderBy('order', $order)->get();
+            $this->_roles = Role::orderBy('order', $order)->get();
         }
 
         return $this->_roles;
