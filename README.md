@@ -138,9 +138,9 @@ Documentation (in the form of a printable user handbook) is being written.
 - Allow user to change light/dark mode
 - Staff Discount: check if purchaser is staff role and give % off (per item basis) 
     - Serialize so if it gets returned they get the discount back
-
-## Issues/Bugs:
 - Lazy loading of users/products (especially in cashier view).
     - Use this https://github.com/yajra/laravel-datatables
     - They should type a query first, or use some ajax to fetch data. or else it could take forever to load
+
+## Issues/Bugs:
 - (Intermittent) When an error happens on order screen, it returns back with selection, but when you unselect a box it all gets NaN
