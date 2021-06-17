@@ -102,7 +102,7 @@ Documentation (in the form of a printable user handbook) is being written.
 
 *High to Low priority sort*
 - Fix everything in Issues/Bugs
-- Use https://github.com/cknow/laravel-money and update codebase to not store periods in DB for money.
+- Update codebase to not store periods in DB for money.
 - Let products be purchasable by a parent only.
     - Will require a boolean attribute in users table "parent"
 - Repeating activities. When they create activity, ask if repeated daily, weekly, monthly. Create more Activity rows for each day in the duration
@@ -143,4 +143,4 @@ Documentation (in the form of a printable user handbook) is being written.
     - They should type a query first, or use some ajax to fetch data. or else it could take forever to load
 
 ## Issues/Bugs:
-- (Intermittent) When an error happens on order screen, it returns back with selection, but when you unselect a box it all gets NaN
+- When an error happens on order screen, it returns back with selection, but when you unselect a box it all gets NaN
