@@ -42,6 +42,11 @@ class User extends Authenticatable
         return $this->hasOne(Role::class, 'id', 'role_id');
     }
 
+    public function rotations()
+    {
+        return $this->belongsToMany(Rotation::class);
+    }
+
     private Collection $_activity_transactions;
     private Collection $_transactions;
     private Collection $_activities;

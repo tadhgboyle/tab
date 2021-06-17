@@ -10,6 +10,7 @@ use Database\Seeders\SettingsSeeder;
 use Database\Seeders\UserLimitsSeeder;
 use Database\Seeders\TransactionSeeder;
 use Database\Seeders\ActivityTransactionSeeder;
+use Database\Seeders\RotationSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -37,5 +38,7 @@ class DatabaseSeeder extends Seeder
         $this->resolve(TransactionSeeder::class)->run();
 
         $this->resolve(ActivityTransactionSeeder::class)->run();
+
+        $this->resolve(RotationSeeder::class)->run();
     }
 }
