@@ -51,6 +51,7 @@ class PermissionHelper extends Helper
             'settings_general' => 'Edit tax rates',
             'settings_categories_manage' => 'Edit/Create/Delete Categories',
             'settings_roles_manage' => 'Edit/Create/Delete Roles',
+            'settings_rotations_manage' => 'Edit/Create/Delete Rotations',
         ]);
     }
 

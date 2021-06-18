@@ -20,6 +20,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\RotationController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\StatisticsPageController;
@@ -162,6 +163,9 @@ Route::middleware('auth')->group(function () {
                 Route::post('/settings', [SettingsController::class, 'editSettings'])->name('settings_form');
             });
 
+            /*
+             * Roles
+             */
             Route::group(['permission' => 'settings_roles_manage'], function () {
                 Route::get('/settings/roles/new', [RoleController::class, 'form'])->name('settings_roles_new');
                 Route::post('/settings/roles/new', [RoleController::class, 'new'])->name('settings_roles_new_form');
@@ -185,6 +189,19 @@ Route::middleware('auth')->group(function () {
                 Route::post('/settings/categories/edit', [CategoryController::class, 'edit'])->name('settings_categories_edit_form');
 
                 Route::get('/settings/categories/delete/{id}', [CategoryController::class, 'delete'])->name('settings_categories_delete');
+            });
+
+            /*
+             * Rotations
+             */
+            Route::group(['permission' => 'settings_rotations_manage'], function () {
+                Route::get('/settings/rotations/new', [RotationController::class, 'form'])->name('settings_rotations_new');
+                Route::post('/settings/categories/new', [RotationController::class, 'new'])->name('settings_rotations_new_form');
+
+                Route::get('/settings/rotations/edit/{id}', [RotationController::class, 'form'])->name('settings_rotations_edit');
+                Route::post('/settings/rotations/edit', [RotationController::class, 'edit'])->name('settings_rotations_edit_form');
+
+                Route::get('/settings/rotations/delete/{id}', [RotationController::class, 'delete'])->name('settings_rotations_delete');
             });
         });
     });

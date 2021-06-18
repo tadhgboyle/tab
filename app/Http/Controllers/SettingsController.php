@@ -6,6 +6,7 @@ use App\Helpers\RoleHelper;
 use Illuminate\Http\Request;
 use App\Helpers\CategoryHelper;
 use App\Helpers\SettingsHelper;
+use App\Models\Rotation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -47,6 +48,7 @@ class SettingsController extends Controller
             'pst' => SettingsHelper::getInstance()->getPst(),
             'categories' => CategoryHelper::getInstance()->getCategories(),
             'roles' => RoleHelper::getInstance()->getRoles('ASC'),
+            'rotations' => Rotation::orderBy('start', 'ASC')->get()
         ]);
     }
 }
