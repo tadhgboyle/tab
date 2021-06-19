@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\RoleHelper;
 use Illuminate\Http\Request;
 use App\Helpers\CategoryHelper;
+use App\Helpers\RotationHelper;
 use App\Helpers\SettingsHelper;
 use App\Models\Rotation;
 use Illuminate\Support\Facades\DB;
@@ -48,7 +49,8 @@ class SettingsController extends Controller
             'pst' => SettingsHelper::getInstance()->getPst(),
             'categories' => CategoryHelper::getInstance()->getCategories(),
             'roles' => RoleHelper::getInstance()->getRoles('ASC'),
-            'rotations' => Rotation::orderBy('start', 'ASC')->get()
+            'rotations' => Rotation::orderBy('start', 'ASC')->get(),
+            'currentRotation' => RotationHelper::getInstance()->getCurrentRotation()?->name
         ]);
     }
 }

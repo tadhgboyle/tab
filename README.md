@@ -135,7 +135,6 @@ Documentation (in the form of a printable user handbook) is being written.
 - Bulk change prices of items (Everything 10% *off* or everything 20% *more* etc)
 - Add PDF printing of all users transactions
     - In settings page, allow to upload a custom logo to be on invoice
-- Seperate orders, users and stats into weeks (Like Green Bay)
 - Allow user to change light/dark mode
 - Staff Discount: check if purchaser is staff role and give % off (per item basis) 
     - Serialize so if it gets returned they get the discount back
