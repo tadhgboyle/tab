@@ -6,5 +6,5 @@ use Tests\TestCase;
 
 class RotationTest extends TestCase
 {
-    // TODO test getCurrentRotation()
+    // TODO test all RotationHelper functions
 }

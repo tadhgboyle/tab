@@ -19,7 +19,7 @@ class RotationSeeder extends Seeder
         for ($i = 1; $i <= 5; $i++) {
             Rotation::factory()->create([
                 'name' => "Week #{$i}",
-                'start' => Carbon::now()->addWeeks($i),
+                'start' => Carbon::now()->addWeeks($i - 1),
                 'end' => Carbon::now()->addWeeks($i + 1)
             ]);
         }

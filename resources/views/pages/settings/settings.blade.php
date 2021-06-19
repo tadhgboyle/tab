@@ -149,6 +149,7 @@
     <div class="column">
         <div class="box">
             <h4 class="title has-text-weight-bold is-4">Rotations</h4>
+            <h6 class="subtitle">Current Rotation: {!! $currentRotation ?? '<i>None</i>' !!}</h6>
             <div id="rotation_loading" align="center">
                 <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
             </div>
@@ -169,10 +170,10 @@
                                 <div>{{ $rotation->name }}</div>
                             </td>
                             <td>
-                                <div>{{ $rotation->start->format('M jS Y') }}</div>
+                                <div>{{ $rotation->start->format('M jS Y h:ia') }}</div>
                             </td>
                             <td>
-                                <div>{{ $rotation->end->format('M jS Y') }}</div>
+                                <div>{{ $rotation->end->format('M jS Y h:ia') }}</div>
                             </td>
                             <td>
                                 <div>
