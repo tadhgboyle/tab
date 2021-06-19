@@ -185,19 +185,7 @@
                                         <div>{{ $rotation->end->format('M jS Y h:ia') }}</div>
                                     </td>
                                     <td>
-                                        <div>
-                                            @switch($rotation->getStatus())
-                                                @case(0)
-                                                    <span class="tag is-success is-medium">Present</span>
-                                                @break
-                                                @case(1)
-                                                    <span class="tag is-warning is-medium">Future</span>
-                                                @break
-                                                @case(2)
-                                                    <span class="tag is-warning is-medium">Past</span>
-                                                @break
-                                            @endswitch
-                                        </div>
+                                        <div>{!! $rotation->getStatusHtml() !!}</div>
                                     </td>
                                 </tr>
                             @endforeach

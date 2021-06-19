@@ -90,7 +90,7 @@
 
 <div class="columns">
     @permission('settings_roles_manage')
-    <div class="column">
+    <div class="column is-5">
         <div class="box">
             <h4 class="title has-text-weight-bold is-4">Roles</h4>
             <div id="role_loading" align="center">
@@ -160,6 +160,7 @@
                             <th>Name</th>
                             <th>Start</th>
                             <th>End</th>
+                            <th>Status</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -174,6 +175,9 @@
                             </td>
                             <td>
                                 <div>{{ $rotation->end->format('M jS Y h:ia') }}</div>
+                            </td>
+                            <td>
+                                <div>{!! $rotation->getStatusHtml() !!}</div>
                             </td>
                             <td>
                                 <div>
