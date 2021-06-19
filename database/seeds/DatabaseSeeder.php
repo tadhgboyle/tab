@@ -35,10 +35,10 @@ class DatabaseSeeder extends Seeder
 
         $this->resolve(UserLimitsSeeder::class)->run();
 
+        $this->resolve(RotationSeeder::class)->run();
+
         $this->resolve(TransactionSeeder::class)->run();
 
         $this->resolve(ActivityTransactionSeeder::class)->run();
-
-        $this->resolve(RotationSeeder::class)->run();
     }
 }

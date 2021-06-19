@@ -9,6 +9,7 @@ use App\Services\Service;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Helpers\ProductHelper;
+use App\Helpers\RotationHelper;
 use App\Helpers\SettingsHelper;
 use App\Helpers\UserLimitsHelper;
 use Illuminate\Http\RedirectResponse;
@@ -157,11 +158,9 @@ class TransactionCreationService extends Service
         $transaction = new Transaction();
         $transaction->purchaser_id = $purchaser->id;
         $transaction->cashier_id = auth()->id();
+        $transaction->rotation_id = RotationHelper::getInstance()->getCurrentRotation()->id;
         $transaction->products = implode(', ', $transaction_products);
         $transaction->total_price = $total_price;
-        if ($this->_request->exists('created_at')) {
-            $transaction->created_at = $this->_request->created_at;
-        }
         $transaction->save();
 
         $this->_result = self::RESULT_SUCCESS;
