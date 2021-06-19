@@ -40,13 +40,27 @@ class Rotation extends Model
         }
     }
 
+    public function getStatusHtml(): string
+    {
+        switch ($this->getStatus()) {
+            case self::STATUS_PRESENT:
+                return '<span class="tag is-success is-medium">Present</span>';
+            case self::STATUS_FUTURE:
+                return '<span class="tag is-warning is-medium">Future</span>';
+            case self::STATUS_PAST:
+                return '<span class="tag is-warning is-medium">Past</span>';
+            default:
+                return "Unknown Status: {$this->getStatus()}";
+        }
+    }
+
     // rotation list in settings - DONE
     // rotation create/edit page - DONE
     // - fix dates autofilling if editing
 
     // user page
     // - editing: multi-select Rotations
-    // - viewing: view Rotations
+    // - viewing: view Rotations - DONE
 
     // user list (and order making user list)
     // - default: show users in RotationHelper->getCurrentRotation(). if current rotation is null, show all and disable dropdown (if they have permission to see dropdown)

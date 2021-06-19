@@ -161,6 +161,9 @@ class TransactionCreationService extends Service
         $transaction->rotation_id = RotationHelper::getInstance()->getCurrentRotation()->id;
         $transaction->products = implode(', ', $transaction_products);
         $transaction->total_price = $total_price;
+        if ($this->_request->exists('created_at')) {
+            $transaction->created_at = $this->_request->created_at; // for seeding random times
+        }
         $transaction->save();
 
         $this->_result = self::RESULT_SUCCESS;
