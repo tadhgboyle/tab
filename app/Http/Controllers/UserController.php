@@ -61,6 +61,7 @@ class UserController extends Controller
             'transactions' => $user->getTransactions(),
             'activity_transactions' => $user->getActivities(),
             'categories' => $processed_categories,
+            'rotations' => $user->rotations,
         ]);
     }
 

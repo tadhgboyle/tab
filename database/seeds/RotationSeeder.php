@@ -19,7 +19,7 @@ class RotationSeeder extends Seeder
         for ($i = 1; $i <= 5; $i++) {
             Rotation::factory()->create([
                 'name' => "Week #{$i}",
-                'start' => Carbon::now()->addWeeks($i - 1),
+                'start' => Carbon::now()->addWeeks($i - 1)->subDay(),
                 'end' => Carbon::now()->addWeeks($i + 1)
             ]);
         }
@@ -28,6 +28,10 @@ class RotationSeeder extends Seeder
 
         foreach ($users as $user) {
             if (rand(0, 3) == 3) {
+                $user->rotations()->attach(Rotation::all()->random(1));
+            }
+
+            if (rand(0, 6) == 6) {
                 $user->rotations()->attach(Rotation::all()->random(1));
             }
 

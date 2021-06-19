@@ -42,6 +42,11 @@ class Transaction extends Model
         return $this->hasOne(User::class, 'id', 'cashier_id');
     }
 
+    public function rotation()
+    {
+        return $this->hasOne(Rotation::class, 'id', 'rotation_id');
+    }
+
     public function isReturned(): bool
     {
         return $this->getReturnStatus() === self::STATUS_FULLY_RETURNED;

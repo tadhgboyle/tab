@@ -42,9 +42,9 @@ class RotationHelper extends Helper
     {
         foreach ($this->getRotations() as $rotation) {
             if (
-                (Carbon::parse($start)->between($rotation->start, $rotation->end) || Carbon::parse($end)->between($rotation->start, $rotation->end))
+                ($start->between($rotation->start, $rotation->end) || $end->between($rotation->start, $rotation->end))
                 ||
-                (Carbon::parse($rotation->start)->between($start, $end) || Carbon::parse($rotation->end)->between($start, $end))
+                ($rotation->start->between($start, $end) || $rotation->end->between($start, $end))
             ) {
                 return true;
             }

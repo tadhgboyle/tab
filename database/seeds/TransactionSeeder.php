@@ -7,6 +7,7 @@ use Auth;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Product;
+use App\Models\Rotation;
 use Illuminate\Http\Request;
 use Illuminate\Database\Seeder;
 use App\Services\Transactions\TransactionReturnService;
@@ -41,6 +42,7 @@ class TransactionSeeder extends Seeder
                 $service = new TransactionCreationService(new Request([
                     'purchaser_id' => $user->id,
                     'cashier_id' => $cashier->id,
+                    'rotation_id' => Rotation::all()->random(1)->pluck('id'),
                     'product' => $product_ids,
                     'quantity' => $quantity,
                     'created_at' => Carbon::now()->addMinutes(rand(-4000, 4000))

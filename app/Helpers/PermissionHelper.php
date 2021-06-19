@@ -14,10 +14,12 @@ class PermissionHelper extends Helper
         $this->register('Cashier', 'cashier', [
             'cashier_create' => 'Create Orders',
             'cashier_self_purchases' => 'Create orders for themselves',
+            'cashier_users_other_rotations' => 'Create orders for users from other Rotations',
         ]);
 
         $this->register('Users', 'users', [
             'users_list' => 'List all Users',
+            'users_list_select_rotation' => 'View Users from other Rotations',
             'users_view' => 'View specific User information',
             'users_manage' => 'Edit/Create/Delete Users',
         ]);
@@ -37,11 +39,13 @@ class PermissionHelper extends Helper
 
         $this->register('Order Management', 'orders', [
             'orders_list' => 'List all Orders',
+            'orders_list_select_rotation' => 'View Orders from other Rotations',
             'orders_view' => 'View specific Order information',
             'orders_return' => 'Return whole Orders or individual items',
         ]);
 
         $this->register('Statistics', 'statistics', [
+            'statistics_select_rotation' => 'View statistics charts from other Rotations',
             'statistics_order_history' => 'View Order history chart',
             'statistics_item_info' => 'View Product info chart',
             'statistics_activity_info' => 'View Activity info chart',
@@ -52,6 +56,10 @@ class PermissionHelper extends Helper
             'settings_categories_manage' => 'Edit/Create/Delete Categories',
             'settings_roles_manage' => 'Edit/Create/Delete Roles',
             'settings_rotations_manage' => 'Edit/Create/Delete Rotations',
+        ]);
+
+        $this->register('Misc', 'misc', [
+            'misc_login_no_rotation' => 'Let Users login when no Rotation is currently active'
         ]);
     }
 
