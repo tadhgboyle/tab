@@ -45,6 +45,11 @@ class UserCreationService extends Service
 
         $user->save();
 
+        // has to be after save() so they have an id
+        foreach ($this->_request->rotations as $rotation_id) {
+            $user->rotations()->attach($rotation_id);
+        }
+
         // Update their category limits
         [$message, $result] = UserLimitsHelper::createOrEditFromRequest($this->_request, $user, $this::class);
         if (!is_null($message) && !is_null($result)) {

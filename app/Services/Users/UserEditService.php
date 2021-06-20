@@ -44,6 +44,16 @@ class UserEditService extends Service
             return;
         }
 
+        foreach ($user->rotations as $rotation) {
+            if (!in_array($rotation->id, $this->_request->rotations)) {
+                $user->rotations()->detach($rotation->id);
+            }
+        }
+
+        foreach ($this->_request->rotations as $rotation_id) {
+            $user->rotations()->attach($rotation_id);
+        }
+
         // If same role or changing from one staff role to another
         if ($old_role->id == $new_role->id || (RoleHelper::getInstance()->isStaffRole($old_role->id) && RoleHelper::getInstance()->isStaffRole($new_role->id))) {
             $user->update([

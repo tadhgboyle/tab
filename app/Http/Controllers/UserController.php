@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Helpers\CategoryHelper;
+use App\Helpers\RotationHelper;
 use App\Helpers\UserLimitsHelper;
 use App\Http\Requests\UserRequest;
 use App\Services\Users\UserEditService;
@@ -93,6 +94,7 @@ class UserController extends Controller
             'user' => $user,
             'available_roles' => auth()->user()->role->getRolesAvailable()->all(),
             'categories' => $processed_categories,
+            'rotations' => RotationHelper::getInstance()->getRotations(),
         ]);
     }
 }

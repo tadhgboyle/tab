@@ -6,6 +6,7 @@
     <div class="column is-5">
         @include('includes.messages')
         <div class="box">
+            <h4 class="title has-text-weight-bold is-4">General</h4>
             <form action="/users/{{ is_null($user) ? 'new' : 'edit' }}" id="user_form" method="POST">
                 @csrf
                 <input type="hidden" name="id" id="user_id" value="{{ request()->route('id') }}">
@@ -34,6 +35,17 @@
                             <i class="fas fa-dollar-sign"></i>
                         </span>
                         <input type="number" step="0.01" name="balance" class="input" value="{{ isset($user->balance) ? number_format($user->balance, 2, ".", "") : number_format(old('balance'), 2, ".", "") }}">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Rotations<sup style="color: red">*</sup></label>
+                    <div class="select is-multiple is-fullwidth">
+                        <select multiple size="4" name="rotations[]">
+                            @foreach ($rotations as $rotation)
+                                <option value="{{ $rotation->id }}" @if ($user != null && $user->rotations->contains($rotation)) selected  @endif>{{ $rotation->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
 
@@ -70,36 +82,35 @@
                         </div>
                     </div>
                 </div>
-
         </div>
     </div>
 
-    <div class="column"></div>
+    <div class="column">
+        <div class="box">
+            <h4 class="title has-text-weight-bold is-4">Category Limits</h4>
 
-    <div class="column is-5 box">
-        <h4 class="title has-text-weight-bold is-4">Category Limits</h4>
-
-        @foreach($categories as $category)
-            <div class="field">
-                <label class="label">{{ $category['name'] }} Limit</label>
-                <div class="control has-icons-left">
-                    <span class="icon is-small is-left">
-                        <i class="fas fa-dollar-sign"></i>
-                    </span>
-                    <input type="number" step="0.01" name="limit[{{ $category['id'] }}]" class="input" placeholder="Limit" value="{{ $user != null ? number_format($category['info']->limit_per, 2, '.', '') : -1.00}}" required>
+            @foreach($categories as $category)
+                <div class="field">
+                    <label class="label">{{ $category['name'] }} Limit</label>
+                    <div class="control has-icons-left">
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-dollar-sign"></i>
+                        </span>
+                        <input type="number" step="0.01" name="limit[{{ $category['id'] }}]" class="input" placeholder="Limit" value="{{ $user != null ? number_format($category['info']->limit_per, 2, '.', '') : -1.00}}" required>
+                    </div>
+                    <div class="control">
+                        <label class="radio">
+                            <input type="radio" name="duration[{{ $category['id'] }}]" value="0" @if($user != null && $category['info']->duration == "day") checked @endif>
+                            Day
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="duration[{{ $category['id'] }}]" value="1" @if($user != null && $category['info']->duration == "week") checked @endif>
+                            Week
+                        </label>
+                    </div>
                 </div>
-                <div class="control">
-                    <label class="radio">
-                        <input type="radio" name="duration[{{ $category['id'] }}]" value="0" @if($user != null && $category['info']->duration == "day") checked @endif>
-                        Day
-                    </label>
-                    <label class="radio">
-                        <input type="radio" name="duration[{{ $category['id'] }}]" value="1" @if($user != null && $category['info']->duration == "week") checked @endif>
-                        Week
-                    </label>
-                </div>
-            </div>
-        @endforeach
+            @endforeach
+        </div>
     </div>
     </form>
     <div class="column is-2">

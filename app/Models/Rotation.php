@@ -27,7 +27,7 @@ class Rotation extends Model
 
     public function getStatus(): int
     {
-        if (RotationHelper::getInstance()->getCurrentRotation() == $this) {
+        if (RotationHelper::getInstance()->getCurrentRotation()?->id == $this->id) {
             return self::STATUS_PRESENT;
         }
 
@@ -38,6 +38,8 @@ class Rotation extends Model
         if ($this->end->isPast()) {
             return self::STATUS_PAST;
         }
+
+        return -1;
     }
 
     public function getStatusHtml(): string
@@ -59,7 +61,7 @@ class Rotation extends Model
     // - fix dates autofilling if editing
 
     // user page
-    // - editing: multi-select Rotations
+    // - editing/creating: multi-select Rotations - DONE
     // - viewing: view Rotations - DONE
 
     // user list (and order making user list)
