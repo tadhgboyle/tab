@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Helpers\RoleHelper;
+use App\Helpers\RotationHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule as ValidationRule;
 
@@ -29,6 +30,12 @@ class UserRequest extends FormRequest
             'balance' => [
                 'nullable',
                 'numeric',
+            ],
+            'rotations' => [
+                'required',
+                'array',
+                'min:1',
+                'max:' . RotationHelper::getInstance()->getRotations()->count(),
             ],
             'role_id' => [
                 'required',
