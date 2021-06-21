@@ -38,8 +38,11 @@ class RotationHelper extends Helper
         return $this->_current_rotation;
     }
 
-    public function doesRotationOverlap(Carbon $start, Carbon $end): bool
+    public function doesRotationOverlap($start, $end): bool
     {
+        $start = Carbon::parse($start);
+        $end = Carbon::parse($end);
+
         foreach ($this->getRotations() as $rotation) {
             if (
                 ($start->between($rotation->start, $rotation->end) || $end->between($rotation->start, $rotation->end))

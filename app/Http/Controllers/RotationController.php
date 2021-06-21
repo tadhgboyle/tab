@@ -18,8 +18,7 @@ class RotationController extends Controller
     public function new(RotationRequest $request)
     {
         if (RotationHelper::getInstance()->doesRotationOverlap($request->start, $request->end)) {
-            //
-            return;
+            return redirect()->back()->withInput()->with('error', "That Rotation would overlap an existing Rotation.");
         }
 
         $rotation = new Rotation();
@@ -33,9 +32,9 @@ class RotationController extends Controller
 
     public function edit(RotationRequest $request)
     {
+        // TODO: Can we move this into rotation request class
         if (RotationHelper::getInstance()->doesRotationOverlap($request->start, $request->end)) {
-            // TODO: Can move this into rotationrequest class?
-            return;
+            return redirect()->back()->withInput()->with('error', "That Rotation would overlap an existing Rotation.");
         }
 
         $rotation = Category::find($request->rotation_id);
