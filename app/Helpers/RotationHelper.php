@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use Cookie;
 use App\Models\Rotation;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -36,6 +37,13 @@ class RotationHelper extends Helper
         }
 
         return $this->_current_rotation;
+    }
+
+    public function getStatisticsRotation(): int|string
+    {
+        $current_rotation = RotationHelper::getInstance()->getCurrentRotation();
+
+        return hasPermission('statistics_select_rotation') ? Cookie::get('statistics_rotation', $current_rotation?->id) : $current_rotation?->id;
     }
 
     public function doesRotationOverlap($start, $end): bool

@@ -2,6 +2,7 @@
 
 namespace App\Charts;
 
+use App\Helpers\RotationHelper;
 use App\Models\Transaction;
 use Chartisan\PHP\Chartisan;
 use Illuminate\Http\Request;
@@ -18,10 +19,10 @@ class PurchaseHistoryChart extends BaseChart
     // TODO: Semi-Returned orders?
     public function handler(Request $request): Chartisan
     {
-        $stats_time = Carbon::now()->subDays(SettingsHelper::getInstance()->getStatsTime())->toDateTimeString();
+        $stats_rotation_id = RotationHelper::getInstance()->getStatisticsRotation();
 
-        $normal_data = Transaction::where([['created_at', '>=', $stats_time], ['returned', false]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
-        $returned_data = Transaction::where([['created_at', '>=', $stats_time], ['returned', true]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
+        $normal_data = Transaction::where([['rotation_id', $stats_rotation_id], ['returned', false]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
+        $returned_data = Transaction::where([['rotation_id', $stats_rotation_id], ['returned', true]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
 
         $normal_orders = $returned_orders = $labels = [];
 

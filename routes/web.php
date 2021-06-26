@@ -150,7 +150,6 @@ Route::middleware('auth')->group(function () {
          */
         Route::group(['permission' => 'statistics'], function () {
             Route::get('/statistics', [StatisticsPageController::class, 'view'])->name('statistics');
-            Route::post('/statistics', [SettingsController::class, 'editStatsTime']);
         });
 
         /*

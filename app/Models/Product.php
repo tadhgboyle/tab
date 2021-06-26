@@ -99,11 +99,11 @@ class Product extends Model
         return $this->adjustStock($box_count * $this->box_size);
     }
 
-    public function findSold(int $stats_time): int
+    public function findSold(int $rotation_id): int
     {
         $sold = 0;
 
-        $transactions = Transaction::where('created_at', '>=', Carbon::now()->subDays($stats_time)->toDateTimeString())->get();
+        $transactions = Transaction::where('rotation_id', $rotation_id)->get();
         foreach ($transactions as $transaction) {
             $products = explode(', ', $transaction->products);
             foreach ($products as $transaction_product) {
