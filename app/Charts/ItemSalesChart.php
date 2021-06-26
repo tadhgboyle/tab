@@ -2,6 +2,7 @@
 
 namespace App\Charts;
 
+use App\Helpers\RotationHelper;
 use App\Models\Product;
 use Chartisan\PHP\Chartisan;
 use Illuminate\Http\Request;
@@ -19,10 +20,10 @@ class ItemSalesChart extends BaseChart
         $sales = [];
 
         $products = Product::all();
-        $stats_time = SettingsHelper::getInstance()->getStatsTime();
+        $stats_rotation_id = RotationHelper::getInstance()->getStatisticsRotation();
 
         foreach ($products as $product) {
-            $sold = $product->findSold($stats_time);
+            $sold = $product->findSold($stats_rotation_id);
             if ($sold < 1) {
                 continue;
             }

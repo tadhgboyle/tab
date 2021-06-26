@@ -13,19 +13,6 @@ use Illuminate\Support\Facades\Validator;
 
 class SettingsController extends Controller
 {
-    public static function editStatsTime(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'stats_time' => 'required',
-        ]);
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator);
-        }
-
-        DB::table('settings')->where('setting', 'stats_time')->update(['value' => $request->stats_time]);
-        return redirect()->route('statistics')->send();
-    }
-
     public function editSettings(Request $request)
     {
         $validator = Validator::make($request->all(), [

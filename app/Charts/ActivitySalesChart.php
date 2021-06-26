@@ -2,6 +2,7 @@
 
 namespace App\Charts;
 
+use App\Helpers\RotationHelper;
 use App\Models\Activity;
 use Chartisan\PHP\Chartisan;
 use Illuminate\Http\Request;
@@ -19,7 +20,8 @@ class ActivitySalesChart extends BaseChart
         $sales = [];
 
         $activities = Activity::all();
-        $stats_time = SettingsHelper::getInstance()->getStatsTime();
+        $stats_rotation_id = RotationHelper::getInstance()->getStatisticsRotation();
+        // TODO: Use activity transactions table instead
         foreach ($activities as $activity) {
             $sold = $activity->getCurrentAttendees()->count();
             if ($sold < 1) {

@@ -8,7 +8,7 @@ class SettingsHelper extends Helper
 {
     private float $_gst;
     private float $_pst;
-    private int $_stats_time;
+    private int $_stats_rotation_id;
 
     public function getGst(): float
     {
@@ -26,14 +26,5 @@ class SettingsHelper extends Helper
         }
 
         return $this->_pst;
-    }
-
-    public function getStatsTime(): float
-    {
-        if (!isset($this->_stats_time)) {
-            $this->_stats_time = Settings::where('setting', 'stats_time')->pluck('value')->first();
-        }
-
-        return $this->_stats_time;
     }
 }

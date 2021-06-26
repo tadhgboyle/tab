@@ -23,10 +23,6 @@ class SettingsSeeder extends Seeder
                 'setting' => 'pst',
                 'value' => '1.07',
             ],
-            [
-                'setting' => 'stats_time',
-                'value' => '9999'
-            ]
         ]);
     }
 }
