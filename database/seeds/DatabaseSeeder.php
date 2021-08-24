@@ -21,24 +21,34 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        $this->command->info('Seeding Roles...');
         $roles = $this->resolve(RoleSeeder::class)->run();
 
+        $this->command->info('Seeding Users...');
         $this->resolve(UserSeeder::class)->run($roles);
 
+        $this->command->info('Seeding Categories...');
         $categories = $this->resolve(CategorySeeder::class)->run();
 
+        $this->command->info('Seeding Settings...');
         $this->resolve(SettingsSeeder::class)->run();
 
+        $this->command->info('Seeding Products...');
         $this->resolve(ProductSeeder::class)->run($categories);
 
+        $this->command->info('Seeding Activities...');
         $this->resolve(ActivitySeeder::class)->run($categories);
 
+        $this->command->info('Seeding UserLimits...');
         $this->resolve(UserLimitsSeeder::class)->run();
 
+        $this->command->info('Seeding Rotations...');
         $this->resolve(RotationSeeder::class)->run();
 
+        $this->command->info('Seeding Transactions...');
         $this->resolve(TransactionSeeder::class)->run();
 
+        $this->command->info('Seeding Activity Transactions...');
         $this->resolve(ActivityTransactionSeeder::class)->run();
     }
 }

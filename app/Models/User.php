@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -37,14 +39,14 @@ class User extends Authenticatable
         'role',
     ];
 
-    public function role()
+    public function role(): HasOne
     {
         return $this->hasOne(Role::class, 'id', 'role_id');
     }
 
-    public function rotations()
+    public function rotations(): BelongsToMany
     {
-        return $this->belongsToMany(Rotation::class);
+        return $this->belongsToMany(Rotation::class)->distinct();
     }
 
     private Collection $_activity_transactions;
@@ -120,7 +122,7 @@ class User extends Authenticatable
     {
         return floatval(
             $this->getTransactions()->sum('total_price')
-            + $this->getActivityTransactions()->sum('total_price')
+                + $this->getActivityTransactions()->sum('total_price')
         );
     }
 

@@ -6,7 +6,6 @@ use App\Helpers\RotationHelper;
 use App\Models\Product;
 use Chartisan\PHP\Chartisan;
 use Illuminate\Http\Request;
-use App\Helpers\SettingsHelper;
 use ConsoleTVs\Charts\BaseChart;
 
 class ItemSalesChart extends BaseChart

@@ -13,8 +13,9 @@
         "fideloper/proxy": "^4.0",
         "laravel/framework": "^8.0",
         "laravel/tinker": "^2.0",
+        "livewire/livewire": "^2.5",
         "rennokki/laravel-eloquent-query-cache": "^2.0",
-        "yajra/laravel-datatables-oracle": "~9.0"
+        "symfony/var-dumper": "<5.3.4"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.5",

@@ -20,6 +20,8 @@
     <script src="{{ url('js/jquery-ui-1.12.1.min.js') }}"></script>
     <script src="{{ url('js/jquery.dataTables-1.10.24.min.js') }}"></script>
     <script src="{{ url('js/fullcalendar-5.3.2.min.js') }}"></script>
+
+    @livewireStyles
 </head>
 
 <body>
@@ -35,6 +37,8 @@
         @include('includes.footer')
 
     </div>
+
+    @livewireScripts
 
 </body>
 
