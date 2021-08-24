@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use App\Helpers\SettingsHelper;
 use App\Helpers\UserLimitsHelper;
 use Illuminate\Support\Collection;
@@ -93,10 +92,10 @@ class Activity extends Model
 
     public function getStatus(): string
     {
-        if (Carbon::parse($this->end)->isPast()) {
+        if ($this->end->isPast()) {
             return '<span class="tag is-danger is-medium">Over</span>';
         } else {
-            if (Carbon::parse($this->start)->isPast()) {
+            if ($this->start->isPast()) {
                 return '<span class="tag is-warning is-medium">In Progress</span>';
             } else {
                 return '<span class="tag is-success is-medium">Waiting</span>';
@@ -131,8 +130,8 @@ class Activity extends Model
             'activity_price' => $this->price,
             'activity_gst' => SettingsHelper::getInstance()->getGst(),
             'total_price' => $this->getPrice(),
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         return redirect()->back()->with('success', 'Successfully registered ' . $user->full_name . ' to ' . $this->name . '.');
