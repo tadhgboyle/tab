@@ -22,6 +22,7 @@ class CreateTransactionsTable extends Migration
             $table->string('products');
             $table->float('total_price');
             $table->tinyInteger('returned')->default(0);
+            $table->foreignId('rotation_id')->constrained();
             $table->nullableTimestamps();
         });
     }
