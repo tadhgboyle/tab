@@ -27,11 +27,18 @@ class TransactionCreationService extends Service
     public const RESULT_NO_STOCK = 3;
     public const RESULT_NOT_ENOUGH_BALANCE = 4;
     public const RESULT_NOT_ENOUGH_CATEGORY_BALANCE = 5;
-    public const RESULT_SUCCESS = 6;
+    public const RESULT_NO_CURRENT_ROTATION = 6;
+    public const RESULT_SUCCESS = 7;
 
     public function __construct(
         private Request $_request
     ) {
+        if (RotationHelper::getInstance()->getCurrentRotation() == null) {
+            $this->_result = self::RESULT_NO_CURRENT_ROTATION;
+            $this->_message = 'Cannot create transaction with no current rotation.';
+            return;
+        }
+
         if (!hasPermission('cashier_self_purchases')) {
             if ($this->_request->purchaser_id == auth()->id()) {
                 $this->_result = self::RESULT_NO_SELF_PURCHASE;
@@ -158,7 +165,7 @@ class TransactionCreationService extends Service
         $transaction = new Transaction();
         $transaction->purchaser_id = $purchaser->id;
         $transaction->cashier_id = auth()->id();
-        $transaction->rotation_id = RotationHelper::getInstance()->getCurrentRotation()->id;
+        $transaction->rotation_id = RotationHelper::getInstance()->getCurrentRotation()->id; // TODO: cannot make order without current rotation
         $transaction->products = implode(', ', $transaction_products);
         $transaction->total_price = $total_price;
         if ($this->_request->exists('created_at')) {
