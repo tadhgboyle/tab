@@ -144,3 +144,4 @@ Documentation (in the form of a printable user handbook) is being written.
 
 ## Issues/Bugs:
 - When an error happens on order screen, it returns back with selection, but when you unselect a box it all gets NaN
+- Rotation selection dropdown not working on Stats page + general clean up of it
