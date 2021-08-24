@@ -11,6 +11,7 @@
 |
 */
 
+use App\Helpers\RotationHelper;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\HasPermission;
@@ -32,9 +33,12 @@ Route::post('/login/auth', [LoginController::class, 'auth'])->name('login_auth')
 Route::middleware('auth')->group(function () {
     Route::get('/', function () {
         if (hasPermission('cashier')) {
-            return view('pages.index', ['users' => User::query()->unless(hasPermission('cashier_self_purchases'), function ($query) {
-                $query->where('users.id', '!=', auth()->id());
-            })->select(['id', 'full_name', 'balance'])->get()]);
+            return view('pages.index', [
+                'users' => User::query()->unless(hasPermission('cashier_self_purchases'), function ($query) {
+                    $query->where('users.id', '!=', auth()->id());
+                })->select(['id', 'full_name', 'balance'])->get(),
+                'currentRotation' =>  RotationHelper::getInstance()->getCurrentRotation()
+            ]);
         } else {
             // TODO: figure out what to do with users who dont have permission. when they sign in they get a 403 page, not nice UX
             return view('pages.403');
