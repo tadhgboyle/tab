@@ -37,6 +37,9 @@ class UserRequest extends FormRequest
                 'min:1',
                 'max:' . RotationHelper::getInstance()->getRotations()->count(),
             ],
+            'rotations.*' => [
+                ValidationRule::exists('rotations', 'id'),
+            ],
             'role_id' => [
                 'required',
                 ValidationRule::in(auth()->user()->role->getRolesAvailable()->pluck('id')),

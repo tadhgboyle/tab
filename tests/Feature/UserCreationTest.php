@@ -108,7 +108,7 @@ class UserCreationTest extends TestCase
             'password' => $password,
             'limit' => $limit,
             'duration' => $duration,
-            'rotations' => [Arr::random(Rotation::all()->all())]
+            'rotations' => [Arr::random(Rotation::all()->pluck('id')->all())]
         ]);
     }
 
