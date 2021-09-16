@@ -14,11 +14,7 @@ class RotationHelper extends Helper
 
     public function getRotations(): Collection
     {
-        if (!isset($this->_rotations)) {
-            $this->_rotations = Rotation::orderBy('start', 'ASC')->get();
-        }
-
-        return $this->_rotations;
+        return $this->_rotations ??= Rotation::orderBy('start', 'ASC')->get();
     }
 
     public function getCurrentRotation(): ?Rotation

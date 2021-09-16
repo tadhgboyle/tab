@@ -78,20 +78,12 @@ class User extends Authenticatable
 
     public function getActivityTransactions(): Collection
     {
-        if (!isset($this->_activity_transactions)) {
-            $this->_activity_transactions = DB::table('activity_transactions')->where('user_id', $this->id)->orderBy('created_at', 'DESC')->get();
-        }
-
-        return $this->_activity_transactions;
+        return $this->_activity_transactions ??= DB::table('activity_transactions')->where('user_id', $this->id)->orderBy('created_at', 'DESC')->get();
     }
 
     public function getTransactions(): Collection
     {
-        if (!isset($this->_transactions)) {
-            $this->_transactions = Transaction::where('purchaser_id', $this->id)->orderBy('created_at', 'DESC')->get();
-        }
-
-        return $this->_transactions;
+        return $this->_transactions ??= Transaction::where('purchaser_id', $this->id)->orderBy('created_at', 'DESC')->get();
     }
 
     public function getActivities(): Collection
@@ -121,8 +113,7 @@ class User extends Authenticatable
     public function findSpent(): float
     {
         return floatval(
-            $this->getTransactions()->sum('total_price')
-                + $this->getActivityTransactions()->sum('total_price')
+            $this->getTransactions()->sum('total_price') + $this->getActivityTransactions()->sum('total_price')
         );
     }
 

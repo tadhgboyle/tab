@@ -12,9 +12,11 @@ use App\Models\Settings;
 use App\Models\UserLimits;
 use App\Models\Transaction;
 use App\Helpers\ProductHelper;
+use App\Helpers\RotationHelper;
 use App\Helpers\UserLimitsHelper;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\DB;
+use Database\Seeders\RotationSeeder;
 use App\Services\Users\UserCreationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -238,6 +240,8 @@ class UserLimitsTest extends TestCase
      */
     private function createFakeRecords()
     {
+        app(RotationSeeder::class)->run();
+
         [$superadmin_role] = $this->createRoles();
 
         $user = $this->createSuperadminUser($superadmin_role);
@@ -284,6 +288,7 @@ class UserLimitsTest extends TestCase
                 ProductHelper::serializeProduct($skittles->id, 2, $skittles->price, 1.05, 'null', 0),
                 ProductHelper::serializeProduct($hat->id, 1, $hat->price, 1.05, 'null', 0)
             ]),
+            'rotation_id' => RotationHelper::getInstance()->getCurrentRotation()->id,
             'total_price' => 3.15 // TODO
         ]);
 
@@ -294,6 +299,7 @@ class UserLimitsTest extends TestCase
                 ProductHelper::serializeProduct($sweater->id, 1, $sweater->price, 1.05, 1.07, 0),
                 ProductHelper::serializeProduct($coffee->id, 2, $coffee->price, 1.05, 1.07, 0)
             ]),
+            'rotation_id' => RotationHelper::getInstance()->getCurrentRotation()->id,
             'total_price' => 44.79 // TODO
         ]);
 

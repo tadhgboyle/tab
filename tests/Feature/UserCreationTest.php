@@ -7,12 +7,22 @@ use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
 use App\Http\Requests\UserRequest;
+use App\Models\Rotation;
 use App\Services\Users\UserCreationService;
+use Arr;
+use Database\Seeders\RotationSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserCreationTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        app(RotationSeeder::class)->run();
+    }
 
     public function testUsernameProperlyFormatted()
     {
@@ -97,7 +107,8 @@ class UserCreationTest extends TestCase
             'role_id' => $role_id,
             'password' => $password,
             'limit' => $limit,
-            'duration' => $duration
+            'duration' => $duration,
+            'rotations' => [Arr::random(Rotation::all()->all())]
         ]);
     }
 

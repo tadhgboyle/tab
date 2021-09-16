@@ -43,11 +43,7 @@ class Activity extends Model
 
     public function getCurrentAttendees(): Collection
     {
-        if (!isset($this->_current_attendees)) {
-            $this->_current_attendees = DB::table('activity_transactions')->where('activity_id', $this->id)->get('user_id');
-        }
-
-        return $this->_current_attendees;
+        return $this->_current_attendees ??= DB::table('activity_transactions')->where('activity_id', $this->id)->get('user_id');
     }
 
     public function slotsAvailable(): int

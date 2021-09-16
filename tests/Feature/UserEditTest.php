@@ -7,8 +7,11 @@ use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
 use App\Http\Requests\UserRequest;
+use App\Models\Rotation;
 use App\Services\Users\UserEditService;
 use App\Services\Users\UserCreationService;
+use Arr;
+use Database\Seeders\RotationSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserEditTest extends TestCase
@@ -95,7 +98,8 @@ class UserEditTest extends TestCase
             'role_id' => $role_id,
             'password' => $password,
             'limit' => $limit,
-            'duration' => $duration
+            'duration' => $duration,
+            'rotations' => [Arr::random(Rotation::all()->pluck('id')->all())]
         ]);
     }
 
@@ -122,10 +126,13 @@ class UserEditTest extends TestCase
 
     private function createSuperadminUser(Role $superadmin_role): User
     {
+        app(RotationSeeder::class)->run();
+
         return (new UserCreationService(new UserRequest([
             'full_name' => 'Tadhg Boyle',
             'role_id' => $superadmin_role->id,
-            'password' => 'password'
+            'password' => 'password',
+            'rotations' => [Arr::random(Rotation::all()->pluck('id')->all())]
         ])))->getUser();
     }
 
@@ -135,7 +142,8 @@ class UserEditTest extends TestCase
             'full_name' => 'Ronan Boyle',
             'role_id' => $cashier_role->id,
             'password' => 'password',
-            'balance' => 50.0
+            'balance' => 50.0,
+            'rotations' => [Arr::random(Rotation::all()->pluck('id')->all())]
         ])))->getUser();
     }
 }

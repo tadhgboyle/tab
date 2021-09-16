@@ -17,8 +17,7 @@ class CreateProductsTable extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->float('price');
-            $table->unsignedBigInteger('category_id');
-            $table->foreign('category_id')->references('id')->on('categories');
+            $table->foreignId('category_id')->constrained();
             $table->boolean('pst')->default(false);
             $table->integer('stock');
             // true/false if this product has unlimited stock (since -1 could be a valid inventory count)
