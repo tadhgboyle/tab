@@ -7,12 +7,14 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Rotation;
 use App\Models\Settings;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Services\Transactions\TransactionReturnService;
 use App\Services\Transactions\TransactionCreationService;
+use Database\Seeders\RotationSeeder;
 
 class TransactionReturnTest extends TestCase
 {
@@ -101,8 +103,11 @@ class TransactionReturnTest extends TestCase
 
     private function createFakeRecords(): array
     {
+        app(RotationSeeder::class)->run();
+        
         $role = Role::factory()->create();
 
+        /** @var User */
         $user = User::factory()->create([
             'role_id' => $role->id,
             'balance' => 300.00

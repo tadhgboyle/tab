@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Casts\CategoryType;
 use Illuminate\Database\Eloquent\Collection;
 
+// TODO: tests
 class CategoryHelper extends Helper
 {
     private Collection $_categories;
@@ -15,29 +16,17 @@ class CategoryHelper extends Helper
 
     public function getCategories(): Collection
     {
-        if (!isset($this->_categories)) {
-            $this->_categories = Category::orderBy('name', 'DESC')->get();
-        }
-
-        return $this->_categories;
+        return $this->_categories ??= Category::orderBy('name', 'DESC')->get();
     }
 
     public function getProductCategories(): Collection
     {
-        if (!isset($this->_product_categories)) {
-            $this->_product_categories = $this->getCategoriesWithType([CategoryType::TYPE_PRODUCTS_ACTIVITIES, CategoryType::TYPE_PRODUCTS]);
-        }
-
-        return $this->_product_categories;
+        return $this->_product_categories ??= $this->getCategoriesWithType([CategoryType::TYPE_PRODUCTS_ACTIVITIES, CategoryType::TYPE_PRODUCTS]);
     }
 
     public function getActivityCategories(): Collection
     {
-        if (!isset($this->_activity_categories)) {
-            $this->_activity_categories = $this->getCategoriesWithType([CategoryType::TYPE_PRODUCTS_ACTIVITIES, CategoryType::TYPE_ACTIVITIES]);
-        }
-
-        return $this->_activity_categories;
+        return $this->_activity_categories ??= $this->getCategoriesWithType([CategoryType::TYPE_PRODUCTS_ACTIVITIES, CategoryType::TYPE_ACTIVITIES]);
     }
 
     private function getCategoriesWithType(array $types): Collection

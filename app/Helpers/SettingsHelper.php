@@ -12,19 +12,11 @@ class SettingsHelper extends Helper
 
     public function getGst(): float
     {
-        if (!isset($this->_gst)) {
-            $this->_gst = Settings::where('setting', 'gst')->pluck('value')->first();
-        }
-
-        return $this->_gst;
+        return $this->_gst ??= Settings::where('setting', 'gst')->pluck('value')->first();
     }
 
     public function getPst(): float
     {
-        if (!isset($this->_pst)) {
-            $this->_pst = Settings::where('setting', 'pst')->pluck('value')->first();
-        }
-
-        return $this->_pst;
+        return $this->_pst ??= Settings::where('setting', 'pst')->pluck('value')->first();
     }
 }

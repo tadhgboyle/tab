@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Cookie;
 use App\Models\User;
 use App\Helpers\CategoryHelper;
 use App\Helpers\RotationHelper;
@@ -31,31 +30,14 @@ class UserController extends Controller
 
     public function list()
     {
-        $current_rotation = RotationHelper::getInstance()->getCurrentRotation();
-        $selected_rotation = hasPermission('users_list_select_rotation') ? Cookie::get('user_list_rotation', $current_rotation?->id) : $current_rotation?->id;
-
-        if ($selected_rotation == null || $selected_rotation == 'all') {
-            $users = User::all();
-        } else {
-            $users = User::whereHas('rotations', function ($query) use ($selected_rotation) {
-                $query->where('rotation_id', $selected_rotation);
-            })->get();
-        }
-
-        return view('pages.users.list', [
-            'users' => $users,
-            'rotations' => RotationHelper::getInstance()->getRotations(),
-            'current_rotation' => $current_rotation,
-            'selected_rotation' => $selected_rotation,
-        ]);
+        return view('pages.users.list');
     }
 
     public function view()
     {
-        $user = User::find(request()->route('id'));
-        if ($user == null) {
+        $user = User::where('id', request()->route('id'))->firstOr(function() {
             return redirect()->route('users_list')->with('error', 'Invalid user.')->send();
-        }
+        });
 
         $processed_categories = [];
         $categories = CategoryHelper::getInstance()->getCategories();

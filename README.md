@@ -103,7 +103,7 @@ Documentation (in the form of a printable user handbook) is being written.
 *High to Low priority sort*
 - Fix everything in Issues/Bugs
 - Use forgein ids in all migrations
-- Update codebase to not store periods in DB for money.
+- Update codebase to not store periods in DB for money (store as int, and / or * by 10).
 - Let products be purchasable by a parent only.
     - Will require a boolean attribute in users table "parent"
 - Repeating activities. When they create activity, ask if repeated daily, weekly, monthly. Create more Activity rows for each day in the duration
@@ -112,6 +112,7 @@ Documentation (in the form of a printable user handbook) is being written.
     - Then on the backend, if they somehow bypass the disabled submit button: on errors during order, return back with their input + quantities
 - Rework how to select items and quantities. Right now it is somewhat not intuitive. New system:
     - **Similar to GBBC tab, click an item to add it to a list of all items. Click more times for more quantity**
+    - Use livewire
 - Complete inventory features
     - "Set stock" in adjust page as well as add/subtract.
     - Add product option if stock should be added back upon return or not.

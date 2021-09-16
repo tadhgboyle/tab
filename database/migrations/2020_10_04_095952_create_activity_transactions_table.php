@@ -15,9 +15,10 @@ class CreateActivityTransactionsTable extends Migration
     {
         Schema::create('activity_transactions', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
-            $table->integer('cashier_id');
-            $table->integer('activity_id');
+            $table->foreignId('user_id')->constrained();
+            $table->unsignedBigInteger('cashier_id');
+            $table->foreign('cashier_id')->references('id')->on('users');
+            $table->foreignId('activity_id')->constrained();
             $table->float('activity_price');
             $table->float('activity_gst');
             $table->float('total_price');

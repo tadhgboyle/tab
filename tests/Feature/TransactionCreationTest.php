@@ -13,6 +13,7 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Services\Transactions\TransactionCreationService;
+use Database\Seeders\RotationSeeder;
 
 // TODO: testCannotMakeTransactionWithNoCurrentRotation
 class TransactionCreationTest extends TestCase
@@ -118,6 +119,7 @@ class TransactionCreationTest extends TestCase
             'staff' => true
         ]);
 
+        /** @var User */
         $staff_user = User::factory()->create([
             'role_id' => $staff_role->id
         ]);
@@ -146,6 +148,9 @@ class TransactionCreationTest extends TestCase
         bool $over_balance = false,
         bool $over_category_limit = false
     ): Request {
+        
+        app(RotationSeeder::class)->run();
+
         [$food_category, $merch_category] = $this->createFakeCategories();
 
         if ($over_category_limit) {

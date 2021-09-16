@@ -17,11 +17,7 @@ abstract class Helper
     {
         $class = static::class;
 
-        if (!isset(self::$_instances[$class])) {
-            self::$_instances[$class] = new static();
-        }
-
-        return self::$_instances[$class];
+        return self::$_instances[$class] ??= new static();
     }
 
     /**

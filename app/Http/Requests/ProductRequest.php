@@ -31,7 +31,7 @@ class ProductRequest extends FormRequest
                 ValidationRule::in(CategoryHelper::getInstance()->getProductCategories()->pluck('id')),
             ],
             'box_size' => [
-                // TODO: gte -1
+                // TODO: gte -1 (use new Rule::when())
                 ValidationRule::notIn(0),
             ],
         ];
