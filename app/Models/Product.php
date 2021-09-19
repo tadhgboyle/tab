@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Helpers\ProductHelper;
-use Illuminate\Support\Carbon;
 use App\Helpers\SettingsHelper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;

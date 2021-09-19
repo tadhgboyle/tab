@@ -2,11 +2,11 @@
 
 namespace App\Http\Livewire;
 
-use App\Helpers\RotationHelper;
-use App\Models\User;
-use Illuminate\Database\Eloquent\Collection;
-use Livewire\Component;
 use Session;
+use App\Models\User;
+use Livewire\Component;
+use App\Helpers\RotationHelper;
+use Illuminate\Database\Eloquent\Collection;
 
 class UserListTable extends Component
 {
