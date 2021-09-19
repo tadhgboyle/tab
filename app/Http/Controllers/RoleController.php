@@ -53,22 +53,21 @@ class RoleController extends Controller
         } else {
             $new_role = Role::find($request->new_role);
 
+            $fields = [
+                'role_id' => $new_role->id,
+            ];
+
             if (!$new_role->staff) {
-                $fields = [
-                    'role_id' => $new_role->id,
+                $fields = array_merge($fields, [
                     'password' => null,
-                ];
-            } else {
-                $fields = [
-                    'role_id' => $new_role->id,
-                ];
+                ]);
             }
 
             User::where('role_id', $old_role->id)->update($fields);
 
             $old_role->delete();
 
-            $message = 'Deleted role ' . $old_role->name . ', and placed all it\'s users into ' . $new_role->name . '.';
+            $message = "Deleted role {$old_role->name}, and placed all it's users into {$new_role->name}.";
         }
 
         return redirect()->route('settings')->with('success', $message);

@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Helpers\CategoryHelper;
 use App\Helpers\RotationHelper;
 use App\Helpers\SettingsHelper;
-use App\Models\Rotation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -15,17 +14,16 @@ class SettingsController extends Controller
 {
     public function editSettings(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        if ($validator = Validator::make($request->all(), [
             'gst' => 'required|numeric',
             'pst' => 'required|numeric',
-        ]);
-        if ($validator->fails()) {
-            return redirect()->back()->withInput()->withErrors($validator);
+        ])->fails()) {
+            return redirect()->route('settings')->withInput()->withErrors($validator);
         }
 
-        // TODO: This is probably not as efficient as it could be... use updateOrCreate() ?
         DB::table('settings')->where('setting', 'gst')->update(['value' => $request->gst]);
         DB::table('settings')->where('setting', 'pst')->update(['value' => $request->pst]);
+
         return redirect()->route('settings')->with('success', 'Updated settings.');
     }
 
@@ -36,7 +34,7 @@ class SettingsController extends Controller
             'pst' => SettingsHelper::getInstance()->getPst(),
             'categories' => CategoryHelper::getInstance()->getCategories(),
             'roles' => RoleHelper::getInstance()->getRoles('ASC'),
-            'rotations' => Rotation::orderBy('start', 'ASC')->get(),
+            'rotations' => RotationHelper::getInstance()->getRotations(),
             'currentRotation' => RotationHelper::getInstance()->getCurrentRotation()?->name
         ]);
     }

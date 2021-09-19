@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Models\Activity;
 use Illuminate\Support\Carbon;
 use App\Helpers\CategoryHelper;
-use Illuminate\Support\Facades\Route;
 use App\Http\Requests\ActivityRequest;
 
 // TODO: add return/cancel functionality
@@ -57,10 +56,8 @@ class ActivityController extends Controller
         return redirect()->route('activities_list')->with('success', 'Updated activity ' . $request->name . '.');
     }
 
-    public function delete(int $id)
+    public function delete(Activity $activity)
     {
-        $activity = Activity::find($id);
-
         $activity->delete();
 
         return redirect()->route('activities_list')->with('success', 'Deleted activity ' . $activity->name . '.');
@@ -71,14 +68,8 @@ class ActivityController extends Controller
         return view('pages.activities.list', ['activities' => self::getAll()]);
     }
 
-    public function view($id)
+    public function view(Activity $activity)
     {
-        $activity = Activity::find($id);
-
-        if ($activity == null) {
-            return redirect()->route('activities_list')->with('error', 'Invalid activity.')->send();
-        }
-
         $activities_manage = hasPermission('activities_manage');
 
         return view('pages.activities.view', [
@@ -144,11 +135,8 @@ class ActivityController extends Controller
         return $output;
     }
 
-    public static function registerUser()
+    public static function registerUser(Activity $activity, User $user)
     {
-        $activity = Activity::find(Route::current()->parameter('id'));
-        $user = User::find(Route::current()->parameter('user'));
-
         return $activity->registerUser($user);
     }
 }

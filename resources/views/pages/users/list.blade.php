@@ -10,7 +10,7 @@
     </div>
 </div>
 <script>
-    $(document).ready(function() {
+    window.onload = function() {
         $('#user_list').DataTable({
             "paging": false,
             "scrollY": "49vh",
@@ -32,6 +32,6 @@
         });
         $('#loading').hide();
         $('#user_container').css('visibility', 'visible');
-    });
+    };
 </script>
 @endsection

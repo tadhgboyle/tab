@@ -4,9 +4,9 @@ namespace App\Http\Livewire;
 
 use App\Helpers\RotationHelper;
 use App\Models\User;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
+use Session;
 
 class UserListTable extends Component
 {
@@ -32,13 +32,15 @@ class UserListTable extends Component
             return;
         }
 
-        Cache::forever($this->getCacheKeyName(), $rotationId);
+        Session::put($this->getCacheKeyName(), $rotationId);
+
+        // TODO: fix the table reloading $this->dispatchBrowserEvent('updatedSelectedRotation');
     }
 
-    private function getSelectedRotation()
+    private function getSelectedRotation(): int
     {
-        if (hasPermission('users_list_select_rotation') && Cache::has($this->getCacheKeyName())) {
-            return Cache::get($this->getCacheKeyName());
+        if (hasPermission('users_list_select_rotation') && Session::has($this->getCacheKeyName())) {
+            return (int) Session::get($this->getCacheKeyName());
         }
 
         $currentRotation = RotationHelper::getInstance()->getCurrentRotation();
@@ -48,7 +50,7 @@ class UserListTable extends Component
         }
     }
 
-    private function getCacheKeyName()
+    private function getCacheKeyName(): string
     {
         return auth()->id() . '-user_list_rotation';
     }

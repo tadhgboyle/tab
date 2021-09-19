@@ -29,7 +29,7 @@
                     <td>
                         <div>
                             @permission('users_view')
-                                <a href="{{ route('users_view', $transaction->purchaser->id) }}">{{ $transaction->purchaser->full_name }}</a>
+                                <a href="{{ route('users_view', $transaction->purchaser) }}">{{ $transaction->purchaser->full_name }}</a>
                             @else
                                 {{ $transaction->purchaser->full_name }}
                             @endpermission

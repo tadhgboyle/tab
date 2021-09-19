@@ -4,8 +4,9 @@
 <div class="columns box">
     <div class="column">
         @include('includes.messages')
-        <p><strong>Order ID:</strong> {{ request()->route('id') }}</p>
+        <p><strong>Order ID:</strong> {{ $transaction->id }}</p>
         <p><strong>Date:</strong> {{ $transaction->created_at->format('M jS Y h:ia') }}</p>
+        <p><strong>Rotation:</strong> {{ $transaction->rotation->name }}</p>
         <p><strong>Purchaser:</strong> @permission('users_view') <a href="{{ route('users_view', $transaction->purchaser_id) }}">{{ $transaction->purchaser->full_name }}</a> @else {{ $transaction->purchaser->full_name }} @endpermission</p>
         <p><strong>Cashier:</strong> @permission('users_view') <a href="{{ route('users_view', $transaction->cashier_id) }}">{{ $transaction->cashier->full_name }}</a> @else {{ $transaction->cashier->full_name }} @endpermission</p>
         <p><strong>Total Price:</strong> ${{ number_format($transaction->total_price, 2) }}</p>

@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Models\Product;
+use Illuminate\Support\Str;
 
 class ProductHelper
 {
@@ -32,47 +33,35 @@ class ProductHelper
      * Pst: 1.05
      * Returned: Quantity returned -- Default 0.
      */
-    public static function deserializeProduct(string $product, bool $full = true): array
+    public static function deserializeProduct(string $serializedProduct, bool $full = true): array
     {
-        $product_id = strtok($product, '*');
+        $productId = Str::before($serializedProduct, '*');
 
         if ($full) {
-            $product_object = Product::findOrFail($product_id);
-            $product_name = $product_object->name;
-            $product_category = $product_object->category_id;
+            $product = Product::findOrFail($productId);
+            $productName = $product->name;
+            $productCategory = $product->category_id;
         }
 
-        $product_quantity = $product_price = $product_gst = $product_pst = $product_returned = 0.00;
+        $productQuantity = Str::between($serializedProduct, '*', '$');
 
-        if (preg_match('/\*(.*?)\$/', $product, $match) == 1) {
-            $product_quantity = $match[1];
-        }
+        $productPrice = Str::between($serializedProduct, '$', 'G');
 
-        if (preg_match('/\$(.*?)G/', $product, $match) == 1) {
-            $product_price = $match[1];
-        }
+        $productGst = Str::between($serializedProduct, 'G', 'P');
 
-        if (preg_match('/G(.*?)P/', $product, $match) == 1) {
-            $product_gst = $match[1];
-        }
+        $productPst = Str::between($serializedProduct, 'P', 'R');
 
-        if (preg_match('/P(.*?)R/', $product, $match) == 1) {
-            $product_pst = $match[1];
-        }
+        $productReturned = Str::after($serializedProduct, 'R');
 
-        $product_returned = substr($product, strpos($product, 'R') + 1);
-
-        $return = [
-            'id' => $product_id,
-            'name' => $product_name ?? '',
-            'category' => $product_category ?? '',
-            'quantity' => $product_quantity,
-            'price' => $product_price,
-            'gst' => $product_gst,
-            'pst' => $product_pst,
-            'returned' => $product_returned,
+        return [
+            'id' => $productId,
+            'name' => $productName ?? '',
+            'category' => $productCategory ?? '',
+            'quantity' => $productQuantity,
+            'price' => $productPrice,
+            'gst' => $productGst,
+            'pst' => $productPst,
+            'returned' => $productReturned,
         ];
-
-        return $return;
     }
 }

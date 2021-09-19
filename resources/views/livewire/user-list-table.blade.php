@@ -1,13 +1,12 @@
 <div>
     @permission('users_list_select_rotation')
     <div class="field">
-        <h4>{{ $selectedRotation }}</h4>
         <div class="control">
             <div class="select">
-                <select name="rotation" class="input" id="rotation" wire:model="selectedRotation">
-                    <option value="*" @if ($selectedRotation == '*') selected @endif>All Rotations</option>
+                <select class="input" wire:model="selectedRotation">
+                    <option value="*">All Rotations</option>
                     @foreach ($rotations as $rotation)
-                        <option value="{{ $rotation->id }}" @if ($selectedRotation == $rotation->id) selected @endif>{{ $rotation->name }}</option>
+                        <option value="{{ $rotation->id }}">{{ $rotation->name }}</option>
                     @endforeach
                 </select>
             </div>
@@ -48,7 +47,7 @@
                     </td>
                     @permission('users_view')
                         <td>
-                            <div><a href="{{ route('users_view', $user->id) }}">View</a></div>
+                            <div><a href="{{ route('users_view', $user) }}">View</a></div>
                         </td>
                     @endpermission
                     @permission('users_manage')

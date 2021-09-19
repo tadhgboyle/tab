@@ -39,7 +39,7 @@
                     @foreach($activity->getAttendees() as $user)
                     <tr>
                         <td>
-                            <div><a href="{{ route('users_view', $user->id) }}">{{ $user->full_name }}</a></div>
+                            <div><a href="{{ route('users_view', $user) }}">{{ $user->full_name }}</a></div>
                         </td>
                     </tr>
                     @endforeach
