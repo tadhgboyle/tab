@@ -11,9 +11,9 @@ use App\Models\Settings;
 use App\Models\UserLimits;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Database\Seeders\RotationSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Services\Transactions\TransactionCreationService;
-use Database\Seeders\RotationSeeder;
 
 // TODO: testCannotMakeTransactionWithNoCurrentRotation
 class TransactionCreationTest extends TestCase
@@ -148,7 +148,6 @@ class TransactionCreationTest extends TestCase
         bool $over_balance = false,
         bool $over_category_limit = false
     ): Request {
-        
         app(RotationSeeder::class)->run();
 
         [$food_category, $merch_category] = $this->createFakeCategories();

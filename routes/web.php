@@ -11,8 +11,8 @@
 |
 */
 
-use App\Helpers\RotationHelper;
 use App\Models\User;
+use App\Helpers\RotationHelper;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\HasPermission;
 use App\Http\Controllers\RoleController;
@@ -30,7 +30,6 @@ Route::get('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/login/auth', [LoginController::class, 'auth'])->name('login_auth');
 
 Route::middleware('auth')->group(function () {
-
     Route::get('/', function () {
         if (!hasPermission('cashier')) {
             // TODO: figure out what to do with users who dont have permission. when they sign in they get a 403 page, not nice UX
