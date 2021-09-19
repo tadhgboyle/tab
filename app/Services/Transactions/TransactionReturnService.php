@@ -16,7 +16,7 @@ class TransactionReturnService extends Service
     public const RESULT_ITEM_NOT_IN_ORDER = 3;
     public const RESULT_SUCCESS = 4;
 
-    public function __construct(Transaction | int $transaction)
+    public function __construct(Transaction|int $transaction)
     {
         if ($transaction instanceof Transaction) {
             $this->_transaction = $transaction;

@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Rotation;
-use App\Models\User;
 use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Rotation;
 use Illuminate\Database\Seeder;
 
 class RotationSeeder extends Seeder
