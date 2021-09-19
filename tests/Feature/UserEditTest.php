@@ -2,16 +2,16 @@
 
 namespace Tests\Feature;
 
+use Arr;
 use Hash;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
-use App\Http\Requests\UserRequest;
 use App\Models\Rotation;
+use App\Http\Requests\UserRequest;
+use Database\Seeders\RotationSeeder;
 use App\Services\Users\UserEditService;
 use App\Services\Users\UserCreationService;
-use Arr;
-use Database\Seeders\RotationSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserEditTest extends TestCase

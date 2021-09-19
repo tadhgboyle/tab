@@ -2,15 +2,15 @@
 
 namespace Tests\Feature;
 
+use Arr;
 use Hash;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
-use App\Http\Requests\UserRequest;
 use App\Models\Rotation;
-use App\Services\Users\UserCreationService;
-use Arr;
+use App\Http\Requests\UserRequest;
 use Database\Seeders\RotationSeeder;
+use App\Services\Users\UserCreationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserCreationTest extends TestCase

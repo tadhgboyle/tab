@@ -12,7 +12,7 @@ class LoginController extends Controller
         if (Auth::attempt($request->except(['_token']))) {
             return redirect()->route('index');
         }
-        
+
         return redirect()->route('login')->withInput($request->all())->with('error', 'Invalid credentials. Please try again.');
     }
 
