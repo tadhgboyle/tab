@@ -39,10 +39,8 @@ class CategoryController extends Controller
     }
 
     // TODO: fallback category logic similar to roles
-    public function delete(int $category_id)
+    public function delete(Category $category)
     {
-        $category = Category::find($category_id);
-
         $category->delete();
 
         return redirect()->route('settings')->with('success', "Deleted category {$category->name}.");

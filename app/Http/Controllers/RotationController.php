@@ -49,10 +49,8 @@ class RotationController extends Controller
     }
 
     // TODO: fallback category logic similar to roles
-    public function delete(int $rotation_id)
+    public function delete(Rotation $rotation)
     {
-        $rotation = Rotation::find($rotation_id);
-
         $rotation->delete();
 
         return redirect()->route('settings')->with('success', "Deleted rotation {$rotation->name}.");

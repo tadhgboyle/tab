@@ -6,7 +6,10 @@ use App;
 
 abstract class Helper
 {
-    private static $_instances = [];
+    /**
+     * Stores instances of child helper classes.
+     */
+    private static array $instances = [];
 
     /**
      * Get the instance of the child helper class.
@@ -15,9 +18,7 @@ abstract class Helper
      */
     final public static function getInstance(): static
     {
-        $class = static::class;
-
-        return self::$_instances[$class] ??= new static();
+        return self::$instances[static::class] ??= new static();
     }
 
     /**
@@ -27,7 +28,7 @@ abstract class Helper
     final public static function wipe(): void
     {
         if (App::runningUnitTests()) {
-            self::$_instances = [];
+            self::$instances = [];
         }
     }
 }

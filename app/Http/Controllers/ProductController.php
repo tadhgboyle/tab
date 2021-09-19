@@ -66,10 +66,8 @@ class ProductController extends Controller
         return redirect()->route('products_list')->with('success', 'Successfully edited ' . $request->name . '.');
     }
 
-    public function delete($id)
+    public function delete(Product $product)
     {
-        $product = Product::find($id);
-
         $product->delete();
 
         return redirect()->route('products_list')->with('success', 'Successfully deleted ' . $product->name . '.');
@@ -108,11 +106,10 @@ class ProductController extends Controller
 
         session()->flash('last_product', $product);
 
-        $validator = Validator::make($request->all(), [
+        if ($validator = Validator::make($request->all(), [
             'adjust_stock' => 'numeric',
             'adjust_box' => 'numeric',
-        ]);
-        if ($validator->fails()) {
+        ])->fails()) {
             return redirect()->back()->withErrors($validator);
         }
 
@@ -122,10 +119,10 @@ class ProductController extends Controller
         if ($adjust_stock == 0) {
             if (!$request->has('adjust_box')) {
                 return redirect()->back()->with('error', 'Please specify how much stock to add to ' . $product->name . '.');
-            } else {
-                if ($request->adjust_box == 0) {
-                    return redirect()->back()->with('error', 'Please specify how many boxes or stock to add to ' . $product->name . '.');
-                }
+            }
+
+            if ($request->adjust_box == 0) {
+                return redirect()->back()->with('error', 'Please specify how many boxes or stock to add to ' . $product->name . '.');
             }
         }
 

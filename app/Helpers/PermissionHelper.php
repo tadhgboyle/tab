@@ -59,7 +59,7 @@ class PermissionHelper extends Helper
         ]);
 
         $this->register('Misc', 'misc', [
-            'misc_login_no_rotation' => 'Let Users login when no Rotation is currently active'
+            'misc_login_no_rotation' => 'Let Users login when no Rotation is currently active' // TODO implement, or find better UX solution
         ]);
     }
 
@@ -105,24 +105,26 @@ class PermissionHelper extends Helper
             $category_permissions_html = '';
             foreach ($category_permissions as $node => $name) {
                 $checked = (!is_null($role) && (in_array($node, $role->permissions) || $role->superuser)) ? 'checked' : '';
-                $category_permissions_html .= "
-                    <label class=\"checkbox\">
-                        <input type=\"checkbox\" class=\"permission\" name=\"permissions[$node]\" value=\"1\" $checked>
+
+                $category_permissions_html .= <<<HTML
+                    <label class="checkbox">
+                        <input type="checkbox" class="permission" name="permissions[$node]" value="1" $checked>
                         $name
                     </label>
                     &nbsp;
-                ";
+                HTML;
             }
 
             $checked = (!is_null($role) && (in_array($category_root_node, $role->permissions) || $role->superuser)) ? 'checked' : '';
+
             // TODO: click on name of category to select/deselect checkbox
-            $return .= "
-                <h4 class=\"subtitle\"><strong>$category</strong>&nbsp;<input type=\"checkbox\" class=\"permission\" id=\"permission-$category_root_node-checkbox\" name=\"permissions[$category_root_node]\" onclick=\"updateSections();\" value=\"1\" $checked></h4>
-                <div class=\"control\" id=\"permission-$category_root_node\" style=\"display: none;\">
+            $return .= <<<HTML
+                <h4 class="subtitle"><strong>$category</strong>&nbsp;<input type="checkbox" class="permission" id="permission-$category_root_node-checkbox" name="permissions[$category_root_node]" onclick="updateSections();" value="1" $checked></h4>
+                <div class="control" id="permission-$category_root_node" style="display: none;">
                     $category_permissions_html
                 </div>
                 <hr>
-            ";
+            HTML;
         }
 
         return $return;

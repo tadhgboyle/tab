@@ -33,12 +33,8 @@ class UserController extends Controller
         return view('pages.users.list');
     }
 
-    public function view()
+    public function view(User $user)
     {
-        $user = User::where('id', request()->route('id'))->firstOr(function() {
-            return redirect()->route('users_list')->with('error', 'Invalid user.')->send();
-        });
-
         $processed_categories = [];
         $categories = CategoryHelper::getInstance()->getCategories();
 
@@ -77,7 +73,7 @@ class UserController extends Controller
         }
 
         $processed_categories = [];
-        $categories = CategoryHelper::getInstance()->getCategories()->sortBy('name');
+        $categories = CategoryHelper::getInstance()->getCategories();
 
         foreach ($categories as $category) {
             $processed_categories[] = [
