@@ -30,6 +30,7 @@ class UserRequest extends FormRequest
             'balance' => [
                 'nullable',
                 'numeric',
+                'min:0',
             ],
             'rotations' => [
                 'required',

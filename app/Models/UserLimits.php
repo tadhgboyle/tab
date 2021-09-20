@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Casts\CategoryType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class UserLimits extends Model
 {
@@ -27,12 +28,12 @@ class UserLimits extends Model
         'category_id' => CategoryType::class,
     ];
 
-    public function user()
+    public function user(): HasOne
     {
         return $this->hasOne(User::class, 'id');
     }
 
-    public function category()
+    public function category(): HasOne
     {
         return $this->hasOne(Category::class, 'id', 'category');
     }

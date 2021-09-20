@@ -40,7 +40,7 @@ class UserListTable extends Component
     private function getSelectedRotation(): int
     {
         if (hasPermission('users_list_select_rotation') && Session::has($this->getCacheKeyName())) {
-            return (int) Session::get($this->getCacheKeyName());
+            return Session::get($this->getCacheKeyName());
         }
 
         $currentRotation = RotationHelper::getInstance()->getCurrentRotation();

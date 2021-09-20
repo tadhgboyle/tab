@@ -39,11 +39,11 @@ class Activity extends Model
         return $this->hasOne(Category::class, 'id', 'category_id');
     }
 
-    private Collection $_current_attendees;
+    private Collection $currentAttendees;
 
     public function getCurrentAttendees(): Collection
     {
-        return $this->_current_attendees ??= DB::table('activity_transactions')->where('activity_id', $this->id)->get('user_id');
+        return $this->currentAttendees ??= DB::table('activity_transactions')->where('activity_id', $this->id)->pluck('user_id');
     }
 
     public function slotsAvailable(): int
@@ -73,52 +73,47 @@ class Activity extends Model
 
     public function getAttendees(): array
     {
-        $users = [];
-        foreach ($this->getCurrentAttendees() as $attendee) {
-            $users[] = User::find($attendee->user_id);
-        }
-
-        return $users;
+        return $this->getCurrentAttendees()->map(static function (int $userId): User {
+            return User::find($userId);
+        })->all();
     }
 
     public function isAttending(User $user): bool
     {
-        return $this->getCurrentAttendees()->contains('user_id', $user->id);
+        return $this->getCurrentAttendees()->contains($user->id);
     }
 
     public function getStatus(): string
     {
         if ($this->end->isPast()) {
             return '<span class="tag is-danger is-medium">Over</span>';
-        } else {
-            if ($this->start->isPast()) {
-                return '<span class="tag is-warning is-medium">In Progress</span>';
-            } else {
-                return '<span class="tag is-success is-medium">Waiting</span>';
-            }
         }
+
+        if ($this->start->isPast()) {
+            return '<span class="tag is-warning is-medium">In Progress</span>';
+        }
+        
+        return '<span class="tag is-success is-medium">Waiting</span>';
     }
 
     public function registerUser(User $user)
     {
         if ($this->isAttending($user)) {
-            return redirect()->back()->with('error', 'Could not register ' . $user->full_name . ' for ' . $this->name . ', they are already attending this activity.');
+            return redirect()->back()->with('error', "Could not register {$user->full_name} for {$this->name}, they are already attending this activity.");
         }
 
         if (!$this->hasSlotsAvailable()) {
-            return redirect()->back()->with('error', 'Could not register ' . $user->full_name . ' for ' . $this->name . ', this activity is out of slots.');
+            return redirect()->back()->with('error', "Could not register {$user->full_name} for {$this->name}, this activity is out of slots.");
         }
 
-        $balance = ($user->balance - $this->getPrice());
-        if (!($user->balance >= $balance)) {
-            return redirect()->back()->with('error', 'Could not register ' . $user->full_name . ' for ' . $this->name . ', they do not have enough balance.');
+        if ($this->getPrice() > $user->balance) {
+            return redirect()->back()->with('error', "Could not register {$user->full_name} for {$this->name}, they do not have enough balance.");
         }
 
         if (!UserLimitsHelper::canSpend($user, $this->getPrice(), $this->category_id)) {
-            return redirect()->back()->with('error', 'Could not register ' . $user->full_name . ' for ' . $this->name . ', they have reached their limit for the ' . $this->category->name . ' category.');
+            return redirect()->back()->with('error', "Could not register {$user->full_name} for {$this->name}, they have reached their limit for the {$this->category->name} category.");
         }
 
-        $user->update(['balance' => $balance]);
         DB::table('activity_transactions')->insert([
             'user_id' => $user->id,
             'cashier_id' => auth()->id(),
@@ -130,6 +125,8 @@ class Activity extends Model
             'updated_at' => now(),
         ]);
 
-        return redirect()->back()->with('success', 'Successfully registered ' . $user->full_name . ' to ' . $this->name . '.');
+        $user->decrement('balance', $this->getPrice());
+
+        return redirect()->back()->with('success', "Successfully registered {$user->full_name} to {$this->name}.");
     }
 }
