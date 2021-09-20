@@ -37,7 +37,7 @@ class UserEditService extends Service
         $new_role = Role::find($this->_request->role_id);
 
         // Update their category limits
-        [$message, $result] = UserLimitsHelper::createOrEditFromRequest($this->_request, $user, $this::class);
+        [$message, $result] = UserLimitsHelper::createOrEditFromRequest($this->_request, $user, self::class);
         if (!is_null($message) && !is_null($result)) {
             $this->_message = $message;
             $this->_result = $result;
@@ -51,7 +51,9 @@ class UserEditService extends Service
         }
 
         foreach ($this->_request->rotations as $rotation_id) {
-            $user->rotations()->attach($rotation_id);
+            if (!in_array($rotation_id, $user->rotations->pluck('id')->toArray())) {
+                $user->rotations()->attach($rotation_id);
+            }
         }
 
         // If same role or changing from one staff role to another

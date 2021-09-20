@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Helpers\RotationHelper;
+use Illuminate\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule as ValidationRule;
 
@@ -41,5 +43,20 @@ class RotationRequest extends FormRequest
                 'after:start'
             ]
         ];
+    }
+
+    /**
+     * Configure the validator instance.
+     *
+     * @param  \Illuminate\Validation\Validator  $validator
+     * @return void
+     */
+    public function withValidator(Validator $validator)
+    {
+        $validator->after(function () {
+            if (RotationHelper::getInstance()->doesRotationOverlap($this->get('start'), $this->get('end'))) {
+                return redirect()->back()->withInput()->with('error', 'That Rotation would overlap an existing Rotation.')->send();
+            }
+        });
     }
 }

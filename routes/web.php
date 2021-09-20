@@ -185,19 +185,6 @@ Route::middleware('auth')->group(function () {
             });
 
             /*
-             * Categories
-             */
-            Route::group(['permission' => 'settings_categories_manage'], function () {
-                Route::get('/settings/categories/new', [CategoryController::class, 'form'])->name('settings_categories_new');
-                Route::post('/settings/categories/new', [CategoryController::class, 'new'])->name('settings_categories_new_form');
-
-                Route::get('/settings/categories/edit/{id}', [CategoryController::class, 'form'])->name('settings_categories_edit');
-                Route::post('/settings/categories/edit', [CategoryController::class, 'edit'])->name('settings_categories_edit_form');
-
-                Route::get('/settings/categories/delete/{category}', [CategoryController::class, 'delete'])->name('settings_categories_delete');
-            });
-
-            /*
              * Rotations
              */
             Route::group(['permission' => 'settings_rotations_manage'], function () {
@@ -208,6 +195,19 @@ Route::middleware('auth')->group(function () {
                 Route::post('/settings/rotations/edit', [RotationController::class, 'edit'])->name('settings_rotations_edit_form');
 
                 Route::get('/settings/rotations/delete/{rotation}', [RotationController::class, 'delete'])->name('settings_rotations_delete');
+            });
+
+            /*
+             * Categories
+             */
+            Route::group(['permission' => 'settings_categories_manage'], function () {
+                Route::get('/settings/categories/new', [CategoryController::class, 'form'])->name('settings_categories_new');
+                Route::post('/settings/categories/new', [CategoryController::class, 'new'])->name('settings_categories_new_form');
+
+                Route::get('/settings/categories/edit/{id}', [CategoryController::class, 'form'])->name('settings_categories_edit');
+                Route::post('/settings/categories/edit', [CategoryController::class, 'edit'])->name('settings_categories_edit_form');
+
+                Route::get('/settings/categories/delete/{category}', [CategoryController::class, 'delete'])->name('settings_categories_delete');
             });
         });
     });

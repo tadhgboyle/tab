@@ -6,6 +6,7 @@ use App\Helpers\ProductHelper;
 use Illuminate\Database\Eloquent\Model;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Transaction extends Model
 {
@@ -19,7 +20,7 @@ class Transaction extends Model
     protected $cacheFor = 180;
 
     protected $fillable = [
-        'products', // TODO: can we auto explode(',') this?
+        'products',
         'returned',
     ];
 
@@ -32,17 +33,17 @@ class Transaction extends Model
         'cashier',
     ];
 
-    public function purchaser()
+    public function purchaser(): HasOne
     {
         return $this->hasOne(User::class, 'id', 'purchaser_id');
     }
 
-    public function cashier()
+    public function cashier(): HasOne
     {
         return $this->hasOne(User::class, 'id', 'cashier_id');
     }
 
-    public function rotation()
+    public function rotation(): HasOne
     {
         return $this->hasOne(Rotation::class, 'id', 'rotation_id');
     }
@@ -89,4 +90,9 @@ class Transaction extends Model
 
         return self::STATUS_NOT_RETURNED;
     }
+
+    // public function getProductsAttribute($products): array
+    // {
+    //     return explode(', ', $products);
+    // }
 }

@@ -144,7 +144,6 @@ Documentation (in the form of a printable user handbook) is being written.
     - They should type a query first, or use some ajax to fetch data. or else it could take forever to load
 
 ## Issues/Bugs:
-- Category new button doesnt work, routes issue
 - Rotation end selector is broken in edit/create page
 - When an error happens on order screen, it returns back with selection, but when you unselect a box it all gets NaN
 - Rotation selection dropdown not working on Stats page + general clean up of it

@@ -51,7 +51,7 @@ class UserCreationService extends Service
         }
 
         // Update their category limits
-        [$message, $result] = UserLimitsHelper::createOrEditFromRequest($this->_request, $user, $this::class);
+        [$message, $result] = UserLimitsHelper::createOrEditFromRequest($this->_request, $user, self::class);
         if (!is_null($message) && !is_null($result)) {
             $this->_message = $message;
             $this->_result = $result;
