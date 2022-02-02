@@ -16,7 +16,7 @@ class CategoryController extends Controller
         ]);
     }
 
-    public function new(CategoryRequest $request)
+    public function new(CategoryRequest $request): \Illuminate\Http\RedirectResponse
     {
         $category = new Category();
         $category->name = $request->name;
@@ -26,7 +26,7 @@ class CategoryController extends Controller
         return redirect()->route('settings')->with('success', "Created new category {$request->name}.");
     }
 
-    public function edit(CategoryRequest $request)
+    public function edit(CategoryRequest $request): \Illuminate\Http\RedirectResponse
     {
         $category = Category::find($request->category_id);
 
@@ -39,7 +39,7 @@ class CategoryController extends Controller
     }
 
     // TODO: fallback category logic similar to roles
-    public function delete(Category $category)
+    public function delete(Category $category): \Illuminate\Http\RedirectResponse
     {
         $category->delete();
 

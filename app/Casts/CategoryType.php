@@ -2,6 +2,7 @@
 
 namespace App\Casts;
 
+use Illuminate\Database\Eloquent\Model;
 use stdClass;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
@@ -14,7 +15,7 @@ class CategoryType implements CastsAttributes
     /**
      * Cast the given value.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  Model  $model
      * @param  string  $key
      * @param  mixed  $value
      * @param  array  $attributes
@@ -24,30 +25,26 @@ class CategoryType implements CastsAttributes
     public function get($model, string $key, $value, array $attributes)
     {
         $return = new stdClass();
-        $return->name = $this->getName(intval($value));
-        $return->id = intval($value);
+        $return->name = $this->getName((int)$value);
+        $return->id = (int)$value;
 
         return $return;
     }
 
     private function getName(int $type): string
     {
-        switch ($type) {
-            case self::TYPE_PRODUCTS_ACTIVITIES:
-                return 'Products & Activities';
-            case self::TYPE_PRODUCTS:
-                return 'Products';
-            case self::TYPE_ACTIVITIES:
-                return 'Activities';
-            default:
-                return $type;
-        }
+        return match ($type) {
+            self::TYPE_PRODUCTS_ACTIVITIES => 'Products & Activities',
+            self::TYPE_PRODUCTS => 'Products',
+            self::TYPE_ACTIVITIES => 'Activities',
+            default => $type,
+        };
     }
 
     /**
      * Prepare the given value for storage.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  Model  $model
      * @param  string  $key
      * @param  mixed  $value
      * @param  array  $attributes

@@ -20,23 +20,23 @@ class TransactionSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $users = User::all();
         $products_all = Product::all();
 
         foreach ($users as $user) {
-            $transactions = rand(0, 6);
+            $transactions = random_int(0, 6);
 
             for ($i = 0; $i <= $transactions; $i++) {
                 $cashier = $users->shuffle()->whereIn('role_id', [1, 2])->first();
                 Auth::login($cashier);
 
-                $product_ids = $products_all->random(rand(2, 4))->pluck('id');
+                $product_ids = $products_all->random(random_int(2, 4))->pluck('id');
 
                 $quantity = [];
                 foreach ($product_ids as $product_id) {
-                    $quantity[$product_id] = rand(1, 3);
+                    $quantity[$product_id] = random_int(1, 3);
                 }
 
                 $service = new TransactionCreationService(new Request([
@@ -45,7 +45,7 @@ class TransactionSeeder extends Seeder
                     'rotation_id' => Rotation::all()->random(1)->pluck('id'),
                     'product' => $product_ids,
                     'quantity' => $quantity,
-                    'created_at' => Carbon::now()->addMinutes(rand(-4000, 4000))
+                    'created_at' => Carbon::now()->addMinutes(random_int(-4000, 4000))
                 ]));
 
                 if ($service->getResult() != TransactionCreationService::RESULT_SUCCESS) {
@@ -54,12 +54,12 @@ class TransactionSeeder extends Seeder
 
                 $transaction = $service->getTransaction();
 
-                if (rand(0, 3) == 3) {
-                    if (rand(0, 1) == 1) {
+                if (random_int(0, 3) == 3) {
+                    if (random_int(0, 1) == 1) {
                         (new TransactionReturnService($transaction))->return();
                     } else {
                         $product_id = Arr::random($product_ids->all());
-                        $returning = rand(0, $quantity[$product_id]);
+                        $returning = random_int(0, $quantity[$product_id]);
 
                         for ($i = 0; $i <= $returning; $i++) {
                             (new TransactionReturnService($transaction))->returnItem($product_id);

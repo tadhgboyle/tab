@@ -16,8 +16,8 @@ class UserDeleteService extends Service
     {
         $user = User::find($user_id);
 
-        if ($user == null) {
-            return redirect()->route('users_list')->with('error', 'No user found with that ID.')->send();
+        if ($user === null) {
+            redirect()->route('users_list')->with('error', 'No user found with that ID.')->send();
         }
 
         $this->_user = $user;

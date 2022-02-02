@@ -45,13 +45,13 @@ class UserEditService extends Service
         }
 
         foreach ($user->rotations as $rotation) {
-            if (!in_array($rotation->id, $this->_request->rotations)) {
+            if (!in_array($rotation->id, $this->_request->rotations, true)) {
                 $user->rotations()->detach($rotation->id);
             }
         }
 
         foreach ($this->_request->rotations as $rotation_id) {
-            if (!in_array($rotation_id, $user->rotations->pluck('id')->toArray())) {
+            if (!in_array($rotation_id, $user->rotations->pluck('id')->toArray(), true)) {
                 $user->rotations()->attach($rotation_id);
             }
         }
@@ -91,12 +91,9 @@ class UserEditService extends Service
 
     public function redirect(): RedirectResponse
     {
-        switch ($this->getResult()) {
-            case self::RESULT_SUCCESS_IGNORED_PASSWORD:
-            case self::RESULT_SUCCESS_APPLIED_PASSWORD:
-                return redirect()->route('users_list')->with('success', $this->getMessage());
-            default:
-                return redirect()->back()->withInput()->with('error', $this->getMessage());
-        }
+        return match ($this->getResult()) {
+            self::RESULT_SUCCESS_IGNORED_PASSWORD, self::RESULT_SUCCESS_APPLIED_PASSWORD => redirect()->route('users_list')->with('success', $this->getMessage()),
+            default => redirect()->back()->withInput()->with('error', $this->getMessage()),
+        };
     }
 }

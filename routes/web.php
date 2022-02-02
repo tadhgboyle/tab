@@ -30,7 +30,7 @@ Route::get('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/login/auth', [LoginController::class, 'auth'])->name('login_auth');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/', function () {
+    Route::get('/', static function () {
         if (!hasPermission('cashier')) {
             // TODO: figure out what to do with users who dont have permission. when they sign in they get a 403 page, not nice UX
             return view('pages.403');
@@ -52,7 +52,7 @@ Route::middleware('auth')->group(function () {
         /*
          * Cashier
          */
-        Route::group(['permission' => 'cashier'], function () {
+        Route::group(['permission' => 'cashier'], static function () {
             Route::get('/orders/{user}', [TransactionController::class, 'order'])->name('orders_new');
             Route::post('/orders/submit', [TransactionController::class, 'submit'])->name('orders_new_form');
         });
@@ -60,16 +60,16 @@ Route::middleware('auth')->group(function () {
         /*
          * Orders
          */
-        Route::group(['permission' => 'orders'], function () {
-            Route::group(['permission' => 'orders_list'], function () {
+        Route::group(['permission' => 'orders'], static function () {
+            Route::group(['permission' => 'orders_list'], static function () {
                 Route::get('/orders', [TransactionController::class, 'list'])->name('orders_list');
             });
 
-            Route::group(['permission' => 'orders_view'], function () {
+            Route::group(['permission' => 'orders_view'], static function () {
                 Route::get('/orders/view/{transaction}', [TransactionController::class, 'view'])->name('orders_view');
             });
 
-            Route::group(['permission' => 'orders_return'], function () {
+            Route::group(['permission' => 'orders_return'], static function () {
                 Route::get('/orders/return/order/{id}', [TransactionController::class, 'returnTransaction'])->name('orders_return');
                 Route::get('/orders/return/item/{item}/{order}', [TransactionController::class, 'returnItem'])->name('orders_return_item');
             });
@@ -78,16 +78,16 @@ Route::middleware('auth')->group(function () {
         /*
          * Users
          */
-        Route::group(['permission' => 'users'], function () {
-            Route::group(['permission' => 'users_list'], function () {
+        Route::group(['permission' => 'users'], static function () {
+            Route::group(['permission' => 'users_list'], static function () {
                 Route::get('/users', [UserController::class, 'list'])->name('users_list');
             });
 
-            Route::group(['permission' => 'users_view'], function () {
+            Route::group(['permission' => 'users_view'], static function () {
                 Route::get('/users/view/{user}', [UserController::class, 'view'])->name('users_view');
             });
 
-            Route::group(['permission' => 'users_manage'], function () {
+            Route::group(['permission' => 'users_manage'], static function () {
                 Route::get('/users/new', [UserController::class, 'form'])->name('users_new');
                 Route::post('/users/new', [UserController::class, 'new'])->name('users_new_form');
 
@@ -101,14 +101,14 @@ Route::middleware('auth')->group(function () {
         /*
          * Products
          */
-        Route::group(['permission' => 'products'], function () {
-            Route::group(['permission' => 'products_list'], function () {
+        Route::group(['permission' => 'products'], static function () {
+            Route::group(['permission' => 'products_list'], static function () {
                 Route::get('/products', [ProductController::class, 'list'])->name('products_list');
             });
 
-            Route::group(['permission' => 'products_manage'], function () {
+            Route::group(['permission' => 'products_manage'], static function () {
                 Route::get('/products/new', [ProductController::class, 'form'])->name('products_new');
-                Route::post('/products/new', [ProductController::class, 'new']);
+                Route::post('/products/new', [ProductController::class, 'new'])->name('products_new_form');
 
                 Route::get('/products/edit/{id}', [ProductController::class, 'form'])->name('products_edit');
                 Route::post('/products/edit', [ProductController::class, 'edit'])->name('products_edit_form');
@@ -116,9 +116,9 @@ Route::middleware('auth')->group(function () {
                 Route::get('/products/delete/{product}', [ProductController::class, 'delete'])->name('products_delete');
             });
 
-            Route::group(['permission' => 'products_adjust'], function () {
+            Route::group(['permission' => 'products_adjust'], static function () {
                 Route::get('/products/adjust', [ProductController::class, 'adjustList'])->name('products_adjust');
-                Route::post('/products/adjust/ajax', [ProductController::class, 'ajaxInit'])->name('products_adjust_ajax');
+                Route::post('/products/adjust/ajax', [ProductController::class, 'ajaxGetPage'])->name('products_adjust_ajax');
                 Route::post('/products/adjust', [ProductController::class, 'adjustStock'])->name('products_adjust_form');
             });
         });
@@ -126,23 +126,23 @@ Route::middleware('auth')->group(function () {
         /*
          * Activities
          */
-        Route::group(['permission' => 'activities'], function () {
-            Route::group(['permission' => 'activities_list'], function () {
+        Route::group(['permission' => 'activities'], static function () {
+            Route::group(['permission' => 'activities_list'], static function () {
                 Route::get('/activities', [ActivityController::class, 'list'])->name('activities_list');
             });
 
-            Route::group(['permission' => 'activities_view'], function () {
+            Route::group(['permission' => 'activities_view'], static function () {
                 Route::get('/activities/view/{activity}', [ActivityController::class, 'view'])->name('activities_view');
             });
 
-            Route::group(['permission' => 'activities_manage'], function () {
+            Route::group(['permission' => 'activities_manage'], static function () {
                 Route::get('/activities/new/{date?}', [ActivityController::class, 'form'])->name('activities_new');
                 Route::post('/activities/new', [ActivityController::class, 'new'])->name('activities_new_form');
 
                 Route::get('/activities/edit/{id}', [ActivityController::class, 'form'])->name('activities_edit');
                 Route::post('/activities/edit', [ActivityController::class, 'edit'])->name('activities_edit_form');
 
-                Route::post('/activities/view/search', [ActivityController::class, 'ajaxInit'])->name('activities_user_search');
+                Route::post('/activities/view/search', [ActivityController::class, 'ajaxUserSearch'])->name('activities_user_search');
                 Route::get('/activities/view/{activity}/add/{user}', [ActivityController::class, 'registerUser'])->name('activities_user_add');
 
                 Route::get('/activities/delete/{activity}', [ActivityController::class, 'delete'])->name('activities_delete');
@@ -152,27 +152,27 @@ Route::middleware('auth')->group(function () {
         /*
          * Statistics
          */
-        Route::group(['permission' => 'statistics'], function () {
+        Route::group(['permission' => 'statistics'], static function () {
             Route::get('/statistics', [StatisticsPageController::class, 'view'])->name('statistics');
         });
 
         /*
          * Settings
          */
-        Route::group(['permission' => 'settings'], function () {
+        Route::group(['permission' => 'settings'], static function () {
             Route::get('/settings', [SettingsController::class, 'view'])->name('settings');
 
             /*
              * Tax editing
              */
-            Route::group(['permission' => 'settings_general'], function () {
+            Route::group(['permission' => 'settings_general'], static function () {
                 Route::post('/settings', [SettingsController::class, 'editSettings'])->name('settings_form');
             });
 
             /*
              * Roles
              */
-            Route::group(['permission' => 'settings_roles_manage'], function () {
+            Route::group(['permission' => 'settings_roles_manage'], static function () {
                 Route::get('/settings/roles/new', [RoleController::class, 'form'])->name('settings_roles_new');
                 Route::post('/settings/roles/new', [RoleController::class, 'new'])->name('settings_roles_new_form');
 
@@ -187,7 +187,7 @@ Route::middleware('auth')->group(function () {
             /*
              * Rotations
              */
-            Route::group(['permission' => 'settings_rotations_manage'], function () {
+            Route::group(['permission' => 'settings_rotations_manage'], static function () {
                 Route::get('/settings/rotations/new', [RotationController::class, 'form'])->name('settings_rotations_new');
                 Route::post('/settings/categories/new', [RotationController::class, 'new'])->name('settings_rotations_new_form');
 
@@ -200,7 +200,7 @@ Route::middleware('auth')->group(function () {
             /*
              * Categories
              */
-            Route::group(['permission' => 'settings_categories_manage'], function () {
+            Route::group(['permission' => 'settings_categories_manage'], static function () {
                 Route::get('/settings/categories/new', [CategoryController::class, 'form'])->name('settings_categories_new');
                 Route::post('/settings/categories/new', [CategoryController::class, 'new'])->name('settings_categories_new_form');
 

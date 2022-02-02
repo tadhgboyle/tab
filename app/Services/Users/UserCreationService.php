@@ -33,7 +33,7 @@ class UserCreationService extends Service
 
         // Using User::where(...)->count() does not work while testing for some reason
         if (DB::table('users')->where('username', $user->username)->count() > 0) {
-            $user->username = $user->username . mt_rand(0, 100);
+            $user->username .= random_int(0, 100);
         }
 
         $user->balance = $this->_request->balance ?: 0;
@@ -65,11 +65,9 @@ class UserCreationService extends Service
 
     public function redirect(): RedirectResponse
     {
-        switch ($this->getResult()) {
-            case self::RESULT_SUCCESS:
-                return redirect()->route('users_list')->with('success', $this->getMessage());
-            default:
-                return redirect()->back()->withInput()->with('error', $this->getMessage());
-        }
+        return match ($this->getResult()) {
+            self::RESULT_SUCCESS => redirect()->route('users_list')->with('success', $this->getMessage()),
+            default => redirect()->back()->withInput()->with('error', $this->getMessage()),
+        };
     }
 }

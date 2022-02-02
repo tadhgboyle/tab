@@ -19,7 +19,7 @@ class TransactionReturnTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testCanReturnTransaction()
+    public function testCanReturnTransaction(): void
     {
         [, $transaction] = $this->createFakeRecords();
 
@@ -30,7 +30,7 @@ class TransactionReturnTest extends TestCase
         $this->assertTrue($transaction->isReturned());
     }
 
-    public function testUserBalanceUpdatedAfterItemReturn()
+    public function testUserBalanceUpdatedAfterItemReturn(): void
     {
         [$user, $transaction, $hat] = $this->createFakeRecords();
 
@@ -42,7 +42,7 @@ class TransactionReturnTest extends TestCase
         $this->assertEquals($hat->getPrice(), number_format($user->findReturned(), 2));
     }
 
-    public function testUserBalanceUpdatedAfterTransactionReturn()
+    public function testUserBalanceUpdatedAfterTransactionReturn(): void
     {
         [$user, $transaction] = $this->createFakeRecords();
 
@@ -55,7 +55,7 @@ class TransactionReturnTest extends TestCase
         $this->assertEquals($transaction->total_price, $user->findReturned());
     }
 
-    public function testCanReturnPartiallyReturnedItemInTransaction()
+    public function testCanReturnPartiallyReturnedItemInTransaction(): void
     {
         [$user, $transaction, $hat] = $this->createFakeRecords();
 
@@ -68,7 +68,7 @@ class TransactionReturnTest extends TestCase
         $this->assertEquals($transaction->total_price, $user->findReturned());
     }
 
-    public function testCannotReturnFullyReturnedTransaction()
+    public function testCannotReturnFullyReturnedTransaction(): void
     {
         [$user, $transaction] = $this->createFakeRecords();
 
@@ -82,7 +82,7 @@ class TransactionReturnTest extends TestCase
         $this->assertEquals($transaction->total_price, $user->findReturned());
     }
 
-    public function testCannotReturnFullyReturnedItemInTransaction()
+    public function testCannotReturnFullyReturnedItemInTransaction(): void
     {
         [$user, , $hat] = $this->createFakeRecords();
         $transaction_2_items = $this->createTwoItemTransaction($user, $hat);

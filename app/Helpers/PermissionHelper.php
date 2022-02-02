@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Models\Role;
 use Illuminate\Support\Str;
+use JetBrains\PhpStorm\Pure;
 
 class PermissionHelper extends Helper
 {
@@ -34,7 +35,7 @@ class PermissionHelper extends Helper
             'activities_list' => 'List all Activities',
             'activities_view' => 'View specific Activity information',
             'activities_manage' => 'Edit/Create/Delete Activities',
-            'activities_register_user' => 'Register User for Activity',
+            'activities_register_user' => 'Register Users for Activities',
         ]);
 
         $this->register('Order Management', 'orders', [
@@ -66,7 +67,7 @@ class PermissionHelper extends Helper
     /**
      * Registers a new permission category.
      */
-    private function register(string $category_name, string $root_node, array $permissions)
+    private function register(string $category_name, string $root_node, array $permissions): void
     {
         $this->_permissions[$category_name] = [
             'root_node' => $root_node,
@@ -82,6 +83,7 @@ class PermissionHelper extends Helper
     /**
      * Returns comma seperated unique category root nodes / keys.
      */
+    #[Pure]
     public function getCategoryKeys(): string
     {
         $return = '';
@@ -93,6 +95,7 @@ class PermissionHelper extends Helper
         return rtrim($return, ',');
     }
 
+    #[Pure]
     public function renderForm(?Role $role): string
     {
         $return = '';
@@ -104,7 +107,7 @@ class PermissionHelper extends Helper
 
             $category_permissions_html = '';
             foreach ($category_permissions as $node => $name) {
-                $checked = (!is_null($role) && (in_array($node, $role->permissions) || $role->superuser)) ? 'checked' : '';
+                $checked = (!is_null($role) && ($role->superuser || in_array($node, $role->permissions, true))) ? 'checked' : '';
 
                 $category_permissions_html .= <<<HTML
                     <label class="checkbox">
@@ -115,7 +118,7 @@ class PermissionHelper extends Helper
                 HTML;
             }
 
-            $checked = (!is_null($role) && (in_array($category_root_node, $role->permissions) || $role->superuser)) ? 'checked' : '';
+            $checked = (!is_null($role) && ($role->superuser || in_array($category_root_node, $role->permissions, true))) ? 'checked' : '';
 
             // TODO: click on name of category to select/deselect checkbox
             $return .= <<<HTML
@@ -154,7 +157,7 @@ class PermissionHelper extends Helper
             // grab the root node from a normal node (first element if we split by _)
             // and ensure this node was selected. if not, dont add it
             $category = explode('_', $permission)[0];
-            if (!in_array($category, $selected_categories)) {
+            if (!in_array($category, $selected_categories, true)) {
                 continue;
             }
 
@@ -173,7 +176,7 @@ class PermissionHelper extends Helper
             }
 
             if (!$found) {
-                unset($return[array_search($category_root_node, $return)]);
+                unset($return[array_search($category_root_node, $return, true)]);
             }
         }
 

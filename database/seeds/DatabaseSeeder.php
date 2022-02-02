@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $this->command->info('Seeding Roles...');
         $roles = $this->resolve(RoleSeeder::class)->run();

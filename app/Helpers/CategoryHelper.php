@@ -31,7 +31,7 @@ class CategoryHelper extends Helper
     private function getCategoriesOfType(int $type): Collection
     {
         return $this->getCategories()->filter(static function (Category $category) use ($type) {
-            return in_array($category->type->id, [$type, CategoryType::TYPE_PRODUCTS_ACTIVITIES]);
+            return in_array($category->type->id, [$type, CategoryType::TYPE_PRODUCTS_ACTIVITIES], true);
         });
     }
 }

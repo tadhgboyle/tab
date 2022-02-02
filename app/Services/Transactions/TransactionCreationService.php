@@ -98,7 +98,7 @@ class TransactionCreationService extends Service
             }
 
             // keep track of which unique categories are included in this transaction
-            if (!in_array($product->category_id, $transaction_categories)) {
+            if (!in_array($product->category_id, $transaction_categories, true)) {
                 $transaction_categories[] = $product->category_id;
             }
 
@@ -140,7 +140,7 @@ class TransactionCreationService extends Service
 
                 $tax_percent = $product_metadata['gst'];
 
-                if ($product_metadata['pst'] != 'null') {
+                if ($product_metadata['pst'] !== 'null') {
                     $tax_percent += $product_metadata['pst'] - 1;
                 }
 
@@ -186,13 +186,10 @@ class TransactionCreationService extends Service
 
     public function redirect(): RedirectResponse
     {
-        switch ($this->getResult()) {
-            case self::RESULT_NO_SELF_PURCHASE:
-                return redirect('/')->with('error', $this->getMessage());
-            case self::RESULT_SUCCESS:
-                return redirect('/')->with('success', $this->getMessage());
-            default:
-                return redirect()->back()->withInput()->with('error', $this->getMessage());
-        }
+        return match ($this->getResult()) {
+            self::RESULT_NO_SELF_PURCHASE => redirect('/')->with('error', $this->getMessage()),
+            self::RESULT_SUCCESS => redirect('/')->with('success', $this->getMessage()),
+            default => redirect()->back()->withInput()->with('error', $this->getMessage()),
+        };
     }
 }

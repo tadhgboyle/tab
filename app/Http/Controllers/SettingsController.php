@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 class SettingsController extends Controller
 {
-    public function editSettings(Request $request)
+    public function editSettings(Request $request): \Illuminate\Http\RedirectResponse
     {
         if ($validator = Validator::make($request->all(), [
             'gst' => 'required|numeric',

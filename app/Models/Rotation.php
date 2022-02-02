@@ -19,7 +19,7 @@ class Rotation extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $cacheFor = 180;
+    protected int $cacheFor = 180;
 
     protected $dates = [
         'start',
@@ -33,7 +33,7 @@ class Rotation extends Model
 
     public function getStatus(): int
     {
-        if (RotationHelper::getInstance()->getCurrentRotation()?->id == $this->id) {
+        if (RotationHelper::getInstance()->getCurrentRotation()?->id === $this->id) {
             return self::STATUS_PRESENT;
         }
 
@@ -50,16 +50,12 @@ class Rotation extends Model
 
     public function getStatusHtml(): string
     {
-        switch ($this->getStatus()) {
-            case self::STATUS_PRESENT:
-                return '<span class="tag is-success is-medium">Present</span>';
-            case self::STATUS_FUTURE:
-                return '<span class="tag is-warning is-medium">Future</span>';
-            case self::STATUS_PAST:
-                return '<span class="tag is-warning is-medium">Past</span>';
-            default:
-                return "Unknown Status: {$this->getStatus()}";
-        }
+        return match ($this->getStatus()) {
+            self::STATUS_PRESENT => '<span class="tag is-success is-medium">Present</span>',
+            self::STATUS_FUTURE => '<span class="tag is-warning is-medium">Future</span>',
+            self::STATUS_PAST => '<span class="tag is-warning is-medium">Past</span>',
+            default => "Unknown Status: {$this->getStatus()}",
+        };
     }
 
     // rotation list in settings - DONE

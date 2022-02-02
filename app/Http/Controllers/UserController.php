@@ -13,17 +13,17 @@ use App\Services\Users\UserCreationService;
 
 class UserController extends Controller
 {
-    public function new(UserRequest $request)
+    public function new(UserRequest $request): \Illuminate\Http\RedirectResponse
     {
         return (new UserCreationService($request))->redirect();
     }
 
-    public function edit(UserRequest $request)
+    public function edit(UserRequest $request): \Illuminate\Http\RedirectResponse
     {
         return (new UserEditService($request))->redirect();
     }
 
-    public function delete(int $user_id)
+    public function delete(int $user_id): \Illuminate\Http\RedirectResponse
     {
         return (new UserDeleteService($user_id))->redirect();
     }
@@ -61,7 +61,7 @@ class UserController extends Controller
 
     public function form()
     {
-        $user = User::find(request()->route('id'));
+        $user = User::query()->find(request()->route('id'));
         if ($user != null) {
             if ($user->trashed()) {
                 return redirect()->route('users_list')->with('error', 'That user has been deleted.')->send();

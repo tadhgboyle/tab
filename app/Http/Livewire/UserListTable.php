@@ -12,7 +12,7 @@ class UserListTable extends Component
 {
     public $selectedRotation;
 
-    public function mount()
+    public function mount(): void
     {
         $this->selectedRotation = $this->getSelectedRotation();
     }
@@ -26,7 +26,7 @@ class UserListTable extends Component
         ]);
     }
 
-    public function updatedSelectedRotation($rotationId)
+    public function updatedSelectedRotation($rotationId): void
     {
         if (!hasPermission('users_list_select_rotation')) {
             return;
@@ -57,7 +57,7 @@ class UserListTable extends Component
 
     private function getAvailableUsers(): Collection
     {
-        if ($this->selectedRotation == '*') {
+        if ($this->selectedRotation === '*') {
             return User::all();
         }
 

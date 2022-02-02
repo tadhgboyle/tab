@@ -19,7 +19,7 @@ class User extends Authenticatable
     use HasFactory;
     use SoftDeletes;
 
-    protected $cacheFor = 180;
+    protected int $cacheFor = 180;
 
     protected $fillable = [
         'full_name',
@@ -95,7 +95,7 @@ class User extends Authenticatable
             foreach ($activity_transactions as $activity) {
                 $this->_activities->add([
                     'created_at' => Carbon::parse($activity->created_at),
-                    'cashier' => User::find($activity->cashier_id),
+                    'cashier' => self::find($activity->cashier_id),
                     'activity' => Activity::find($activity->activity_id),
                     'price' => $activity->activity_price,
                     'returned' => $activity->returned,
@@ -112,9 +112,7 @@ class User extends Authenticatable
      */
     public function findSpent(): float
     {
-        return floatval(
-            $this->getTransactions()->sum('total_price') + $this->getActivityTransactions()->sum('total_price')
-        );
+        return (float)($this->getTransactions()->sum('total_price') + $this->getActivityTransactions()->sum('total_price'));
     }
 
     /**
@@ -140,7 +138,7 @@ class User extends Authenticatable
                 }
 
                 $tax = $product['gst'];
-                if ($product['pst'] != 'null') {
+                if ($product['pst'] !== 'null') {
                     $tax += ($product['pst'] - 1);
                 }
 
@@ -150,7 +148,7 @@ class User extends Authenticatable
 
         $returned += $this->getActivityTransactions()->where('returned', true)->sum('total_price');
 
-        return floatval($returned);
+        return (float)$returned;
     }
 
     /**
@@ -159,6 +157,6 @@ class User extends Authenticatable
      */
     public function findOwing(): float
     {
-        return floatval($this->findSpent() - $this->findReturned());
+        return $this->findSpent() - $this->findReturned();
     }
 }

@@ -14,7 +14,7 @@ class UserLimitsSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $users = User::all();
         $categories = Category::all();

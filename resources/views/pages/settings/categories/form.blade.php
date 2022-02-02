@@ -2,7 +2,7 @@
 @extends('layouts.default')
 @section('content')
 @php
-use App\Casts\CategoryType;
+use App\Casts\CategoryType
 @endphp
 <h2 class="title has-text-weight-bold">{{ is_null($category) ? 'Create' : 'Edit' }} Category</h2>
 <div class="columns">
@@ -80,11 +80,11 @@ use App\Casts\CategoryType;
 <script>
     @if(!is_null($category))
         const modal = document.querySelector('.modal');
-        
+
         function openModal() {
             modal.classList.add('is-active');
         }
-        
+
         function closeModal() {
             modal.classList.remove('is-active');
         }

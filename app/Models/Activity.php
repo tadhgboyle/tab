@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Helpers\SettingsHelper;
 use App\Helpers\UserLimitsHelper;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
@@ -17,7 +19,7 @@ class Activity extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $cacheFor = 180;
+    protected int $cacheFor = 180;
 
     protected $casts = [
         'name' => 'string',
@@ -34,7 +36,7 @@ class Activity extends Model
         'end',
     ];
 
-    public function category()
+    public function category(): HasOne
     {
         return $this->hasOne(Category::class, 'id', 'category_id');
     }
@@ -92,11 +94,11 @@ class Activity extends Model
         if ($this->start->isPast()) {
             return '<span class="tag is-warning is-medium">In Progress</span>';
         }
-        
+
         return '<span class="tag is-success is-medium">Waiting</span>';
     }
 
-    public function registerUser(User $user)
+    public function registerUser(User $user): RedirectResponse
     {
         if ($this->isAttending($user)) {
             return redirect()->back()->with('error', "Could not register {$user->full_name} for {$this->name}, they are already attending this activity.");

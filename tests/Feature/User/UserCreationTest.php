@@ -24,7 +24,7 @@ class UserCreationTest extends TestCase
         app(RotationSeeder::class)->run();
     }
 
-    public function testUsernameProperlyFormatted()
+    public function testUsernameProperlyFormatted(): void
     {
         $role_id = Role::factory()->create()->id;
 
@@ -38,7 +38,7 @@ class UserCreationTest extends TestCase
         $this->assertEquals('tadhgboyle', $user->username);
     }
 
-    public function testUsernameProperlyFormattedOnDuplicateUsername()
+    public function testUsernameProperlyFormattedOnDuplicateUsername(): void
     {
         [, $camper_role] = $this->createRoles();
 
@@ -57,7 +57,7 @@ class UserCreationTest extends TestCase
         $this->assertMatchesRegularExpression('/^tadhgboyle(?:[0-9]\d?|100)$/', $user->username);
     }
 
-    public function testHasPasswordWhenRoleIsStaff()
+    public function testHasPasswordWhenRoleIsStaff(): void
     {
         [$superadmin_role] = $this->createRoles();
 
@@ -73,7 +73,7 @@ class UserCreationTest extends TestCase
         $this->assertTrue(Hash::check('password', $user->password));
     }
 
-    public function testDoesNotHavePasswordWhenRoleIsNotStaff()
+    public function testDoesNotHavePasswordWhenRoleIsNotStaff(): void
     {
         [, $camper_role] = $this->createRoles();
 
@@ -86,7 +86,7 @@ class UserCreationTest extends TestCase
         $this->assertEmpty($user->password);
     }
 
-    public function testBalanceIsZeroIfNotSupplied()
+    public function testBalanceIsZeroIfNotSupplied(): void
     {
         [, $camper_role] = $this->createRoles();
 

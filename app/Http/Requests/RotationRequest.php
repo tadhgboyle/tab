@@ -14,7 +14,7 @@ class RotationRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -24,7 +24,7 @@ class RotationRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'name' => [
@@ -48,10 +48,10 @@ class RotationRequest extends FormRequest
     /**
      * Configure the validator instance.
      *
-     * @param  \Illuminate\Validation\Validator  $validator
+     * @param Validator $validator
      * @return void
      */
-    public function withValidator(Validator $validator)
+    public function withValidator(Validator $validator): void
     {
         $validator->after(function () {
             if (RotationHelper::getInstance()->doesRotationOverlap($this->get('start'), $this->get('end'))) {

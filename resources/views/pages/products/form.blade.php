@@ -20,7 +20,7 @@
 
     <div class="column is-5">
         @include('includes.messages')
-        <form action="/products/{{ is_null($product) ? 'new' : 'edit' }}" id="product_form" method="POST"
+        <form action="{{ is_null($product) ? route('products_new_form') : route('products_edit_form') }}" id="product_form" method="POST"
             class="form-horizontal">
             @csrf
             <input type="hidden" name="product_id" id="product_id" value="{{ $product->id ?? null }}">
@@ -74,8 +74,7 @@
             <div class="control">
                 <label class="checkbox label">
                     Unlimited Stock
-                    <input type="checkbox" class="js-switch" name="unlimited_stock"
-                        {{ (isset($product->unlimited_stock) && $product->unlimited_stock) || old('unlimited_stock') ? 'checked' : '' }}>
+                    <input type="checkbox" class="js-switch" name="unlimited_stock" {{ (isset($product->unlimited_stock) && $product->unlimited_stock) || old('unlimited_stock') ? 'checked' : '' }}>
                 </label>
             </div>
         </div>
@@ -86,8 +85,7 @@
                 <div class="control">
                     <label class="checkbox label">
                         Stock Override
-                        <input type="checkbox" class="js-switch" name="stock_override"
-                            {{ (isset($product->stock_override) && $product->stock_override) || old('stock_override') ? 'checked' : '' }}>
+                        <input type="checkbox" class="js-switch" name="stock_override" {{ (isset($product->stock_override) && $product->stock_override) || old('stock_override') ? 'checked' : '' }}>
                     </label>
                 </div>
             </div>

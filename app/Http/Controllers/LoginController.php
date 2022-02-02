@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
-    public function auth(Request $request)
+    public function auth(Request $request): \Illuminate\Http\RedirectResponse
     {
         if (Auth::attempt($request->except(['_token']))) {
             return redirect()->route('index');
@@ -21,7 +21,7 @@ class LoginController extends Controller
         return view('pages.login');
     }
 
-    public function logout()
+    public function logout(): \Illuminate\Http\RedirectResponse
     {
         Auth::logout();
 
