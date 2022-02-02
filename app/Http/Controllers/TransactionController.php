@@ -13,17 +13,17 @@ use App\Services\Transactions\TransactionCreationService;
 
 class TransactionController extends Controller
 {
-    public function submit(Request $request)
+    public function submit(Request $request): \Illuminate\Http\RedirectResponse
     {
         return (new TransactionCreationService($request))->redirect();
     }
 
-    public function returnTransaction(int $transaction_id)
+    public function returnTransaction(int $transaction_id): \Illuminate\Http\RedirectResponse
     {
         return (new TransactionReturnService($transaction_id))->return()->redirect();
     }
 
-    public function returnItem(int $item_id, int $transaction_id)
+    public function returnItem(int $item_id, int $transaction_id): \Illuminate\Http\RedirectResponse
     {
         return (new TransactionReturnService($transaction_id))->returnItem($item_id)->redirect();
     }

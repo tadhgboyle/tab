@@ -10,7 +10,7 @@ use App\Http\Requests\ProductRequest;
 
 class ProductController extends Controller
 {
-    public function new(ProductRequest $request)
+    public function new(ProductRequest $request): \Illuminate\Http\RedirectResponse
     {
         // Box size of -1 means they cannot receive stock via box. Instead must use normal stock
         $box_size = $request->box_size ?: -1;
@@ -38,7 +38,7 @@ class ProductController extends Controller
         return redirect()->route('products_list')->with('success', 'Successfully created ' . $request->name . '.');
     }
 
-    public function edit(ProductRequest $request)
+    public function edit(ProductRequest $request): \Illuminate\Http\RedirectResponse
     {
         $pst = $request->has('pst');
 
@@ -66,7 +66,7 @@ class ProductController extends Controller
         return redirect()->route('products_list')->with('success', 'Successfully edited ' . $request->name . '.');
     }
 
-    public function delete(Product $product)
+    public function delete(Product $product): \Illuminate\Http\RedirectResponse
     {
         $product->delete();
 
@@ -95,7 +95,7 @@ class ProductController extends Controller
         ]);
     }
 
-    public function adjustStock(Request $request)
+    public function adjustStock(Request $request): \Illuminate\Http\RedirectResponse
     {
         $product_id = $request->product_id;
         $product = Product::find($product_id);
@@ -135,9 +135,10 @@ class ProductController extends Controller
         return redirect()->back()->with('success', 'Successfully added ' . $adjust_stock . ' stock and ' . $adjust_box . ' boxes to ' . $product->name . '.');
     }
 
-    public function ajaxInit()
+    public function ajaxGetPage()
     {
-        $product = Product::find(\Request::get('id'));
-        return view('pages.products.adjust.form', compact('product', $product));
+        return view('pages.products.adjust.form', [
+            'product' => Product::find(request('id')),
+        ]);
     }
 }

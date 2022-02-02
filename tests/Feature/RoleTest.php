@@ -60,7 +60,7 @@ class RoleTest extends TestCase
         ]);
     }
 
-    public function testRolesAvailableWorksAsExpected()
+    public function testRolesAvailableWorksAsExpected(): void
     {
         $this->assertCount(6, $this->_superadmin_role->getRolesAvailable()); // all, including self
         $this->assertCount(6, $this->_admin_role->getRolesAvailable()); // all, including self
@@ -70,7 +70,7 @@ class RoleTest extends TestCase
         $this->assertEmpty($this->_camper_role->getRolesAvailable()); // none
     }
 
-    public function testRolesAvailableWithCompareWorksAsExpected()
+    public function testRolesAvailableWithCompareWorksAsExpected(): void
     {
         $this->assertCount(3, $this->_superadmin_role->getRolesAvailable($this->_manager_role)); // camper parent + camper + cashier
         $this->assertCount(3, $this->_admin_role->getRolesAvailable($this->_manager_role)); // camper parent + camper + cashier
@@ -80,7 +80,7 @@ class RoleTest extends TestCase
         $this->assertCount(1, $this->_camper_role->getRolesAvailable($this->_manager_role)); // camper parent
     }
 
-    public function testCanInteractWorksAsExpected()
+    public function testCanInteractWorksAsExpected(): void
     {
         $this->assertTrue($this->_superadmin_role->canInteract($this->_manager_role));
 
@@ -90,7 +90,7 @@ class RoleTest extends TestCase
         $this->assertFalse($this->_camper_parent_role->canInteract($this->_camper_role));
     }
 
-    public function testHasPermissionWorksAsExpected()
+    public function testHasPermissionWorksAsExpected(): void
     {
         $this->assertTrue($this->_superadmin_role->hasPermission('permission_node'));
         $this->assertTrue($this->_superadmin_role->hasPermission(['permission_node1', 'permission_node2', 'permission_node3']));

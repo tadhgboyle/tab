@@ -30,7 +30,7 @@ class ProductSeeder extends Seeder
      *
      * @return void
      */
-    public function run(array $categories)
+    public function run(array $categories): void
     {
         [$food_category, $merch_category, , $general_category] = $categories;
 

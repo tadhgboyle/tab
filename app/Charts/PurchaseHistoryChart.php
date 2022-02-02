@@ -31,7 +31,7 @@ class PurchaseHistoryChart extends BaseChart
             $found = false;
 
             foreach ($returned_data as $returned_order) {
-                if ($normal_order['date'] == $returned_order['date']) {
+                if ($normal_order['date'] === $returned_order['date']) {
                     $found = true;
                     $returned_orders[] = $returned_order['count'];
                     break;

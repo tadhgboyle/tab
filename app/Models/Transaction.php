@@ -17,7 +17,7 @@ class Transaction extends Model
     use QueryCacheable;
     use HasFactory;
 
-    protected $cacheFor = 180;
+    protected int $cacheFor = 180;
 
     protected $fillable = [
         'products',

@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Models\Product;
 use Illuminate\Support\Str;
+use JetBrains\PhpStorm\ArrayShape;
 
 class ProductHelper
 {
@@ -33,6 +34,7 @@ class ProductHelper
      * Pst: 1.05
      * Returned: Quantity returned -- Default 0.
      */
+    #[ArrayShape(['id' => "string", 'name' => "string", 'category' => "int", 'quantity' => "string", 'price' => "string", 'gst' => "string", 'pst' => "string", 'returned' => "string"])]
     public static function deserializeProduct(string $serializedProduct, bool $full = true): array
     {
         $productId = Str::before($serializedProduct, '*');

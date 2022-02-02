@@ -14,13 +14,13 @@ class ActivityTransactionSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $activities = Activity::all();
         $users = User::all();
 
         foreach ($users as $user) {
-            $user_activites = $activities->shuffle()->random(rand(0, 2));
+            $user_activites = $activities->shuffle()->random(random_int(0, 2));
 
             foreach ($user_activites as $activity) {
                 $cashier = $users->shuffle()->whereIn('role_id', [1, 2])->first();

@@ -11,9 +11,9 @@ class CreateRotationUserTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('rotation_user', function (Blueprint $table) {
+        Schema::create('rotation_user', static function (Blueprint $table) {
             $table->foreignId('rotation_id')->constrained();
             $table->foreignId('user_id')->constrained();
         });
@@ -24,7 +24,7 @@ class CreateRotationUserTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('rotation_user');
     }

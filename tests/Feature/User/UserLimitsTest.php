@@ -27,7 +27,7 @@ class UserLimitsTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testFindSpentCalculationIsCorrect()
+    public function testFindSpentCalculationIsCorrect(): void
     {
         [$user, $food_category, $merch_category, $activities_category, $waterfront_category] = $this->createFakeRecords();
 
@@ -52,17 +52,17 @@ class UserLimitsTest extends TestCase
         $this->assertEquals(0, $waterfront_category_spent);
     }
 
-    public function testFindSpentCalculationIsCorrectAfterItemReturn()
+    public function testFindSpentCalculationIsCorrectAfterItemReturn(): void
     {
         $this->assertTrue(true); // TODO after rewriting transaction handling
     }
 
-    public function testFindSpentCalculationIsCorrectAfterTransactionReturn()
+    public function testFindSpentCalculationIsCorrectAfterTransactionReturn(): void
     {
         $this->assertTrue(true); // TODO after rewriting transaction handling
     }
 
-    public function testUserCanSpendUnlimitedInCategoryIfNegativeOneIsLimit()
+    public function testUserCanSpendUnlimitedInCategoryIfNegativeOneIsLimit(): void
     {
         [$user, , $merch_category] = $this->createFakeRecords();
 
@@ -71,7 +71,7 @@ class UserLimitsTest extends TestCase
         $this->assertTrue($can_spend_1_million_merch);
     }
 
-    public function testUserCannotSpendOverLimitInCategory()
+    public function testUserCannotSpendOverLimitInCategory(): void
     {
         [$user, $food_category, , $activities_category, $waterfront_category] = $this->createFakeRecords();
 
@@ -96,7 +96,7 @@ class UserLimitsTest extends TestCase
         $this->assertTrue($can_spent_10_dollars_waterfront);
     }
 
-    public function testLimitsAndDurationsCorrectlyStoredIfValidFromUserRequest()
+    public function testLimitsAndDurationsCorrectlyStoredIfValidFromUserRequest(): void
     {
         [$superadmin_role] = $this->createRoles();
 
@@ -133,7 +133,7 @@ class UserLimitsTest extends TestCase
         $this->assertSame(UserLimits::LIMIT_WEEKLY, UserLimitsHelper::getInfo($user, $candy_category->id)->duration_int);
     }
 
-    public function testInvalidLimitGivesErrorFromUserRequest()
+    public function testInvalidLimitGivesErrorFromUserRequest(): void
     {
         [$superadmin_role] = $this->createRoles();
 
@@ -154,7 +154,7 @@ class UserLimitsTest extends TestCase
         $this->assertSame(UserCreationService::RESULT_INVALID_LIMIT, $result);
     }
 
-    public function testNoLimitProvidedDefaultsToNegativeOneFromUserRequest()
+    public function testNoLimitProvidedDefaultsToNegativeOneFromUserRequest(): void
     {
         [$superadmin_role] = $this->createRoles();
 
@@ -183,7 +183,7 @@ class UserLimitsTest extends TestCase
         $this->assertSame(-1.0, UserLimitsHelper::getInfo($user, $candy_category->id)->limit_per);
     }
 
-    public function testNoDurationProvidedDefaultsToDailyFromUserRequest()
+    public function testNoDurationProvidedDefaultsToDailyFromUserRequest(): void
     {
         [$superadmin_role] = $this->createRoles();
 
@@ -238,7 +238,7 @@ class UserLimitsTest extends TestCase
      * - UserLimits for the fake user for each category (one is unlimited, one is limited)
      * - Fake transactions for the fake user.
      */
-    private function createFakeRecords()
+    private function createFakeRecords(): array
     {
         app(RotationSeeder::class)->run();
 
@@ -320,7 +320,7 @@ class UserLimitsTest extends TestCase
     }
 
     /** @return Category[] */
-    private function createFakeCategories()
+    private function createFakeCategories(): array
     {
         $food_category = Category::factory()->create([
             'name' => 'Food'
@@ -343,7 +343,7 @@ class UserLimitsTest extends TestCase
     }
 
     /** @return Product[] */
-    private function createFakeProducts($food_category_id, $merch_category_id)
+    private function createFakeProducts($food_category_id, $merch_category_id): array
     {
         $skittles = Product::factory()->create([
             'name' => 'Skittles',
@@ -377,7 +377,7 @@ class UserLimitsTest extends TestCase
     }
 
     /** @return Activity[] */
-    private function createFakeActivities($activities_category)
+    private function createFakeActivities($activities_category): array
     {
         $widegame = Activity::factory()->create([
             'name' => 'Widegame',

@@ -13,7 +13,7 @@ class ActivityRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'name' => [
@@ -24,7 +24,7 @@ class ActivityRequest extends FormRequest
             ],
             'location' => [
                 'min:3',
-                'max:36',
+                'max:255',
                 'nullable',
             ],
             'description' => [

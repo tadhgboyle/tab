@@ -30,7 +30,7 @@ class ItemSalesChart extends BaseChart
             $sales[] = ['name' => $product->name, 'sold' => $sold];
         }
 
-        uasort($sales, fn ($a, $b) => $a['sold'] > $b['sold'] ? -1 : 1);
+        uasort($sales, static fn ($a, $b) => $a['sold'] > $b['sold'] ? -1 : 1);
         $sales = array_slice($sales, 0, 50);
 
         return Chartisan::build()

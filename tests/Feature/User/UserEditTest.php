@@ -37,7 +37,7 @@ class UserEditTest extends TestCase
         $this->_cashier_user = $this->createCashierUser($this->_cashier_role);
     }
 
-    public function testCannotEditUsersWithHigherRoleThanSelf()
+    public function testCannotEditUsersWithHigherRoleThanSelf(): void
     {
         $this->actingAs($this->_cashier_user);
 
@@ -49,17 +49,17 @@ class UserEditTest extends TestCase
         $this->assertSame(UserEditService::RESULT_CANT_MANAGE_THAT_ROLE, $userService->getResult());
     }
 
-    public function testUpdatesAttributesProperlyWhenRoleIsSameOrBothStaffRoles()
+    public function testUpdatesAttributesProperlyWhenRoleIsSameOrBothStaffRoles(): void
     {
         $this->actingAs($this->_superadmin_user);
 
         foreach ([$this->_cashier_role, $this->_superadmin_role] as $role) {
             $userService = new UserEditService($this->createRequest(
                 id: $this->_cashier_user->id,
-                role_id: $role->id,
                 full_name: 'Ronan Boyle 1',
                 username: $this->_cashier_user->username,
                 balance: 100.0,
+                role_id: $role->id,
                 password: 'should_be_ignored'
             ));
             $user = $userService->getUser();
@@ -71,15 +71,15 @@ class UserEditTest extends TestCase
         }
     }
 
-    public function testPasswordRemovedIfNewRoleIsNotStaff()
+    public function testPasswordRemovedIfNewRoleIsNotStaff(): void
     {
         $this->actingAs($this->_superadmin_user);
 
         $userService = new UserEditService($this->createRequest(
             id: $this->_cashier_user->id,
-            role_id: $this->_camper_role->id,
             full_name: $this->_cashier_user->full_name,
             username: $this->_cashier_user->username,
+            role_id: $this->_camper_role->id,
             password: 'should_be_ignored'
         ));
         $user = $userService->getUser();

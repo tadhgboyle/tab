@@ -28,7 +28,7 @@ class UserLimitsHelper
             $duration = $request->duration[$category_id] ?? UserLimits::LIMIT_DAILY;
 
             // Default to -1 if limit not typed in
-            if ($limit == null || !isset($limit) || empty($limit)) {
+            if (!isset($limit) || empty($limit)) {
                 $limit = -1;
             }
 
@@ -83,7 +83,7 @@ class UserLimitsHelper
             $limit_info->limit_per = $info->limit_per;
         } else {
             $limit_info->duration = 'week';
-            $limit_info->duration_int = (int) UserLimits::LIMIT_WEEKLY;
+            $limit_info->duration_int = UserLimits::LIMIT_WEEKLY;
             $limit_info->limit_per = -1;
         }
 
@@ -99,7 +99,7 @@ class UserLimitsHelper
             $transactions = $user->getTransactions()->where('returned', false);
             $activity_transactions = $user->getActivityTransactions('returned', false);
         } else {
-            $carbon_string = Carbon::now()->subDays($info->duration == 'day' ? 1 : 7)->toDateTimeString();
+            $carbon_string = Carbon::now()->subDays($info->duration === 'day' ? 1 : 7)->toDateTimeString();
 
             $transactions = $user->getTransactions()->where('created_at', '>=', $carbon_string)->where('returned', false);
             $activity_transactions = $user->getActivityTransactions()->where('created_at', '>=', $carbon_string)->where('returned', false);
@@ -123,7 +123,7 @@ class UserLimitsHelper
 
                 $tax_percent = $item_info['gst'];
 
-                if ($item_info['pst'] != 'null') {
+                if ($item_info['pst'] !== 'null') {
                     $tax_percent += $item_info['pst'] - 1;
                 }
 
@@ -135,7 +135,7 @@ class UserLimitsHelper
 
         foreach ($activity_transactions as $activity_transaction) {
             $activity = Activity::find($activity_transaction->activity_id);
-            if ($activity->category_id != $category_id) {
+            if ($activity->category_id !== $category_id) {
                 continue;
             }
 

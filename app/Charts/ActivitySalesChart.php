@@ -30,7 +30,7 @@ class ActivitySalesChart extends BaseChart
             $sales[] = ['name' => $activity->name, 'sold' => $sold];
         }
 
-        uasort($sales, fn ($a, $b) => $a['sold'] > $b['sold'] ? -1 : 1);
+        uasort($sales, static fn ($a, $b) => $a['sold'] > $b['sold'] ? -1 : 1);
 
         return Chartisan::build()
             ->labels(array_column($sales, 'name'))

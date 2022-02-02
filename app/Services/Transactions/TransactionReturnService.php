@@ -25,8 +25,8 @@ class TransactionReturnService extends Service
 
         $transaction = Transaction::find($transaction);
 
-        if ($transaction == null) {
-            return redirect()->route('orders_list')->with('error', 'No transaction found with that ID.')->send();
+        if ($transaction === null) {
+            redirect()->route('orders_list')->with('error', 'No transaction found with that ID.')->send();
         }
 
         $this->_transaction = $transaction;
@@ -34,7 +34,7 @@ class TransactionReturnService extends Service
 
     // TODO: when whole transaction is returned, manually deserialize and reserialize all products with return value of their original quantity
     // to keep consistency with item sales chart
-    public function return()
+    public function return(): TransactionReturnService
     {
         // This should never happen, but a good security measure
         if ($this->_transaction->isReturned()) {
@@ -51,7 +51,7 @@ class TransactionReturnService extends Service
         foreach ($transaction_products as $product) {
             $product_metadata = ProductHelper::deserializeProduct($product, false);
 
-            if ($product_metadata['pst'] == 'null') {
+            if ($product_metadata['pst'] === 'null') {
                 $total_tax = $product_metadata['gst'];
             } else {
                 $total_tax = ($product_metadata['gst'] + $product_metadata['pst']) - 1;
@@ -68,7 +68,7 @@ class TransactionReturnService extends Service
         return $this;
     }
 
-    public function returnItem(int $item_id)
+    public function returnItem(int $item_id): TransactionReturnService
     {
         if ($this->_transaction->isReturned()) {
             $this->_result = self::RESULT_ALREADY_RETURNED;
@@ -100,7 +100,7 @@ class TransactionReturnService extends Service
                 $total_tax = 0.00;
 
                 // Check taxes and apply correct %
-                if ($order_product['pst'] == 'null') {
+                if ($order_product['pst'] === 'null') {
                     $total_tax = $order_product['gst'];
                 } else {
                     $total_tax = (($order_product['pst'] + $order_product['gst']) - 1);
@@ -123,21 +123,17 @@ class TransactionReturnService extends Service
             }
         }
 
-        if ($found === false) {
-            $this->_result = self::RESULT_ITEM_NOT_IN_ORDER;
-            $this->_message = 'That item was not in the original order.';
-        }
+        $this->_result = self::RESULT_ITEM_NOT_IN_ORDER;
+        $this->_message = 'That item was not in the original order.';
 
         return $this;
     }
 
     public function redirect(): RedirectResponse
     {
-        switch ($this->getResult()) {
-            case self::RESULT_SUCCESS:
-                return redirect()->back()->with('success', $this->getMessage());
-            default:
-                return redirect()->back()->with('error', $this->getMessage());
-        }
+        return match ($this->getResult()) {
+            self::RESULT_SUCCESS => redirect()->back()->with('success', $this->getMessage()),
+            default => redirect()->back()->with('error', $this->getMessage()),
+        };
     }
 }

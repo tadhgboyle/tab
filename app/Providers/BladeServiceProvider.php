@@ -12,9 +12,9 @@ class BladeServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
-        Blade::if('permission', function (string $permission) {
+        Blade::if('permission', static function (string $permission) {
             return hasPermission($permission);
         });
     }

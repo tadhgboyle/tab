@@ -12,7 +12,7 @@ class UserDeleteTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testCanDeleteUser()
+    public function testCanDeleteUser(): void
     {
         $user = $this->createUser();
 
@@ -24,10 +24,8 @@ class UserDeleteTest extends TestCase
 
     private function createUser(): User
     {
-        $user = User::factory()->create([
+        return User::factory()->create([
             'role_id' => Role::factory()->create()
         ]);
-
-        return $user;
     }
 }

@@ -14,7 +14,7 @@ class RotationSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         for ($i = 1; $i <= 5; $i++) {
             Rotation::factory()->create([
@@ -27,11 +27,11 @@ class RotationSeeder extends Seeder
         $users = User::all();
 
         foreach ($users as $user) {
-            if (rand(0, 3) == 3) {
+            if (random_int(0, 3) == 3) {
                 $user->rotations()->attach(Rotation::all()->random(1));
             }
 
-            if (rand(0, 6) == 6) {
+            if (random_int(0, 6) == 6) {
                 $user->rotations()->attach(Rotation::all()->random(1));
             }
 

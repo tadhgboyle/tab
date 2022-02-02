@@ -12,7 +12,7 @@ class ActivitySeeder extends Seeder
      *
      * @return void
      */
-    public function run(array $categories)
+    public function run(array $categories): void
     {
         [, , $activities_category, $general_category] = $categories;
 

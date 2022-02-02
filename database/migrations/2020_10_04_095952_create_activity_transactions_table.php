@@ -11,9 +11,9 @@ class CreateActivityTransactionsTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('activity_transactions', function (Blueprint $table) {
+        Schema::create('activity_transactions', static function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->unsignedBigInteger('cashier_id');
@@ -32,7 +32,7 @@ class CreateActivityTransactionsTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('activity_transactions');
     }

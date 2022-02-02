@@ -14,7 +14,7 @@ class Category extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $cacheFor = 180;
+    protected int $cacheFor = 180;
 
     protected $fillable = [
         'name',

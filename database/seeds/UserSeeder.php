@@ -12,7 +12,7 @@ class UserSeeder extends Seeder
      *
      * @return void
      */
-    public function run(array $roles)
+    public function run(array $roles): void
     {
         [$superuser_role, $cashier_role, $camper_role] = $roles;
 

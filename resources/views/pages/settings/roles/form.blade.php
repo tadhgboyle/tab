@@ -6,7 +6,7 @@
     <div class="column">
         <div class="box">
             @include('includes.messages')
-            <form action="{{ is_null($role) ? route('settings_roles_new') : route('settings_roles_edit_form') }}" method="POST" id="role_form">
+            <form action="{{ is_null($role) ? route('settings_roles_new_form') : route('settings_roles_edit_form') }}" method="POST" id="role_form">
                 @csrf
                 <input type="hidden" name="role_id" id="role_id" value="{{ $role->id ?? null }}">
                 <div class="field">

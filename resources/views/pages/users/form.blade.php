@@ -100,11 +100,11 @@
                     </div>
                     <div class="control">
                         <label class="radio">
-                            <input type="radio" name="duration[{{ $category['id'] }}]" value="0" @if($user != null && $category['info']->duration == "day") checked @endif>
+                            <input type="radio" name="duration[{{ $category['id'] }}]" value="0" @if(($user != null && $category['info']->duration === "day") || $user == null) checked @endif>
                             Day
                         </label>
                         <label class="radio">
-                            <input type="radio" name="duration[{{ $category['id'] }}]" value="1" @if($user != null && $category['info']->duration == "week") checked @endif>
+                            <input type="radio" name="duration[{{ $category['id'] }}]" value="1" @if($user != null && $category['info']->duration === "week") checked @endif>
                             Week
                         </label>
                     </div>

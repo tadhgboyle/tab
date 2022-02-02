@@ -15,7 +15,7 @@ class Product extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $cacheFor = 180;
+    protected int $cacheFor = 180;
 
     protected $casts = [
         'name' => 'string',
@@ -31,7 +31,7 @@ class Product extends Model
         'category',
     ];
 
-    public function category()
+    public function category(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(Category::class, 'id', 'category_id');
     }
@@ -46,7 +46,7 @@ class Product extends Model
 
         $total_tax += SettingsHelper::getInstance()->getGst();
 
-        $total_tax -= 1;
+        --$total_tax;
 
         return number_format($this->price * $total_tax, 2);
     }
@@ -70,14 +70,14 @@ class Product extends Model
     {
         if ($this->unlimited_stock) {
             return '<i>Unlimited</i>';
-        } else {
-            return $this->stock;
         }
+
+        return $this->stock;
     }
 
     public function removeStock(int $remove_stock): bool
     {
-        if (($this->getStock() >= $remove_stock || $this->unlimited_stock) || $this->stock_override) {
+        if ($this->stock_override || ($this->unlimited_stock || $this->getStock() >= $remove_stock)) {
             $this->decrement('stock', $remove_stock);
             return true;
         }
@@ -85,12 +85,12 @@ class Product extends Model
         return false;
     }
 
-    public function adjustStock(int $new_stock)
+    public function adjustStock(int $new_stock): bool|int
     {
         return $this->increment('stock', $new_stock);
     }
 
-    public function addBox(int $box_count)
+    public function addBox(int $box_count): bool|int
     {
         return $this->adjustStock($box_count * $this->box_size);
     }
@@ -103,7 +103,7 @@ class Product extends Model
         foreach ($transactions as $transaction) {
             $products = explode(', ', $transaction->products);
             foreach ($products as $transaction_product) {
-                if (strtok($transaction_product, '*') != $this->id) {
+                if (strtok($transaction_product, '*') !== $this->id) {
                     continue;
                 }
 

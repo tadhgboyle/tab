@@ -20,7 +20,7 @@ class TransactionCreationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testCannotCreateOrderForSelfWithoutPermission()
+    public function testCannotCreateOrderForSelfWithoutPermission(): void
     {
         [, $staff_user] = $this->createFakeRecords();
 
@@ -29,7 +29,7 @@ class TransactionCreationTest extends TestCase
         $this->assertSame(TransactionCreationService::RESULT_NO_SELF_PURCHASE, $transactionService->getResult());
     }
 
-    public function testCannotMakeTransactionWithNoProductsSelected()
+    public function testCannotMakeTransactionWithNoProductsSelected(): void
     {
         [$camper_user] = $this->createFakeRecords();
 
@@ -38,7 +38,7 @@ class TransactionCreationTest extends TestCase
         $this->assertSame(TransactionCreationService::RESULT_NO_ITEMS_SELECTED, $transactionService->getResult());
     }
 
-    public function testCannotMakeTransactionWithLessThanZeroQuantity()
+    public function testCannotMakeTransactionWithLessThanZeroQuantity(): void
     {
         [$camper_user] = $this->createFakeRecords();
 
@@ -47,7 +47,7 @@ class TransactionCreationTest extends TestCase
         $this->assertSame(TransactionCreationService::RESULT_NEGATIVE_QUANTITY, $transactionService->getResult());
     }
 
-    public function testCannotMakeTransactionWithOutOfStockItem()
+    public function testCannotMakeTransactionWithOutOfStockItem(): void
     {
         [$camper_user] = $this->createFakeRecords();
 
@@ -56,7 +56,7 @@ class TransactionCreationTest extends TestCase
         $this->assertSame(TransactionCreationService::RESULT_NO_STOCK, $transactionService->getResult());
     }
 
-    public function testCannotMakeTransactionWithoutEnoughBalance()
+    public function testCannotMakeTransactionWithoutEnoughBalance(): void
     {
         [$camper_user] = $this->createFakeRecords();
 
@@ -65,7 +65,7 @@ class TransactionCreationTest extends TestCase
         $this->assertSame(TransactionCreationService::RESULT_NOT_ENOUGH_BALANCE, $transactionService->getResult());
     }
 
-    public function testCannotMakeTransactionWithoutEnoughBalanceInCategory()
+    public function testCannotMakeTransactionWithoutEnoughBalanceInCategory(): void
     {
         [$camper_user] = $this->createFakeRecords();
 
@@ -74,7 +74,7 @@ class TransactionCreationTest extends TestCase
         $this->assertSame(TransactionCreationService::RESULT_NOT_ENOUGH_CATEGORY_BALANCE, $transactionService->getResult());
     }
 
-    public function testUserBalanceCorrectAfterTransaction()
+    public function testUserBalanceCorrectAfterTransaction(): void
     {
         [$camper_user] = $this->createFakeRecords();
 
@@ -85,7 +85,7 @@ class TransactionCreationTest extends TestCase
         $this->assertEquals($transactionService->getTotalPrice(), $camper_user->findSpent());
     }
 
-    public function testSuccessfulTransactionIsStored()
+    public function testSuccessfulTransactionIsStored(): void
     {
         [$camper_user] = $this->createFakeRecords();
 
@@ -187,7 +187,7 @@ class TransactionCreationTest extends TestCase
     }
 
     /** @return Category[] */
-    private function createFakeCategories()
+    private function createFakeCategories(): array
     {
         $food_category = Category::factory()->create([
             'name' => 'Food'
@@ -200,7 +200,7 @@ class TransactionCreationTest extends TestCase
         return [$food_category, $merch_category];
     }
 
-    private function createFakeCategoryLimits(User $user, Category $food_category, Category $merch_category)
+    private function createFakeCategoryLimits(User $user, Category $food_category, Category $merch_category): void
     {
         UserLimits::factory()->create([
             'user_id' => $user->id,

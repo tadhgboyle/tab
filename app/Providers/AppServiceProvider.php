@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Charts\ActivitySalesChart;
+use App\Charts\ItemSalesChart;
+use App\Charts\PurchaseHistoryChart;
 use Illuminate\Support\ServiceProvider;
 use ConsoleTVs\Charts\Registrar as Charts;
 
@@ -22,12 +25,12 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot(Charts $charts)
+    public function boot(Charts $charts): void
     {
         $charts->register([
-            \App\Charts\PurchaseHistoryChart::class,
-            \App\Charts\ItemSalesChart::class,
-            \App\Charts\ActivitySalesChart::class,
+            PurchaseHistoryChart::class,
+            ItemSalesChart::class,
+            ActivitySalesChart::class,
         ]);
     }
 }

@@ -15,7 +15,7 @@ class Role extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $cacheFor = 180;
+    protected int $cacheFor = 180;
 
     protected $fillable = [
         'order',
@@ -53,11 +53,11 @@ class Role extends Model
                 continue;
             }
 
-            if ($this->id == $role->id) {
+            if ($this->id === $role->id) {
                 continue;
             }
 
-            if ($this->staff || (!$this->staff && !$role->staff)) {
+            if ($this->staff || !$role->staff) {
                 if ($compare->canInteract($role)) {
                     $return->add($role);
                 }
@@ -112,7 +112,7 @@ class Role extends Model
         }
 
         foreach ((array) $permissions as $permission) {
-            if (!in_array($permission, $this->permissions)) {
+            if (!in_array($permission, $this->permissions, true)) {
                 return false;
             }
         }
