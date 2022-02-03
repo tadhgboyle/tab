@@ -56,10 +56,10 @@
                 <div class="control">
                     <div class="select">
                         <select name="category_id" required>
-                            {{!! !isset($product->category) ? "<option value=\"\" disabled selected>Select Category...</option>" : '' !!}}
+                            {!! !isset($product->category) ? "<option value=\"\" disabled selected>Select Category...</option>" : '' !!}
                             @foreach($categories as $category)
                                 <option value="{{ $category->id }}"
-                                    {{ (!is_null($product) && $product->category_id == $category->id) || old('category') == $category->id  ? 'selected' : '' }}>
+                                    {{ (!is_null($product) && $product->category_id === $category->id) || old('category') === $category->id  ? 'selected' : '' }}>
                                     {{ $category->name }}
                                 </option>
                             @endforeach
@@ -164,16 +164,16 @@
 <script type="text/javascript">
 
     const switches = document.getElementsByClassName("js-switch");
-    for (var i = 0; i < switches.length; i++) { new Switchery(switches.item(i), {color: '#48C774', secondaryColor: '#F56D71'}) }
+    for (const i = 0; i < switches.length; i++) { new Switchery(switches.item(i), {color: '#48C774', secondaryColor: '#F56D71'}) }
 
     $(document).ready(function() {
         updateUnlimitedAttr($('input[type=checkbox][name=unlimited_stock]').prop('checked'));
     });
-        
+
     $('input[type=checkbox][name=unlimited_stock]').change(function() {
         updateUnlimitedAttr($(this).prop('checked'))
     });
-        
+
     function updateUnlimitedAttr(checked) {
         let div = $('#stock_attr');
         if (checked) div.fadeOut(200);
@@ -192,8 +192,8 @@
         }
 
         function deleteData() {
-            var id = document.getElementById('product_id').value;
-            var url = '{{ route("products_delete", ":id") }}';
+            const id = document.getElementById('product_id').value;
+            let url = '{{ route("products_delete", ":id") }}';
             url = url.replace(':id', id);
             $("#deleteForm").attr('action', url);
             $("#deleteForm").submit();

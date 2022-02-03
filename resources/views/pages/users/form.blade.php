@@ -43,7 +43,9 @@
                     <div class="select is-multiple is-fullwidth">
                         <select multiple size="4" name="rotations[]">
                             @foreach ($rotations as $rotation)
-                                <option value="{{ $rotation->id }}" @if ($user != null && $user->rotations->contains($rotation)) selected  @endif>{{ $rotation->name }}</option>
+                                <option value="{{ $rotation->id }}" @if ($user !== null && $user->rotations->contains($rotation)) selected  @endif>
+                                    {{ $rotation->name }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -56,7 +58,9 @@
                         <div class="select" id="role_id">
                             <select name="role_id" class="input" required>
                                 @foreach($available_roles as $role)
-                                    <option value="{{ $role->id }}" data-staff="{{ $role->staff ? 1 : 0 }}" {{ (isset($user->role) && $user->role->id == $role->id) || old('role') == $role->id ? "selected" : "" }}>{{ $role->name }}</option>
+                                    <option value="{{ $role->id }}" data-staff="{{ $role->staff ? 1 : 0 }}" {{ (isset($user->role) && $user->role->id === $role->id) || old('role') === $role->id ? "selected" : "" }}>
+                                        {{ $role->name }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -96,15 +100,15 @@
                         <span class="icon is-small is-left">
                             <i class="fas fa-dollar-sign"></i>
                         </span>
-                        <input type="number" step="0.01" name="limit[{{ $category['id'] }}]" class="input" placeholder="Limit" value="{{ $user != null ? number_format($category['info']->limit_per, 2, '.', '') : -1.00}}" required>
+                        <input type="number" step="0.01" name="limit[{{ $category['id'] }}]" class="input" placeholder="Limit" value="{{ $user !== null ? number_format($category['info']->limit_per, 2, '.', '') : -1.00}}" required>
                     </div>
                     <div class="control">
                         <label class="radio">
-                            <input type="radio" name="duration[{{ $category['id'] }}]" value="0" @if(($user != null && $category['info']->duration === "day") || $user == null) checked @endif>
+                            <input type="radio" name="duration[{{ $category['id'] }}]" value="0" @if(($user !== null && $category['info']->duration === "day") || $user === null) checked @endif>
                             Day
                         </label>
                         <label class="radio">
-                            <input type="radio" name="duration[{{ $category['id'] }}]" value="1" @if($user != null && $category['info']->duration === "week") checked @endif>
+                            <input type="radio" name="duration[{{ $category['id'] }}]" value="1" @if($user !== null && $category['info']->duration === "week") checked @endif>
                             Week
                         </label>
                     </div>
@@ -173,8 +177,11 @@
     function updatePassword(staff) {
         if (staff !== undefined) {
             let div = $('#password_hidable');
-            if (staff) div.fadeIn(200);
-            else div.fadeOut(200);
+            if (staff) {
+                div.fadeIn(200);
+            } else {
+                div.fadeOut(200);
+            }
         }
     }
 
@@ -190,8 +197,8 @@
         }
 
         function deleteData() {
-            var id = document.getElementById('user_id').value;
-            var url = '{{ route("users_delete", ":id") }}';
+            const id = document.getElementById('user_id').value;
+            let url = '{{ route("users_delete", ":id") }}';
             url = url.replace(':id', id);
             $("#deleteForm").attr('action', url);
             $("#deleteForm").submit();

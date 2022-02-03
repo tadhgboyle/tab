@@ -7,6 +7,7 @@ use App\Helpers\ProductHelper;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use JetBrains\PhpStorm\Pure;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -71,6 +72,7 @@ class User extends Authenticatable
     //     return -1;
     // }
 
+    #[Pure]
     public function hasPermission($permission): bool
     {
         return $this->role->hasPermission($permission);

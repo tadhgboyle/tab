@@ -13,17 +13,17 @@ use App\Services\Transactions\TransactionCreationService;
 
 class TransactionController extends Controller
 {
-    public function submit(Request $request): \Illuminate\Http\RedirectResponse
+    public function submit(Request $request)
     {
         return (new TransactionCreationService($request))->redirect();
     }
 
-    public function returnTransaction(int $transaction_id): \Illuminate\Http\RedirectResponse
+    public function returnTransaction(int $transaction_id)
     {
         return (new TransactionReturnService($transaction_id))->return()->redirect();
     }
 
-    public function returnItem(int $item_id, int $transaction_id): \Illuminate\Http\RedirectResponse
+    public function returnItem(int $item_id, int $transaction_id)
     {
         return (new TransactionReturnService($transaction_id))->returnItem($item_id)->redirect();
     }
@@ -51,10 +51,8 @@ class TransactionController extends Controller
 
     public function order(User $user)
     {
-        if (!hasPermission('cashier_self_purchases')) {
-            if ($user->id == auth()->id()) {
-                return redirect('/')->with('error', 'You cannot make purchases for yourself.');
-            }
+        if (!hasPermission('cashier_self_purchases') && $user->id === auth()->id()) {
+            return redirect('/')->with('error', 'You cannot make purchases for yourself.');
         }
 
         return view('pages.orders.order', [

@@ -11,7 +11,7 @@
                     <select name="rotation" class="input" id="rotation">
                         <option value="all" @if ($stats_rotation_id === 'all') selected @endif>All Rotations</option>
                         @foreach ($rotations as $rotation)
-                            <option value="{{ $rotation->id }}" @if ($stats_rotation_id == $rotation->id) selected @endif>{{ $rotation->name }}</option>
+                            <option value="{{ $rotation->id }}" @if ($stats_rotation_id === $rotation->id) selected @endif>{{ $rotation->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -85,7 +85,7 @@
     @permission('statistics_select_rotation')
     $('#rotation').change(function(sel) {
         const now = new Date();
-        now.setTime(now.getTime() + 1 * 3600 * 1000);
+        now.setTime(now.getTime() + 3600 * 1000);
         document.cookie = ("statistics_rotation=" + $(this).val() + "; expires=" + now.toUTCString() + "; path=/");
         location.reload();
         console.log(document.cookie);

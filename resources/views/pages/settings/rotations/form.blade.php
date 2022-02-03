@@ -75,17 +75,17 @@
 <script>
     @if(!is_null($rotation))
         const modal = document.querySelector('.modal');
-        
+
         function openModal() {
             modal.classList.add('is-active');
         }
-        
+
         function closeModal() {
             modal.classList.remove('is-active');
         }
 
         function deleteData() {
-            var url = '{{ route("settings_rotations_delete", ":id") }}';
+            let url = '{{ route("settings_rotations_delete", ":id") }}';
             url = url.replace(':id', {{ $rotation->id }});
             $("#deleteForm").attr('action', url);
             $("#deleteForm").submit();
@@ -93,7 +93,7 @@
     @endif
 
     let endMinDate = null;
-    
+
     function startChange(e) {
         endMinDate = new Date(e);
         flatpickr('#end', { enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: endMinDate });

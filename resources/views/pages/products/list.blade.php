@@ -37,7 +37,7 @@
                         <div>{!! $product->getStock() !!}</div>
                     </td>
                     <td>
-                        <div>{!! $product->box_size == -1 ? '<i>N/A</i>' : $product->box_size !!}</div>
+                        <div>{!! $product->box_size === -1 ? '<i>N/A</i>' : $product->box_size !!}</div>
                     </td>
                     <td>
                         <div>{!! $product->pst ? "<span class=\"tag is-success is-medium\">Yes</span>" : "<span class=\"tag is-danger is-medium\">No</span>" !!}</div>

@@ -239,7 +239,7 @@
                         let start_pos = ui.item.index();
                         ui.item.data('startPos', start_pos);
                     },
-                    update: function(event, ui) {
+                    update: () => {
                         let roles = $("#sortable").children();
                         let toSubmit = [];
                         roles.each(function() {
@@ -254,11 +254,7 @@
                                     "roles": toSubmit
                                 })
                             },
-                            success: function(response) {
-                                // Success
-                            },
                             error: function(xhr) {
-                                // Error
                                 console.log(xhr);
                             }
                         });

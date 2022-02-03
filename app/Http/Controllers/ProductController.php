@@ -10,7 +10,7 @@ use App\Http\Requests\ProductRequest;
 
 class ProductController extends Controller
 {
-    public function new(ProductRequest $request): \Illuminate\Http\RedirectResponse
+    public function new(ProductRequest $request)
     {
         // Box size of -1 means they cannot receive stock via box. Instead must use normal stock
         $box_size = $request->box_size ?: -1;
@@ -18,7 +18,7 @@ class ProductController extends Controller
         $unlimited_stock = $request->has('unlimited_stock');
 
         $stock = 0;
-        if ($request->stock == null) {
+        if (!$request->has('stock')) {
             $unlimited_stock = true;
         } else {
             $stock = $request->stock;
@@ -38,19 +38,16 @@ class ProductController extends Controller
         return redirect()->route('products_list')->with('success', 'Successfully created ' . $request->name . '.');
     }
 
-    public function edit(ProductRequest $request): \Illuminate\Http\RedirectResponse
+    public function edit(ProductRequest $request)
     {
-        $pst = $request->has('pst');
-
         $unlimited_stock = $request->has('unlimited_stock');
 
-        if ($request->stock == null) {
+        $stock = 0;
+        if (!$request->has('stock')) {
             $unlimited_stock = true;
         } else {
             $stock = $request->stock;
         }
-
-        $stock_override = $request->has('stock_override');
 
         Product::where('id', $request->product_id)->update([
             'name' => $request->name,
@@ -59,14 +56,14 @@ class ProductController extends Controller
             'stock' => $stock,
             'box_size' => $request->box_size ?? -1,
             'unlimited_stock' => $unlimited_stock,
-            'stock_override' => $stock_override,
-            'pst' => $pst,
+            'stock_override' => $request->has('stock_override'),
+            'pst' => $request->has('pst'),
         ]);
 
         return redirect()->route('products_list')->with('success', 'Successfully edited ' . $request->name . '.');
     }
 
-    public function delete(Product $product): \Illuminate\Http\RedirectResponse
+    public function delete(Product $product)
     {
         $product->delete();
 
@@ -95,12 +92,12 @@ class ProductController extends Controller
         ]);
     }
 
-    public function adjustStock(Request $request): \Illuminate\Http\RedirectResponse
+    public function adjustStock(Request $request)
     {
         $product_id = $request->product_id;
         $product = Product::find($product_id);
 
-        if ($product == null) {
+        if ($product === null) {
             return redirect()->route('products_adjust')->with('error', 'Invalid Product.');
         }
 
@@ -113,15 +110,15 @@ class ProductController extends Controller
             return redirect()->back()->withErrors($validator);
         }
 
-        $adjust_stock = $request->adjust_stock;
-        $adjust_box = $request->adjust_box ?? 0;
+        $adjust_stock = (int) $request->adjust_stock;
+        $adjust_box = (int) ($request->adjust_box ?? 0);
 
-        if ($adjust_stock == 0) {
+        if ($adjust_stock === 0) {
             if (!$request->has('adjust_box')) {
                 return redirect()->back()->with('error', 'Please specify how much stock to add to ' . $product->name . '.');
             }
 
-            if ($request->adjust_box == 0) {
+            if ($request->adjust_box === 0) {
                 return redirect()->back()->with('error', 'Please specify how many boxes or stock to add to ' . $product->name . '.');
             }
         }

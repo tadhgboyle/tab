@@ -12,7 +12,7 @@
         <p><strong>Total Price:</strong> ${{ number_format($transaction->total_price, 2) }}</p>
         <p><strong>Status:</strong> @switch($transaction_returned) @case(0) Not Returned @break @case(1) Returned @break @case(2) Semi Returned @break @endswitch</p>
         <br>
-        @if($transaction_returned != 1 && hasPermission('orders_return'))
+        @if(!$transaction_returned && hasPermission('orders_return'))
         <button class="button is-danger is-outlined" type="button" onclick="openModal();">
             <span>Return</span>
             <span class="icon is-small">
@@ -55,7 +55,7 @@
                         @permission('orders_return')
                         <td>
                             <div>
-                                @if($transaction->returned == false && $product['returned'] < $product['quantity']) 
+                                @if(!$transaction->returned && $product['returned'] < $product['quantity'])
                                     <button class="button is-danger is-small"  onclick="openProductModal({{ $product['id'] }});">Return ({{ $product['quantity'] - $product['returned'] }})</button>
                                 @else
                                     <div><i>Returned</i></div>

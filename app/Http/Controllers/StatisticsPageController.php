@@ -10,7 +10,7 @@ class StatisticsPageController extends Controller
     {
         return view('pages.statistics.statistics', [
             'rotations' => RotationHelper::getInstance()->getRotations(),
-            'stats_rotation_id' => RotationHelper::getInstance()->getStatisticsRotation(),
+            'stats_rotation_id' => RotationHelper::getInstance()->getCurrentRotation(),
         ]);
     }
 }
