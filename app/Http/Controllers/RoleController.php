@@ -10,7 +10,7 @@ use App\Http\Requests\RoleRequest;
 
 class RoleController extends Controller
 {
-    public function new(RoleRequest $request): \Illuminate\Http\RedirectResponse
+    public function new(RoleRequest $request)
     {
         $staff = $request->has('staff');
         $superuser = $staff && $request->has('superuser');
@@ -26,7 +26,7 @@ class RoleController extends Controller
         return redirect()->route('settings')->with('success', 'Created role ' . $request->name . '.');
     }
 
-    public function edit(RoleRequest $request): \Illuminate\Http\RedirectResponse
+    public function edit(RoleRequest $request)
     {
         $staff = $request->has('staff');
         $superuser = $staff && $request->has('superuser');
@@ -42,7 +42,7 @@ class RoleController extends Controller
         return redirect()->route('settings')->with('success', 'Edited role ' . $request->name . '.');
     }
 
-    public function delete(Request $request): \Illuminate\Http\RedirectResponse
+    public function delete(Request $request)
     {
         // TODO: add same validation from frontend
         $old_role = Role::find($request->old_role);
@@ -96,7 +96,7 @@ class RoleController extends Controller
 
     public function order()
     {
-        $roles = json_decode(\Request::get('roles'))->roles;
+        $roles = json_decode(request()->get('roles'))->roles;
 
         $i = 1;
         foreach ($roles as $role) {

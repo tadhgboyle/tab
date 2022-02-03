@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Helpers\ProductHelper;
 use App\Helpers\SettingsHelper;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -31,7 +32,7 @@ class Product extends Model
         'category',
     ];
 
-    public function category(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function category(): HasOne
     {
         return $this->hasOne(Category::class, 'id', 'category_id');
     }

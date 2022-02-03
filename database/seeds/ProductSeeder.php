@@ -34,16 +34,25 @@ class ProductSeeder extends Seeder
     {
         [$food_category, $merch_category, , $general_category] = $categories;
 
-        Product::factory()->count(50)->state([
-            'category_id' => $food_category
-        ])->create();
+        foreach (static::$foodNames as $name) {
+            Product::factory()->state([
+                'name' => $name,
+                'category_id' => $food_category
+            ])->create();
+        }
 
-        Product::factory()->count(50)->state([
-            'category_id' => $merch_category
-        ])->create();
+        foreach (static::$merchNames as $name) {
+            Product::factory()->state([
+                'name' => $name,
+                'category_id' => $merch_category
+            ])->create();
+        }
 
-        Product::factory()->count(50)->state([
-            'category_id' => $general_category
-        ])->create();
+        foreach (static::$generalNames as $name) {
+            Product::factory()->state([
+                'name' => $name,
+                'category_id' => $general_category
+            ])->create();
+        }
     }
 }

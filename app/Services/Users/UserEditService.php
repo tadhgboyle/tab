@@ -57,7 +57,7 @@ class UserEditService extends Service
         }
 
         // If same role or changing from one staff role to another
-        if ($old_role->id == $new_role->id || (RoleHelper::getInstance()->isStaffRole($old_role->id) && RoleHelper::getInstance()->isStaffRole($new_role->id))) {
+        if ($old_role->id === $new_role->id || (RoleHelper::getInstance()->isStaffRole($old_role->id) && RoleHelper::getInstance()->isStaffRole($new_role->id))) {
             $user->update([
                 'full_name' => $this->_request->full_name,
                 'username' => $this->_request->username,

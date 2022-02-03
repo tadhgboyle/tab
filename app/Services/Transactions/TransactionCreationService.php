@@ -33,18 +33,16 @@ class TransactionCreationService extends Service
     public function __construct(
         private Request $_request
     ) {
-        if (RotationHelper::getInstance()->getCurrentRotation() == null) {
+        if (RotationHelper::getInstance()->getCurrentRotation() === null) {
             $this->_result = self::RESULT_NO_CURRENT_ROTATION;
             $this->_message = 'Cannot create transaction with no current rotation.';
             return;
         }
 
-        if (!hasPermission('cashier_self_purchases')) {
-            if ($this->_request->purchaser_id == auth()->id()) {
-                $this->_result = self::RESULT_NO_SELF_PURCHASE;
-                $this->_message = 'You cannot make purchases for yourself.';
-                return;
-            }
+        if (!hasPermission('cashier_self_purchases') && $this->_request->purchaser_id === auth()->id()) {
+            $this->_result = self::RESULT_NO_SELF_PURCHASE;
+            $this->_message = 'You cannot make purchases for yourself.';
+            return;
         }
 
         if (!isset($this->_request->product)) {
@@ -54,7 +52,7 @@ class TransactionCreationService extends Service
         }
 
         // For some reason, old() does not seem to work with array[] inputs in form. This will do for now...
-        // ^ I'm sure its a silly mistake on my end
+        // ^ I'm sure it's a silly mistake on my end
         foreach ($this->_request->product as $product_id) {
             session()->flash("quantity[{$product_id}]", $this->_request->quantity[$product_id]);
             session()->flash("product[{$product_id}]", true);
@@ -117,14 +115,13 @@ class TransactionCreationService extends Service
             return;
         }
 
-        $category_spent = $category_limit = 0.00;
         // Loop categories within this transaction
         foreach ($transaction_categories as $category_id) {
             $limit_info = UserLimitsHelper::getInfo($purchaser, $category_id);
             $category_limit = $limit_info->limit_per;
 
             // Skip this category if they have unlimited. Saves time querying
-            if ($category_limit == -1) {
+            if ($category_limit === -1) {
                 continue;
             }
 
@@ -134,7 +131,7 @@ class TransactionCreationService extends Service
             foreach ($transaction_products as $product) {
                 $product_metadata = ProductHelper::deserializeProduct($product);
 
-                if ($product_metadata['category'] != $category_id) {
+                if ($product_metadata['category'] !== $category_id) {
                     continue;
                 }
 
@@ -156,7 +153,7 @@ class TransactionCreationService extends Service
         }
 
         foreach ($stock_products as $product) {
-            // we already know the product has stock via hasStock() call above, so we dont need to check for the result of removeStock()
+            // we already know the product has stock via hasStock() call above, so we don't need to check for the result of removeStock()
             $product->removeStock($this->_request->quantity[$product->id]);
         }
 

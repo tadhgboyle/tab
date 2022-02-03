@@ -43,11 +43,7 @@ class UserListTable extends Component
             return Session::get($this->getCacheKeyName());
         }
 
-        $currentRotation = RotationHelper::getInstance()->getCurrentRotation();
-
-        if (!is_null($currentRotation)) {
-            return $currentRotation->id;
-        }
+        return RotationHelper::getInstance()->getCurrentRotation()?->id;
     }
 
     private function getCacheKeyName(): string

@@ -23,13 +23,13 @@ class TransactionReturnService extends Service
             return;
         }
 
-        $transaction = Transaction::find($transaction);
+        $found_transaction = Transaction::find($transaction);
 
-        if ($transaction === null) {
+        if ($found_transaction === null) {
             redirect()->route('orders_list')->with('error', 'No transaction found with that ID.')->send();
         }
 
-        $this->_transaction = $transaction;
+        $this->_transaction = $found_transaction;
     }
 
     // TODO: when whole transaction is returned, manually deserialize and reserialize all products with return value of their original quantity
@@ -43,7 +43,7 @@ class TransactionReturnService extends Service
             return $this;
         }
 
-        $total_tax = $total_price = 0;
+        $total_price = 0;
         $purchaser = $this->_transaction->purchaser;
 
         // Loop through products from the order and deserialize them to get their prices & taxes etc when they were purchased

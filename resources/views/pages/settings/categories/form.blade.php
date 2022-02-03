@@ -23,10 +23,16 @@ use App\Casts\CategoryType
                 <div class="control">
                     <div class="select" id="type">
                         <select name="type" class="input" required>
-                            {{!! is_null($category) ? "<option value=\"\" disabled selected>Select Type...</option>" : '' !!}}
-                            <option value="1" {{ (!is_null($category) && $category->type->id == CategoryType::TYPE_PRODUCTS_ACTIVITIES) || old('type') == CategoryType::TYPE_PRODUCTS_ACTIVITIES ? "selected" : "" }}>Products + Activities</option>
-                            <option value="2" {{ (!is_null($category) && $category->type->id == CategoryType::TYPE_PRODUCTS) || old('type') == CategoryType::TYPE_PRODUCTS ? "selected" : "" }}>Products</option>
-                            <option value="3" {{ (!is_null($category) && $category->type->id == CategoryType::TYPE_ACTIVITIES) || old('type') == CategoryType::TYPE_ACTIVITIES ? "selected" : "" }}>Activities</option>
+                            {!! is_null($category) ? "<option value=\"\" disabled selected>Select Type...</option>" : '' !!}
+                            <option value="1" {{ (!is_null($category) && $category->type->id === CategoryType::TYPE_PRODUCTS_ACTIVITIES) || old('type') === CategoryType::TYPE_PRODUCTS_ACTIVITIES ? "selected" : "" }}>
+                                Products + Activities
+                            </option>
+                            <option value="2" {{ (!is_null($category) && $category->type->id === CategoryType::TYPE_PRODUCTS) || old('type') === CategoryType::TYPE_PRODUCTS ? "selected" : "" }}>
+                                Products
+                            </option>
+                            <option value="3" {{ (!is_null($category) && $category->type->id === CategoryType::TYPE_ACTIVITIES) || old('type') === CategoryType::TYPE_ACTIVITIES ? "selected" : "" }}>
+                                Activities
+                            </option>
                         </select>
                     </div>
                 </div>
@@ -90,7 +96,7 @@ use App\Casts\CategoryType
         }
 
         function deleteData() {
-            var url = '{{ route("settings_categories_delete", ":id") }}';
+            let url = '{{ route("settings_categories_delete", ":id") }}';
             url = url.replace(':id', {{ $category->id }});
             $("#deleteForm").attr('action', url);
             $("#deleteForm").submit();

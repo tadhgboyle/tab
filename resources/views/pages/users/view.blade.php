@@ -146,13 +146,13 @@
                                         <div>{{ $category['name'] }}</div>
                                     </td>
                                     <td>
-                                        <div>{!! $category['limit'] == -1 ? "<i>Unlimited</i>" : "$" . number_format($category['limit'], 2) . "/" . $category['duration'] !!}</div>
+                                        <div>{!! $category['limit'] === -1 ? "<i>Unlimited</i>" : "$" . number_format($category['limit'], 2) . "/" . $category['duration'] !!}</div>
                                     </td>
                                     <td>
                                         <div>${{ number_format($category['spent'], 2) }}</div>
                                     </td>
                                     <td>
-                                        <div>{!! $category['limit'] == -1 ? "<i>Unlimited</i>" : "$" . number_format($category['limit'] - $category['spent'], 2) !!}</div>
+                                        <div>{!! $category['limit'] === -1 ? "<i>Unlimited</i>" : "$" . number_format($category['limit'] - $category['spent'], 2) !!}</div>
                                     </td>
                                 </tr>
                             @endforeach

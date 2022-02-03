@@ -13,17 +13,17 @@ use App\Services\Users\UserCreationService;
 
 class UserController extends Controller
 {
-    public function new(UserRequest $request): \Illuminate\Http\RedirectResponse
+    public function new(UserRequest $request)
     {
         return (new UserCreationService($request))->redirect();
     }
 
-    public function edit(UserRequest $request): \Illuminate\Http\RedirectResponse
+    public function edit(UserRequest $request)
     {
         return (new UserEditService($request))->redirect();
     }
 
-    public function delete(int $user_id): \Illuminate\Http\RedirectResponse
+    public function delete(int $user_id)
     {
         return (new UserDeleteService($user_id))->redirect();
     }
@@ -62,7 +62,7 @@ class UserController extends Controller
     public function form()
     {
         $user = User::query()->find(request()->route('id'));
-        if ($user != null) {
+        if ($user !== null) {
             if ($user->trashed()) {
                 return redirect()->route('users_list')->with('error', 'That user has been deleted.')->send();
             }
@@ -79,7 +79,7 @@ class UserController extends Controller
             $processed_categories[] = [
                 'id' => $category->id,
                 'name' => $category->name,
-                'info' => $user == null ? [] : UserLimitsHelper::getInfo($user, $category->id),
+                'info' => $user === null ? [] : UserLimitsHelper::getInfo($user, $category->id),
             ];
         }
 

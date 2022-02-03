@@ -12,14 +12,14 @@ use App\Http\Requests\ActivityRequest;
 // TODO: fix - add pst check box
 class ActivityController extends Controller
 {
-    public function new(ActivityRequest $request): \Illuminate\Http\RedirectResponse
+    public function new(ActivityRequest $request)
     {
         if (Carbon::parse($request->start)->gte($request->end)) {
             return redirect()->route('activities_new')->withInput()->with('error', 'The end time must be after the start time.');
         }
 
         $activity = new Activity();
-        $activity->name = $request('name');
+        $activity->name = $request->name;
         $activity->category_id = $request->category_id;
         $activity->location = $request->location;
         $activity->description = $request->description;
@@ -33,7 +33,7 @@ class ActivityController extends Controller
         return redirect()->route('activities_list')->with('success', 'Created activity ' . $request->name . '.');
     }
 
-    public function edit(ActivityRequest $request): \Illuminate\Http\RedirectResponse
+    public function edit(ActivityRequest $request)
     {
         if (Carbon::parse($request->get('start'))->gte($request->get('end'))) {
             return redirect()->route('activities_edit', $request->activity_id)->withInput()->with('error', 'The end time must be after the start time.');
@@ -55,7 +55,7 @@ class ActivityController extends Controller
         return redirect()->route('activities_list')->with('success', 'Updated activity ' . $request->name . '.');
     }
 
-    public function delete(Activity $activity): \Illuminate\Http\RedirectResponse
+    public function delete(Activity $activity)
     {
         $activity->delete();
 
@@ -80,7 +80,7 @@ class ActivityController extends Controller
     {
         $activity = Activity::find(request()->route('id'));
 
-        if ($activity == null) {
+        if ($activity === null) {
             $start = request()->route('date') ?? Carbon::now();
         } else {
             $start = $activity->start;
@@ -114,7 +114,11 @@ class ActivityController extends Controller
     public function ajaxUserSearch(): string
     {
         $activity = Activity::find(request('activity'));
-        $users = User::where('full_name', 'LIKE', '%' . request('search') . '%')->limit(7)->get()->all();
+        $users = User::query()
+                        ->where('full_name', 'LIKE', '%' . request('search') . '%')
+                        ->limit(7)
+                        ->get()
+                        ->all();
         $output = '';
 
         foreach ($users as $user) {
@@ -131,7 +135,7 @@ class ActivityController extends Controller
         return $output;
     }
 
-    public function registerUser(Activity $activity, User $user): \Illuminate\Http\RedirectResponse
+    public function registerUser(Activity $activity, User $user)
     {
         return $activity->registerUser($user);
     }

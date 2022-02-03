@@ -34,7 +34,7 @@ class Role extends Model
      * If $compare is provided, this will be limited to Roles which the currently logged in user's Role can also interact with as well.
      * This is so that when users delete old Roles, they cannot promote users in the old Role to a Role higher than their current role.
      *
-     * @param Role $compare If provided, Roles will only be added if:
+     * @param ?Role $compare If provided, Roles will only be added if:
      * - They are not this Role
      * - This Role is staff OR (this Role is not staff AND the other Role is not staff)
      * - And finally that the `$compare` Role can interact with it

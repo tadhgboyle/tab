@@ -33,7 +33,7 @@
                         <div>{{ $product->stock_override ? 'True' : 'False' }}</div>
                     </td>
                     <td>
-                        <div>{!! $product->box_size == -1 ? '<i>N/A</i>' : $product->box_size !!}</div>
+                        <div>{!! $product->box_size === -1 ? '<i>N/A</i>' : $product->box_size !!}</div>
                     </td>
                     <td>
                         <div class="control">
@@ -66,8 +66,8 @@
             "scrollY": "49vh",
             "scrollCollapse": true,
             "columnDefs": [
-                { 
-                    "orderable": false, 
+                {
+                    "orderable": false,
                     "searchable": false,
                     "targets": 5
                 }

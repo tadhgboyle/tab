@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Rotation;
 use App\Helpers\RotationHelper;
 use App\Http\Requests\RotationRequest;
@@ -15,7 +16,7 @@ class RotationController extends Controller
         ]);
     }
 
-    public function new(RotationRequest $request): \Illuminate\Http\RedirectResponse
+    public function new(RotationRequest $request)
     {
         if (RotationHelper::getInstance()->doesRotationOverlap($request->start, $request->end)) {
             return redirect()->back()->withInput()->with('error', 'That Rotation would overlap an existing Rotation.');
@@ -30,7 +31,7 @@ class RotationController extends Controller
         return redirect()->route('settings')->with('success', "Created new rotation {$request->name}.");
     }
 
-    public function edit(RotationRequest $request): \Illuminate\Http\RedirectResponse
+    public function edit(RotationRequest $request)
     {
         $rotation = Category::find($request->rotation_id);
 
@@ -44,7 +45,7 @@ class RotationController extends Controller
     }
 
     // TODO: fallback category logic similar to roles
-    public function delete(Rotation $rotation): \Illuminate\Http\RedirectResponse
+    public function delete(Rotation $rotation)
     {
         $rotation->delete();
 

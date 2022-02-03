@@ -101,19 +101,19 @@ class Activity extends Model
     public function registerUser(User $user): RedirectResponse
     {
         if ($this->isAttending($user)) {
-            return redirect()->back()->with('error', "Could not register {$user->full_name} for {$this->name}, they are already attending this activity.");
+            return redirect()->back()->with('error', "Could not register $user->full_name for $this->name, they are already attending this activity.");
         }
 
         if (!$this->hasSlotsAvailable()) {
-            return redirect()->back()->with('error', "Could not register {$user->full_name} for {$this->name}, this activity is out of slots.");
+            return redirect()->back()->with('error', "Could not register $user->full_name for $this->name, this activity is out of slots.");
         }
 
         if ($this->getPrice() > $user->balance) {
-            return redirect()->back()->with('error', "Could not register {$user->full_name} for {$this->name}, they do not have enough balance.");
+            return redirect()->back()->with('error', "Could not register $user->full_name for $this->name, they do not have enough balance.");
         }
 
         if (!UserLimitsHelper::canSpend($user, $this->getPrice(), $this->category_id)) {
-            return redirect()->back()->with('error', "Could not register {$user->full_name} for {$this->name}, they have reached their limit for the {$this->category->name} category.");
+            return redirect()->back()->with('error', "Could not register $user->full_name for $this->name, they have reached their limit for the {$this->category->name} category.");
         }
 
         DB::table('activity_transactions')->insert([
@@ -129,6 +129,6 @@ class Activity extends Model
 
         $user->decrement('balance', $this->getPrice());
 
-        return redirect()->back()->with('success', "Successfully registered {$user->full_name} to {$this->name}.");
+        return redirect()->back()->with('success', "Successfully registered $user->full_name to $this->name.");
     }
 }
