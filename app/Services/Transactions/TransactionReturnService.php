@@ -78,7 +78,6 @@ class TransactionReturnService extends Service
 
         $purchaser = $this->_transaction->purchaser;
         $user_balance = $purchaser->balance;
-        $found = false;
 
         // Loop order products until we find the matching id
         $products = explode(', ', $this->_transaction->products);
@@ -86,7 +85,6 @@ class TransactionReturnService extends Service
             // Only proceed if this is the requested item id
             if (strtok($product_count, '*') == $item_id) {
                 $order_product = ProductHelper::deserializeProduct($product_count);
-                $found = true;
 
                 // If it has not been returned more times than it was purchased, then ++ the returned count and refund the original cost + taxes
                 if (!($order_product['returned'] < $order_product['quantity'])) {
@@ -96,8 +94,6 @@ class TransactionReturnService extends Service
                 }
 
                 $order_product['returned']++;
-
-                $total_tax = 0.00;
 
                 // Check taxes and apply correct %
                 if ($order_product['pst'] === 'null') {
