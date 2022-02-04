@@ -19,7 +19,7 @@ class ActivitySalesChart extends BaseChart
         $sales = [];
 
         $activities = Activity::all();
-        //$stats_rotation_id = RotationHelper::getInstance()->getCurrentRotation();
+        //$stats_rotation_id = resolve(RotationHelper::class)->getCurrentRotation();
         // TODO: Use activity transactions table instead
         foreach ($activities as $activity) {
             $sold = $activity->getCurrentAttendees()->count();

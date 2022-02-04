@@ -19,7 +19,7 @@ class ItemSalesChart extends BaseChart
         $sales = [];
 
         $products = Product::all();
-        $stats_rotation_id = RotationHelper::getInstance()->getStatisticsRotation();
+        $stats_rotation_id = resolve(RotationHelper::class)->getCurrentRotation()->id;
 
         foreach ($products as $product) {
             $sold = $product->findSold($stats_rotation_id);

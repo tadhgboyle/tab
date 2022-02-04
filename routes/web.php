@@ -40,7 +40,7 @@ Route::middleware('auth')->group(function () {
             'users' => User::query()->unless(hasPermission('cashier_self_purchases'), function ($query) {
                 $query->where('users.id', '!=', auth()->id());
             })->select(['id', 'full_name', 'balance'])->get(),
-            'currentRotation' =>  RotationHelper::getInstance()->getCurrentRotation()
+            'currentRotation' =>  resolve(RotationHelper::class)->getCurrentRotation()
         ]);
     })->name('index');
 

@@ -11,11 +11,11 @@ class SettingsHelper extends Helper
 
     public function getGst(): float
     {
-        return $this->gst ??= Settings::where('setting', 'gst')->pluck('value')->first();
+        return $this->gst ??= Settings::firstWhere('setting', 'gst')->value;
     }
 
     public function getPst(): float
     {
-        return $this->pst ??= Settings::where('setting', 'pst')->pluck('value')->first();
+        return $this->pst ??= Settings::firstWhere('setting', 'pst')->value;
     }
 }

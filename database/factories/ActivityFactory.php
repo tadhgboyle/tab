@@ -8,13 +8,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ActivityFactory extends Factory
 {
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
-    protected $model = Activity::class;
-
     private static array $activityNames = [
         'Fireside', 'Soccer Game', 'Football Game', 'Hockey Game', 'Scavanger Hunt',
         'Canoeing', 'Paintball', 'Surprise', 'Nail Painting', 'Widegame', 'Ski School',
@@ -32,7 +25,7 @@ class ActivityFactory extends Factory
         $end_date = Carbon::instance($start_date)->addMinutes($this->faker->numberBetween(-1000, 1000));
 
         return [
-            'name' => $this->faker->unique()->randomElement(static::$activityNames),
+            'name' => $this->faker->unique()->randomElement(self::$activityNames),
             'location' => $this->faker->address,
             'description' => $this->faker->text(75),
             'unlimited_slots' => $this->faker->boolean,

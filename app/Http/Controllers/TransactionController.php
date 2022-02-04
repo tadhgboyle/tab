@@ -49,7 +49,7 @@ class TransactionController extends Controller
         ]);
     }
 
-    public function order(User $user)
+    public function order(User $user, SettingsHelper $settingsHelper)
     {
         if (!hasPermission('cashier_self_purchases') && $user->id === auth()->id()) {
             return redirect('/')->with('error', 'You cannot make purchases for yourself.');
@@ -58,8 +58,8 @@ class TransactionController extends Controller
         return view('pages.orders.order', [
             'user' => $user,
             'products' => Product::orderBy('name', 'ASC')->get(),
-            'gst' => SettingsHelper::getInstance()->getGst(),
-            'pst' => SettingsHelper::getInstance()->getPst(),
+            'gst' => $settingsHelper->getGst(),
+            'pst' => $settingsHelper->getPst(),
         ]);
     }
 }

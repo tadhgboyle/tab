@@ -56,8 +56,10 @@ class UserEditService extends Service
             }
         }
 
+        $roleHelper = resolve(RoleHelper::class);
+
         // If same role or changing from one staff role to another
-        if ($old_role->id === $new_role->id || (RoleHelper::getInstance()->isStaffRole($old_role->id) && RoleHelper::getInstance()->isStaffRole($new_role->id))) {
+        if ($old_role->id === $new_role->id || ($roleHelper->isStaffRole($old_role->id) && $roleHelper->isStaffRole($new_role->id))) {
             $user->update([
                 'full_name' => $this->_request->full_name,
                 'username' => $this->_request->username,
@@ -71,7 +73,7 @@ class UserEditService extends Service
         }
 
         // Determine if their password should be created or removed
-        if (!RoleHelper::getInstance()->isStaffRole($old_role->id) && RoleHelper::getInstance()->isStaffRole($new_role->id)) {
+        if (!$roleHelper->isStaffRole($old_role->id) && $roleHelper->isStaffRole($new_role->id)) {
             $password = bcrypt($this->_request->password);
         } else {
             $password = null;

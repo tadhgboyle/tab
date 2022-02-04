@@ -51,7 +51,7 @@ class ActivityRequest extends FormRequest
             'category_id' => [
                 'required',
                 'integer',
-                ValidationRule::in(CategoryHelper::getInstance()->getActivityCategories()->pluck('id')),
+                ValidationRule::in(resolve(CategoryHelper::class)->getActivityCategories()->pluck('id')),
             ],
         ];
     }

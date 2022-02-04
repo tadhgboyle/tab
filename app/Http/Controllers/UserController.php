@@ -28,19 +28,19 @@ class UserController extends Controller
         return (new UserDeleteService($user_id))->redirect();
     }
 
-    public function list()
+    public function list(RotationHelper $rotationHelper)
     {
         return view('pages.users.list', [
-            'rotations' => RotationHelper::getInstance()->getRotations(),
+            'rotations' => $rotationHelper->getRotations(),
             'users' => User::all(),
-            'selectedRotation' => RotationHelper::getInstance()->getCurrentRotation(),
+            'selectedRotation' => $rotationHelper->getCurrentRotation(),
         ]);
     }
 
-    public function view(User $user)
+    public function view(User $user, CategoryHelper $categoryHelper)
     {
         $processed_categories = [];
-        $categories = CategoryHelper::getInstance()->getCategories();
+        $categories = $categoryHelper->getCategories();
 
         foreach ($categories as $category) {
             $info = UserLimitsHelper::getInfo($user, $category->id);
@@ -63,7 +63,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function form()
+    public function form(CategoryHelper $categoryHelper, RotationHelper $rotationHelper)
     {
         $user = User::query()->find(request()->route('id'));
         if ($user !== null) {
@@ -77,7 +77,7 @@ class UserController extends Controller
         }
 
         $processed_categories = [];
-        $categories = CategoryHelper::getInstance()->getCategories();
+        $categories = $categoryHelper->getCategories();
 
         foreach ($categories as $category) {
             $processed_categories[] = [
@@ -91,7 +91,7 @@ class UserController extends Controller
             'user' => $user,
             'available_roles' => auth()->user()->role->getRolesAvailable()->all(),
             'categories' => $processed_categories,
-            'rotations' => RotationHelper::getInstance()->getRotations(),
+            'rotations' => $rotationHelper->getRotations(),
         ]);
     }
 }

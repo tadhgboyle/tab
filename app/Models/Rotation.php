@@ -33,7 +33,7 @@ class Rotation extends Model
 
     public function getStatus(): int
     {
-        if (RotationHelper::getInstance()->getCurrentRotation()?->id === $this->id) {
+        if (resolve(RotationHelper::class)->getCurrentRotation()?->id === $this->id) {
             return self::STATUS_PRESENT;
         }
 

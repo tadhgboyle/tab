@@ -73,7 +73,7 @@ class RoleController extends Controller
         return redirect()->route('settings')->with('success', $message);
     }
 
-    public function form()
+    public function form(PermissionHelper $permissionHelper)
     {
         $role = Role::find(request()->route('id'));
 
@@ -90,7 +90,7 @@ class RoleController extends Controller
             'role' => $role,
             'affected_users' => $affected_users ?? null,
             'available_roles' => $available_roles ?? null,
-            'permissionHelper' => PermissionHelper::getInstance(),
+            'permissionHelper' => $permissionHelper,
         ]);
     }
 

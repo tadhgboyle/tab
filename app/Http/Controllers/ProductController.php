@@ -103,10 +103,12 @@ class ProductController extends Controller
 
         session()->flash('last_product', $product);
 
-        if ($validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'adjust_stock' => 'numeric',
             'adjust_box' => 'numeric',
-        ])->fails()) {
+        ]);
+
+        if ($validator->fails()) {
             return redirect()->back()->withErrors($validator);
         }
 

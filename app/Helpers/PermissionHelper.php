@@ -135,10 +135,10 @@ class PermissionHelper extends Helper
 
     public static function parseNodes($permissions): array
     {
-        $return = [];
+        $nodes = [];
 
         if (!is_array($permissions)) {
-            return $return;
+            return $nodes;
         }
 
         $selected_categories = [];
@@ -147,28 +147,28 @@ class PermissionHelper extends Helper
                 continue;
             }
 
-            // if this node doesnt have a _, its probably a category root node
+            // if this node doesn't have a _, it's probably a category root node
             if (!Str::contains($permission, '_')) {
-                $return[] = $permission;
+                $nodes[] = $permission;
                 $selected_categories[] = $permission;
                 continue;
             }
 
             // grab the root node from a normal node (first element if we split by _)
-            // and ensure this node was selected. if not, dont add it
+            // and ensure this node was selected. if not, don't add it
             $category = explode('_', $permission)[0];
             if (!in_array($category, $selected_categories, true)) {
                 continue;
             }
 
-            $return[] = $permission;
+            $nodes[] = $permission;
         }
 
         foreach ($selected_categories as $category_root_node) {
             // remove any root categories which have no child nodes selected
             $found = false;
 
-            foreach ($return as $permission) {
+            foreach ($nodes as $permission) {
                 if (Str::startsWith($permission, $category_root_node . '_')) {
                     $found = true;
                     break;
@@ -176,10 +176,10 @@ class PermissionHelper extends Helper
             }
 
             if (!$found) {
-                unset($return[array_search($category_root_node, $return, true)]);
+                unset($nodes[array_search($category_root_node, $nodes, true)]);
             }
         }
 
-        return $return;
+        return $nodes;
     }
 }

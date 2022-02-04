@@ -33,7 +33,7 @@ class TransactionCreationService extends Service
     public function __construct(
         private Request $_request
     ) {
-        if (RotationHelper::getInstance()->getCurrentRotation() === null) {
+        if (resolve(RotationHelper::class)->getCurrentRotation() === null) {
             $this->_result = self::RESULT_NO_CURRENT_ROTATION;
             $this->_message = 'Cannot create transaction with no current rotation.';
             return;
@@ -58,9 +58,10 @@ class TransactionCreationService extends Service
             session()->flash("product[{$product_id}]", true);
         }
 
+        $settingsHelper = resolve(SettingsHelper::class);
         $transaction_products = $transaction_categories = $stock_products = [];
         $total_price = 0;
-        $total_tax = SettingsHelper::getInstance()->getGst();
+        $total_tax = $settingsHelper->getGst();
 
         // Loop each product. Serialize it, and add it's cost to the transaction total
         foreach ($this->_request->product as $product_id) {
@@ -87,8 +88,8 @@ class TransactionCreationService extends Service
             $stock_products[] = $product;
 
             if ($product->pst) {
-                $total_tax = ($total_tax + SettingsHelper::getInstance()->getPst()) - 1;
-                $pst_metadata = SettingsHelper::getInstance()->getPst();
+                $total_tax = ($total_tax + $settingsHelper->getPst()) - 1;
+                $pst_metadata = $settingsHelper->getPst();
             } else {
                 $pst_metadata = 'null';
             }
@@ -98,11 +99,11 @@ class TransactionCreationService extends Service
                 $transaction_categories[] = $product->category_id;
             }
 
-            $product_metadata = ProductHelper::serializeProduct($product_id, $quantity, $product->price, SettingsHelper::getInstance()->getGst(), $pst_metadata, 0);
+            $product_metadata = ProductHelper::serializeProduct($product_id, $quantity, $product->price, $settingsHelper->getGst(), $pst_metadata, 0);
 
             $transaction_products[] = $product_metadata;
             $total_price += (($product->price * $quantity) * $total_tax);
-            $total_tax = SettingsHelper::getInstance()->getGst();
+            $total_tax = $settingsHelper->getGst();
         }
 
         $purchaser = User::find($this->_request->purchaser_id);
@@ -160,7 +161,7 @@ class TransactionCreationService extends Service
         $transaction = new Transaction();
         $transaction->purchaser_id = $purchaser->id;
         $transaction->cashier_id = auth()->id();
-        $transaction->rotation_id = RotationHelper::getInstance()->getCurrentRotation()->id; // TODO: cannot make order without current rotation
+        $transaction->rotation_id = resolve(RotationHelper::class)->getCurrentRotation()->id; // TODO: cannot make order without current rotation
         $transaction->products = implode(', ', $transaction_products);
         $transaction->total_price = $total_price;
         if ($this->_request->exists('created_at')) {

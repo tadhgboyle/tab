@@ -42,14 +42,14 @@ class Product extends Model
         // TODO: tax calc and implementation
         $total_tax = 0.00;
         if ($this->pst) {
-            $total_tax += SettingsHelper::getInstance()->getPst();
+            $total_tax += resolve(SettingsHelper::class)->getPst();
         }
 
-        $total_tax += SettingsHelper::getInstance()->getGst();
+        $total_tax += resolve(SettingsHelper::class)->getGst();
 
         --$total_tax;
 
-        return number_format($this->price * $total_tax, 2);
+        return (float) number_format($this->price * $total_tax, 2);
     }
 
     // Used to check if items in order have enough stock BEFORE using removeStock() to remove it.
@@ -104,7 +104,7 @@ class Product extends Model
         foreach ($transactions as $transaction) {
             $products = explode(', ', $transaction->products);
             foreach ($products as $transaction_product) {
-                if (strtok($transaction_product, '*') !== $this->id) {
+                if (strtok($transaction_product, '*') != $this->id) {
                     continue;
                 }
 
