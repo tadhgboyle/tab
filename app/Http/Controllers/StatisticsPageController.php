@@ -6,11 +6,11 @@ use App\Helpers\RotationHelper;
 
 class StatisticsPageController extends Controller
 {
-    public function view()
+    public function view(RotationHelper $rotationHelper)
     {
         return view('pages.statistics.statistics', [
-            'rotations' => RotationHelper::getInstance()->getRotations(),
-            'stats_rotation_id' => RotationHelper::getInstance()->getCurrentRotation(),
+            'rotations' => $rotationHelper->getRotations(),
+            'stats_rotation_id' => $rotationHelper->getCurrentRotation(),
         ]);
     }
 }

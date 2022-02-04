@@ -18,10 +18,18 @@ class PurchaseHistoryChart extends BaseChart
     // TODO: Semi-Returned orders?
     public function handler(Request $request): Chartisan
     {
-        $stats_rotation_id = RotationHelper::getInstance()->getStatisticsRotation();
+        $stats_rotation_id = resolve(RotationHelper::class)->getCurrentRotation()->id;
 
-        $normal_data = Transaction::where([['rotation_id', $stats_rotation_id], ['returned', false]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
-        $returned_data = Transaction::where([['rotation_id', $stats_rotation_id], ['returned', true]])->selectRaw('COUNT(*) AS count, DATE(created_at) date')->groupBy('date')->get();
+        $normal_data = Transaction::query()
+                            ->where([['rotation_id', $stats_rotation_id], ['returned', false]])
+                            ->selectRaw('COUNT(*) AS count, DATE(created_at) date')
+                            ->groupBy('date')
+                            ->get();
+        $returned_data = Transaction::query()
+                            ->where([['rotation_id', $stats_rotation_id], ['returned', true]])
+                            ->selectRaw('COUNT(*) AS count, DATE(created_at) date')
+                            ->groupBy('date')
+                            ->get();
 
         $normal_orders = $returned_orders = $labels = [];
 

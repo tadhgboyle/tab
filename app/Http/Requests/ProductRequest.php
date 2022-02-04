@@ -28,7 +28,7 @@ class ProductRequest extends FormRequest
             'category_id' => [
                 'required',
                 'integer',
-                ValidationRule::in(CategoryHelper::getInstance()->getProductCategories()->pluck('id')),
+                ValidationRule::in(resolve(CategoryHelper::class)->getProductCategories()->pluck('id')),
             ],
             'box_size' => [
                 // TODO: gte -1 (use new Rule::when())

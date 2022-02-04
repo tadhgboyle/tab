@@ -44,7 +44,7 @@ class Role extends Model
     public function getRolesAvailable(?Role $compare = null): Collection
     {
         $return = new Collection();
-        $roles = RoleHelper::getInstance()->getRoles();
+        $roles = resolve(RoleHelper::class)->getRoles();
         foreach ($roles as $role) {
             if (!$compare) {
                 if ($this->canInteract($role)) {

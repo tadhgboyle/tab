@@ -39,7 +39,7 @@ class UserCreationService extends Service
         $user->balance = $this->_request->balance ?: 0;
         $user->role_id = $this->_request->role_id;
 
-        if (RoleHelper::getInstance()->isStaffRole($this->_request->role_id)) {
+        if (resolve(RoleHelper::class)->isStaffRole($this->_request->role_id)) {
             $user->password = bcrypt($this->_request->password);
         }
 

@@ -7,6 +7,7 @@ use App\Models\Activity;
 use Illuminate\Support\Carbon;
 use App\Helpers\CategoryHelper;
 use App\Http\Requests\ActivityRequest;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 // TODO: add return/cancel functionality
@@ -65,7 +66,9 @@ class ActivityController extends Controller
 
     public function list()
     {
-        return view('pages.activities.list', ['activities' => self::getAllActivities()]);
+        return view('pages.activities.list', [
+            'activities' => self::getAllActivities()
+        ]);
     }
 
     public function view(Activity $activity)
@@ -77,7 +80,7 @@ class ActivityController extends Controller
         ]);
     }
 
-    public function form()
+    public function form(CategoryHelper $categoryHelper)
     {
         $activity = Activity::find(request()->route('id'));
 
@@ -90,7 +93,7 @@ class ActivityController extends Controller
         return view('pages.activities.form', [
             'activity' => $activity,
             'start' => $start,
-            'categories' => CategoryHelper::getInstance()->getActivityCategories(),
+            'categories' => $categoryHelper->getActivityCategories(),
         ]);
     }
 

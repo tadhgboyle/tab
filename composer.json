@@ -14,8 +14,7 @@
         "laravel/framework": "^8.0",
         "laravel/tinker": "^2.0",
         "nunomaduro/larastan": "1.x-dev",
-        "rennokki/laravel-eloquent-query-cache": "^2.0",
-        "symfony/var-dumper": "<5.3.4"
+        "rennokki/laravel-eloquent-query-cache": "^2.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.5",
@@ -28,7 +27,8 @@
         "nunomaduro/collision": "^5.0",
         "nunomaduro/phpinsights": "dev-master",
         "phpunit/phpunit": "^9.0",
-        "wulfheart/pretty_routes": "^0.3.0"
+        "wulfheart/pretty_routes": "^0.3.0",
+        "symfony/var-dumper": "<5.3.4"
     },
     "config": {
         "optimize-autoloader": true,

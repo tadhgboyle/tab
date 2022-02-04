@@ -69,7 +69,7 @@ class Activity extends Model
 
     public function getPrice(): float
     {
-        return $this->price * SettingsHelper::getInstance()->getGst();
+        return $this->price * resolve(SettingsHelper::class)->getGst();
     }
 
     public function getAttendees(): array
@@ -120,7 +120,7 @@ class Activity extends Model
             'cashier_id' => auth()->id(),
             'activity_id' => $this->id,
             'activity_price' => $this->price,
-            'activity_gst' => SettingsHelper::getInstance()->getGst(),
+            'activity_gst' => resolve(SettingsHelper::class)->getGst(),
             'total_price' => $this->getPrice(),
             'created_at' => now(),
             'updated_at' => now(),

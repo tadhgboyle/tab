@@ -7,7 +7,6 @@ use Illuminate\Database\Seeder;
 
 class ProductSeeder extends Seeder
 {
-    // TODO: implement these names. Faker unique() seems to not work here
     private static array $foodNames = [
         'Pop', 'Chips', 'Candy Bag', 'Slurpee (Small)', 'Slurpee (Large)', 'Coffee',
         'Hot Dog', 'Ice Cream (1 scoop)', 'Ice Cream (2 scoops)', 'Ice Cream (3 scoops)',
@@ -34,21 +33,21 @@ class ProductSeeder extends Seeder
     {
         [$food_category, $merch_category, , $general_category] = $categories;
 
-        foreach (static::$foodNames as $name) {
+        foreach (self::$foodNames as $name) {
             Product::factory()->state([
                 'name' => $name,
                 'category_id' => $food_category
             ])->create();
         }
 
-        foreach (static::$merchNames as $name) {
+        foreach (self::$merchNames as $name) {
             Product::factory()->state([
                 'name' => $name,
                 'category_id' => $merch_category
             ])->create();
         }
 
-        foreach (static::$generalNames as $name) {
+        foreach (self::$generalNames as $name) {
             Product::factory()->state([
                 'name' => $name,
                 'category_id' => $general_category

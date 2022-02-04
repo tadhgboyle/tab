@@ -14,28 +14,34 @@ class SettingsController extends Controller
 {
     public function editSettings(Request $request)
     {
-        if ($validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'gst' => 'required|numeric',
             'pst' => 'required|numeric',
-        ])->fails()) {
+        ]);
+
+        if ($validator->fails()) {
             return redirect()->route('settings')->withInput()->withErrors($validator);
         }
 
         DB::table('settings')->where('setting', 'gst')->update(['value' => $request->gst]);
         DB::table('settings')->where('setting', 'pst')->update(['value' => $request->pst]);
 
-        return redirect()->route('settings')->with('success', 'Updated settings.');
+        return redirect()->route('settings')->with('success', 'Updated tax settings.');
     }
 
-    public function view()
-    {
+    public function view(
+        SettingsHelper $settingsHelper,
+        CategoryHelper $categoryHelper,
+        RoleHelper $roleHelper,
+        RotationHelper $rotationHelper
+    ){
         return view('pages.settings.settings', [
-            'gst' => SettingsHelper::getInstance()->getGst(),
-            'pst' => SettingsHelper::getInstance()->getPst(),
-            'categories' => CategoryHelper::getInstance()->getCategories(),
-            'roles' => RoleHelper::getInstance()->getRoles('ASC'),
-            'rotations' => RotationHelper::getInstance()->getRotations(),
-            'currentRotation' => RotationHelper::getInstance()->getCurrentRotation()?->name
+            'gst' => $settingsHelper->getGst(),
+            'pst' => $settingsHelper->getPst(),
+            'categories' => $categoryHelper->getCategories(),
+            'roles' => $roleHelper->getRoles('ASC'),
+            'rotations' => $rotationHelper->getRotations(),
+            'currentRotation' => $rotationHelper->getCurrentRotation()?->name
         ]);
     }
 }

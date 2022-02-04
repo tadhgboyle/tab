@@ -147,6 +147,6 @@ class UserLimitsHelper
             $category_spent += $activity_transaction->total_price;
         }
 
-        return number_format($category_spent, 2);
+        return (float) number_format($category_spent, 2);
     }
 }

@@ -36,7 +36,7 @@ class UserRequest extends FormRequest
                 'required',
                 'array',
                 'min:1',
-                'max:' . RotationHelper::getInstance()->getRotations()->count(),
+                'max:' . resolve(RotationHelper::class)->getRotations()->count(),
             ],
             'rotations.*' => [
                 ValidationRule::exists('rotations', 'id'),
@@ -49,7 +49,7 @@ class UserRequest extends FormRequest
                 'nullable',
                 'confirmed',
                 'min:6',
-                ValidationRule::requiredIf(RoleHelper::getInstance()->isStaffRole($this->get('role_id'))),
+                ValidationRule::requiredIf(resolve(RoleHelper::class)->isStaffRole($this->get('role_id'))),
             ],
         ];
     }
