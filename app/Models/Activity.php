@@ -54,8 +54,7 @@ class Activity extends Model
             return -1;
         }
 
-        $current_attendees = $this->getCurrentAttendees()->count();
-        return $this->slots - $current_attendees;
+        return $this->slots - $this->getCurrentAttendees()->count();
     }
 
     public function hasSlotsAvailable(int $count = 1): bool

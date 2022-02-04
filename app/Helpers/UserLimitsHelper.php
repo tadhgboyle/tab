@@ -40,16 +40,13 @@ class UserLimitsHelper
                 return [$message, $result];
             }
 
-            UserLimits::updateOrCreate(
-                [
-                    'user_id' => $user->id,
-                    'category_id' => $category_id,
-                ],
-                [
-                    'limit_per' => $limit,
-                    'duration' => $duration,
-                ]
-            );
+            UserLimits::updateOrCreate([
+                'user_id' => $user->id,
+                'category_id' => $category_id,
+            ], [
+                'limit_per' => $limit,
+                'duration' => $duration,
+            ]);
         }
 
         return [null, null];
@@ -61,7 +58,7 @@ class UserLimitsHelper
             $info = self::getInfo($user, $category_id);
         }
 
-        if ((float)$info->limit_per == -1) {
+        if ((float)$info->limit_per === -1.0) {
             return true;
         }
 
@@ -72,7 +69,10 @@ class UserLimitsHelper
 
     public static function getInfo(User $user, int $category_id): stdClass
     {
-        $info = UserLimits::where([['user_id', $user->id], ['category_id', $category_id]])->select('duration', 'limit_per')->get();
+        $info = UserLimits::query()
+            ->where([['user_id', $user->id], ['category_id', $category_id]])
+            ->select('duration', 'limit_per')
+            ->get();
 
         $limit_info = new stdClass();
 

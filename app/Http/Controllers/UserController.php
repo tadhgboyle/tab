@@ -30,7 +30,11 @@ class UserController extends Controller
 
     public function list()
     {
-        return view('pages.users.list');
+        return view('pages.users.list', [
+            'rotations' => RotationHelper::getInstance()->getRotations(),
+            'users' => User::all(),
+            'selectedRotation' => RotationHelper::getInstance()->getCurrentRotation(),
+        ]);
     }
 
     public function view(User $user)

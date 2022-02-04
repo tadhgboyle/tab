@@ -60,7 +60,7 @@ class TransactionReturnService extends Service
             $total_price += ($product_metadata['price'] * $product_metadata['quantity']) * $total_tax;
         }
 
-        $purchaser->update(['balance' => ($purchaser->balance + $total_price)]);
+        $purchaser->increment('balance', $total_price);
         $this->_transaction->update(['returned' => true]);
 
         $this->_result = self::RESULT_SUCCESS;
@@ -77,46 +77,47 @@ class TransactionReturnService extends Service
         }
 
         $purchaser = $this->_transaction->purchaser;
-        $user_balance = $purchaser->balance;
 
         // Loop order products until we find the matching id
         $products = explode(', ', $this->_transaction->products);
         foreach ($products as $product_count) {
             // Only proceed if this is the requested item id
-            if (strtok($product_count, '*') == $item_id) {
-                $order_product = ProductHelper::deserializeProduct($product_count);
+            if (strtok($product_count, '*') != $item_id) {
+                continue;
+            }
 
-                // If it has not been returned more times than it was purchased, then ++ the returned count and refund the original cost + taxes
-                if (!($order_product['returned'] < $order_product['quantity'])) {
-                    $this->_result = self::RESULT_ITEM_RETURNED_MAX_TIMES;
-                    $this->_message = 'That item has already been returned the maximum amount of times for that order.';
-                    return $this;
-                }
+            $order_product = ProductHelper::deserializeProduct($product_count);
 
-                $order_product['returned']++;
-
-                // Check taxes and apply correct %
-                if ($order_product['pst'] === 'null') {
-                    $total_tax = $order_product['gst'];
-                } else {
-                    $total_tax = (($order_product['pst'] + $order_product['gst']) - 1);
-                }
-
-                // Gets funky now. find the exact string of the original item from the string of order items and replace with the new string where the R value is ++
-                $updated_products = str_replace(
-                    $product_count,
-                    ProductHelper::serializeProduct($order_product['id'], $order_product['quantity'], $order_product['price'], $order_product['gst'], $order_product['pst'], $order_product['returned']),
-                    $products
-                );
-                // Update their balance
-                $purchaser->update(['balance' => $user_balance += ($order_product['price'] * $total_tax)]);
-                // Now insert the funky replaced string where it was originally
-                $this->_transaction->update(['products' => implode(', ', $updated_products)]);
-
-                $this->_result = self::RESULT_SUCCESS;
-                $this->_message = 'Successfully returned x1 ' . $order_product['name'] . ' for order #' . $this->_transaction->id . '.';
+            // If it has not been returned more times than it was purchased, then ++ the returned count and refund the original cost + taxes
+            if (!($order_product['returned'] < $order_product['quantity'])) {
+                $this->_result = self::RESULT_ITEM_RETURNED_MAX_TIMES;
+                $this->_message = 'That item has already been returned the maximum amount of times for that order.';
                 return $this;
             }
+
+            $order_product['returned']++;
+
+            // Check taxes and apply correct %
+            if ($order_product['pst'] === 'null') {
+                $total_tax = $order_product['gst'];
+            } else {
+                $total_tax = (($order_product['pst'] + $order_product['gst']) - 1);
+            }
+
+            // Gets funky now. find the exact string of the original item from the string of order items and replace with the new string where the R value is ++
+            $updated_products = str_replace(
+                $product_count,
+                ProductHelper::serializeProduct($order_product['id'], $order_product['quantity'], $order_product['price'], $order_product['gst'], $order_product['pst'], $order_product['returned']),
+                $products
+            );
+            // Update their balance
+            $purchaser->increment('balance', $order_product['price'] * $total_tax);
+            // Now insert the funky replaced string where it was originally
+            $this->_transaction->update(['products' => implode(', ', $updated_products)]);
+
+            $this->_result = self::RESULT_SUCCESS;
+            $this->_message = 'Successfully returned x1 ' . $order_product['name'] . ' for order #' . $this->_transaction->id . '.';
+            return $this;
         }
 
         $this->_result = self::RESULT_ITEM_NOT_IN_ORDER;

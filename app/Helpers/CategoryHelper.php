@@ -4,7 +4,7 @@ namespace App\Helpers;
 
 use App\Models\Category;
 use App\Casts\CategoryType;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 
 // TODO: tests
 class CategoryHelper extends Helper
