@@ -60,8 +60,6 @@ class TransactionCreationService extends Service
 
         $transaction_products = $transaction_categories = $stock_products = [];
         $total_price = 0;
-        $quantity = 1;
-        $product_metadata = $pst_metadata = '';
         $total_tax = SettingsHelper::getInstance()->getGst();
 
         // Loop each product. Serialize it, and add it's cost to the transaction total
