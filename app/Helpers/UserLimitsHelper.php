@@ -61,7 +61,7 @@ class UserLimitsHelper
             $info = self::getInfo($user, $category_id);
         }
 
-        if ($info->limit_per === -1) {
+        if ((float)$info->limit_per == -1) {
             return true;
         }
 
@@ -78,7 +78,7 @@ class UserLimitsHelper
 
         if ($info->count()) {
             $info = $info->first();
-            $limit_info->duration = $info->duration == UserLimits::LIMIT_DAILY ? 'day' : 'week';
+            $limit_info->duration = $info->duration === UserLimits::LIMIT_DAILY ? 'day' : 'week';
             $limit_info->duration_int = (int) $info->duration;
             $limit_info->limit_per = $info->limit_per;
         } else {
@@ -120,7 +120,7 @@ class UserLimitsHelper
 
             foreach ($transaction_products as $transaction_product) {
                 $product = Product::find(strtok($transaction_product, '*'));
-                if ($product->category_id !== $category_id) {
+                if ((int)$product->category_id !== $category_id) {
                     continue;
                 }
 
@@ -140,7 +140,7 @@ class UserLimitsHelper
 
         foreach ($activity_transactions as $activity_transaction) {
             $activity = Activity::find($activity_transaction->activity_id);
-            if ($activity->category_id !== $category_id) {
+            if ((int)$activity->category_id !== $category_id) {
                 continue;
             }
 

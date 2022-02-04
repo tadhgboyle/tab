@@ -80,21 +80,26 @@ class User extends Authenticatable
 
     public function getActivityTransactions(): Collection
     {
-        return $this->_activity_transactions ??= DB::table('activity_transactions')->where('user_id', $this->id)->orderBy('created_at', 'DESC')->get();
+        return $this->_activity_transactions ??= DB::table('activity_transactions')
+            ->where('user_id', $this->id)
+            ->orderBy('created_at', 'DESC')
+            ->get();
     }
 
     public function getTransactions(): Collection
     {
-        return $this->_transactions ??= Transaction::where('purchaser_id', $this->id)->orderBy('created_at', 'DESC')->get();
+        return $this->_transactions ??= Transaction::query()
+            ->where('purchaser_id', $this->id)
+            ->orderBy('created_at', 'DESC')
+            ->get();
     }
 
     public function getActivities(): Collection
     {
         if (!isset($this->_activities)) {
             $this->_activities = new Collection();
-            $activity_transactions = $this->getActivityTransactions();
 
-            foreach ($activity_transactions as $activity) {
+            $this->getActivityTransactions()->each(function ($activity) {
                 $this->_activities->add([
                     'created_at' => Carbon::parse($activity->created_at),
                     'cashier' => self::find($activity->cashier_id),
@@ -102,7 +107,7 @@ class User extends Authenticatable
                     'price' => $activity->activity_price,
                     'returned' => $activity->returned,
                 ]);
-            }
+            });
         }
 
         return $this->_activities;
