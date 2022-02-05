@@ -60,7 +60,7 @@ class TransactionReturnService extends Service
             $total_price += ($product_metadata['price'] * $product_metadata['quantity']) * $total_tax;
         }
 
-        $purchaser->increment('balance', $total_price);
+        $purchaser->update(['balance' => ($purchaser->balance + $total_price)]);
         $this->_transaction->update(['returned' => true]);
 
         $this->_result = self::RESULT_SUCCESS;
