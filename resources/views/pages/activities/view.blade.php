@@ -1,7 +1,7 @@
 @extends('layouts.default', ['page' => 'activities'])
 @section('content')
 <h2 class="title has-text-weight-bold">View Activity</h2>
-<h4 class="subtitle"><strong>Activity:</strong> {{ $activity->name }} @if(!$activity->trashed() && $activities_manage)<a href="{{ route('activities_edit', $activity->id) }}">(Edit)</a>@endif</h4>
+<h4 class="subtitle"><strong>Activity:</strong> {{ $activity->name }} @if($activities_manage && !$activity->trashed())<a href="{{ route('activities_edit', $activity->id) }}">(Edit)</a>@endif</h4>
 <div class="columns box">
     <div class="column">
         @include('includes.messages')
@@ -39,7 +39,7 @@
                     @foreach($activity->getAttendees() as $user)
                     <tr>
                         <td>
-                            <div><a href="{{ route('users_view', $user->id) }}">{{ $user->full_name }}</a></div>
+                            <div><a href="{{ route('users_view', $user) }}">{{ $user->full_name }}</a></div>
                         </td>
                     </tr>
                     @endforeach
@@ -96,8 +96,8 @@
                 "searching": false,
                 "bInfo": false,
                 "columnDefs": [
-                    { 
-                        "orderable": false, 
+                    {
+                        "orderable": false,
                         "targets": [0, 1, 2]
                     }
                 ],
@@ -110,7 +110,9 @@
 
     @if($can_register)
         $('#search').on('keyup', function() {
-            if (this.value == undefined || this.value == '') return;
+            if (this.value === undefined || this.value === '') {
+                return;
+            }
             $.ajax({
                 type : "POST",
                 url : "{{ route('activities_user_search') }}",
@@ -126,18 +128,18 @@
                     $('#results').html(response);
                     $('#search-div').fadeOut(200);
                 },
-                error: function(xhr, status, error) {
+                error: function(xhr) {
                     $('#results').html("<p style='color: red;'><b>ERROR: </b><br>" + xhr.responseText + "</p>");
                 }
             });
         });
 
         const modal = document.querySelector('.modal');
-        
+
         function openModal() {
             modal.classList.add('is-active');
         }
-        
+
         function closeModal() {
             modal.classList.remove('is-active');
         }

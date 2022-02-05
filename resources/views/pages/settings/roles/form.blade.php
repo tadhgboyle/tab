@@ -6,7 +6,7 @@
     <div class="column">
         <div class="box">
             @include('includes.messages')
-            <form action="{{ is_null($role) ? route('settings_roles_new') : route('settings_roles_edit_form') }}" method="POST" id="role_form">
+            <form action="{{ is_null($role) ? route('settings_roles_new_form') : route('settings_roles_edit_form') }}" method="POST" id="role_form">
                 @csrf
                 <input type="hidden" name="role_id" id="role_id" value="{{ $role->id ?? null }}">
                 <div class="field">
@@ -74,14 +74,14 @@
             <p class="modal-card-title">Confirmation</p>
         </header>
         <section class="modal-card-body">
-            <p><strong>{{ $affected_users }}</strong>@if($affected_users > 1 || $affected_users == 0) users @else user @endif currently have this role.</p>
-            <!-- 
+            <p><strong>{{ $affected_users }}</strong>@if($affected_users > 1 || $affected_users === 0) users @else user @endif currently have this role.</p>
+            <!--
                 Rules:
-                - Only roles which the current user can interact with 
-                - If the deleted role is not a staff role, only other non-staff roles are shown 
+                - Only roles which the current user can interact with
+                - If the deleted role is not a staff role, only other non-staff roles are shown
                 - If the role is a staff role, roles of any type are shown
             -->
-            @if(!count($available_roles) > 0)
+            @if(!(count($available_roles) > 0))
                 <strong>No appropriate backup roles. Cannot delete.</strong>
             @else
                 <form action="" id="deleteForm" method="GET">
@@ -172,17 +172,17 @@
 
     @if(!is_null($role))
         const modal = document.querySelector('.modal');
-        
+
         function openModal() {
             modal.classList.add('is-active');
         }
-        
+
         function closeModal() {
             modal.classList.remove('is-active');
         }
 
         function deleteData() {
-            var url = '{{ route("settings_roles_delete", ":id") }}';
+            let url = '{{ route("settings_roles_delete", ":id") }}';
             url = url.replace(':id', {{ $role->id }});
             $("#deleteForm").attr('action', url);
             $("#deleteForm").submit();
@@ -190,7 +190,7 @@
     @endif
 
     const switches = document.getElementsByClassName("js-switch");
-    for (var i = 0; i < switches.length; i++) {
+    for (let i = 0; i < switches.length; i++) {
         new Switchery(switches.item(i), {
             color: '#48C774',
             secondaryColor: '#F56D71'

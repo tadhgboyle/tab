@@ -35,13 +35,8 @@ class TransactionController extends Controller
         ]);
     }
 
-    public function view(int $transaction_id)
+    public function view(Transaction $transaction)
     {
-        $transaction = Transaction::find($transaction_id);
-        if ($transaction == null) {
-            return redirect()->route('orders_list')->with('error', 'Invalid order.')->send();
-        }
-
         $transaction_items = [];
         foreach (explode(', ', $transaction->products) as $product) {
             $transaction_items[] = ProductHelper::deserializeProduct($product);
@@ -54,24 +49,17 @@ class TransactionController extends Controller
         ]);
     }
 
-    public function order()
+    public function order(User $user, SettingsHelper $settingsHelper)
     {
-        $user = User::find(request()->route('id'));
-        if ($user == null) {
-            return redirect()->route('index')->with('error', 'Invalid user.')->send();
-        }
-
-        if (!hasPermission('cashier_self_purchases')) {
-            if ($user->id == auth()->id()) {
-                return redirect('/')->with('error', 'You cannot make purchases for yourself.');
-            }
+        if (!hasPermission('cashier_self_purchases') && $user->id === auth()->id()) {
+            return redirect('/')->with('error', 'You cannot make purchases for yourself.');
         }
 
         return view('pages.orders.order', [
             'user' => $user,
             'products' => Product::orderBy('name', 'ASC')->get(),
-            'gst' => SettingsHelper::getInstance()->getGst(),
-            'pst' => SettingsHelper::getInstance()->getPst(),
+            'gst' => $settingsHelper->getGst(),
+            'pst' => $settingsHelper->getPst(),
         ]);
     }
 }

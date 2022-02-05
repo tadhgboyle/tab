@@ -23,7 +23,7 @@ class CategoryController extends Controller
         $category->type = $request->type;
         $category->save();
 
-        return redirect()->route('settings')->with('success', "Created new category {$request->name}.");
+        return redirect()->route('settings')->with('success', "Created new category $request->name.");
     }
 
     public function edit(CategoryRequest $request)
@@ -35,16 +35,14 @@ class CategoryController extends Controller
             'type' => $request->type
         ]);
 
-        return redirect()->route('settings')->with('success', "Updated category {$request->name}.");
+        return redirect()->route('settings')->with('success', "Updated category $request->name.");
     }
 
     // TODO: fallback category logic similar to roles
-    public function delete(int $category_id)
+    public function delete(Category $category)
     {
-        $category = Category::find($category_id);
-
         $category->delete();
 
-        return redirect()->route('settings')->with('success', "Deleted category {$category->name}.");
+        return redirect()->route('settings')->with('success', "Deleted category $category->name.");
     }
 }

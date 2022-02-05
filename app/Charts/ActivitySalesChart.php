@@ -5,7 +5,7 @@ namespace App\Charts;
 use App\Models\Activity;
 use Chartisan\PHP\Chartisan;
 use Illuminate\Http\Request;
-use App\Helpers\SettingsHelper;
+use App\Helpers\RotationHelper;
 use ConsoleTVs\Charts\BaseChart;
 
 class ActivitySalesChart extends BaseChart
@@ -19,7 +19,8 @@ class ActivitySalesChart extends BaseChart
         $sales = [];
 
         $activities = Activity::all();
-        $stats_time = SettingsHelper::getInstance()->getStatsTime();
+        //$stats_rotation_id = resolve(RotationHelper::class)->getCurrentRotation();
+        // TODO: Use activity transactions table instead
         foreach ($activities as $activity) {
             $sold = $activity->getCurrentAttendees()->count();
             if ($sold < 1) {
@@ -29,7 +30,7 @@ class ActivitySalesChart extends BaseChart
             $sales[] = ['name' => $activity->name, 'sold' => $sold];
         }
 
-        uasort($sales, fn ($a, $b) => $a['sold'] > $b['sold'] ? -1 : 1);
+        uasort($sales, static fn ($a, $b) => $a['sold'] > $b['sold'] ? -1 : 1);
 
         return Chartisan::build()
             ->labels(array_column($sales, 'name'))

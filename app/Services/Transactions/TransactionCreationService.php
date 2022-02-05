@@ -9,6 +9,7 @@ use App\Services\Service;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Helpers\ProductHelper;
+use App\Helpers\RotationHelper;
 use App\Helpers\SettingsHelper;
 use App\Helpers\UserLimitsHelper;
 use Illuminate\Http\RedirectResponse;
@@ -26,17 +27,22 @@ class TransactionCreationService extends Service
     public const RESULT_NO_STOCK = 3;
     public const RESULT_NOT_ENOUGH_BALANCE = 4;
     public const RESULT_NOT_ENOUGH_CATEGORY_BALANCE = 5;
-    public const RESULT_SUCCESS = 6;
+    public const RESULT_NO_CURRENT_ROTATION = 6;
+    public const RESULT_SUCCESS = 7;
 
     public function __construct(
         private Request $_request
     ) {
-        if (!hasPermission('cashier_self_purchases')) {
-            if ($this->_request->purchaser_id == auth()->id()) {
-                $this->_result = self::RESULT_NO_SELF_PURCHASE;
-                $this->_message = 'You cannot make purchases for yourself.';
-                return;
-            }
+        if (resolve(RotationHelper::class)->getCurrentRotation() === null) {
+            $this->_result = self::RESULT_NO_CURRENT_ROTATION;
+            $this->_message = 'Cannot create transaction with no current rotation.';
+            return;
+        }
+
+        if (!hasPermission('cashier_self_purchases') && $this->_request->purchaser_id === auth()->id()) {
+            $this->_result = self::RESULT_NO_SELF_PURCHASE;
+            $this->_message = 'You cannot make purchases for yourself.';
+            return;
         }
 
         if (!isset($this->_request->product)) {
@@ -46,17 +52,17 @@ class TransactionCreationService extends Service
         }
 
         // For some reason, old() does not seem to work with array[] inputs in form. This will do for now...
-        // ^ I'm sure its a silly mistake on my end
+        // ^ I'm sure it's a silly mistake on my end
+        // TODO apparently dot notation works
         foreach ($this->_request->product as $product_id) {
             session()->flash("quantity[{$product_id}]", $this->_request->quantity[$product_id]);
             session()->flash("product[{$product_id}]", true);
         }
 
+        $settingsHelper = resolve(SettingsHelper::class);
         $transaction_products = $transaction_categories = $stock_products = [];
         $total_price = 0;
-        $quantity = 1;
-        $product_metadata = $pst_metadata = '';
-        $total_tax = SettingsHelper::getInstance()->getGst();
+        $total_tax = $settingsHelper->getGst();
 
         // Loop each product. Serialize it, and add it's cost to the transaction total
         foreach ($this->_request->product as $product_id) {
@@ -83,40 +89,39 @@ class TransactionCreationService extends Service
             $stock_products[] = $product;
 
             if ($product->pst) {
-                $total_tax = ($total_tax + SettingsHelper::getInstance()->getPst()) - 1;
-                $pst_metadata = SettingsHelper::getInstance()->getPst();
+                $total_tax = ($total_tax + $settingsHelper->getPst()) - 1;
+                $pst_metadata = $settingsHelper->getPst();
             } else {
                 $pst_metadata = 'null';
             }
 
             // keep track of which unique categories are included in this transaction
-            if (!in_array($product->category_id, $transaction_categories)) {
+            if (!in_array($product->category_id, $transaction_categories, true)) {
                 $transaction_categories[] = $product->category_id;
             }
 
-            $product_metadata = ProductHelper::serializeProduct($product_id, $quantity, $product->price, SettingsHelper::getInstance()->getGst(), $pst_metadata, 0);
+            $product_metadata = ProductHelper::serializeProduct($product_id, $quantity, $product->price, $settingsHelper->getGst(), $pst_metadata, 0);
 
             $transaction_products[] = $product_metadata;
             $total_price += (($product->price * $quantity) * $total_tax);
-            $total_tax = SettingsHelper::getInstance()->getGst();
+            $total_tax = $settingsHelper->getGst();
         }
 
         $purchaser = User::find($this->_request->purchaser_id);
         $remaining_balance = $purchaser->balance - $total_price;
         if ($remaining_balance < 0) {
             $this->_result = self::RESULT_NOT_ENOUGH_BALANCE;
-            $this->_message = "Not enough balance. {$purchaser->full_name} only has $ {$purchaser->balance}";
+            $this->_message = "Not enough balance. {$purchaser->full_name} only has \${$purchaser->balance}. Tried to spend \${$total_price}.";
             return;
         }
 
-        $category_spent = $category_limit = 0.00;
         // Loop categories within this transaction
         foreach ($transaction_categories as $category_id) {
             $limit_info = UserLimitsHelper::getInfo($purchaser, $category_id);
             $category_limit = $limit_info->limit_per;
 
             // Skip this category if they have unlimited. Saves time querying
-            if ($category_limit == -1) {
+            if ($category_limit === -1) {
                 continue;
             }
 
@@ -126,13 +131,13 @@ class TransactionCreationService extends Service
             foreach ($transaction_products as $product) {
                 $product_metadata = ProductHelper::deserializeProduct($product);
 
-                if ($product_metadata['category'] != $category_id) {
+                if ($product_metadata['category'] !== $category_id) {
                     continue;
                 }
 
                 $tax_percent = $product_metadata['gst'];
 
-                if ($product_metadata['pst'] != 'null') {
+                if ($product_metadata['pst'] !== 'null') {
                     $tax_percent += $product_metadata['pst'] - 1;
                 }
 
@@ -142,13 +147,13 @@ class TransactionCreationService extends Service
             // Break loop if we exceed their limit
             if (!UserLimitsHelper::canSpend($purchaser, $category_spent, $category_id, $limit_info)) {
                 $this->_result = self::RESULT_NOT_ENOUGH_CATEGORY_BALANCE;
-                $this->_message = 'Not enough balance in that category: ' . Category::find($category_id)->name . ' (Limit: $' . number_format($category_limit, 2) . ', Remaining: $' . number_format($category_limit - $category_spent_orig, 2) . ').';
+                $this->_message = 'Not enough balance in the ' . Category::find($category_id)->name . ' category. (Limit: $' . number_format($category_limit, 2) . ', Remaining: $' . number_format($category_limit - $category_spent_orig, 2) . '). Tried to spend $' . number_format($category_spent, 2);
                 return;
             }
         }
 
         foreach ($stock_products as $product) {
-            // we already know the product has stock via hasStock() call above, so we dont need to check for the result of removeStock()
+            // we already know the product has stock via hasStock() call above, so we don't need to check for the result of removeStock()
             $product->removeStock($this->_request->quantity[$product->id]);
         }
 
@@ -157,10 +162,11 @@ class TransactionCreationService extends Service
         $transaction = new Transaction();
         $transaction->purchaser_id = $purchaser->id;
         $transaction->cashier_id = auth()->id();
+        $transaction->rotation_id = resolve(RotationHelper::class)->getCurrentRotation()->id; // TODO: cannot make order without current rotation
         $transaction->products = implode(', ', $transaction_products);
         $transaction->total_price = $total_price;
         if ($this->_request->exists('created_at')) {
-            $transaction->created_at = $this->_request->created_at;
+            $transaction->created_at = $this->_request->created_at; // for seeding random times
         }
         $transaction->save();
 
@@ -177,13 +183,10 @@ class TransactionCreationService extends Service
 
     public function redirect(): RedirectResponse
     {
-        switch ($this->getResult()) {
-            case self::RESULT_NO_SELF_PURCHASE:
-                return redirect('/')->with('error', $this->getMessage());
-            case self::RESULT_SUCCESS:
-                return redirect('/')->with('success', $this->getMessage());
-            default:
-                return redirect()->back()->withInput()->with('error', $this->getMessage());
-        }
+        return match ($this->getResult()) {
+            self::RESULT_NO_SELF_PURCHASE => redirect('/')->with('error', $this->getMessage()),
+            self::RESULT_SUCCESS => redirect('/')->with('success', $this->getMessage()),
+            default => redirect()->back()->withInput()->with('error', $this->getMessage()),
+        };
     }
 }

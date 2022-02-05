@@ -18,7 +18,7 @@ class UserLimitsHelper
 {
     public static function createOrEditFromRequest(UserRequest $request, User $user, string $class): array
     {
-        if ($request->limit == null) {
+        if ($request->limit === null) {
             return [null, null];
         }
 
@@ -28,28 +28,25 @@ class UserLimitsHelper
             $duration = $request->duration[$category_id] ?? UserLimits::LIMIT_DAILY;
 
             // Default to -1 if limit not typed in
-            if ($limit == null || !isset($limit) || empty($limit)) {
+            if (empty($limit)) {
                 $limit = -1;
             }
 
             if ($limit < -1) {
                 $message = 'Limit must be -1 or above for ' . Category::find($category_id)->name . '. (-1 means no limit)';
-                $result = ($class == UserCreationService::class)
+                $result = ($class === UserCreationService::class)
                             ? UserCreationService::RESULT_INVALID_LIMIT
                             : UserEditService::RESULT_INVALID_LIMIT;
                 return [$message, $result];
             }
 
-            UserLimits::updateOrCreate(
-                [
-                    'user_id' => $user->id,
-                    'category_id' => $category_id,
-                ],
-                [
-                    'limit_per' => $limit,
-                    'duration' => $duration,
-                ]
-            );
+            UserLimits::updateOrCreate([
+                'user_id' => $user->id,
+                'category_id' => $category_id,
+            ], [
+                'limit_per' => $limit,
+                'duration' => $duration,
+            ]);
         }
 
         return [null, null];
@@ -57,11 +54,11 @@ class UserLimitsHelper
 
     public static function canSpend(User $user, float $spending, int $category_id, ?object $info = null): bool
     {
-        if ($info == null) {
+        if ($info === null) {
             $info = self::getInfo($user, $category_id);
         }
 
-        if ($info->limit_per == -1) {
+        if ((float)$info->limit_per === -1.0) {
             return true;
         }
 
@@ -72,18 +69,21 @@ class UserLimitsHelper
 
     public static function getInfo(User $user, int $category_id): stdClass
     {
-        $info = UserLimits::where([['user_id', $user->id], ['category_id', $category_id]])->select('duration', 'limit_per')->get();
+        $info = UserLimits::query()
+            ->where([['user_id', $user->id], ['category_id', $category_id]])
+            ->select('duration', 'limit_per')
+            ->get();
 
         $limit_info = new stdClass();
 
         if ($info->count()) {
             $info = $info->first();
-            $limit_info->duration = $info->duration == UserLimits::LIMIT_DAILY ? 'day' : 'week';
+            $limit_info->duration = $info->duration === UserLimits::LIMIT_DAILY ? 'day' : 'week';
             $limit_info->duration_int = (int) $info->duration;
             $limit_info->limit_per = $info->limit_per;
         } else {
             $limit_info->duration = 'week';
-            $limit_info->duration_int = (int) UserLimits::LIMIT_WEEKLY;
+            $limit_info->duration_int = UserLimits::LIMIT_WEEKLY;
             $limit_info->limit_per = -1;
         }
 
@@ -95,14 +95,19 @@ class UserLimitsHelper
         // If they have unlimited money (no limit set) for this category,
         // get all their transactions, as they have no limit set we dont need to worry about
         // when the transaction was created_at.
-        if ($info->limit_per == -1) {
+        if ($info->limit_per === -1) {
             $transactions = $user->getTransactions()->where('returned', false);
-            $activity_transactions = $user->getActivityTransactions('returned', false);
+            $activity_transactions = $user->getActivityTransactions();
         } else {
-            $carbon_string = Carbon::now()->subDays($info->duration == 'day' ? 1 : 7)->toDateTimeString();
+            $carbon_string = Carbon::now()->subDays($info->duration === 'day' ? 1 : 7)->toDateTimeString();
 
-            $transactions = $user->getTransactions()->where('created_at', '>=', $carbon_string)->where('returned', false);
-            $activity_transactions = $user->getActivityTransactions()->where('created_at', '>=', $carbon_string)->where('returned', false);
+            $transactions = $user->getTransactions()
+                ->where('created_at', '>=', $carbon_string)
+                ->where('returned', false);
+
+            $activity_transactions = $user->getActivityTransactions()
+                ->where('created_at', '>=', $carbon_string)
+                ->where('returned', false);
         }
 
         $category_spent = 0.00;
@@ -115,7 +120,7 @@ class UserLimitsHelper
 
             foreach ($transaction_products as $transaction_product) {
                 $product = Product::find(strtok($transaction_product, '*'));
-                if ($product->category_id != $category_id) {
+                if ((int)$product->category_id !== $category_id) {
                     continue;
                 }
 
@@ -123,7 +128,7 @@ class UserLimitsHelper
 
                 $tax_percent = $item_info['gst'];
 
-                if ($item_info['pst'] != 'null') {
+                if ($item_info['pst'] !== 'null') {
                     $tax_percent += $item_info['pst'] - 1;
                 }
 
@@ -135,13 +140,13 @@ class UserLimitsHelper
 
         foreach ($activity_transactions as $activity_transaction) {
             $activity = Activity::find($activity_transaction->activity_id);
-            if ($activity->category_id != $category_id) {
+            if ((int)$activity->category_id !== $category_id) {
                 continue;
             }
 
             $category_spent += $activity_transaction->total_price;
         }
 
-        return number_format($category_spent, 2);
+        return (float) number_format($category_spent, 2);
     }
 }

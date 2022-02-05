@@ -4,23 +4,20 @@
 <div class="columns is-multiline box">
     <div class="column is-12">
         @include('includes.messages')
+        @permission('statistics_select_rotation')
         <div class="field">
             <div class="control">
                 <div class="select">
-                    <form action="/statistics" method="POST">
-                        @csrf
-                        <select name="stats_time" class="input" id="stats_time">
-                            <option value="9999" {{ $stats_time == "9999" ? "selected" : "" }}>All Time</option>
-                            <option value="90" {{ $stats_time == "90" ? "selected" : "" }}>Three Months</option>
-                            <option value="30" {{ $stats_time == "30" ? "selected" : "" }}>One Month</option>
-                            <option value="14" {{ $stats_time == "14" ? "selected" : "" }}>Two Weeks</option>
-                            <option value="7" {{ $stats_time == "7" ? "selected" : "" }}>One Week</option>
-                            <option value="2" {{ $stats_time == "2" ? "selected" : "" }}>Two Days</option>
-                        </select>
-                    </form>
+                    <select name="rotation" class="input" id="rotation">
+                        <option value="all" @if ($stats_rotation_id === 'all') selected @endif>All Rotations</option>
+                        @foreach ($rotations as $rotation)
+                            <option value="{{ $rotation->id }}" @if ($stats_rotation_id === $rotation->id) selected @endif>{{ $rotation->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
         </div>
+        @endpermission
     </div>
     <div class="column is-half">
         @permission('statistics_order_history')
@@ -84,10 +81,16 @@
                 .tooltip()
         });
     @endpermission
-    
-    $('#stats_time').change(function() {
-        this.form.submit();
-    })
+
+    @permission('statistics_select_rotation')
+    $('#rotation').change(function(sel) {
+        const now = new Date();
+        now.setTime(now.getTime() + 3600 * 1000);
+        document.cookie = ("statistics_rotation=" + $(this).val() + "; expires=" + now.toUTCString() + "; path=/");
+        location.reload();
+        console.log(document.cookie);
+    });
+    @endpermission
 </script>
 
 @endsection

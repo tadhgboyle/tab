@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Helpers\RoleHelper;
+use App\Helpers\RotationHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule as ValidationRule;
 
@@ -13,7 +14,7 @@ class UserRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'full_name' => [
@@ -29,6 +30,16 @@ class UserRequest extends FormRequest
             'balance' => [
                 'nullable',
                 'numeric',
+                'min:0',
+            ],
+            'rotations' => [
+                'required',
+                'array',
+                'min:1',
+                'max:' . resolve(RotationHelper::class)->getRotations()->count(),
+            ],
+            'rotations.*' => [
+                ValidationRule::exists('rotations', 'id'),
             ],
             'role_id' => [
                 'required',
@@ -38,7 +49,7 @@ class UserRequest extends FormRequest
                 'nullable',
                 'confirmed',
                 'min:6',
-                ValidationRule::requiredIf(RoleHelper::getInstance()->isStaffRole($this->get('role_id'))),
+                ValidationRule::requiredIf(!(request()->route()->getName() === 'users_edit_form') && resolve(RoleHelper::class)->isStaffRole($this->get('role_id'))),
             ],
         ];
     }

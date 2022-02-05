@@ -11,13 +11,14 @@ class CreateActivityTransactionsTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('activity_transactions', function (Blueprint $table) {
+        Schema::create('activity_transactions', static function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
-            $table->integer('cashier_id');
-            $table->integer('activity_id');
+            $table->foreignId('user_id')->constrained();
+            $table->unsignedBigInteger('cashier_id');
+            $table->foreign('cashier_id')->references('id')->on('users');
+            $table->foreignId('activity_id')->constrained();
             $table->float('activity_price');
             $table->float('activity_gst');
             $table->float('total_price');
@@ -31,7 +32,7 @@ class CreateActivityTransactionsTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('activity_transactions');
     }

@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use App\Helpers\SettingsHelper;
 use App\Helpers\UserLimitsHelper;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
@@ -18,7 +19,7 @@ class Activity extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $cacheFor = 180;
+    protected int $cacheFor = 180;
 
     protected $casts = [
         'name' => 'string',
@@ -35,20 +36,14 @@ class Activity extends Model
         'end',
     ];
 
-    public function category()
+    public function category(): HasOne
     {
         return $this->hasOne(Category::class, 'id', 'category_id');
     }
 
-    private Collection $_current_attendees;
-
     public function getCurrentAttendees(): Collection
     {
-        if (!isset($this->_current_attendees)) {
-            $this->_current_attendees = DB::table('activity_transactions')->where('activity_id', $this->id)->get('user_id');
-        }
-
-        return $this->_current_attendees;
+        return DB::table('activity_transactions')->where('activity_id', $this->id)->pluck('user_id');
     }
 
     public function slotsAvailable(): int
@@ -57,8 +52,7 @@ class Activity extends Model
             return -1;
         }
 
-        $current_attendees = $this->getCurrentAttendees()->count();
-        return $this->slots - $current_attendees;
+        return $this->slots - $this->getCurrentAttendees()->count();
     }
 
     public function hasSlotsAvailable(int $count = 1): bool
@@ -73,68 +67,65 @@ class Activity extends Model
 
     public function getPrice(): float
     {
-        return $this->price * SettingsHelper::getInstance()->getGst();
+        return $this->price * resolve(SettingsHelper::class)->getGst();
     }
 
     public function getAttendees(): array
     {
-        $users = [];
-        foreach ($this->getCurrentAttendees() as $attendee) {
-            $users[] = User::find($attendee->user_id);
-        }
-
-        return $users;
+        return $this->getCurrentAttendees()->map(static function (int $userId): User {
+            return User::find($userId);
+        })->all();
     }
 
     public function isAttending(User $user): bool
     {
-        return $this->getCurrentAttendees()->contains('user_id', $user->id);
+        return $this->getCurrentAttendees()->contains($user->id);
     }
 
     public function getStatus(): string
     {
-        if (Carbon::parse($this->end)->isPast()) {
+        if ($this->end->isPast()) {
             return '<span class="tag is-danger is-medium">Over</span>';
-        } else {
-            if (Carbon::parse($this->start)->isPast()) {
-                return '<span class="tag is-warning is-medium">In Progress</span>';
-            } else {
-                return '<span class="tag is-success is-medium">Waiting</span>';
-            }
         }
+
+        if ($this->start->isPast()) {
+            return '<span class="tag is-warning is-medium">In Progress</span>';
+        }
+
+        return '<span class="tag is-success is-medium">Waiting</span>';
     }
 
-    public function registerUser(User $user)
+    public function registerUser(User $user): RedirectResponse
     {
         if ($this->isAttending($user)) {
-            return redirect()->back()->with('error', 'Could not register ' . $user->full_name . ' for ' . $this->name . ', they are already attending this activity.');
+            return redirect()->back()->with('error', "Could not register $user->full_name for $this->name, they are already attending this activity.");
         }
 
         if (!$this->hasSlotsAvailable()) {
-            return redirect()->back()->with('error', 'Could not register ' . $user->full_name . ' for ' . $this->name . ', this activity is out of slots.');
+            return redirect()->back()->with('error', "Could not register $user->full_name for $this->name, this activity is out of slots.");
         }
 
-        $balance = ($user->balance - $this->getPrice());
-        if (!($user->balance >= $balance)) {
-            return redirect()->back()->with('error', 'Could not register ' . $user->full_name . ' for ' . $this->name . ', they do not have enough balance.');
+        if ($this->getPrice() > $user->balance) {
+            return redirect()->back()->with('error', "Could not register $user->full_name for $this->name, they do not have enough balance.");
         }
 
         if (!UserLimitsHelper::canSpend($user, $this->getPrice(), $this->category_id)) {
-            return redirect()->back()->with('error', 'Could not register ' . $user->full_name . ' for ' . $this->name . ', they have reached their limit for the ' . $this->category->name . ' category.');
+            return redirect()->back()->with('error', "Could not register $user->full_name for $this->name, they have reached their limit for the {$this->category->name} category.");
         }
 
-        $user->update(['balance' => $balance]);
         DB::table('activity_transactions')->insert([
             'user_id' => $user->id,
             'cashier_id' => auth()->id(),
             'activity_id' => $this->id,
             'activity_price' => $this->price,
-            'activity_gst' => SettingsHelper::getInstance()->getGst(),
+            'activity_gst' => resolve(SettingsHelper::class)->getGst(),
             'total_price' => $this->getPrice(),
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
-        return redirect()->back()->with('success', 'Successfully registered ' . $user->full_name . ' to ' . $this->name . '.');
+        $user->decrement('balance', $this->getPrice());
+
+        return redirect()->back()->with('success', "Successfully registered $user->full_name to $this->name.");
     }
 }

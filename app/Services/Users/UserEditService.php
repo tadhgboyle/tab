@@ -37,15 +37,29 @@ class UserEditService extends Service
         $new_role = Role::find($this->_request->role_id);
 
         // Update their category limits
-        [$message, $result] = UserLimitsHelper::createOrEditFromRequest($this->_request, $user, $this::class);
+        [$message, $result] = UserLimitsHelper::createOrEditFromRequest($this->_request, $user, self::class);
         if (!is_null($message) && !is_null($result)) {
             $this->_message = $message;
             $this->_result = $result;
             return;
         }
 
+        foreach ($user->rotations as $rotation) {
+            if (!in_array($rotation->id, $this->_request->rotations, true)) {
+                $user->rotations()->detach($rotation->id);
+            }
+        }
+
+        foreach ($this->_request->rotations as $rotation_id) {
+            if (!in_array($rotation_id, $user->rotations->pluck('id')->toArray(), true)) {
+                $user->rotations()->attach($rotation_id);
+            }
+        }
+
+        $roleHelper = resolve(RoleHelper::class);
+
         // If same role or changing from one staff role to another
-        if ($old_role->id == $new_role->id || (RoleHelper::getInstance()->isStaffRole($old_role->id) && RoleHelper::getInstance()->isStaffRole($new_role->id))) {
+        if ($old_role->id === $new_role->id || ($roleHelper->isStaffRole($old_role->id) && $roleHelper->isStaffRole($new_role->id))) {
             $user->update([
                 'full_name' => $this->_request->full_name,
                 'username' => $this->_request->username,
@@ -59,7 +73,7 @@ class UserEditService extends Service
         }
 
         // Determine if their password should be created or removed
-        if (!RoleHelper::getInstance()->isStaffRole($old_role->id) && RoleHelper::getInstance()->isStaffRole($new_role->id)) {
+        if (!$roleHelper->isStaffRole($old_role->id) && $roleHelper->isStaffRole($new_role->id)) {
             $password = bcrypt($this->_request->password);
         } else {
             $password = null;
@@ -79,12 +93,9 @@ class UserEditService extends Service
 
     public function redirect(): RedirectResponse
     {
-        switch ($this->getResult()) {
-            case self::RESULT_SUCCESS_IGNORED_PASSWORD:
-            case self::RESULT_SUCCESS_APPLIED_PASSWORD:
-                return redirect()->route('users_list')->with('success', $this->getMessage());
-            default:
-                return redirect()->back()->withInput()->with('error', $this->getMessage());
-        }
+        return match ($this->getResult()) {
+            self::RESULT_SUCCESS_IGNORED_PASSWORD, self::RESULT_SUCCESS_APPLIED_PASSWORD => redirect()->route('users_list')->with('success', $this->getMessage()),
+            default => redirect()->back()->withInput()->with('error', $this->getMessage()),
+        };
     }
 }

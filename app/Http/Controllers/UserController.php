@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Helpers\CategoryHelper;
+use App\Helpers\RotationHelper;
 use App\Helpers\UserLimitsHelper;
 use App\Http\Requests\UserRequest;
 use App\Services\Users\UserEditService;
@@ -27,22 +28,19 @@ class UserController extends Controller
         return (new UserDeleteService($user_id))->redirect();
     }
 
-    public function list()
+    public function list(RotationHelper $rotationHelper)
     {
         return view('pages.users.list', [
+            'rotations' => $rotationHelper->getRotations(),
             'users' => User::all(),
+            'selectedRotation' => $rotationHelper->getCurrentRotation(),
         ]);
     }
 
-    public function view()
+    public function view(User $user, CategoryHelper $categoryHelper)
     {
-        $user = User::find(request()->route('id'));
-        if ($user == null) {
-            return redirect()->route('users_list')->with('error', 'Invalid user.')->send();
-        }
-
         $processed_categories = [];
-        $categories = CategoryHelper::getInstance()->getCategories();
+        $categories = $categoryHelper->getCategories();
 
         foreach ($categories as $category) {
             $info = UserLimitsHelper::getInfo($user, $category->id);
@@ -61,13 +59,14 @@ class UserController extends Controller
             'transactions' => $user->getTransactions(),
             'activity_transactions' => $user->getActivities(),
             'categories' => $processed_categories,
+            'rotations' => $user->rotations,
         ]);
     }
 
-    public function form()
+    public function form(CategoryHelper $categoryHelper, RotationHelper $rotationHelper)
     {
-        $user = User::find(request()->route('id'));
-        if ($user != null) {
+        $user = User::query()->find(request()->route('id'));
+        if ($user !== null) {
             if ($user->trashed()) {
                 return redirect()->route('users_list')->with('error', 'That user has been deleted.')->send();
             }
@@ -78,13 +77,13 @@ class UserController extends Controller
         }
 
         $processed_categories = [];
-        $categories = CategoryHelper::getInstance()->getCategories()->sortBy('name');
+        $categories = $categoryHelper->getCategories();
 
         foreach ($categories as $category) {
             $processed_categories[] = [
                 'id' => $category->id,
                 'name' => $category->name,
-                'info' => $user == null ? [] : UserLimitsHelper::getInfo($user, $category->id),
+                'info' => $user === null ? [] : UserLimitsHelper::getInfo($user, $category->id),
             ];
         }
 
@@ -92,6 +91,7 @@ class UserController extends Controller
             'user' => $user,
             'available_roles' => auth()->user()->role->getRolesAvailable()->all(),
             'categories' => $processed_categories,
+            'rotations' => $rotationHelper->getRotations(),
         ]);
     }
 }

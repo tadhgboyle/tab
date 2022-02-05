@@ -6,34 +6,16 @@ use App\Models\Settings;
 
 class SettingsHelper extends Helper
 {
-    private float $_gst;
-    private float $_pst;
-    private int $_stats_time;
+    private float $gst;
+    private float $pst;
 
     public function getGst(): float
     {
-        if (!isset($this->_gst)) {
-            $this->_gst = Settings::where('setting', 'gst')->pluck('value')->first();
-        }
-
-        return $this->_gst;
+        return $this->gst ??= Settings::firstWhere('setting', 'gst')->value;
     }
 
     public function getPst(): float
     {
-        if (!isset($this->_pst)) {
-            $this->_pst = Settings::where('setting', 'pst')->pluck('value')->first();
-        }
-
-        return $this->_pst;
-    }
-
-    public function getStatsTime(): float
-    {
-        if (!isset($this->_stats_time)) {
-            $this->_stats_time = Settings::where('setting', 'stats_time')->pluck('value')->first();
-        }
-
-        return $this->_stats_time;
+        return $this->pst ??= Settings::firstWhere('setting', 'pst')->value;
     }
 }

@@ -17,7 +17,7 @@
                 <input type="number" step="1" name="adjust_stock" class="input" value="0">
             </div>
         </div>
-        @if($product->box_size != -1)
+        @if($product->box_size !== -1)
         <div class="field">
             <label class="label">Add/Subtract Box</label>
             <div class="control has-icons-left">

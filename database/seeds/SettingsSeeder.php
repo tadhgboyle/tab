@@ -12,7 +12,7 @@ class SettingsSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         Settings::factory()->createMany([
             [
@@ -23,10 +23,6 @@ class SettingsSeeder extends Seeder
                 'setting' => 'pst',
                 'value' => '1.07',
             ],
-            [
-                'setting' => 'stats_time',
-                'value' => '9999'
-            ]
         ]);
     }
 }

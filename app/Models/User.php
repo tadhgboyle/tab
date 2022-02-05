@@ -7,9 +7,12 @@ use App\Helpers\ProductHelper;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use JetBrains\PhpStorm\Pure;
 use Rennokki\QueryCache\Traits\QueryCacheable;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -17,7 +20,7 @@ class User extends Authenticatable
     use HasFactory;
     use SoftDeletes;
 
-    protected $cacheFor = 180;
+    protected int $cacheFor = 180;
 
     protected $fillable = [
         'full_name',
@@ -37,9 +40,14 @@ class User extends Authenticatable
         'role',
     ];
 
-    public function role()
+    public function role(): HasOne
     {
         return $this->hasOne(Role::class, 'id', 'role_id');
+    }
+
+    public function rotations(): BelongsToMany
+    {
+        return $this->belongsToMany(Rotation::class)->distinct();
     }
 
     private Collection $_activity_transactions;
@@ -64,6 +72,7 @@ class User extends Authenticatable
     //     return -1;
     // }
 
+    #[Pure]
     public function hasPermission($permission): bool
     {
         return $this->role->hasPermission($permission);
@@ -71,37 +80,34 @@ class User extends Authenticatable
 
     public function getActivityTransactions(): Collection
     {
-        if (!isset($this->_activity_transactions)) {
-            $this->_activity_transactions = DB::table('activity_transactions')->where('user_id', $this->id)->orderBy('created_at', 'DESC')->get();
-        }
-
-        return $this->_activity_transactions;
+        return $this->_activity_transactions ??= DB::table('activity_transactions')
+            ->where('user_id', $this->id)
+            ->orderBy('created_at', 'DESC')
+            ->get();
     }
 
     public function getTransactions(): Collection
     {
-        if (!isset($this->_transactions)) {
-            $this->_transactions = Transaction::where('purchaser_id', $this->id)->orderBy('created_at', 'DESC')->get();
-        }
-
-        return $this->_transactions;
+        return $this->_transactions ??= Transaction::query()
+            ->where('purchaser_id', $this->id)
+            ->orderBy('created_at', 'DESC')
+            ->get();
     }
 
     public function getActivities(): Collection
     {
         if (!isset($this->_activities)) {
             $this->_activities = new Collection();
-            $activity_transactions = $this->getActivityTransactions();
 
-            foreach ($activity_transactions as $activity) {
+            $this->getActivityTransactions()->each(function ($activity) {
                 $this->_activities->add([
                     'created_at' => Carbon::parse($activity->created_at),
-                    'cashier' => User::find($activity->cashier_id),
+                    'cashier' => self::find($activity->cashier_id),
                     'activity' => Activity::find($activity->activity_id),
                     'price' => $activity->activity_price,
                     'returned' => $activity->returned,
                 ]);
-            }
+            });
         }
 
         return $this->_activities;
@@ -113,10 +119,7 @@ class User extends Authenticatable
      */
     public function findSpent(): float
     {
-        return floatval(
-            $this->getTransactions()->sum('total_price')
-            + $this->getActivityTransactions()->sum('total_price')
-        );
+        return (float)($this->getTransactions()->sum('total_price') + $this->getActivityTransactions()->sum('total_price'));
     }
 
     /**
@@ -142,7 +145,7 @@ class User extends Authenticatable
                 }
 
                 $tax = $product['gst'];
-                if ($product['pst'] != 'null') {
+                if ($product['pst'] !== 'null') {
                     $tax += ($product['pst'] - 1);
                 }
 
@@ -152,7 +155,7 @@ class User extends Authenticatable
 
         $returned += $this->getActivityTransactions()->where('returned', true)->sum('total_price');
 
-        return floatval($returned);
+        return (float)$returned;
     }
 
     /**
@@ -161,6 +164,6 @@ class User extends Authenticatable
      */
     public function findOwing(): float
     {
-        return floatval($this->findSpent() - $this->findReturned());
+        return $this->findSpent() - $this->findReturned();
     }
 }

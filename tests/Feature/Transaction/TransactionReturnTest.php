@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Transaction;
 
 use Tests\TestCase;
 use App\Models\Role;
@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Models\Settings;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Database\Seeders\RotationSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Services\Transactions\TransactionReturnService;
 use App\Services\Transactions\TransactionCreationService;
@@ -18,7 +19,7 @@ class TransactionReturnTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testCanReturnTransaction()
+    public function testCanReturnTransaction(): void
     {
         [, $transaction] = $this->createFakeRecords();
 
@@ -29,7 +30,7 @@ class TransactionReturnTest extends TestCase
         $this->assertTrue($transaction->isReturned());
     }
 
-    public function testUserBalanceUpdatedAfterItemReturn()
+    public function testUserBalanceUpdatedAfterItemReturn(): void
     {
         [$user, $transaction, $hat] = $this->createFakeRecords();
 
@@ -37,11 +38,15 @@ class TransactionReturnTest extends TestCase
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
 
         $this->assertSame(Transaction::STATUS_PARTIAL_RETURNED, $transaction->getReturnStatus());
-        $this->assertEquals(number_format($user->balance + $hat->getPrice(), 2), number_format($user->refresh()->balance, 2)); // TODO: not need to use number format to round (3 and 4 decimal places are off)
+        // TODO: not need to use number format to round (3 and 4 decimal places are off)
+        $this->assertEquals(
+            number_format($user->balance + $hat->getPrice(), 2),
+            number_format($user->refresh()->balance, 2)
+        );
         $this->assertEquals($hat->getPrice(), number_format($user->findReturned(), 2));
     }
 
-    public function testUserBalanceUpdatedAfterTransactionReturn()
+    public function testUserBalanceUpdatedAfterTransactionReturn(): void
     {
         [$user, $transaction] = $this->createFakeRecords();
 
@@ -50,11 +55,14 @@ class TransactionReturnTest extends TestCase
 
         $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->getReturnStatus());
         $this->assertTrue($transaction->isReturned());
-        $this->assertEquals($user->balance + $transaction->total_price, $user->refresh()->balance);
+        $this->assertEquals(
+            $user->balance + $transaction->total_price,
+            $user->refresh()->balance
+        );
         $this->assertEquals($transaction->total_price, $user->findReturned());
     }
 
-    public function testCanReturnPartiallyReturnedItemInTransaction()
+    public function testCanReturnPartiallyReturnedItemInTransaction(): void
     {
         [$user, $transaction, $hat] = $this->createFakeRecords();
 
@@ -67,7 +75,7 @@ class TransactionReturnTest extends TestCase
         $this->assertEquals($transaction->total_price, $user->findReturned());
     }
 
-    public function testCannotReturnFullyReturnedTransaction()
+    public function testCannotReturnFullyReturnedTransaction(): void
     {
         [$user, $transaction] = $this->createFakeRecords();
 
@@ -81,7 +89,7 @@ class TransactionReturnTest extends TestCase
         $this->assertEquals($transaction->total_price, $user->findReturned());
     }
 
-    public function testCannotReturnFullyReturnedItemInTransaction()
+    public function testCannotReturnFullyReturnedItemInTransaction(): void
     {
         [$user, , $hat] = $this->createFakeRecords();
         $transaction_2_items = $this->createTwoItemTransaction($user, $hat);
@@ -101,8 +109,11 @@ class TransactionReturnTest extends TestCase
 
     private function createFakeRecords(): array
     {
+        app(RotationSeeder::class)->run();
+
         $role = Role::factory()->create();
 
+        /** @var User */
         $user = User::factory()->create([
             'role_id' => $role->id,
             'balance' => 300.00
