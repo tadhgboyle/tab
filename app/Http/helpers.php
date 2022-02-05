@@ -10,7 +10,7 @@ if (!function_exists('hasPermission')) {
      */
     function hasPermission(array|string $permission): bool
     {
-        return Auth::user()->hasPermission($permission);
+        return auth()->user()->hasPermission($permission);
     }
 }
 

@@ -41,7 +41,7 @@ class TransactionReturnTest extends TestCase
         // TODO: not need to use number format to round (3 and 4 decimal places are off)
         $this->assertEquals(
             number_format($user->balance + $hat->getPrice(), 2),
-            number_format($user->refresh()->balance, 2)
+            number_format($user->fresh()->balance, 2)
         );
         $this->assertEquals($hat->getPrice(), number_format($user->findReturned(), 2));
     }
@@ -55,7 +55,7 @@ class TransactionReturnTest extends TestCase
 
         $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->getReturnStatus());
         $this->assertTrue($transaction->isReturned());
-        $this->assertEquals($user->balance + $transaction->total_price, $user->refresh()->balance);
+        $this->assertEquals($user->balance + $transaction->total_price, $user->fresh()->balance);
         $this->assertEquals($transaction->total_price, $user->findReturned());
     }
 
