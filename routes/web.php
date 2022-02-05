@@ -13,6 +13,8 @@
 
 use App\Models\User;
 use App\Helpers\RotationHelper;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\HasPermission;
 use App\Http\Controllers\RoleController;
@@ -31,15 +33,24 @@ Route::post('/login/auth', [LoginController::class, 'auth'])->name('login_auth')
 
 Route::middleware('auth')->group(function () {
     Route::get('/', static function () {
-        if (!hasPermission('cashier')) {
+        if (!hasPermission('cashier') || !hasPermission('cashier_create')) {
             // TODO: figure out what to do with users who dont have permission. when they sign in they get a 403 page, not nice UX
             return view('pages.403');
         }
 
         return view('pages.index', [
-            'users' => User::query()->unless(hasPermission('cashier_self_purchases'), function ($query) {
-                $query->where('users.id', '!=', auth()->id());
-            })->select(['id', 'full_name', 'balance'])->get(),
+            'users' => User::query()
+                            ->unless(hasPermission('cashier_self_purchases'), function (Builder $query) {
+                                $query->where('users.id', '!=', auth()->id());
+                            })
+                            ->unless(hasPermission('cashier_users_other_rotations'), function (EloquentBuilder $query) {
+                                $query->whereHas('rotations', function (EloquentBuilder $query) {
+                                    return $query->where('rotation_id', resolve(RotationHelper::class)->getCurrentRotation()->id);
+                                });
+                            })
+                            ->select(['id', 'full_name', 'balance'])
+                            ->with('rotations')
+                            ->get(),
             'currentRotation' =>  resolve(RotationHelper::class)->getCurrentRotation()
         ]);
     })->name('index');

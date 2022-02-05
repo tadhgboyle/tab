@@ -6,11 +6,11 @@
         <div class="navbar-menu">
             <div class="navbar-start">
                 @auth
-                    @permission('cashier')
+                    @if(hasPermission('cashier') && hasPermission('cashier_create'))
                         <a class="navbar-item {{ page('cashier', @$page) }}" href="{{ route('index') }}">
                             <i class="fas fa-money-bill-wave-alt"></i>&nbsp;Cashier
                         </a>
-                    @endpermission
+                    @endif
 
                     @permission('users')
                         <div class="navbar-item has-dropdown is-hoverable">
@@ -80,7 +80,7 @@
                     @permission('statistics')
                         <a class="navbar-item {{ page('statistics', @$page) }}" href="{{ route('statistics') }}">
                             <i class="fas fa-chart-pie"></i>&nbsp;Statistics
-                        </a>     
+                        </a>
                     @endpermission
                 @endauth
             </div>

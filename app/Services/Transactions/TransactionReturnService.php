@@ -32,7 +32,7 @@ class TransactionReturnService extends Service
         $this->_transaction = $found_transaction;
     }
 
-    // TODO: when whole transaction is returned, manually deserialize and reserialize all products with return value of their original quantity
+    // TODO: when whole transaction is returned, manually deserialize and re-serialize all products with return value of their original quantity
     // to keep consistency with item sales chart
     public function return(): TransactionReturnService
     {
@@ -60,7 +60,7 @@ class TransactionReturnService extends Service
             $total_price += ($product_metadata['price'] * $product_metadata['quantity']) * $total_tax;
         }
 
-        $purchaser->update(['balance' => ($purchaser->balance + $total_price)]);
+        $purchaser->increment('balance', $total_price);
         $this->_transaction->update(['returned' => true]);
 
         $this->_result = self::RESULT_SUCCESS;

@@ -15,6 +15,7 @@
                 <thead>
                     <tr>
                         <th>Full Name</th>
+                        <th>Rotations</th>
                         <th>Balance</th>
                     </tr>
                 </thead>
@@ -23,6 +24,13 @@
                     <tr>
                         <td>
                             <div><a href="{{ route('orders_new', $user->id) }}">{{ $user->full_name }}</a></div>
+                        </td>
+                        <td>
+                            <div>
+                                @php
+                                    echo implode(', ', $user->rotations->pluck('name')->toArray());
+                                @endphp
+                            </div>
                         </td>
                         <td>
                             <div>${{ number_format($user->balance, 2) }}</div>
@@ -47,10 +55,10 @@
                 "scrollY": "49vh",
                 "scrollCollapse": true,
                 "columnDefs": [
-                    { 
-                        "orderable": false, 
+                    {
+                        "orderable": false,
                         "searchable": false,
-                        "targets": 1
+                        "targets": [1, 2]
                     }
                 ]
             });

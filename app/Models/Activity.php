@@ -41,11 +41,9 @@ class Activity extends Model
         return $this->hasOne(Category::class, 'id', 'category_id');
     }
 
-    private Collection $currentAttendees;
-
     public function getCurrentAttendees(): Collection
     {
-        return $this->currentAttendees ??= DB::table('activity_transactions')->where('activity_id', $this->id)->pluck('user_id');
+        return DB::table('activity_transactions')->where('activity_id', $this->id)->pluck('user_id');
     }
 
     public function slotsAvailable(): int

@@ -20,9 +20,13 @@ class ActivityTransactionSeeder extends Seeder
         $users = User::all();
 
         foreach ($users as $user) {
-            $user_activites = $activities->shuffle()->random(random_int(0, 2));
+            if (random_int(0, 5) === 3) {
+                continue;
+            }
 
-            foreach ($user_activites as $activity) {
+            $user_activities = $activities->shuffle()->random(random_int(0, 2));
+
+            foreach ($user_activities as $activity) {
                 $cashier = $users->shuffle()->whereIn('role_id', [1, 2])->first();
                 Auth::login($cashier);
 

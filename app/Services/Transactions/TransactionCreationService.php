@@ -53,6 +53,7 @@ class TransactionCreationService extends Service
 
         // For some reason, old() does not seem to work with array[] inputs in form. This will do for now...
         // ^ I'm sure it's a silly mistake on my end
+        // TODO apparently dot notation works
         foreach ($this->_request->product as $product_id) {
             session()->flash("quantity[{$product_id}]", $this->_request->quantity[$product_id]);
             session()->flash("product[{$product_id}]", true);
@@ -110,7 +111,7 @@ class TransactionCreationService extends Service
         $remaining_balance = $purchaser->balance - $total_price;
         if ($remaining_balance < 0) {
             $this->_result = self::RESULT_NOT_ENOUGH_BALANCE;
-            $this->_message = "Not enough balance. {$purchaser->full_name} only has $ {$purchaser->balance}";
+            $this->_message = "Not enough balance. {$purchaser->full_name} only has \${$purchaser->balance}. Tried to spend \${$total_price}.";
             return;
         }
 
@@ -146,7 +147,7 @@ class TransactionCreationService extends Service
             // Break loop if we exceed their limit
             if (!UserLimitsHelper::canSpend($purchaser, $category_spent, $category_id, $limit_info)) {
                 $this->_result = self::RESULT_NOT_ENOUGH_CATEGORY_BALANCE;
-                $this->_message = 'Not enough balance in that category: ' . Category::find($category_id)->name . ' (Limit: $' . number_format($category_limit, 2) . ', Remaining: $' . number_format($category_limit - $category_spent_orig, 2) . ').';
+                $this->_message = 'Not enough balance in the ' . Category::find($category_id)->name . ' category. (Limit: $' . number_format($category_limit, 2) . ', Remaining: $' . number_format($category_limit - $category_spent_orig, 2) . '). Tried to spend $' . number_format($category_spent, 2);
                 return;
             }
         }

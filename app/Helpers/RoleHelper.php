@@ -12,7 +12,7 @@ class RoleHelper extends Helper
 
     public function getRoles(string $order = 'DESC'): Collection
     {
-        return $this->roles ??= Role::orderBy('order', $order)->get();
+        return $this->roles ??= Role::query()->orderBy('order', $order)->get();
     }
 
     public function getStaffRoles(): Collection

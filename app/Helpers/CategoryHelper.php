@@ -15,7 +15,7 @@ class CategoryHelper extends Helper
 
     public function getCategories(): Collection
     {
-        return $this->categories ??= Category::orderBy('name', 'ASC')->get();
+        return $this->categories ??= Category::query()->orderBy('name', 'ASC')->get();
     }
 
     public function getProductCategories(): Collection
