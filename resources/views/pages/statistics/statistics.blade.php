@@ -45,6 +45,14 @@
         @endpermission
     </div>
     <div class="column is-half">
+        @permission('statistics_income_info')
+        <h4 class="title has-text-weight-bold is-4">Income Info</h4>
+        <div>
+            <div id="income_history_chart" style="height: 400px;"></div>
+        </div>
+        @endpermission
+    </div>
+    <div class="column is-half">
     </div>
 </div>
 
@@ -72,7 +80,7 @@
         });
     @endpermission
 
-    @permission('statistics_item_info')
+    @permission('statistics_activity_info')
         new Chartisan({
             el: '#activity_sales_chart',
             url: "@chart('activity_sales_chart')",
@@ -80,6 +88,16 @@
                 .legend()
                 .tooltip()
         });
+    @endpermission
+
+    @permission('statistics_income_info')
+    new Chartisan({
+        el: '#income_history_chart',
+        url: "@chart('income_history_chart')",
+        hooks: new ChartisanHooks()
+            .legend()
+            .tooltip()
+    });
     @endpermission
 
     @permission('statistics_select_rotation')

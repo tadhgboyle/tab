@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tabReborn | Version: {{ env('APP_VERSION') }}</title>
+    <title>tabReborn | {{ ucfirst($page) }}</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url('favicon.ico') }}">
 
     <link rel="stylesheet" href="{{ url('css/bulma-0.9.2.min.css') }}">
     <link rel="stylesheet" href="{{ url('css/dataTables-1.10.21.min.css') }}">

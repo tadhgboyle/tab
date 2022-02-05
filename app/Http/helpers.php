@@ -19,12 +19,12 @@ if (!function_exists('page')) {
      * Check if current page matches this navbar item and display "is-active" class if so.
      *
      * @param string $current_page
-     * @param string|null $page
+     * @param string $page
      *
      * @return string
      */
-    function page(string $current_page, ?string $page): string
+    function page(string $current_page, string $page): string
     {
-        return !is_null($page) && $page === $current_page ? ' is-active ' : '';
+        return $page === $current_page ? ' is-active ' : '';
     }
 }

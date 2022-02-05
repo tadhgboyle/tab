@@ -1,4 +1,4 @@
-@extends('layouts.default')
+@extends('layouts.default', ['page' => 'login'])
 @section('content')
 <h2 class="title has-text-weight-bold is-1">Login</h2>
 <div class="columns">

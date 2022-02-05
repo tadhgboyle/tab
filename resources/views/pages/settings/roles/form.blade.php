@@ -1,4 +1,4 @@
-@extends('layouts.default')
+@extends('layouts.default', ['page' => 'settings'])
 @section('content')
 <h2 class="title has-text-weight-bold">{{ is_null($role) ? 'Create' : 'Edit' }} Role</h2>
 @if(!is_null($role)) <h4 class="subtitle"><strong>Role:</strong> {{ $role->name }}</h4>@endif
