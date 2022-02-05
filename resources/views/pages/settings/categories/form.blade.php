@@ -1,5 +1,4 @@
-
-@extends('layouts.default')
+@extends('layouts.default', ['page' => 'settings'])
 @section('content')
 @php
 use App\Casts\CategoryType

@@ -1,4 +1,4 @@
-@extends('layouts.default')
+@extends('layouts.default', ['page' => 'settings'])
 @section('content')
 <h2 class="title has-text-weight-bold">Settings</h2>
 <div class="columns">
