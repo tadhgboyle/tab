@@ -18,7 +18,11 @@ class Role extends Model
     protected int $cacheFor = 180;
 
     protected $fillable = [
+        'name',
         'order',
+        'staff',
+        'superuser',
+        'permissions',
     ];
 
     protected $casts = [

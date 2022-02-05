@@ -49,7 +49,7 @@ class UserRequest extends FormRequest
                 'nullable',
                 'confirmed',
                 'min:6',
-                ValidationRule::requiredIf(resolve(RoleHelper::class)->isStaffRole($this->get('role_id'))),
+                ValidationRule::requiredIf(!(request()->route()->getName() === 'users_edit_form') && resolve(RoleHelper::class)->isStaffRole($this->get('role_id'))),
             ],
         ];
     }

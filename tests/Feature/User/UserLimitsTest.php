@@ -145,7 +145,7 @@ class UserLimitsTest extends TestCase
             'name' => 'Candy'
         ]);
 
-        [$message, $result] = UserLimitsHelper::createOrEditFromRequest(new UserRequest([
+        [, $result] = UserLimitsHelper::createOrEditFromRequest(new UserRequest([
             'limit' => [
                 $candy_category->id => -2
             ]

@@ -30,13 +30,14 @@ class RoleController extends Controller
     {
         $staff = $request->has('staff');
         $superuser = $staff && $request->has('superuser');
+        $permissions = PermissionHelper::parseNodes($request->permissions);
 
         Role::find($request->role_id)->update([
             'name' => $request->name,
             'order' => $request->order,
             'staff' => $staff,
             'superuser' => $superuser,
-            'permissions' => PermissionHelper::parseNodes($request->permissions)
+            'permissions' => $permissions,
         ]);
 
         return redirect()->route('settings')->with('success', 'Edited role ' . $request->name . '.');

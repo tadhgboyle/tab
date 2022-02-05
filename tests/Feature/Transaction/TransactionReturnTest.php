@@ -55,7 +55,10 @@ class TransactionReturnTest extends TestCase
 
         $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->getReturnStatus());
         $this->assertTrue($transaction->isReturned());
-        $this->assertEquals($user->balance + $transaction->total_price, $user->refresh()->balance);
+        $this->assertEquals(
+            $user->balance + $transaction->total_price,
+            $user->refresh()->balance
+        );
         $this->assertEquals($transaction->total_price, $user->findReturned());
     }
 
