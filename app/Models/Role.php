@@ -15,18 +15,22 @@ class Role extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $cacheFor = 180;
+    protected int $cacheFor = 180;
 
     protected $fillable = [
-        'order', // used to drag and drop roles in Settings page
+        'name',
+        'order',
+        'staff',
+        'superuser',
+        'permissions',
     ];
 
     protected $casts = [
         'name' => 'string',
-        'superuser' => 'boolean', // if this is true, this group can do anything and edit any group
-        'order' => 'integer', // heierarchy system. higher order = higher priority
-        'staff' => 'boolean', // determine if they should ever have a password to login with
-        'permissions' => 'array', // decode json to an array automatically
+        'superuser' => 'boolean',
+        'order' => 'integer',
+        'staff' => 'boolean',
+        'permissions' => 'array',
     ];
 
     /**
@@ -34,9 +38,7 @@ class Role extends Model
      * If $compare is provided, this will be limited to Roles which the currently logged in user's Role can also interact with as well.
      * This is so that when users delete old Roles, they cannot promote users in the old Role to a Role higher than their current role.
      *
-     * @see canInteract
-     *
-     * @param Role $compare If provided, Roles will only be added if:
+     * @param ?Role $compare If provided, Roles will only be added if:
      * - They are not this Role
      * - This Role is staff OR (this Role is not staff AND the other Role is not staff)
      * - And finally that the `$compare` Role can interact with it
@@ -46,7 +48,7 @@ class Role extends Model
     public function getRolesAvailable(?Role $compare = null): Collection
     {
         $return = new Collection();
-        $roles = RoleHelper::getInstance()->getRoles();
+        $roles = resolve(RoleHelper::class)->getRoles();
         foreach ($roles as $role) {
             if (!$compare) {
                 if ($this->canInteract($role)) {
@@ -55,10 +57,11 @@ class Role extends Model
                 continue;
             }
 
-            if ($this->id == $role->id) {
+            if ($this->id === $role->id) {
                 continue;
             }
-            if ($this->staff || (!$this->staff && !$role->staff)) {
+
+            if ($this->staff || !$role->staff) {
                 if ($compare->canInteract($role)) {
                     $return->add($role);
                 }
@@ -106,14 +109,14 @@ class Role extends Model
      *
      * @return bool Whether this Role has these permissions or not.
      */
-    public function hasPermission(string | array $permissions): bool
+    public function hasPermission(string|array $permissions): bool
     {
         if ($this->superuser) {
             return true;
         }
 
         foreach ((array) $permissions as $permission) {
-            if (!in_array($permission, $this->permissions)) {
+            if (!in_array($permission, $this->permissions, true)) {
                 return false;
             }
         }

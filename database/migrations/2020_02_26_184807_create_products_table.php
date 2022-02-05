@@ -11,14 +11,13 @@ class CreateProductsTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('products', static function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->float('price');
-            $table->unsignedBigInteger('category_id');
-            $table->foreign('category_id')->references('id')->on('categories');
+            $table->foreignId('category_id')->constrained();
             $table->boolean('pst')->default(false);
             $table->integer('stock');
             // true/false if this product has unlimited stock (since -1 could be a valid inventory count)
@@ -37,7 +36,7 @@ class CreateProductsTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('products');
     }

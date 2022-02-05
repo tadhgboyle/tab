@@ -11,9 +11,9 @@ class LoginController extends Controller
     {
         if (Auth::attempt($request->except(['_token']))) {
             return redirect()->route('index');
-        } else {
-            return redirect()->route('login')->withInput($request->all())->with('error', 'Invalid credentials. Please try again.');
         }
+
+        return redirect()->route('login')->withInput($request->all())->with('error', 'Invalid credentials. Please try again.');
     }
 
     public function login()
@@ -24,6 +24,7 @@ class LoginController extends Controller
     public function logout()
     {
         Auth::logout();
+
         return redirect()->route('index');
     }
 }

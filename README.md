@@ -102,7 +102,8 @@ Documentation (in the form of a printable user handbook) is being written.
 
 *High to Low priority sort*
 - Fix everything in Issues/Bugs
-- Update codebase to not store periods in DB for money.
+- Add "rotation" option to user limits (along with day, week, etc)
+- Update codebase to not store periods in DB for money (store as int, and / or * by 10).
 - Let products be purchasable by a parent only.
     - Will require a boolean attribute in users table "parent"
 - Repeating activities. When they create activity, ask if repeated daily, weekly, monthly. Create more Activity rows for each day in the duration
@@ -111,6 +112,7 @@ Documentation (in the form of a printable user handbook) is being written.
     - Then on the backend, if they somehow bypass the disabled submit button: on errors during order, return back with their input + quantities
 - Rework how to select items and quantities. Right now it is somewhat not intuitive. New system:
     - **Similar to GBBC tab, click an item to add it to a list of all items. Click more times for more quantity**
+    - Use livewire
 - Complete inventory features
     - "Set stock" in adjust page as well as add/subtract.
     - Add product option if stock should be added back upon return or not.
@@ -134,7 +136,6 @@ Documentation (in the form of a printable user handbook) is being written.
 - Bulk change prices of items (Everything 10% *off* or everything 20% *more* etc)
 - Add PDF printing of all users transactions
     - In settings page, allow to upload a custom logo to be on invoice
-- Seperate orders, users and stats into weeks (Like Green Bay)
 - Allow user to change light/dark mode
 - Staff Discount: check if purchaser is staff role and give % off (per item basis) 
     - Serialize so if it gets returned they get the discount back
@@ -143,4 +144,6 @@ Documentation (in the form of a printable user handbook) is being written.
     - They should type a query first, or use some ajax to fetch data. or else it could take forever to load
 
 ## Issues/Bugs:
-- When an error happens on order screen, it returns back with selection, but when you unselect a box it all gets `NaN`
+- Rotation end selector is broken in edit/create page
+- When an error happens on order screen, it returns back with selection, but when you unselect a box it all gets NaN
+- Rotation selection dropdown not working on Stats page + general clean up of it

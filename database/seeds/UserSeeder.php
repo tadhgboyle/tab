@@ -12,7 +12,7 @@ class UserSeeder extends Seeder
      *
      * @return void
      */
-    public function run(array $roles)
+    public function run(array $roles): void
     {
         [$superuser_role, $cashier_role, $camper_role] = $roles;
 
@@ -23,12 +23,19 @@ class UserSeeder extends Seeder
             'password' => bcrypt('123456')
         ])->create();
 
+        User::factory()->state([
+            'full_name' => 'Demo',
+            'username' => 'demo',
+            'role_id' => $cashier_role->id,
+            'password' => bcrypt('123456')
+        ])->create();
+
         User::factory()->count(5)->state([
             'role_id' => $cashier_role->id,
             'password' => bcrypt('123456')
         ])->create();
 
-        User::factory()->count(100)->state([
+        User::factory()->count(200)->state([
             'role_id' => $camper_role->id
         ])->create();
     }

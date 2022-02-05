@@ -1,7 +1,7 @@
 @extends('layouts.default', ['page' => 'cashier'])
 @section('content')
 <h2 class="title has-text-weight-bold">Cashier</h2>
-<h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @permission('users_view')<a href="{{ route('users_view', request()->route('id')) }}">(View)</a>@endpermission</h4>
+<h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @permission('users_view')<a href="{{ route('users_view', $user) }}">(View)</a>@endpermission</h4>
 <div class="columns box">
     <div class="column is-two-thirds">
         @include('includes.messages')
@@ -11,7 +11,7 @@
         <div id="order_container" style="visibility: hidden;">
             <form method="post" id="order" action="{{ route('orders_new_form') }}">
                 @csrf
-                <input type="hidden" name="purchaser_id" value="{{ request()->route('id') }}">
+                <input type="hidden" name="purchaser_id" value="{{ $user->id }}">
                 <input type="hidden" id="current_gst" value="{{ $gst }}">
                 <input type="hidden" id="current_pst" value="{{ $pst }}">
                 <input type="hidden" id="purchaser_balance" value="{{ $user->balance }}">

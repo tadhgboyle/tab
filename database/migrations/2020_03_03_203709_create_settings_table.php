@@ -11,9 +11,9 @@ class CreateSettingsTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('settings', function (Blueprint $table) {
+        Schema::create('settings', static function (Blueprint $table) {
             $table->string('setting')->unique();
             $table->string('value');
             $table->timestamps();
@@ -25,7 +25,7 @@ class CreateSettingsTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('settings');
     }

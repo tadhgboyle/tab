@@ -11,13 +11,12 @@ class CreateUserLimitsTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('user_limits', function (Blueprint $table) {
+        Schema::create('user_limits', static function (Blueprint $table) {
             $table->id('limit_id');
-            $table->integer('user_id');
-            $table->unsignedBigInteger('category_id');
-            $table->foreign('category_id')->references('id')->on('categories');
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('category_id')->constrained();
             $table->float('limit_per');
             $table->integer('duration');
             $table->timestamps();
@@ -29,7 +28,7 @@ class CreateUserLimitsTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('user_limits');
     }

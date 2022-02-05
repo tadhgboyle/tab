@@ -6,10 +6,12 @@ use App\Models\User;
 use App\Models\Activity;
 use Illuminate\Support\Carbon;
 use App\Helpers\CategoryHelper;
-use Illuminate\Support\Facades\Route;
 use App\Http\Requests\ActivityRequest;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 
 // TODO: add return/cancel functionality
+// TODO: fix - add pst check box
 class ActivityController extends Controller
 {
     public function new(ActivityRequest $request)
@@ -39,10 +41,8 @@ class ActivityController extends Controller
             return redirect()->route('activities_edit', $request->activity_id)->withInput()->with('error', 'The end time must be after the start time.');
         }
 
-        $activity = Activity::find($request->activity_id);
-
         // TODO: not updating, fillables?
-        $activity->update([
+        Activity::find($request->activity_id)->update([
             'name' => $request->name,
             'category_id' => $request->category_id,
             'location' => $request->location,
@@ -57,10 +57,8 @@ class ActivityController extends Controller
         return redirect()->route('activities_list')->with('success', 'Updated activity ' . $request->name . '.');
     }
 
-    public function delete(int $id)
+    public function delete(Activity $activity)
     {
-        $activity = Activity::find($id);
-
         $activity->delete();
 
         return redirect()->route('activities_list')->with('success', 'Deleted activity ' . $activity->name . '.');
@@ -68,31 +66,25 @@ class ActivityController extends Controller
 
     public function list()
     {
-        return view('pages.activities.list', ['activities' => self::getAll()]);
-    }
-
-    public function view($id)
-    {
-        $activity = Activity::find($id);
-
-        if ($activity == null) {
-            return redirect()->route('activities_list')->with('error', 'Invalid activity.')->send();
-        }
-
-        $activities_manage = hasPermission('activities_manage');
-
-        return view('pages.activities.view', [
-            'activity' => $activity,
-            'activities_manage' => $activities_manage,
-            'can_register' => !strpos($activity->getStatus(), 'Over') && $activities_manage && $activity->hasSlotsAvailable() && hasPermission('activities_register_user'),
+        return view('pages.activities.list', [
+            'activities' => self::getAllActivities()
         ]);
     }
 
-    public function form()
+    public function view(Activity $activity)
+    {
+        return view('pages.activities.view', [
+            'activity' => $activity,
+            'activities_manage' => hasPermission('activities_manage'),
+            'can_register' => !$activity->end->isPast() && $activity->hasSlotsAvailable() && hasPermission('activities_register_user'),
+        ]);
+    }
+
+    public function form(CategoryHelper $categoryHelper)
     {
         $activity = Activity::find(request()->route('id'));
 
-        if ($activity == null) {
+        if ($activity === null) {
             $start = request()->route('date') ?? Carbon::now();
         } else {
             $start = $activity->start;
@@ -101,11 +93,11 @@ class ActivityController extends Controller
         return view('pages.activities.form', [
             'activity' => $activity,
             'start' => $start,
-            'categories' => CategoryHelper::getInstance()->getActivityCategories(),
+            'categories' => $categoryHelper->getActivityCategories(),
         ]);
     }
 
-    public static function getAll()
+    private static function getAllActivities()
     {
         $activities = Activity::all(['id', 'name', 'start', 'end']);
         $return = [];
@@ -122,33 +114,33 @@ class ActivityController extends Controller
         return json_encode($return);
     }
 
-    public static function ajaxInit()
+    // TODO: livewire
+    public function ajaxUserSearch(): string
     {
-        $users = User::where('full_name', 'LIKE', '%' . \Request::get('search') . '%')->limit(5)->get();
+        $activity = Activity::find(request('activity'));
+        $users = User::query()
+                        ->where('full_name', 'LIKE', '%' . request('search') . '%')
+                        ->limit(7)
+                        ->get()
+                        ->all();
         $output = '';
 
-        if (count($users)) {
-            $activity = Activity::find(\Request::get('activity'));
-            foreach ($users as $key => $user) {
-                $output .=
-                    '<tr>' .
-                        '<td>' . $user->full_name . '</td>' .
-                        '<td>$' . number_format($user->balance, 2) . '</td>' .
-                        (($user->balance < $activity->getPrice() || $activity->isAttending($user)) ?
-                            '<td><button class="button is-success is-small" disabled>Add</button></td>' :
-                            '<td><a href="' . route('activities_user_add', [$activity->id, $user->id]) . '" class="button is-success is-small">Add</a></td>') .
-                    '</tr>';
-            }
+        foreach ($users as $user) {
+            $output .=
+                '<tr>' .
+                    '<td>' . $user->full_name . '</td>' .
+                    '<td>$' . number_format($user->balance, 2) . '</td>' .
+                    (($user->balance < $activity->getPrice() || $activity->isAttending($user))
+                        ? '<td><button class="button is-success is-small" disabled>Add</button></td>'
+                        : '<td><a href="' . route('activities_user_add', [$activity->id, $user->id]) . '" class="button is-success is-small">Add</a></td>') .
+                '</tr>';
         }
 
         return $output;
     }
 
-    public static function registerUser()
+    public function registerUser(Activity $activity, User $user)
     {
-        $activity = Activity::find(Route::current()->parameter('id'));
-        $user = User::find(Route::current()->parameter('user'));
-
         return $activity->registerUser($user);
     }
 }

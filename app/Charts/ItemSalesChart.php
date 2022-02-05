@@ -5,7 +5,7 @@ namespace App\Charts;
 use App\Models\Product;
 use Chartisan\PHP\Chartisan;
 use Illuminate\Http\Request;
-use App\Helpers\SettingsHelper;
+use App\Helpers\RotationHelper;
 use ConsoleTVs\Charts\BaseChart;
 
 class ItemSalesChart extends BaseChart
@@ -19,10 +19,10 @@ class ItemSalesChart extends BaseChart
         $sales = [];
 
         $products = Product::all();
-        $stats_time = SettingsHelper::getInstance()->getStatsTime();
+        $stats_rotation_id = resolve(RotationHelper::class)->getCurrentRotation()->id;
 
         foreach ($products as $product) {
-            $sold = $product->findSold($stats_time);
+            $sold = $product->findSold($stats_rotation_id);
             if ($sold < 1) {
                 continue;
             }
@@ -30,7 +30,7 @@ class ItemSalesChart extends BaseChart
             $sales[] = ['name' => $product->name, 'sold' => $sold];
         }
 
-        uasort($sales, fn ($a, $b) => $a['sold'] > $b['sold'] ? -1 : 1);
+        uasort($sales, static fn ($a, $b) => $a['sold'] > $b['sold'] ? -1 : 1);
         $sales = array_slice($sales, 0, 50);
 
         return Chartisan::build()

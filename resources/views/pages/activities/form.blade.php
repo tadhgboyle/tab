@@ -63,14 +63,14 @@
             <div class="field">
                 <label class="label">End Time<sup style="color: red">*</sup></label>
                 <div class="control">
-                    <input type="text" name="end" id="end" class="input" required value="{{ (isset($activity->end)) ? $activity->end : old('end') }}">
+                    <input type="text" name="end" id="end" class="input" required value="{{ $activity->end ?? old('end') }}">
                 </div>
             </div>
 
             <div class="field" id="slots_div" style="display: none;">
                 <label class="label">Slots</label>
                 <div class="control">
-                    <input type="number" step="1.00" name="slots" min="1" class="input" value="{{ isset($activity->slots) ? $activity->slots : old('slots') }}">
+                    <input type="number" step="1.00" name="slots" min="1" class="input" value="{{ $activity->slots ?? old('slots') }}">
                 </div>
             </div>
 
@@ -166,7 +166,7 @@
 
         updatedUnlimitedSlots($('input[type=checkbox][name=unlimited_slots]').prop('checked'));
     });
-        
+
     $('input[type=checkbox][name=unlimited_slots]').change(function() {
         updatedUnlimitedSlots($(this).prop('checked'))
     });

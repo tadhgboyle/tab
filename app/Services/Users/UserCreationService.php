@@ -33,20 +33,25 @@ class UserCreationService extends Service
 
         // Using User::where(...)->count() does not work while testing for some reason
         if (DB::table('users')->where('username', $user->username)->count() > 0) {
-            $user->username = $user->username . mt_rand(0, 100);
+            $user->username .= random_int(0, 100);
         }
 
         $user->balance = $this->_request->balance ?: 0;
         $user->role_id = $this->_request->role_id;
 
-        if (RoleHelper::getInstance()->isStaffRole($this->_request->role_id)) {
+        if (resolve(RoleHelper::class)->isStaffRole($this->_request->role_id)) {
             $user->password = bcrypt($this->_request->password);
         }
 
         $user->save();
 
+        // has to be after save() so they have an id
+        foreach ($this->_request->rotations as $rotation_id) {
+            $user->rotations()->attach($rotation_id);
+        }
+
         // Update their category limits
-        [$message, $result] = UserLimitsHelper::createOrEditFromRequest($this->_request, $user, $this::class);
+        [$message, $result] = UserLimitsHelper::createOrEditFromRequest($this->_request, $user, self::class);
         if (!is_null($message) && !is_null($result)) {
             $this->_message = $message;
             $this->_result = $result;
@@ -60,11 +65,9 @@ class UserCreationService extends Service
 
     public function redirect(): RedirectResponse
     {
-        switch ($this->getResult()) {
-            case self::RESULT_SUCCESS:
-                return redirect()->route('users_list')->with('success', $this->getMessage());
-            default:
-                return redirect()->back()->withInput()->with('error', $this->getMessage());
-        }
+        return match ($this->getResult()) {
+            self::RESULT_SUCCESS => redirect()->route('users_list')->with('success', $this->getMessage()),
+            default => redirect()->back()->withInput()->with('error', $this->getMessage()),
+        };
     }
 }

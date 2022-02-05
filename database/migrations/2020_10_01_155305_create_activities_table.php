@@ -11,9 +11,9 @@ class CreateActivitiesTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('activities', function (Blueprint $table) {
+        Schema::create('activities', static function (Blueprint $table) {
             $table->id();
             $table->string('name', 36);
             $table->string('location', 255)->nullable();
@@ -22,8 +22,7 @@ class CreateActivitiesTable extends Migration
             $table->integer('slots');
             $table->float('price');
             $table->boolean('pst');
-            $table->unsignedBigInteger('category_id');
-            $table->foreign('category_id')->references('id')->on('categories');
+            $table->foreignId('category_id')->constrained();
             $table->dateTime('start');
             $table->dateTime('end');
             $table->timestamps();
@@ -36,7 +35,7 @@ class CreateActivitiesTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('activities');
     }

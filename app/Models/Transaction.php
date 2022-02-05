@@ -6,6 +6,7 @@ use App\Helpers\ProductHelper;
 use Illuminate\Database\Eloquent\Model;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Transaction extends Model
 {
@@ -16,10 +17,10 @@ class Transaction extends Model
     use QueryCacheable;
     use HasFactory;
 
-    protected $cacheFor = 180;
+    protected int $cacheFor = 180;
 
     protected $fillable = [
-        'products', // TODO: can we auto explode(',') this?
+        'products',
         'returned',
     ];
 
@@ -32,14 +33,19 @@ class Transaction extends Model
         'cashier',
     ];
 
-    public function purchaser()
+    public function purchaser(): HasOne
     {
         return $this->hasOne(User::class, 'id', 'purchaser_id');
     }
 
-    public function cashier()
+    public function cashier(): HasOne
     {
         return $this->hasOne(User::class, 'id', 'cashier_id');
+    }
+
+    public function rotation(): HasOne
+    {
+        return $this->hasOne(Rotation::class, 'id', 'rotation_id');
     }
 
     public function isReturned(): bool
@@ -61,11 +67,9 @@ class Transaction extends Model
             $product_info = ProductHelper::deserializeProduct($product, false);
             if ($product_info['returned'] >= $product_info['quantity']) {
                 $products_returned++;
-            } else {
-                if ($product_info['returned'] > 0) {
-                    // semi returned if at least one product has a returned value
-                    return self::STATUS_PARTIAL_RETURNED;
-                }
+            } else if ($product_info['returned'] > 0) {
+                // semi returned if at least one product has a returned value
+                return self::STATUS_PARTIAL_RETURNED;
             }
 
             $product_count++;
@@ -84,4 +88,9 @@ class Transaction extends Model
 
         return self::STATUS_NOT_RETURNED;
     }
+
+    // public function getProductsAttribute($products): array
+    // {
+    //     return explode(', ', $products);
+    // }
 }

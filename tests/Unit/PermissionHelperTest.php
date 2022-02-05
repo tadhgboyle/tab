@@ -7,12 +7,12 @@ use App\Helpers\PermissionHelper;
 
 class PermissionHelperTest extends TestCase
 {
-    public function testParseNodesReturnsEmptyArrayForInvalidInput()
+    public function testParseNodesReturnsEmptyArrayForInvalidInput(): void
     {
         $this->assertEquals([], PermissionHelper::parseNodes(null));
     }
 
-    public function testParseNodes()
+    public function testParseNodes(): void
     {
         $data = [
             'category1' => true, // normal selected category node, should be kept

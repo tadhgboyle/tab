@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use App\Helpers\ProductHelper;
-use Illuminate\Support\Carbon;
 use App\Helpers\SettingsHelper;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,7 +16,7 @@ class Product extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $cacheFor = 180;
+    protected int $cacheFor = 180;
 
     protected $casts = [
         'name' => 'string',
@@ -32,7 +32,7 @@ class Product extends Model
         'category',
     ];
 
-    public function category()
+    public function category(): HasOne
     {
         return $this->hasOne(Category::class, 'id', 'category_id');
     }
@@ -42,14 +42,14 @@ class Product extends Model
         // TODO: tax calc and implementation
         $total_tax = 0.00;
         if ($this->pst) {
-            $total_tax += SettingsHelper::getInstance()->getPst();
+            $total_tax += resolve(SettingsHelper::class)->getPst();
         }
 
-        $total_tax += SettingsHelper::getInstance()->getGst();
+        $total_tax += resolve(SettingsHelper::class)->getGst();
 
-        $total_tax -= 1;
+        --$total_tax;
 
-        return number_format($this->price * $total_tax, 2);
+        return (float) number_format($this->price * $total_tax, 2);
     }
 
     // Used to check if items in order have enough stock BEFORE using removeStock() to remove it.
@@ -71,17 +71,14 @@ class Product extends Model
     {
         if ($this->unlimited_stock) {
             return '<i>Unlimited</i>';
-        } else {
-            return $this->stock;
         }
+
+        return $this->stock;
     }
 
     public function removeStock(int $remove_stock): bool
     {
-        // Checks 3 things:
-        // 1. If the stock is more than we are removing OR -> 2. If the product has unlimited stock => continue
-        // 3. If the above fails, if the product has stock override => continue
-        if (($this->getStock() >= $remove_stock || $this->unlimited_stock) || $this->stock_override) {
+        if ($this->stock_override || ($this->unlimited_stock || $this->getStock() >= $remove_stock)) {
             $this->decrement('stock', $remove_stock);
             return true;
         }
@@ -89,21 +86,21 @@ class Product extends Model
         return false;
     }
 
-    public function adjustStock(int $new_stock)
+    public function adjustStock(int $new_stock): bool|int
     {
         return $this->increment('stock', $new_stock);
     }
 
-    public function addBox(int $box_count)
+    public function addBox(int $box_count): bool|int
     {
         return $this->adjustStock($box_count * $this->box_size);
     }
 
-    public function findSold(int $stats_time): int
+    public function findSold(int $rotation_id): int
     {
         $sold = 0;
 
-        $transactions = Transaction::where('created_at', '>=', Carbon::now()->subDays($stats_time)->toDateTimeString())->get();
+        $transactions = Transaction::where('rotation_id', $rotation_id)->get();
         foreach ($transactions as $transaction) {
             $products = explode(', ', $transaction->products);
             foreach ($products as $transaction_product) {

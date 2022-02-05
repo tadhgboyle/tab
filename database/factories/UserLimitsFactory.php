@@ -7,13 +7,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class UserLimitsFactory extends Factory
 {
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
-    protected $model = UserLimits::class;
-
     private static array $durations = [
         UserLimits::LIMIT_DAILY,
         UserLimits::LIMIT_WEEKLY
@@ -27,8 +20,8 @@ class UserLimitsFactory extends Factory
     public function definition()
     {
         return [
-            'limit_per' => $this->faker->boolean(25) ? -1 : $this->faker->numberBetween(5, 150),
-            'duration' => $this->faker->randomElement(static::$durations),
+            'limit_per' => $this->faker->boolean(25) ? -1 : $this->faker->randomFloat(2, 5, 150),
+            'duration' => $this->faker->randomElement(self::$durations),
         ];
     }
 }

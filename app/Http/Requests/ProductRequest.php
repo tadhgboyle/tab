@@ -13,7 +13,7 @@ class ProductRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'name' => [
@@ -28,10 +28,10 @@ class ProductRequest extends FormRequest
             'category_id' => [
                 'required',
                 'integer',
-                ValidationRule::in(CategoryHelper::getInstance()->getProductCategories()->pluck('id')),
+                ValidationRule::in(resolve(CategoryHelper::class)->getProductCategories()->pluck('id')),
             ],
             'box_size' => [
-                // TODO: gte -1
+                // TODO: gte -1 (use new Rule::when())
                 ValidationRule::notIn(0),
             ],
         ];

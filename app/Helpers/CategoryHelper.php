@@ -2,48 +2,36 @@
 
 namespace App\Helpers;
 
-use Arr;
 use App\Models\Category;
 use App\Casts\CategoryType;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 
+// TODO: tests
 class CategoryHelper extends Helper
 {
-    private Collection $_categories;
-    private Collection $_product_categories;
-    private Collection $_activity_categories;
+    private Collection $categories;
+    private Collection $productCategories;
+    private Collection $activityCategories;
 
     public function getCategories(): Collection
     {
-        if (!isset($this->_categories)) {
-            $this->_categories = Category::orderBy('name', 'DESC')->get();
-        }
-
-        return $this->_categories;
+        return $this->categories ??= Category::query()->orderBy('name', 'ASC')->get();
     }
 
     public function getProductCategories(): Collection
     {
-        if (!isset($this->_product_categories)) {
-            $this->_product_categories = $this->getCategoriesWithType([CategoryType::TYPE_PRODUCTS_ACTIVITIES, CategoryType::TYPE_PRODUCTS]);
-        }
-
-        return $this->_product_categories;
+        return $this->productCategories ??= $this->getCategoriesOfType(CategoryType::TYPE_PRODUCTS);
     }
 
     public function getActivityCategories(): Collection
     {
-        if (!isset($this->_activity_categories)) {
-            $this->_activity_categories = $this->getCategoriesWithType([CategoryType::TYPE_PRODUCTS_ACTIVITIES, CategoryType::TYPE_ACTIVITIES]);
-        }
-
-        return $this->_activity_categories;
+        return $this->activityCategories ??= $this->getCategoriesOfType(CategoryType::TYPE_ACTIVITIES);
     }
 
-    private function getCategoriesWithType(array $types): Collection
+    private function getCategoriesOfType(int $type): Collection
     {
-        return new Collection(Arr::where($this->getCategories()->all(), function (Category $category) use ($types) {
-            return in_array($category->type->id, $types);
-        }));
+        return $this->getCategories()->filter(static function (Category $category) use ($type) {
+            return in_array($category->type->id, [$type, CategoryType::TYPE_PRODUCTS_ACTIVITIES], true);
+        });
     }
 }

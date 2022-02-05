@@ -30,13 +30,14 @@ class RoleController extends Controller
     {
         $staff = $request->has('staff');
         $superuser = $staff && $request->has('superuser');
+        $permissions = PermissionHelper::parseNodes($request->permissions);
 
         Role::find($request->role_id)->update([
             'name' => $request->name,
             'order' => $request->order,
             'staff' => $staff,
             'superuser' => $superuser,
-            'permissions' => PermissionHelper::parseNodes($request->permissions)
+            'permissions' => $permissions,
         ]);
 
         return redirect()->route('settings')->with('success', 'Edited role ' . $request->name . '.');
@@ -53,28 +54,27 @@ class RoleController extends Controller
         } else {
             $new_role = Role::find($request->new_role);
 
+            $fields = [
+                'role_id' => $new_role->id,
+            ];
+
             if (!$new_role->staff) {
-                $fields = [
-                    'role_id' => $new_role->id,
+                $fields = array_merge($fields, [
                     'password' => null,
-                ];
-            } else {
-                $fields = [
-                    'role_id' => $new_role->id,
-                ];
+                ]);
             }
 
             User::where('role_id', $old_role->id)->update($fields);
 
             $old_role->delete();
 
-            $message = 'Deleted role ' . $old_role->name . ', and placed all it\'s users into ' . $new_role->name . '.';
+            $message = "Deleted role {$old_role->name}, and placed all it's users into {$new_role->name}.";
         }
 
         return redirect()->route('settings')->with('success', $message);
     }
 
-    public function form()
+    public function form(PermissionHelper $permissionHelper)
     {
         $role = Role::find(request()->route('id'));
 
@@ -91,13 +91,13 @@ class RoleController extends Controller
             'role' => $role,
             'affected_users' => $affected_users ?? null,
             'available_roles' => $available_roles ?? null,
-            'permissionHelper' => PermissionHelper::getInstance(),
+            'permissionHelper' => $permissionHelper,
         ]);
     }
 
     public function order()
     {
-        $roles = json_decode(\Request::get('roles'))->roles;
+        $roles = json_decode(request()->get('roles'))->roles;
 
         $i = 1;
         foreach ($roles as $role) {

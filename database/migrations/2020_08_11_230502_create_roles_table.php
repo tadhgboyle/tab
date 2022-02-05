@@ -11,9 +11,9 @@ class CreateRolesTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('roles', function (Blueprint $table) {
+        Schema::create('roles', static function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->integer('order')->unique();
@@ -30,7 +30,7 @@ class CreateRolesTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('roles');
     }

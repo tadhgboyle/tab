@@ -15,14 +15,14 @@ class ProductTest extends TestCase
 
     // TODO: stock tests
 
-    public function testProductSerialization()
+    public function testProductSerialization(): void
     {
         $serialized = ProductHelper::serializeProduct(34, 2, 1.45, 1.08, 1.04, 1);
 
         $this->assertEquals('34*2$1.45G1.08P1.04R1', $serialized);
     }
 
-    public function testProductDeserializationNotFull()
+    public function testProductDeserializationNotFull(): void
     {
         $serialized = '34*2$1.45G1.08P1.04R1';
 
@@ -40,7 +40,7 @@ class ProductTest extends TestCase
         ], $deserialized);
     }
 
-    public function testProductDeserializationFull()
+    public function testProductDeserializationFull(): void
     {
         $category = Category::factory()->create([
             'name' => 'Food',
@@ -60,7 +60,7 @@ class ProductTest extends TestCase
         $this->assertEquals($deserialized['category'], $product->category_id);
     }
 
-    public function testProductDeserializationThrowsException()
+    public function testProductDeserializationThrowsException(): void
     {
         $this->expectException(ModelNotFoundException::class);
 
