@@ -66,6 +66,7 @@
             url: "@chart('purchase_history_chart')",
             hooks: new ChartisanHooks()
                 .legend()
+                .colors(['#22577A', '#38A3A5'])
                 .tooltip()
         });
     @endpermission
@@ -86,6 +87,7 @@
             url: "@chart('activity_sales_chart')",
             hooks: new ChartisanHooks()
                 .legend()
+                .colors(['#9B9ECE'])
                 .tooltip()
         });
     @endpermission
@@ -96,6 +98,8 @@
         url: "@chart('income_history_chart')",
         hooks: new ChartisanHooks()
             .legend()
+            .datasets([{ type: 'line', fill: false }, 'bar'])
+            .colors(['#512D38', '#B27092'])
             .tooltip()
     });
     @endpermission
