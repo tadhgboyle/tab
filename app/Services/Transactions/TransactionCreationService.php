@@ -45,7 +45,7 @@ class TransactionCreationService extends Service
             return;
         }
 
-        if (!isset($this->_request->product)) {
+        if (!$this->_request->has('product')) {
             $this->_result = self::RESULT_NO_ITEMS_SELECTED;
             $this->_message = 'Please select at least one item.';
             return;
@@ -162,7 +162,7 @@ class TransactionCreationService extends Service
         $transaction = new Transaction();
         $transaction->purchaser_id = $purchaser->id;
         $transaction->cashier_id = auth()->id();
-        $transaction->rotation_id = resolve(RotationHelper::class)->getCurrentRotation()->id; // TODO: cannot make order without current rotation
+        $transaction->rotation_id = $this->_request->rotation_id ?? resolve(RotationHelper::class)->getCurrentRotation()->id; // TODO: cannot make order without current rotation
         $transaction->products = implode(', ', $transaction_products);
         $transaction->total_price = $total_price;
         if ($this->_request->exists('created_at')) {
