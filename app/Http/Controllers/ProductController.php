@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\Products\ProductCreationService;
 use App\Services\Products\ProductDeleteService;
 use App\Services\Products\ProductEditService;
-use Validator;
+use App\Services\Products\ProductStockAdjustmentService;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Helpers\CategoryHelper;
@@ -52,44 +52,7 @@ class ProductController extends Controller
 
     public function adjustStock(Request $request)
     {
-        $product_id = $request->product_id;
-        $product = Product::find($product_id);
-
-        if ($product === null) {
-            return redirect()->route('products_adjust')->with('error', 'Invalid Product.');
-        }
-
-        session()->flash('last_product', $product);
-
-        $validator = Validator::make($request->all(), [
-            'adjust_stock' => 'numeric',
-            'adjust_box' => 'numeric',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator);
-        }
-
-        $adjust_stock = (int) $request->adjust_stock;
-        $adjust_box = (int) ($request->adjust_box ?? 0);
-
-        if ($adjust_stock === 0) {
-            if (!$request->has('adjust_box')) {
-                return redirect()->back()->with('error', 'Please specify how much stock to add to ' . $product->name . '.');
-            }
-
-            if ($request->adjust_box === 0) {
-                return redirect()->back()->with('error', 'Please specify how many boxes or stock to add to ' . $product->name . '.');
-            }
-        }
-
-        $product->adjustStock($adjust_stock);
-
-        if ($request->has('adjust_box')) {
-            $product->addBox($adjust_box);
-        }
-
-        return redirect()->back()->with('success', 'Successfully added ' . $adjust_stock . ' stock and ' . $adjust_box . ' boxes to ' . $product->name . '.');
+        return (new ProductStockAdjustmentService($request))->redirect();
     }
 
     public function ajaxGetPage()
