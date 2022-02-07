@@ -142,6 +142,7 @@ Documentation (in the form of a printable user handbook) is being written.
 - Lazy loading of users/products (especially in cashier view).
     - Use this https://github.com/yajra/laravel-datatables
     - They should type a query first, or use some ajax to fetch data. or else it could take forever to load
+- Docker compose file for easy deployment
 
 ## Issues/Bugs:
 - Rotation end selector is broken in edit/create page
