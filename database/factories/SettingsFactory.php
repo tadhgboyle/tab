@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Settings;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SettingsFactory extends Factory

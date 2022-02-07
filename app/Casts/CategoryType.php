@@ -2,8 +2,8 @@
 
 namespace App\Casts;
 
-use Illuminate\Database\Eloquent\Model;
 use stdClass;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
 class CategoryType implements CastsAttributes
@@ -25,8 +25,8 @@ class CategoryType implements CastsAttributes
     public function get($model, string $key, $value, array $attributes)
     {
         $return = new stdClass();
-        $return->name = $this->getName((int)$value);
-        $return->id = (int)$value;
+        $return->name = $this->getName((int) $value);
+        $return->id = (int) $value;
 
         return $return;
     }

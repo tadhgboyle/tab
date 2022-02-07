@@ -34,7 +34,7 @@ class SettingsController extends Controller
         CategoryHelper $categoryHelper,
         RoleHelper $roleHelper,
         RotationHelper $rotationHelper
-    ){
+    ) {
         return view('pages.settings.settings', [
             'gst' => $settingsHelper->getGst(),
             'pst' => $settingsHelper->getPst(),
