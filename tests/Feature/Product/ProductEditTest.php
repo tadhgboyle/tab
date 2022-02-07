@@ -2,18 +2,19 @@
 
 namespace Tests\Feature\Product;
 
-use App\Http\Requests\ProductRequest;
-use App\Models\Category;
+use Tests\TestCase;
 use App\Models\Product;
+use App\Models\Category;
+use App\Http\Requests\ProductRequest;
 use App\Services\Products\ProductEditService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
 class ProductEditTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testCannotEditNonexistentProduct() {
+    public function testCannotEditNonexistentProduct()
+    {
         $productService = new ProductEditService(new ProductRequest([
             'product_id' => -1,
         ]));

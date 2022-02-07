@@ -2,9 +2,9 @@
 
 namespace App\Services\Products;
 
-use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use App\Services\Service;
+use App\Http\Requests\ProductRequest;
 use Illuminate\Http\RedirectResponse;
 
 class ProductEditService extends Service
