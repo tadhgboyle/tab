@@ -18,6 +18,7 @@ abstract class Helper
      */
     final public static function getInstance(): static
     {
+        /** @phpstan-ignore-next-line  */
         return self::$instances[static::class] ??= new static();
     }
 
