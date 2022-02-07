@@ -51,7 +51,7 @@ Route::middleware('auth')->group(function () {
                             ->select(['id', 'full_name', 'balance'])
                             ->with('rotations')
                             ->get(),
-            'currentRotation' =>  resolve(RotationHelper::class)->getCurrentRotation()
+            'currentRotation' => resolve(RotationHelper::class)->getCurrentRotation()
         ]);
     })->name('index');
 

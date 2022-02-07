@@ -43,13 +43,16 @@ class TransactionSeeder extends Seeder
                     $quantity[$product_id] = random_int(1, 4);
                 }
 
+                /** @var Rotation $rotation */
+                $rotation = $user->rotations->random();
+
                 $service = new TransactionCreationService(new Request([
                     'purchaser_id' => $user->id,
                     'cashier_id' => $cashier->id,
-                    'rotation_id' => $user->rotations->random()->pluck('id'),
+                    'rotation_id' => $rotation->id,
                     'product' => $product_ids,
                     'quantity' => $quantity,
-                    'created_at' => Carbon::now()->addMinutes(random_int(-4000, 4000))
+                    'created_at' => $rotation->start->addDays(random_int(1, 6))->addMillis(random_int(-99999, 99999)),
                 ]));
 
                 if ($service->getResult() !== TransactionCreationService::RESULT_SUCCESS) {

@@ -1,7 +1,9 @@
 <nav class="navbar has-shadow">
     <div class="container">
         <div class="navbar-brand">
-            <b class="navbar-item">tabReborn</b>
+            <a class="navbar-item" href="{{ route('index') }}">
+                <b class="navbar-item">tabReborn</b>
+            </a>
         </div>
         <div class="navbar-menu">
             <div class="navbar-start">
