@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Product;
 
-use App\Http\Requests\ProductRequest;
+use Tests\TestCase;
 use App\Models\Category;
+use App\Http\Requests\ProductRequest;
 use App\Services\Products\ProductCreationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
 class ProductCreationTest extends TestCase
 {

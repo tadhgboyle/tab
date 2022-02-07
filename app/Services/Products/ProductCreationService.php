@@ -2,9 +2,9 @@
 
 namespace App\Services\Products;
 
-use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use App\Services\Service;
+use App\Http\Requests\ProductRequest;
 use Illuminate\Http\RedirectResponse;
 
 class ProductCreationService extends Service
@@ -13,7 +13,8 @@ class ProductCreationService extends Service
 
     public const RESULT_SUCCESS = 0;
 
-    public function __construct(ProductRequest $request) {
+    public function __construct(ProductRequest $request)
+    {
         $unlimited_stock = $request->has('unlimited_stock');
 
         $stock = 0;

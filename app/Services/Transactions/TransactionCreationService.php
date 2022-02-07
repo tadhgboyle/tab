@@ -30,7 +30,8 @@ class TransactionCreationService extends Service
     public const RESULT_NO_CURRENT_ROTATION = 6;
     public const RESULT_SUCCESS = 7;
 
-    public function __construct(Request $request) {
+    public function __construct(Request $request)
+    {
         if (resolve(RotationHelper::class)->getCurrentRotation() === null) {
             $this->_result = self::RESULT_NO_CURRENT_ROTATION;
             $this->_message = 'Cannot create transaction with no current rotation.';
