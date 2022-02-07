@@ -2,7 +2,7 @@
     <div class="container">
         <div class="navbar-brand">
             <a class="navbar-item" href="{{ route('index') }}">
-                <b class="navbar-item">tabReborn</b>
+                <b class="navbar-item">tab</b>
             </a>
         </div>
         <div class="navbar-menu">

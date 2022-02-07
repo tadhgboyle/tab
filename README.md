@@ -1,4 +1,4 @@
-# tabReborn
+# tab
 
 A lightweight, selfhosted web app that camps, resorts and schools can use as a Point Of Sale system.
 
@@ -66,37 +66,37 @@ Documentation (in the form of a printable user handbook) is being written.
 ## Screenshots:
 
 #### First Cashier Page
-![First Cashier Page](https://i.imgur.com/8DQ9LN2.png)
+![First Cashier Page](https://i.imgur.com/6K6JtQK.png)
 
 #### Second Cashier Page
-![Second Cashier Page](https://i.imgur.com/e8upEMU.png)
+![Second Cashier Page](https://i.imgur.com/LFTAmZu.png)
 
 #### User Information Page
-![User Info Page](https://i.imgur.com/7qMsy2E.png)
+![User Info Page](https://i.imgur.com/8fFn5E3.png)
 
 #### Order List Page
-![Order List Page](https://i.imgur.com/UIDVpjB.png)
+![Order List Page](https://i.imgur.com/rh7UG1m.png)
 
 #### Order Information Page
-![Order Info Page](https://i.imgur.com/SZkOOmn.png)
+![Order Info Page](https://i.imgur.com/hSspquS.png)
 
 #### Activity List Page
-![Activity List Page](https://i.imgur.com/OShQs4Y.png)
+![Activity List Page](https://i.imgur.com/15DXyW5.png)
 
 #### Activity Information Page
-![Activity Information Page](https://i.imgur.com/D1uNxgo.png)
+![Activity Information Page](https://i.imgur.com/QopdJEz.png)
 
-#### Chart.js Statistics Page
-![Chart.js Statistics Page](https://i.imgur.com/2OOU7ZX.png)
+#### Statistics Page
+![Statistics Page](https://i.imgur.com/o4FJcdI.png)
 
 #### Stock Adjustment Page
-![Stock Adjustment Page](https://i.imgur.com/inUoVcl.png)
+![Stock Adjustment Page](https://i.imgur.com/VDWtJ6O.png)
 
 #### Settings Page
-![Settings Page](https://i.imgur.com/nY7jMg9.png)
+![Settings Page](https://i.imgur.com/0jKtI5F.png)
 
 #### Role Editing Page
-![Role Editing Page](https://i.imgur.com/n6H2hWQ.png)
+![Role Editing Page](https://i.imgur.com/1OutDlo.png)
 
 ## Roadmap:
 

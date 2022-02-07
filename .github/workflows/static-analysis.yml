@@ -1,4 +1,4 @@
-name: TabReborn Larastan
+name: Larastan
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  tabreborn-static-analysis:
+  static-analysis:
 
     runs-on: ubuntu-latest
 
