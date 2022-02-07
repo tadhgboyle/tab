@@ -6,5 +6,6 @@ parameters:
         - app
     excludePaths:
         - app/Exceptions/Handler.php
+        - app/Http/Kernel.php
     level: 5
     checkMissingIterableValueType: false
