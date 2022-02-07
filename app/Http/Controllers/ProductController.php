@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\Products\ProductCreationService;
-use App\Services\Products\ProductDeleteService;
-use App\Services\Products\ProductEditService;
-use App\Services\Products\ProductStockAdjustmentService;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Helpers\CategoryHelper;
 use App\Http\Requests\ProductRequest;
+use App\Services\Products\ProductEditService;
+use App\Services\Products\ProductDeleteService;
+use App\Services\Products\ProductCreationService;
+use App\Services\Products\ProductStockAdjustmentService;
 
 class ProductController extends Controller
 {

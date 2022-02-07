@@ -17,7 +17,8 @@ class UserCreationService extends Service
     public const RESULT_INVALID_LIMIT = 0;
     public const RESULT_SUCCESS = 1;
 
-    public function __construct(UserRequest $request) {
+    public function __construct(UserRequest $request)
+    {
         $user = new User();
         $user->full_name = $request->full_name;
         $user->username = $request->username ?: strtolower(str_replace(' ', '', $request->full_name));
