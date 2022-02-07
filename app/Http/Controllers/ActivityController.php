@@ -7,8 +7,6 @@ use App\Models\Activity;
 use Illuminate\Support\Carbon;
 use App\Helpers\CategoryHelper;
 use App\Http\Requests\ActivityRequest;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 
 // TODO: add return/cancel functionality
 // TODO: fix - add pst check box

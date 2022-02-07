@@ -58,7 +58,7 @@ class UserLimitsHelper
             $info = self::getInfo($user, $category_id);
         }
 
-        if ((float)$info->limit_per === -1.0) {
+        if ((float) $info->limit_per === -1.0) {
             return true;
         }
 
@@ -120,7 +120,7 @@ class UserLimitsHelper
 
             foreach ($transaction_products as $transaction_product) {
                 $product = Product::find(strtok($transaction_product, '*'));
-                if ((int)$product->category_id !== $category_id) {
+                if ((int) $product->category_id !== $category_id) {
                     continue;
                 }
 
@@ -140,7 +140,7 @@ class UserLimitsHelper
 
         foreach ($activity_transactions as $activity_transaction) {
             $activity = Activity::find($activity_transaction->activity_id);
-            if ((int)$activity->category_id !== $category_id) {
+            if ((int) $activity->category_id !== $category_id) {
                 continue;
             }
 

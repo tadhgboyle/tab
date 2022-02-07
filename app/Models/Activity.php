@@ -4,13 +4,13 @@ namespace App\Models;
 
 use App\Helpers\SettingsHelper;
 use App\Helpers\UserLimitsHelper;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Rennokki\QueryCache\Traits\QueryCacheable;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Activity extends Model
