@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use JetBrains\PhpStorm\Pure;
 use App\Helpers\ProductHelper;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use JetBrains\PhpStorm\Pure;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -119,7 +119,7 @@ class User extends Authenticatable
      */
     public function findSpent(): float
     {
-        return (float)($this->getTransactions()->sum('total_price') + $this->getActivityTransactions()->sum('total_price'));
+        return (float) ($this->getTransactions()->sum('total_price') + $this->getActivityTransactions()->sum('total_price'));
     }
 
     /**
@@ -155,7 +155,7 @@ class User extends Authenticatable
 
         $returned += $this->getActivityTransactions()->where('returned', true)->sum('total_price');
 
-        return (float)$returned;
+        return (float) $returned;
     }
 
     /**

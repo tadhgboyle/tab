@@ -5,8 +5,8 @@ namespace App\Models;
 use App\Helpers\ProductHelper;
 use Illuminate\Database\Eloquent\Model;
 use Rennokki\QueryCache\Traits\QueryCacheable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Transaction extends Model
 {
@@ -67,9 +67,11 @@ class Transaction extends Model
             $product_info = ProductHelper::deserializeProduct($product, false);
             if ($product_info['returned'] >= $product_info['quantity']) {
                 $products_returned++;
-            } else if ($product_info['returned'] > 0) {
-                // semi returned if at least one product has a returned value
-                return self::STATUS_PARTIAL_RETURNED;
+            } else {
+                if ($product_info['returned'] > 0) {
+                    // semi returned if at least one product has a returned value
+                    return self::STATUS_PARTIAL_RETURNED;
+                }
             }
 
             $product_count++;

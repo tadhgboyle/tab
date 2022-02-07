@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
+use App\Charts\ItemSalesChart;
 use App\Charts\ActivitySalesChart;
 use App\Charts\IncomeHistoryChart;
-use App\Charts\ItemSalesChart;
 use App\Charts\PurchaseHistoryChart;
 use Illuminate\Support\ServiceProvider;
 use ConsoleTVs\Charts\Registrar as Charts;

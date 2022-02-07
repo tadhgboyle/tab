@@ -2,9 +2,7 @@
 
 namespace Database\Seeders;
 
-use Arr;
 use Auth;
-use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Rotation;

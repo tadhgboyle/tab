@@ -4,8 +4,8 @@ namespace App\Models;
 
 use App\Casts\CategoryType;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class UserLimits extends Model
 {
