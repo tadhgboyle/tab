@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Role;
 
+use Tests\TestCase;
 use App\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
 class RoleTest extends TestCase
 {

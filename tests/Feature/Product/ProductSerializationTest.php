@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\Product;
 
-use App\Helpers\ProductHelper;
-use App\Models\Category;
-use App\Models\Product;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\Models\Product;
+use App\Models\Category;
+use App\Helpers\ProductHelper;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ProductSerializationTest extends TestCase
 {

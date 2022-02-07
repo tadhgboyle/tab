@@ -4,8 +4,8 @@ namespace App\Services\Products;
 
 use App\Models\Product;
 use App\Services\Service;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Validator;
 
 class ProductStockAdjustmentService extends Service

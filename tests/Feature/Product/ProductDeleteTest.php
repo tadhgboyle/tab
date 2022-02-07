@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\Product;
 
-use App\Models\Category;
-use App\Models\Product;
-use App\Services\Products\ProductDeleteService;
-use App\Services\Products\ProductEditService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\Models\Product;
+use App\Models\Category;
+use App\Services\Products\ProductEditService;
+use App\Services\Products\ProductDeleteService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ProductDeleteTest extends TestCase
 {
