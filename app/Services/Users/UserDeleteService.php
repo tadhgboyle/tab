@@ -11,13 +11,16 @@ class UserDeleteService extends Service
     use UserService;
 
     public const RESULT_SUCCESS = 0;
+    public const RESULT_NOT_EXIST = 1;
 
     public function __construct(int $user_id)
     {
         $user = User::find($user_id);
 
         if ($user === null) {
-            redirect()->route('users_list')->with('error', 'No user found with that ID.')->send();
+            $this->_result = self::RESULT_NOT_EXIST;
+            $this->_message = 'No user found with that ID.';
+            return;
         }
 
         $this->_user = $user;
@@ -30,6 +33,9 @@ class UserDeleteService extends Service
 
     public function redirect(): RedirectResponse
     {
-        return redirect()->route('users_list')->with('success', $this->getMessage());
+        return match ($this->getResult()) {
+            self::RESULT_SUCCESS => redirect()->route('users_list')->with('success', $this->getMessage()),
+            self::RESULT_NOT_EXIST => redirect()->route('users_list')->with('error', $this->getMessage()),
+        };
     }
 }

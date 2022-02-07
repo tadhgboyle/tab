@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Role;
 
-use Tests\TestCase;
 use App\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class RoleTest extends TestCase
 {
@@ -99,5 +99,8 @@ class RoleTest extends TestCase
         $this->assertFalse($this->_manager_role->hasPermission('permission_node3'));
         $this->assertTrue($this->_manager_role->hasPermission(['permission_node1', 'permission_node2']));
         $this->assertFalse($this->_manager_role->hasPermission(['permission_node1', 'permission_node3']));
+
+        $this->assertFalse($this->_cashier_role->hasPermission('permission_node1'));
+        $this->assertFalse($this->_cashier_role->hasPermission(['permission_node1', 'permission_node2']));
     }
 }

@@ -12,6 +12,13 @@ class UserDeleteTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function testCannotDeleteNonexistentUser(): void
+    {
+        $userService = new UserDeleteService(-1);
+
+        $this->assertSame(UserDeleteService::RESULT_NOT_EXIST, $userService->getResult());
+    }
+
     public function testCanDeleteUser(): void
     {
         $user = $this->createUser();
