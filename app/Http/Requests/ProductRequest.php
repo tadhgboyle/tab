@@ -32,7 +32,7 @@ class ProductRequest extends FormRequest
             ],
             'box_size' => [
                 // TODO: gte -1 (use new Rule::when())
-                ValidationRule::notIn(0),
+                ValidationRule::notIn([0]),
             ],
         ];
     }

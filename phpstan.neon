@@ -7,3 +7,5 @@ parameters:
     # The level 9 is the highest level
     level: 5
     checkMissingIterableValueType: false
+	excludePaths:
+		- app/Exceptions/Handler.php

@@ -17,6 +17,7 @@ class HasPermission
      */
     public function handle(Request $request, Closure $next)
     {
+        /** @phpstan-ignore-next-line  */
         if (hasPermission($request->route()->action['permission'])) {
             return $next($request);
         }
