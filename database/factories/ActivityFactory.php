@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use Carbon\Carbon;
-use App\Models\Activity;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ActivityFactory extends Factory

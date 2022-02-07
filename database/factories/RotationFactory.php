@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Rotation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class RotationFactory extends Factory

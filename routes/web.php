@@ -13,10 +13,9 @@
 
 use App\Models\User;
 use App\Helpers\RotationHelper;
-use Illuminate\Database\Query\Builder;
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\HasPermission;
+use Illuminate\Database\Query\Builder;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
@@ -27,6 +26,7 @@ use App\Http\Controllers\RotationController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\StatisticsPageController;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 Route::get('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/login/auth', [LoginController::class, 'auth'])->name('login_auth');

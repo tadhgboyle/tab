@@ -2,11 +2,11 @@
 
 namespace App\Charts;
 
-use App\Helpers\RotationHelper;
 use App\Models\Transaction;
 use Chartisan\PHP\Chartisan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use App\Helpers\RotationHelper;
 
 class IncomeHistoryChart
 {
