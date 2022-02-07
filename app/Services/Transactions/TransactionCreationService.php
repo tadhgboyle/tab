@@ -30,22 +30,20 @@ class TransactionCreationService extends Service
     public const RESULT_NO_CURRENT_ROTATION = 6;
     public const RESULT_SUCCESS = 7;
 
-    public function __construct(
-        private Request $_request
-    ) {
+    public function __construct(Request $request) {
         if (resolve(RotationHelper::class)->getCurrentRotation() === null) {
             $this->_result = self::RESULT_NO_CURRENT_ROTATION;
             $this->_message = 'Cannot create transaction with no current rotation.';
             return;
         }
 
-        if (!hasPermission('cashier_self_purchases') && $this->_request->purchaser_id === auth()->id()) {
+        if (!hasPermission('cashier_self_purchases') && $request->purchaser_id === auth()->id()) {
             $this->_result = self::RESULT_NO_SELF_PURCHASE;
             $this->_message = 'You cannot make purchases for yourself.';
             return;
         }
 
-        if (!$this->_request->has('product')) {
+        if (!$request->has('product')) {
             $this->_result = self::RESULT_NO_ITEMS_SELECTED;
             $this->_message = 'Please select at least one item.';
             return;
@@ -54,8 +52,8 @@ class TransactionCreationService extends Service
         // For some reason, old() does not seem to work with array[] inputs in form. This will do for now...
         // ^ I'm sure it's a silly mistake on my end
         // TODO apparently dot notation works
-        foreach ($this->_request->product as $product_id) {
-            session()->flash("quantity[{$product_id}]", $this->_request->quantity[$product_id]);
+        foreach ($request->product as $product_id) {
+            session()->flash("quantity[{$product_id}]", $request->quantity[$product_id]);
             session()->flash("product[{$product_id}]", true);
         }
 
@@ -65,14 +63,14 @@ class TransactionCreationService extends Service
         $total_tax = $settingsHelper->getGst();
 
         // Loop each product. Serialize it, and add it's cost to the transaction total
-        foreach ($this->_request->product as $product_id) {
-            if (!array_key_exists($product_id, $this->_request->quantity)) {
+        foreach ($request->product as $product_id) {
+            if (!array_key_exists($product_id, $request->quantity)) {
                 continue;
             }
 
             $product = Product::find($product_id);
 
-            $quantity = $this->_request->quantity[$product_id];
+            $quantity = $request->quantity[$product_id];
             if ($quantity < 1) {
                 $this->_result = self::RESULT_NEGATIVE_QUANTITY;
                 $this->_message = "Quantity must be >= 1 for item {$product->name}";
@@ -107,7 +105,7 @@ class TransactionCreationService extends Service
             $total_tax = $settingsHelper->getGst();
         }
 
-        $purchaser = User::find($this->_request->purchaser_id);
+        $purchaser = User::find($request->purchaser_id);
         $remaining_balance = $purchaser->balance - $total_price;
         if ($remaining_balance < 0) {
             $this->_result = self::RESULT_NOT_ENOUGH_BALANCE;
@@ -154,7 +152,7 @@ class TransactionCreationService extends Service
 
         foreach ($stock_products as $product) {
             // we already know the product has stock via hasStock() call above, so we don't need to check for the result of removeStock()
-            $product->removeStock($this->_request->quantity[$product->id]);
+            $product->removeStock($request->quantity[$product->id]);
         }
 
         $purchaser->update(['balance' => $remaining_balance]);
@@ -162,11 +160,11 @@ class TransactionCreationService extends Service
         $transaction = new Transaction();
         $transaction->purchaser_id = $purchaser->id;
         $transaction->cashier_id = auth()->id();
-        $transaction->rotation_id = $this->_request->rotation_id ?? resolve(RotationHelper::class)->getCurrentRotation()->id; // TODO: cannot make order without current rotation
+        $transaction->rotation_id = $request->rotation_id ?? resolve(RotationHelper::class)->getCurrentRotation()->id; // TODO: cannot make order without current rotation
         $transaction->products = implode(', ', $transaction_products);
         $transaction->total_price = $total_price;
-        if ($this->_request->exists('created_at')) {
-            $transaction->created_at = $this->_request->created_at; // for seeding random times
+        if ($request->exists('created_at')) {
+            $transaction->created_at = $request->created_at; // for seeding random times
         }
         $transaction->save();
 

@@ -32,6 +32,17 @@ class Product extends Model
         'category',
     ];
 
+    protected $fillable = [
+        'name',
+        'price',
+        'category_id',
+        'stock',
+        'box_size',
+        'unlimited_stock',
+        'stock_override',
+        'pst',
+    ];
+
     public function category(): HasOne
     {
         return $this->hasOne(Category::class, 'id', 'category_id');

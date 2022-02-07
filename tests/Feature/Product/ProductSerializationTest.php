@@ -1,19 +1,17 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Product;
 
-use Tests\TestCase;
-use App\Models\Product;
-use App\Models\Category;
 use App\Helpers\ProductHelper;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
-class ProductTest extends TestCase
+class ProductSerializationTest extends TestCase
 {
     use RefreshDatabase;
-
-    // TODO: stock tests
 
     public function testProductSerialization(): void
     {

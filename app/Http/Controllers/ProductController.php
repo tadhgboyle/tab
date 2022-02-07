@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Products\ProductCreationService;
+use App\Services\Products\ProductDeleteService;
+use App\Services\Products\ProductEditService;
 use Validator;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -12,62 +15,17 @@ class ProductController extends Controller
 {
     public function new(ProductRequest $request)
     {
-        // Box size of -1 means they cannot receive stock via box. Instead must use normal stock
-        $box_size = $request->box_size ?: -1;
-
-        $unlimited_stock = $request->has('unlimited_stock');
-
-        $stock = 0;
-        if (!$request->has('stock')) {
-            $unlimited_stock = true;
-        } else {
-            $stock = $request->stock;
-        }
-
-        $product = new Product();
-        $product->name = $request->name;
-        $product->price = $request->price;
-        $product->category_id = $request->category_id;
-        $product->stock = $stock;
-        $product->box_size = $box_size;
-        $product->unlimited_stock = $unlimited_stock;
-        $product->stock_override = $request->has('stock_override');
-        $product->pst = $request->has('pst');
-        $product->save();
-
-        return redirect()->route('products_list')->with('success', 'Successfully created ' . $request->name . '.');
+        return (new ProductCreationService($request))->redirect();
     }
 
     public function edit(ProductRequest $request)
     {
-        $unlimited_stock = $request->has('unlimited_stock');
-
-        $stock = 0;
-        if (!$request->has('stock')) {
-            $unlimited_stock = true;
-        } else {
-            $stock = $request->stock;
-        }
-
-        Product::where('id', $request->product_id)->update([
-            'name' => $request->name,
-            'price' => $request->price,
-            'category_id' => $request->category_id,
-            'stock' => $stock,
-            'box_size' => $request->box_size ?? -1,
-            'unlimited_stock' => $unlimited_stock,
-            'stock_override' => $request->has('stock_override'),
-            'pst' => $request->has('pst'),
-        ]);
-
-        return redirect()->route('products_list')->with('success', 'Successfully edited ' . $request->name . '.');
+        return (new ProductEditService($request))->redirect();
     }
 
     public function delete(Product $product)
     {
-        $product->delete();
-
-        return redirect()->route('products_list')->with('success', 'Successfully deleted ' . $product->name . '.');
+        return (new ProductDeleteService($product->id))->redirect();
     }
 
     public function list()
