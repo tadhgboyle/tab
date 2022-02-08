@@ -21,7 +21,7 @@ class ActivityFactory extends Factory
     public function definition()
     {
         $start_date = Carbon::instance($this->faker->dateTimeThisMonth)->addDays($this->faker->numberBetween(14, 31));
-        $end_date = Carbon::instance($start_date)->addMinutes($this->faker->numberBetween(-1000, 1000));
+        $end_date = $start_date->copy()->addMinutes($this->faker->numberBetween(0, 500));
 
         return [
             'name' => $this->faker->unique()->randomElement(self::$activityNames),

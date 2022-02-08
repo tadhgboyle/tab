@@ -39,7 +39,6 @@ class ActivityController extends Controller
             return redirect()->route('activities_edit', $request->activity_id)->withInput()->with('error', 'The end time must be after the start time.');
         }
 
-        // TODO: not updating, fillables?
         Activity::find($request->activity_id)->update([
             'name' => $request->name,
             'category_id' => $request->category_id,
@@ -52,7 +51,7 @@ class ActivityController extends Controller
             'end' => $request->end,
         ]);
 
-        return redirect()->route('activities_list')->with('success', 'Updated activity ' . $request->name . '.');
+        return redirect()->route('activities_view', $request->activity_id)->with('success', 'Updated activity.');
     }
 
     public function delete(Activity $activity)
@@ -83,14 +82,17 @@ class ActivityController extends Controller
         $activity = Activity::find(request()->route('id'));
 
         if ($activity === null) {
-            $start = request()->route('date') ?? Carbon::now();
+            $start = Carbon::parse(request()->route('date')) ?? Carbon::now();
+            $end = Carbon::parse($start)->addHour();
         } else {
             $start = $activity->start;
+            $end = $activity->end;
         }
 
         return view('pages.activities.form', [
             'activity' => $activity,
             'start' => $start,
+            'end' => $end,
             'categories' => $categoryHelper->getActivityCategories(),
         ]);
     }

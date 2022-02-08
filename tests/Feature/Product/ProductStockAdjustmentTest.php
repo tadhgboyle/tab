@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\Product;
 
-use Tests\TestCase;
-use App\Models\Product;
+use App\Http\Requests\ProductStockAdjustmentRequest;
 use App\Models\Category;
-use Illuminate\Http\Request;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\Product;
 use App\Services\Products\ProductStockAdjustmentService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class ProductStockAdjustmentTest extends TestCase
 {
@@ -15,26 +15,11 @@ class ProductStockAdjustmentTest extends TestCase
 
     public function testCannotAdjustStockWhenProductIsNotFound(): void
     {
-        $productService = (new ProductStockAdjustmentService(new Request([
+        $productService = (new ProductStockAdjustmentService(new ProductStockAdjustmentRequest([
             'product_id' => -1,
         ])));
 
         $this->assertSame(ProductStockAdjustmentService::RESULT_INVALID_PRODUCT, $productService->getResult());
-    }
-
-    public function testCannotAdjustStockWithInvalidInput(): void
-    {
-        $product = Product::factory()->create([
-            'category_id' => Category::factory()->create()->id,
-        ]);
-
-        $productService = (new ProductStockAdjustmentService(new Request([
-            'product_id' => $product->id,
-            'adjust_stock' => 'invalid',
-            'adjust_box' => 'invalid',
-        ])));
-
-        $this->assertSame(ProductStockAdjustmentService::RESULT_INVALID_INPUT, $productService->getResult());
     }
 
     public function testCannotAdjustStockWithoutInput(): void
@@ -43,7 +28,7 @@ class ProductStockAdjustmentTest extends TestCase
             'category_id' => Category::factory()->create()->id,
         ]);
 
-        $productService = (new ProductStockAdjustmentService(new Request([
+        $productService = (new ProductStockAdjustmentService(new ProductStockAdjustmentRequest([
             'product_id' => $product->id,
             'adjust_stock' => 0,
         ])));
@@ -57,7 +42,7 @@ class ProductStockAdjustmentTest extends TestCase
             'category_id' => Category::factory()->create()->id,
         ]);
 
-        $productService = (new ProductStockAdjustmentService(new Request([
+        $productService = (new ProductStockAdjustmentService(new ProductStockAdjustmentRequest([
             'product_id' => $product->id,
             'adjust_stock' => 0,
             'adjust_box' => 0,
@@ -73,7 +58,7 @@ class ProductStockAdjustmentTest extends TestCase
             'stock' => 0,
         ]);
 
-        $productService = (new ProductStockAdjustmentService(new Request([
+        $productService = (new ProductStockAdjustmentService(new ProductStockAdjustmentRequest([
             'product_id' => $product->id,
             'adjust_stock' => 7,
         ])));
@@ -94,7 +79,7 @@ class ProductStockAdjustmentTest extends TestCase
             'box_size' => 5,
         ]);
 
-        $productService = (new ProductStockAdjustmentService(new Request([
+        $productService = (new ProductStockAdjustmentService(new ProductStockAdjustmentRequest([
             'product_id' => $product->id,
             'adjust_box' => 5,
         ])));
@@ -115,7 +100,7 @@ class ProductStockAdjustmentTest extends TestCase
             'box_size' => 5,
         ]);
 
-        $productService = (new ProductStockAdjustmentService(new Request([
+        $productService = (new ProductStockAdjustmentService(new ProductStockAdjustmentRequest([
             'product_id' => $product->id,
             'adjust_stock' => 1,
             'adjust_box' => 5,

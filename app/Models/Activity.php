@@ -21,6 +21,18 @@ class Activity extends Model
 
     protected int $cacheFor = 180;
 
+    protected $fillable = [
+        'name',
+        'category_id',
+        'location',
+        'description',
+        'unlimited_slots',
+        'slots',
+        'price',
+        'start',
+        'end',
+    ];
+
     protected $casts = [
         'name' => 'string',
         'location' => 'string',

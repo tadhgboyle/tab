@@ -40,9 +40,8 @@ class UserController extends Controller
     public function view(User $user, CategoryHelper $categoryHelper)
     {
         $processed_categories = [];
-        $categories = $categoryHelper->getCategories();
 
-        foreach ($categories as $category) {
+        $categoryHelper->getCategories()->each(function ($category) use ($user, &$processed_categories) {
             $info = UserLimitsHelper::getInfo($user, $category->id);
 
             $processed_categories[$category->id] = [
@@ -51,7 +50,7 @@ class UserController extends Controller
                 'duration' => $info->duration,
                 'spent' => UserLimitsHelper::findSpent($user, $category->id, $info),
             ];
-        }
+        });
 
         return view('pages.users.view', [
             'user' => $user,
@@ -77,15 +76,13 @@ class UserController extends Controller
         }
 
         $processed_categories = [];
-        $categories = $categoryHelper->getCategories();
-
-        foreach ($categories as $category) {
+        $categoryHelper->getCategories()->each(function ($category) use ($user, &$processed_categories) {
             $processed_categories[] = [
                 'id' => $category->id,
                 'name' => $category->name,
                 'info' => $user === null ? [] : UserLimitsHelper::getInfo($user, $category->id),
             ];
-        }
+        });
 
         return view('pages.users.form', [
             'user' => $user,

@@ -162,10 +162,6 @@
 @endif
 
 <script type="text/javascript">
-
-    const switches = document.getElementsByClassName("js-switch");
-    for (let i = 0; i < switches.length; i++) { new Switchery(switches.item(i), {color: '#48C774', secondaryColor: '#F56D71'}) }
-
     $(document).ready(function() {
         updateUnlimitedAttr($('input[type=checkbox][name=unlimited_stock]').prop('checked'));
     });

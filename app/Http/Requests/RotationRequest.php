@@ -56,7 +56,7 @@ class RotationRequest extends FormRequest
     {
         $validator->after(function () {
             if (resolve(RotationHelper::class)->doesRotationOverlap($this->get('start'), $this->get('end'))) {
-                return redirect()->back()->withInput()->with('error', 'That Rotation would overlap an existing Rotation.')->send();
+                redirect()->back()->withInput()->with('error', 'That Rotation would overlap an existing Rotation.')->send();
             }
         });
     }

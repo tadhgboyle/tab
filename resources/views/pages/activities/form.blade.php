@@ -63,7 +63,7 @@
             <div class="field">
                 <label class="label">End Time<sup style="color: red">*</sup></label>
                 <div class="control">
-                    <input type="text" name="end" id="end" class="input" required value="{{ $activity->end ?? old('end') }}">
+                    <input type="text" name="end" id="end" class="input" required>
                 </div>
             </div>
 
@@ -142,9 +142,6 @@
 @endif
 
 <script type="text/javascript">
-    const switches = document.getElementsByClassName("js-switch");
-    for (var i = 0; i < switches.length; i++) { new Switchery(switches.item(i), {color: '#48C774', secondaryColor: '#F56D71'}) }
-
     let endMinDate = null;
 
     function startChange(e) {
@@ -153,16 +150,16 @@
     }
 
     $(document).ready(function() {
-        const date = new Date('{{ $start }}');
-        date.setDate(date.getDate() + 1)
+        const startDate = new Date('{{ $start }}');
+        const endDate = new Date('{{ $end }}');
 
         @if(is_null($activity))
-            flatpickr('#start', { defaultDate: date, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: 'today' });
+            flatpickr('#start', { defaultDate: startDate, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: 'today' });
+            flatpickr('#end', { defaultDate: endDate, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: startDate });
         @else
-            flatpickr('#start', { defaultDate: date, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K' });
+            flatpickr('#start', { defaultDate: startDate, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K' });
+            flatpickr('#end', { defaultDate: endDate, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: startDate });
         @endif
-
-        flatpickr('#end', { enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: date });
 
         updatedUnlimitedSlots($('input[type=checkbox][name=unlimited_slots]').prop('checked'));
     });
@@ -189,11 +186,11 @@
         }
 
         function deleteData() {
-            var id = '{{ $activity->id }}';
-            var url = '{{ route("activities_delete", ":id") }}';
-            url = url.replace(':id', id);
-            $("#deleteForm").attr('action', url);
-            $("#deleteForm").submit();
+            let url = '{{ route("activities_delete", ":id") }}';
+            url = url.replace(':id', '{{ $activity->id }}');
+            const deleteForm = $('#deleteForm');
+            deleteForm.attr('action', url);
+            deleteForm.submit();
         }
     @endif
 </script>

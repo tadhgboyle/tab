@@ -1,7 +1,18 @@
 /*
  * Spinner on cashier and product adjust pages
  */
-
 img.loading-spinner {
     width: 50px;
+}
+
+/*
+ * DataTables search input
+ */
+.dataTables_filter input {
+    box-shadow: inset 0 .0625em .125em rgba(10,10,10,.05);
+    border: 1px solid transparent;
+    border-color: #dbdbdb;
+    border-radius: .375em;
+    height: 2em;
+    padding-left: calc(.50em - 1px);
 }
