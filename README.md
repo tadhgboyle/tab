@@ -12,7 +12,7 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
 
 Documentation (in the form of a printable user handbook) is being written. 
 
-## Features (so far):
+## Features
 
 - User control
     - Superusers can create as many roles as they want, and grant them specific permissions as well as hierarchy.
@@ -22,11 +22,11 @@ Documentation (in the form of a printable user handbook) is being written.
             - `products_adjust`: This role can adjust product stock, but they will need `products_list` and `products_manage` in order to list or create products.
             - `settings_categories_manage`: This role can create/edit product categories in the Settings page.
             - And many more! I try to add as much customizability as possible for permissions.
-    - Users can be edited anytime, with an easy to use interface.
+    - Users can be edited anytime, with an easy-to-use interface.
     - Users can be (soft) deleted anytime.
 - "Category" organization theory
     - Categories are used to organize products and activities.
-    - Each Category can be set to be strictly for Products, or Activites or both.
+    - Each Category can be set to be strictly for Products, or Activities or both.
     - When making or editing a Product or Activity, only applicable Categories will be shown.
     - See "Parental control" to see how Categories are used further.
 - Parental control
@@ -43,7 +43,7 @@ Documentation (in the form of a printable user handbook) is being written.
     - Depending on each product's settings (See next point), during an order, stock will be automatically removed as per quantity.
     - Each product has some settings:
         - "Stock" / "Unlimited Stock" -> Set stock count for this product, or set it to be unlimited.
-        - "Box Size" -> When receiving, instead of counting/multiplying all of the boxes received, set this and receive using boxes.
+        - "Box Size" -> When receiving, instead of counting/multiplying all the boxes received, set this and receive using boxes.
             - Example: A box of Skittles might have 16 Skittle packs in it. If 4 boxes arrived, instead of calculating 16*4, add 4 boxes.
         - "Override Stock" -> Override the stock count for this item.
     - Fast and easy to use stock adjustment page.
@@ -59,11 +59,11 @@ Documentation (in the form of a printable user handbook) is being written.
     - View all products and how many times they have sold.
     - More planned charts in the [Roadmap](#roadmap).
 
-## Installation:
+## Installation
 
 *Todo*
 
-## Screenshots:
+## Screenshots
 
 #### First Cashier Page
 ![First Cashier Page](https://i.imgur.com/6K6JtQK.png)
@@ -98,7 +98,7 @@ Documentation (in the form of a printable user handbook) is being written.
 #### Role Editing Page
 ![Role Editing Page](https://i.imgur.com/1OutDlo.png)
 
-## Roadmap:
+## Roadmap
 
 *High to Low priority sort*
 - Fix everything in Issues/Bugs
@@ -144,7 +144,7 @@ Documentation (in the form of a printable user handbook) is being written.
     - They should type a query first, or use some ajax to fetch data. or else it could take forever to load
 - Docker compose file for easy deployment
 
-## Issues/Bugs:
+## Issues/Bugs
 - Rotation end selector is broken in edit/create page
 - When an error happens on order screen, it returns back with selection, but when you unselect a box it all gets NaN
 - Rotation selection dropdown not working on Stats page + general clean up of it
