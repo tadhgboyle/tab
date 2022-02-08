@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\RoleHelper;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -115,7 +116,7 @@ class Role extends Model
             return true;
         }
 
-        foreach ((array) $permissions as $permission) {
+        foreach (Arr::wrap($permissions) as $permission) {
             if (!in_array($permission, $this->permissions, true)) {
                 return false;
             }

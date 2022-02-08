@@ -2,24 +2,21 @@
 
 namespace App\Services\Products;
 
+use App\Http\Requests\ProductStockAdjustmentRequest;
 use App\Models\Product;
 use App\Services\Service;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Validator;
 
 class ProductStockAdjustmentService extends Service
 {
     use ProductService;
 
     public const RESULT_INVALID_PRODUCT = 0;
-    public const RESULT_INVALID_INPUT = 1;
-    public const RESULT_NO_BOX_INPUT = 2;
-    public const RESULT_BOX_INPUT_ZERO = 3;
-    public const RESULT_SUCCESS = 4;
+    public const RESULT_NO_BOX_INPUT = 1;
+    public const RESULT_BOX_INPUT_ZERO = 2;
+    public const RESULT_SUCCESS = 3;
 
-    // TODO, could we use a productrequest to validate the input?
-    public function __construct(Request $request)
+    public function __construct(ProductStockAdjustmentRequest $request)
     {
         $product_id = $request->product_id;
         $product = Product::find($product_id);
@@ -31,17 +28,6 @@ class ProductStockAdjustmentService extends Service
         }
 
         session()->flash('last_product', $product);
-
-        $validator = Validator::make($request->all(), [
-            'adjust_stock' => 'numeric',
-            'adjust_box' => 'numeric',
-        ]);
-
-        if ($validator->fails()) {
-            $this->_result = self::RESULT_INVALID_INPUT;
-            $this->_message = implode(', ', $validator->errors()->all());
-            return;
-        }
 
         $adjust_stock = (int) $request->adjust_stock;
         $adjust_box = (int) ($request->adjust_box ?? 0);
@@ -73,7 +59,7 @@ class ProductStockAdjustmentService extends Service
     public function redirect(): RedirectResponse
     {
         return match ($this->getResult()) {
-            self::RESULT_INVALID_PRODUCT, self::RESULT_NO_BOX_INPUT, self::RESULT_INVALID_INPUT, self::RESULT_BOX_INPUT_ZERO => redirect()->route('products_adjust')->with('error', $this->getMessage()),
+            self::RESULT_INVALID_PRODUCT, self::RESULT_NO_BOX_INPUT, self::RESULT_BOX_INPUT_ZERO => redirect()->route('products_adjust')->with('error', $this->getMessage()),
             self::RESULT_SUCCESS => redirect()->route('products_adjust')->with('success', $this->getMessage()),
         };
     }

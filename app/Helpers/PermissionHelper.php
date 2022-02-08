@@ -82,7 +82,7 @@ class PermissionHelper extends Helper
     }
 
     /**
-     * Returns comma seperated unique category root nodes / keys.
+     * @return string Comma seperated unique category root nodes / keys.
      */
     #[Pure]
     public function getCategoryKeys(): string
