@@ -100,7 +100,7 @@ Documentation (in the form of a printable user handbook) is being written.
 
 ## Roadmap
 
-*High to Low priority sort*
+*High to low sort*
 - Fix everything in Issues/Bugs
 - Add "rotation" option to user limits (along with day, week, etc)
 - Update codebase to not store periods in DB for money (store as int, and / or * by 10).
