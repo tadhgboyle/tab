@@ -13,9 +13,9 @@ services:
     environment:
       SERVICE_NAME: app
       SERVICE_TAGS: dev
-    working_dir: /var/www
+    working_dir: /usr/share/nginx/html
     volumes:
-      - ./:/var/www
+      - ./:/usr/share/nginx/html
       - ./docker/php_local.ini:/usr/local/etc/php/conf.d/local.ini
     networks:
       - app-network
@@ -29,8 +29,8 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - ./:/var/www
-      - ./docker/nginx.conf:/etc/nginx/conf.d/nginx.conf
+      - ./:/usr/share/nginx/html
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf
     networks:
       - app-network
 
@@ -43,8 +43,10 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_DATABASE: tab
-      MYSQL_ROOT_PASSWORD: your_mysql_root_password
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     volumes:
