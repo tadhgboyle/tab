@@ -67,28 +67,28 @@ class TransactionReturnService extends Service
             return $this;
         }
 
-        $product = $transaction_products->firstWhere('product_id', $product_id);
+        $transaction_product = $transaction_products->firstWhere('product_id', $product_id);
 
         // If it has not been returned more times than it was purchased, then ++ the returned count and refund the original cost + taxes
-        if ($product->returned >= $product->quantity) {
+        if ($transaction_product->returned >= $transaction_product->quantity) {
             $this->_result = self::RESULT_ITEM_RETURNED_MAX_TIMES;
             $this->_message = 'That item has already been returned the maximum amount of times for that order.';
             return $this;
         }
 
-        $product->increment('returned');
+        $transaction_product->increment('returned');
 
         // Check taxes and apply correct %
-        if ($product->pst === null) {
-            $total_tax = $product->gst;
+        if ($transaction_product->pst === null) {
+            $total_tax = $transaction_product->gst;
         } else {
-            $total_tax = (($product->pst + $product->gst) - 1);
+            $total_tax = (($transaction_product->pst + $transaction_product->gst) - 1);
         }
 
         // Update their balance
-        $this->_transaction->purchaser->increment('balance', $product->price * $total_tax);
+        $this->_transaction->purchaser->increment('balance', $transaction_product->price * $total_tax);
         $this->_result = self::RESULT_SUCCESS;
-        $this->_message = 'Successfully returned x1 ' . $product->name . ' for order #' . $this->_transaction->id . '.';
+        $this->_message = 'Successfully returned x1 ' . $transaction_product->product->name . ' for order #' . $this->_transaction->id . '.';
         return $this;
     }
 
