@@ -62,7 +62,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function form(CategoryHelper $categoryHelper, RotationHelper $rotationHelper, User $user = null)
+    public function form(CategoryHelper $categoryHelper, RotationHelper $rotationHelper, ?User $user = null)
     {
         if ($user !== null) {
             if ($user->trashed()) {

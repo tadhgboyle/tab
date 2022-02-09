@@ -35,7 +35,7 @@ class ProductController extends Controller
         ]);
     }
 
-    public function form(Product $product = null)
+    public function form(?Product $product = null)
     {
         return view('pages.products.form', [
             'product' => $product,

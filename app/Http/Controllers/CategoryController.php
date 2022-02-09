@@ -7,7 +7,7 @@ use App\Http\Requests\CategoryRequest;
 
 class CategoryController extends Controller
 {
-    public function form(Category $category = null)
+    public function form(?Category $category = null)
     {
         return view('pages.settings.categories.form', [
             'category' => $category,
