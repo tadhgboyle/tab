@@ -33,9 +33,9 @@ class ProductStockAdjustmentService extends Service
         $adjust_box = (int) ($request->adjust_box ?? 0);
 
         if ($adjust_stock === 0) {
-            if ($product->box_size === -1 && !$request->has('adjust_box')) {
+            if ($product->box_size !== -1 && !$request->has('adjust_box')) {
                 $this->_result = self::RESULT_NO_BOX_INPUT;
-                $this->_message = 'Please specify how much stock to add to ' . $product->name . '.';
+                $this->_message = 'Please specify how much stock or boxes to add to ' . $product->name . '.';
                 return;
             }
 
