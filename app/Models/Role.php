@@ -7,6 +7,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use JetBrains\PhpStorm\Pure;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -110,6 +111,7 @@ class Role extends Model
      *
      * @return bool Whether this Role has these permissions or not.
      */
+    #[Pure]
     public function hasPermission(string|array $permissions): bool
     {
         if ($this->superuser) {

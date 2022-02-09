@@ -67,11 +67,9 @@ class Transaction extends Model
             $product_info = ProductHelper::deserializeProduct($product, false);
             if ($product_info['returned'] >= $product_info['quantity']) {
                 $products_returned++;
-            } else {
-                if ($product_info['returned'] > 0) {
-                    // semi returned if at least one product has a returned value
-                    return self::STATUS_PARTIAL_RETURNED;
-                }
+            } else if ($product_info['returned'] > 0) {
+                // semi returned if at least one product has a returned value
+                return self::STATUS_PARTIAL_RETURNED;
             }
 
             $product_count++;
@@ -90,9 +88,4 @@ class Transaction extends Model
 
         return self::STATUS_NOT_RETURNED;
     }
-
-    // public function getProductsAttribute($products): array
-    // {
-    //     return explode(', ', $products);
-    // }
 }
