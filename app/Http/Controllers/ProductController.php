@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use Illuminate\Http\Request;
 use App\Helpers\CategoryHelper;
 use App\Http\Requests\ProductRequest;
 use App\Services\Products\ProductEditService;
 use App\Services\Products\ProductDeleteService;
 use App\Services\Products\ProductCreationService;
+use App\Http\Requests\ProductStockAdjustmentRequest;
 use App\Services\Products\ProductStockAdjustmentService;
 
 class ProductController extends Controller
@@ -50,7 +50,7 @@ class ProductController extends Controller
         ]);
     }
 
-    public function adjustStock(Request $request)
+    public function adjustStock(ProductStockAdjustmentRequest $request)
     {
         return (new ProductStockAdjustmentService($request))->redirect();
     }

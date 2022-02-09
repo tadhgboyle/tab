@@ -34,7 +34,7 @@ class ProductDeleteService extends Service
     {
         return match ($this->getResult()) {
             self::RESULT_SUCCESS => redirect()->route('products_list')->with('success', $this->getMessage()),
-            self::RESULT_NOT_EXIST => redirect()->route('products_list')->with('error', $this->getMessage()),
+            default => redirect()->route('products_list')->with('error', $this->getMessage()),
         };
     }
 }

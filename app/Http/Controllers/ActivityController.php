@@ -82,7 +82,7 @@ class ActivityController extends Controller
         $activity = Activity::find(request()->route('id'));
 
         if ($activity === null) {
-            $start = Carbon::parse(request()->route('date')) ?? Carbon::now();
+            $start = request()->route('date') !== null ? Carbon::parse(request()->route('date')) : Carbon::now();
             $end = Carbon::parse($start)->addHour();
         } else {
             $start = $activity->start;

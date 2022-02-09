@@ -48,7 +48,7 @@ class ProductStockAdjustmentTest extends TestCase
             'adjust_box' => 0,
         ])));
 
-        $this->assertSame(ProductStockAdjustmentService::RESULT_BOX_INPUT_ZERO, $productService->getResult());
+        $this->assertSame(ProductStockAdjustmentService::RESULT_BOTH_INPUT_ZERO, $productService->getResult());
     }
 
     public function testCanAdjustStockNormally(): void
