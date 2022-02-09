@@ -15,7 +15,6 @@ use App\Models\User;
 use App\Helpers\RotationHelper;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\HasPermission;
-use Illuminate\Database\Query\Builder;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
@@ -40,7 +39,7 @@ Route::middleware('auth')->group(function () {
 
         return view('pages.index', [
             'users' => User::query()
-                            ->unless(hasPermission('cashier_self_purchases'), function (Builder $query) {
+                            ->unless(hasPermission('cashier_self_purchases'), function (EloquentBuilder $query) {
                                 $query->where('users.id', '!=', auth()->id());
                             })
                             ->unless(hasPermission('cashier_users_other_rotations'), function (EloquentBuilder $query) {
