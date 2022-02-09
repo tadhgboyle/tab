@@ -59,9 +59,17 @@ Documentation (in the form of a printable user handbook) is being written.
     - View all products and how many times they have sold.
     - More planned charts in the [Roadmap](#roadmap).
 
-## Installation
+## Deployment
 
-*Todo*
+#### :whale: Docker
+- Clone the repository to your server.
+- Edit the `docker-compose.yml` file to configure it for your specific needs (should work by default).
+- Edit the `.env` file to set your database credentials.
+- Run `docker-compose up` to start the containers.
+- Run `docker-compose exec app php artisan key:generate` to generate a new key.
+- Run `docker-compose exec app php artisan migrate:fresh --seed` to create the database tables needed for tab and insert the admin account.
+- Browse to `http://ip:8080`, and login with `admin` and `123456`!
+
 
 ## Screenshots
 
