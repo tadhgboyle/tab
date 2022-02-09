@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\App;
 
 class UserSeeder extends Seeder
 {
@@ -17,15 +18,15 @@ class UserSeeder extends Seeder
         [$superuser_role, $cashier_role, $camper_role] = $roles;
 
         User::factory()->state([
-            'full_name' => 'Tadhg Boyle',
-            'username' => 'tadhgboyle',
+            'full_name' => 'admin',
+            'username' => 'admin',
             'role_id' => $superuser_role->id,
             'password' => bcrypt('123456')
         ])->create();
 
         User::factory()->state([
-            'full_name' => 'Demo',
-            'username' => 'demo',
+            'full_name' => 'cashier',
+            'username' => 'cashier',
             'role_id' => $cashier_role->id,
             'password' => bcrypt('123456')
         ])->create();

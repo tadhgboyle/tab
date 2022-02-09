@@ -1,8 +1,11 @@
 <?php
 
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Database\Seeders\RoleSeeder;
 use Database\Seeders\UserSeeder;
+use Illuminate\Support\Facades\App;
 use Database\Seeders\ProductSeeder;
 use Database\Seeders\ActivitySeeder;
 use Database\Seeders\CategorySeeder;
@@ -21,6 +24,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        if (App::isProduction()) {
+            $this->command->info('Production environment detected, only seeding admin user...');
+
+            User::factory()->state([
+                'full_name' => 'admin',
+                'username' => 'admin',
+                'role_id' => Role::factory()->create()->id,
+                'password' => bcrypt('123456')
+            ])->create();
+
+            return;
+        }
+
         $this->command->info('Seeding Roles...');
         $roles = $this->resolve(RoleSeeder::class)->run();
 
