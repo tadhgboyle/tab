@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use JetBrains\PhpStorm\Pure;
-use App\Helpers\ProductHelper;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -112,28 +111,25 @@ class User extends Authenticatable
     {
         $returned = 0.00;
 
-        $transactions = $this->getTransactions();
-        foreach ($transactions as $transaction) {
+        $this->getTransactions()->each(function (Transaction $transaction) use (&$returned) {
             if ($transaction->returned) {
                 $returned += $transaction->total_price;
-                continue;
+                return;
             }
 
-            $transaction_products = explode(', ', $transaction->products);
-            foreach ($transaction_products as $transaction_product) {
-                $product = ProductHelper::deserializeProduct($transaction_product, false);
-                if ($product['returned'] < 1) {
+            foreach ($transaction->products as $product) {
+                if ($product->returned === 0) {
                     continue;
                 }
 
-                $tax = $product['gst'];
-                if ($product['pst'] !== 'null') {
-                    $tax += ($product['pst'] - 1);
+                $tax = $product->gst;
+                if ($product->pst !== null) {
+                    $tax += ($product->pst - 1);
                 }
 
-                $returned += ($product['returned'] * $product['price'] * $tax);
+                $returned += ($product->returned * $product->price * $tax);
             }
-        }
+        });
 
         $returned += $this->getActivityTransactions()->where('returned', true)->sum('total_price');
 

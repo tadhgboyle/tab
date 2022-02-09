@@ -11,9 +11,9 @@ use App\Models\Category;
 use App\Models\Settings;
 use App\Models\UserLimits;
 use App\Models\Transaction;
-use App\Helpers\ProductHelper;
 use App\Helpers\RotationHelper;
 use App\Helpers\UserLimitsHelper;
+use App\Models\TransactionProduct;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\DB;
 use Database\Seeders\RotationSeeder;
@@ -281,26 +281,38 @@ class UserLimitsTest extends TestCase
         [$skittles, $sweater, $coffee, $hat] = $this->createFakeProducts($food_category->id, $merch_category->id);
         [$widegame] = $this->createFakeActivities($activities_category);
 
-        Transaction::factory()->create([
+        $transaction1 = Transaction::factory()->create([
             'purchaser_id' => $user->id,
             'cashier_id' => $user->id,
-            'products' => implode(', ', [
-                ProductHelper::serializeProduct($skittles->id, 2, $skittles->price, 1.05, 'null', 0),
-                ProductHelper::serializeProduct($hat->id, 1, $hat->price, 1.05, 'null', 0)
-            ]),
             'rotation_id' => resolve(RotationHelper::class)->getCurrentRotation()->id,
             'total_price' => 3.15 // TODO
         ]);
 
-        Transaction::factory()->create([
+        $skittles_product = TransactionProduct::of($skittles->id, $skittles->category_id, 2, $skittles->price, 1.05);
+        $skittles_product->transaction_id = $transaction1->id;
+        $hat_product = TransactionProduct::of($hat->id, $hat->category_id, 1, $hat->price, 1.05);
+        $hat_product->transaction_id = $transaction1->id;
+
+        $transaction1->products()->saveMany([
+            $skittles_product,
+            $hat_product,
+        ]);
+
+        $transaction2 = Transaction::factory()->create([
             'purchaser_id' => $user->id,
             'cashier_id' => $user->id,
-            'products' => implode(', ', [
-                ProductHelper::serializeProduct($sweater->id, 1, $sweater->price, 1.05, 1.07, 0),
-                ProductHelper::serializeProduct($coffee->id, 2, $coffee->price, 1.05, 1.07, 0)
-            ]),
             'rotation_id' => resolve(RotationHelper::class)->getCurrentRotation()->id,
             'total_price' => 44.79 // TODO
+        ]);
+
+        $sweater_product = TransactionProduct::of($sweater->id, $sweater->category_id, 1, $sweater->price, 1.05, 1.07);
+        $sweater_product->transaction_id = $transaction2->id;
+        $coffee_product = TransactionProduct::of($coffee->id, $coffee->category_id, 2, $coffee->price, 1.05, 1.07);
+        $coffee_product->transaction_id = $transaction2->id;
+
+        $transaction2->products()->saveMany([
+            $sweater_product,
+            $coffee_product,
         ]);
 
         DB::table('activity_transactions')->insert([

@@ -116,25 +116,20 @@ class UserLimitsHelper
 
             // Loop transaction products. Determine if the product's category is the one we are looking at,
             // if so, add its ((value * (quantity - returned)) * tax) to the end result
-            $transaction_products = explode(', ', $transaction['products']);
-
-            foreach ($transaction_products as $transaction_product) {
-                $product = Product::find(strtok($transaction_product, '*'));
-                if ((int) $product->category_id !== $category_id) {
+            foreach ($transaction->products as $product) {
+                if ((int) $product->product->category_id !== $category_id) {
                     continue;
                 }
 
-                $item_info = ProductHelper::deserializeProduct($transaction_product, false);
+                $tax_percent = $product->gst;
 
-                $tax_percent = $item_info['gst'];
-
-                if ($item_info['pst'] !== 'null') {
-                    $tax_percent += $item_info['pst'] - 1;
+                if ($product->pst !== null) {
+                    $tax_percent += $product->pst - 1;
                 }
 
-                $quantity_available = $item_info['quantity'] - $item_info['returned'];
+                $quantity_available = $product->quantity - $product->returned;
 
-                $category_spent += ($item_info['price'] * $quantity_available) * $tax_percent;
+                $category_spent += ($product->price * $quantity_available) * $tax_percent;
             }
         }
 

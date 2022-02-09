@@ -4,7 +4,6 @@ namespace App\Services\Transactions;
 
 use App\Services\Service;
 use App\Models\Transaction;
-use App\Helpers\ProductHelper;
 use Illuminate\Http\RedirectResponse;
 
 class TransactionReturnService extends Service
@@ -16,24 +15,11 @@ class TransactionReturnService extends Service
     public const RESULT_ITEM_NOT_IN_ORDER = 3;
     public const RESULT_SUCCESS = 4;
 
-    public function __construct(Transaction|int $transaction)
+    public function __construct(Transaction $transaction)
     {
-        if ($transaction instanceof Transaction) {
-            $this->_transaction = $transaction;
-            return;
-        }
-
-        $found_transaction = Transaction::find($transaction);
-
-        if ($found_transaction === null) {
-            redirect()->route('orders_list')->with('error', 'No transaction found with that ID.')->send();
-        }
-
-        $this->_transaction = $found_transaction;
+        $this->_transaction = $transaction;
     }
 
-    // TODO: when whole transaction is returned, manually deserialize and re-serialize all products with return value of their original quantity
-    // to keep consistency with item sales chart
     public function return(): TransactionReturnService
     {
         // This should never happen, but a good security measure
@@ -47,17 +33,15 @@ class TransactionReturnService extends Service
         $purchaser = $this->_transaction->purchaser;
 
         // Loop through products from the order and deserialize them to get their prices & taxes etc when they were purchased
-        $transaction_products = explode(', ', $this->_transaction->products);
-        foreach ($transaction_products as $product) {
-            $product_metadata = ProductHelper::deserializeProduct($product, false);
-
-            if ($product_metadata['pst'] === 'null') {
-                $total_tax = $product_metadata['gst'];
+        foreach ($this->_transaction->products as $product) {
+            $product->returned = $product->quantity;
+            if ($product->pst === null) {
+                $total_tax = $product->gst;
             } else {
-                $total_tax = ($product_metadata['gst'] + $product_metadata['pst']) - 1;
+                $total_tax = ($product->gst + $product->pst) - 1;
             }
 
-            $total_price += ($product_metadata['price'] * $product_metadata['quantity']) * $total_tax;
+            $total_price += ($product->price * $product->quantity) * $total_tax;
         }
 
         $purchaser->increment('balance', $total_price);
@@ -68,7 +52,7 @@ class TransactionReturnService extends Service
         return $this;
     }
 
-    public function returnItem(int $item_id): TransactionReturnService
+    public function returnItem(int $product_id): TransactionReturnService
     {
         if ($this->_transaction->isReturned()) {
             $this->_result = self::RESULT_ALREADY_RETURNED;
@@ -76,53 +60,35 @@ class TransactionReturnService extends Service
             return $this;
         }
 
-        $purchaser = $this->_transaction->purchaser;
-
-        // Loop order products until we find the matching id
-        $products = explode(', ', $this->_transaction->products);
-        foreach ($products as $product_count) {
-            // Only proceed if this is the requested item id
-            if (strtok($product_count, '*') != $item_id) {
-                continue;
-            }
-
-            $order_product = ProductHelper::deserializeProduct($product_count);
-
-            // If it has not been returned more times than it was purchased, then ++ the returned count and refund the original cost + taxes
-            if (!($order_product['returned'] < $order_product['quantity'])) {
-                $this->_result = self::RESULT_ITEM_RETURNED_MAX_TIMES;
-                $this->_message = 'That item has already been returned the maximum amount of times for that order.';
-                return $this;
-            }
-
-            $order_product['returned']++;
-
-            // Check taxes and apply correct %
-            if ($order_product['pst'] === 'null') {
-                $total_tax = $order_product['gst'];
-            } else {
-                $total_tax = (($order_product['pst'] + $order_product['gst']) - 1);
-            }
-
-            // Gets funky now. find the exact string of the original item from the string of order items and replace with the new string where the R value is ++
-            $updated_products = str_replace(
-                $product_count,
-                ProductHelper::serializeProduct($order_product['id'], $order_product['quantity'], $order_product['price'], $order_product['gst'], $order_product['pst'], $order_product['returned']),
-                $products
-            );
-            // Update their balance
-            $purchaser->increment('balance', $order_product['price'] * $total_tax);
-            // Now insert the funky replaced string where it was originally
-            $this->_transaction->update(['products' => implode(', ', $updated_products)]);
-
-            $this->_result = self::RESULT_SUCCESS;
-            $this->_message = 'Successfully returned x1 ' . $order_product['name'] . ' for order #' . $this->_transaction->id . '.';
+        $transaction_products = $this->_transaction->products;
+        if (!$transaction_products->pluck('product_id')->contains($product_id)) {
+            $this->_result = self::RESULT_ITEM_NOT_IN_ORDER;
+            $this->_message = 'That item is not in this order.';
             return $this;
         }
 
-        $this->_result = self::RESULT_ITEM_NOT_IN_ORDER;
-        $this->_message = 'That item was not in the original order.';
+        $product = $transaction_products->firstWhere('product_id', $product_id);
 
+        // If it has not been returned more times than it was purchased, then ++ the returned count and refund the original cost + taxes
+        if ($product->returned >= $product->quantity) {
+            $this->_result = self::RESULT_ITEM_RETURNED_MAX_TIMES;
+            $this->_message = 'That item has already been returned the maximum amount of times for that order.';
+            return $this;
+        }
+
+        $product->increment('returned');
+
+        // Check taxes and apply correct %
+        if ($product->pst === null) {
+            $total_tax = $product->gst;
+        } else {
+            $total_tax = (($product->pst + $product->gst) - 1);
+        }
+
+        // Update their balance
+        $this->_transaction->purchaser->increment('balance', $product->price * $total_tax);
+        $this->_result = self::RESULT_SUCCESS;
+        $this->_message = 'Successfully returned x1 ' . $product->name . ' for order #' . $this->_transaction->id . '.';
         return $this;
     }
 

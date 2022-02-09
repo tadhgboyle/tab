@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Models\Product;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
-use App\Helpers\ProductHelper;
 use App\Helpers\SettingsHelper;
 use App\Services\Transactions\TransactionReturnService;
 use App\Services\Transactions\TransactionCreationService;
@@ -18,14 +17,14 @@ class TransactionController extends Controller
         return (new TransactionCreationService($request))->redirect();
     }
 
-    public function returnTransaction(int $transaction_id)
+    public function returnTransaction(Transaction $transaction)
     {
-        return (new TransactionReturnService($transaction_id))->return()->redirect();
+        return (new TransactionReturnService($transaction))->return()->redirect();
     }
 
-    public function returnItem(int $item_id, int $transaction_id)
+    public function returnItem(int $product_id, Transaction $transaction)
     {
-        return (new TransactionReturnService($transaction_id))->returnItem($item_id)->redirect();
+        return (new TransactionReturnService($transaction))->returnItem($product_id)->redirect();
     }
 
     public function list()
@@ -37,14 +36,9 @@ class TransactionController extends Controller
 
     public function view(Transaction $transaction)
     {
-        $transaction_items = [];
-        foreach (explode(', ', $transaction->products) as $product) {
-            $transaction_items[] = ProductHelper::deserializeProduct($product);
-        }
-
         return view('pages.orders.view', [
             'transaction' => $transaction,
-            'transaction_items' => $transaction_items,
+            'transaction_items' => $transaction->products,
             'transaction_returned' => $transaction->getReturnStatus(),
         ]);
     }

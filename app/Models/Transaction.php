@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use App\Helpers\ProductHelper;
 use Illuminate\Database\Eloquent\Model;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Transaction extends Model
@@ -20,7 +20,6 @@ class Transaction extends Model
     protected int $cacheFor = 180;
 
     protected $fillable = [
-        'products',
         'returned',
     ];
 
@@ -31,6 +30,7 @@ class Transaction extends Model
     protected $with = [
         'purchaser',
         'cashier',
+        'products',
     ];
 
     public function purchaser(): HasOne
@@ -48,6 +48,11 @@ class Transaction extends Model
         return $this->hasOne(Rotation::class, 'id', 'rotation_id');
     }
 
+    public function products(): HasMany
+    {
+        return $this->hasMany(TransactionProduct::class);
+    }
+
     public function isReturned(): bool
     {
         return $this->getReturnStatus() === self::STATUS_FULLY_RETURNED;
@@ -62,12 +67,10 @@ class Transaction extends Model
         $products_returned = 0;
         $product_count = 0;
 
-        $products = explode(', ', $this->products);
-        foreach ($products as $product) {
-            $product_info = ProductHelper::deserializeProduct($product, false);
-            if ($product_info['returned'] >= $product_info['quantity']) {
+        foreach ($this->products as $product) {
+            if ($product->returned >= $product->quantity) {
                 $products_returned++;
-            } else if ($product_info['returned'] > 0) {
+            } else if ($product->returned > 0) {
                 // semi returned if at least one product has a returned value
                 return self::STATUS_PARTIAL_RETURNED;
             }
