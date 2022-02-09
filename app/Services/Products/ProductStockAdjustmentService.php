@@ -2,10 +2,10 @@
 
 namespace App\Services\Products;
 
-use App\Http\Requests\ProductStockAdjustmentRequest;
 use App\Models\Product;
 use App\Services\Service;
 use Illuminate\Http\RedirectResponse;
+use App\Http\Requests\ProductStockAdjustmentRequest;
 
 class ProductStockAdjustmentService extends Service
 {
