@@ -8,13 +8,12 @@ use App\Models\Category;
 use App\Services\Service;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
-use App\Helpers\ProductHelper;
 use App\Helpers\RotationHelper;
 use App\Helpers\SettingsHelper;
 use App\Helpers\UserLimitsHelper;
+use App\Models\TransactionProduct;
 use Illuminate\Http\RedirectResponse;
 
-// TODO: Test stock stuff
 class TransactionCreationService extends Service
 {
     use TransactionService;
@@ -63,7 +62,6 @@ class TransactionCreationService extends Service
         $total_price = 0;
         $total_tax = $settingsHelper->getGst();
 
-        // Loop each product. Serialize it, and add it's cost to the transaction total
         foreach ($request->product as $product_id) {
             if (!array_key_exists($product_id, $request->quantity)) {
                 continue;
@@ -85,23 +83,21 @@ class TransactionCreationService extends Service
                 return;
             }
 
-            $stock_products[] = $product;
-
             if ($product->pst) {
                 $total_tax = ($total_tax + $settingsHelper->getPst()) - 1;
-                $pst_metadata = $settingsHelper->getPst();
-            } else {
-                $pst_metadata = 'null';
             }
 
-            // keep track of which unique categories are included in this transaction
-            if (!in_array($product->category_id, $transaction_categories, true)) {
-                $transaction_categories[] = $product->category_id;
-            }
+            $transaction_categories[] = (int) $product->category_id;
+            $stock_products[] = $product;
+            $transaction_products[] = TransactionProduct::of(
+                $product_id,
+                $product->category_id,
+                $quantity,
+                $product->price,
+                $settingsHelper->getGst(),
+                $product->pst ? $settingsHelper->getPst() : null
+            );
 
-            $product_metadata = ProductHelper::serializeProduct($product_id, $quantity, $product->price, $settingsHelper->getGst(), $pst_metadata, 0);
-
-            $transaction_products[] = $product_metadata;
             $total_price += (($product->price * $quantity) * $total_tax);
             $total_tax = $settingsHelper->getGst();
         }
@@ -115,7 +111,7 @@ class TransactionCreationService extends Service
         }
 
         // Loop categories within this transaction
-        foreach ($transaction_categories as $category_id) {
+        foreach (array_unique($transaction_categories) as $category_id) {
             $limit_info = UserLimitsHelper::getInfo($purchaser, $category_id);
             $category_limit = $limit_info->limit_per;
 
@@ -128,19 +124,17 @@ class TransactionCreationService extends Service
 
             // Loop all products in this transaction. If the product's category is the current one in the above loop, add it's price to category spent
             foreach ($transaction_products as $product) {
-                $product_metadata = ProductHelper::deserializeProduct($product);
-
-                if ($product_metadata['category'] !== $category_id) {
+                if ($product->category_id !== $category_id) {
                     continue;
                 }
 
-                $tax_percent = $product_metadata['gst'];
+                $tax_percent = $product->gst;
 
-                if ($product_metadata['pst'] !== 'null') {
-                    $tax_percent += $product_metadata['pst'] - 1;
+                if ($product->pst !== null) {
+                    $tax_percent += $product->pst - 1;
                 }
 
-                $category_spent += ($product_metadata['price'] * $product_metadata['quantity']) * $tax_percent;
+                $category_spent += ($product->price * $product->quantity) * $tax_percent;
             }
 
             // Break loop if we exceed their limit
@@ -152,27 +146,30 @@ class TransactionCreationService extends Service
         }
 
         foreach ($stock_products as $product) {
-            // we already know the product has stock via hasStock() call above, so we don't need to check for the result of removeStock()
             $product->removeStock($request->quantity[$product->id]);
         }
-
-        $purchaser->update(['balance' => $remaining_balance]);
 
         $transaction = new Transaction();
         $transaction->purchaser_id = $purchaser->id;
         $transaction->cashier_id = auth()->id();
         $transaction->rotation_id = $request->rotation_id ?? resolve(RotationHelper::class)->getCurrentRotation()->id; // TODO: cannot make order without current rotation
-        $transaction->products = implode(', ', $transaction_products);
         $transaction->total_price = $total_price;
         if ($request->exists('created_at')) {
             $transaction->created_at = $request->created_at; // for seeding random times
         }
         $transaction->save();
 
+        foreach ($transaction_products as $transaction_products_instance) {
+            $transaction_products_instance->transaction_id = $transaction->id;
+            $transaction_products_instance->save();
+        }
+
+        $purchaser->update(['balance' => $remaining_balance]);
+
         $this->_result = self::RESULT_SUCCESS;
         $this->_message = 'Order #' . $transaction->id . '. ' . $purchaser->full_name . ' now has $' . number_format(round($remaining_balance, 2), 2);
         $this->_total_price = $total_price;
-        $this->_transaction = Transaction::find($transaction->id);
+        $this->_transaction = $transaction->refresh();
     }
 
     public function getTotalPrice(): float

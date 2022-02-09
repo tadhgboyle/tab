@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Helpers\ProductHelper;
 use App\Helpers\SettingsHelper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -115,18 +114,11 @@ class Product extends Model
     {
         $sold = 0;
 
-        $transactions = Transaction::where('rotation_id', $rotation_id)->get();
-        foreach ($transactions as $transaction) {
-            $products = explode(', ', $transaction->products);
-            foreach ($products as $transaction_product) {
-                if (strtok($transaction_product, '*') != $this->id) {
-                    continue;
-                }
-
-                $deserialized_product = ProductHelper::deserializeProduct($transaction_product, false);
-                $sold += ($deserialized_product['quantity'] - $deserialized_product['returned']);
-            }
-        }
+        Transaction::where('rotation_id', $rotation_id)->with('products')->each(function (Transaction $transaction) use (&$sold) {
+            $transaction->products->where('product_id', $this->id)->each(function (TransactionProduct $transactionProduct) use (&$sold) {
+                $sold += ($transactionProduct->quantity - $transactionProduct->returned);
+            });
+        });
 
         return $sold;
     }

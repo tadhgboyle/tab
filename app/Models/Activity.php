@@ -82,11 +82,9 @@ class Activity extends Model
         return $this->price * resolve(SettingsHelper::class)->getGst();
     }
 
-    public function getAttendees(): array
+    public function getAttendees(): Collection
     {
-        return $this->getCurrentAttendees()->map(static function (int $userId): User {
-            return User::find($userId);
-        })->all();
+        return User::findMany($this->getCurrentAttendees());
     }
 
     public function isAttending(User $user): bool
