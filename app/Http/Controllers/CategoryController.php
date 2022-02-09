@@ -7,10 +7,8 @@ use App\Http\Requests\CategoryRequest;
 
 class CategoryController extends Controller
 {
-    public function form()
+    public function form(Category $category = null)
     {
-        $category = Category::find(request()->route('id'));
-
         return view('pages.settings.categories.form', [
             'category' => $category,
         ]);

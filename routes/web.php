@@ -101,10 +101,10 @@ Route::middleware('auth')->group(function () {
                 Route::get('/users/new', [UserController::class, 'form'])->name('users_new');
                 Route::post('/users/new', [UserController::class, 'new'])->name('users_new_form');
 
-                Route::get('/users/edit/{id}', [UserController::class, 'form'])->name('users_edit');
+                Route::get('/users/edit/{user}', [UserController::class, 'form'])->name('users_edit');
                 Route::post('/users/edit', [UserController::class, 'edit'])->name('users_edit_form');
 
-                Route::get('/users/delete/{id}', [UserController::class, 'delete'])->name('users_delete');
+                Route::get('/users/delete/{user}', [UserController::class, 'delete'])->name('users_delete');
             });
         });
 
@@ -120,7 +120,7 @@ Route::middleware('auth')->group(function () {
                 Route::get('/products/new', [ProductController::class, 'form'])->name('products_new');
                 Route::post('/products/new', [ProductController::class, 'new'])->name('products_new_form');
 
-                Route::get('/products/edit/{id}', [ProductController::class, 'form'])->name('products_edit');
+                Route::get('/products/edit/{product}', [ProductController::class, 'form'])->name('products_edit');
                 Route::post('/products/edit', [ProductController::class, 'edit'])->name('products_edit_form');
 
                 Route::get('/products/delete/{product}', [ProductController::class, 'delete'])->name('products_delete');
@@ -149,7 +149,7 @@ Route::middleware('auth')->group(function () {
                 Route::get('/activities/new/{date?}', [ActivityController::class, 'form'])->name('activities_new');
                 Route::post('/activities/new', [ActivityController::class, 'new'])->name('activities_new_form');
 
-                Route::get('/activities/edit/{id}', [ActivityController::class, 'form'])->name('activities_edit');
+                Route::get('/activities/edit/{activity}', [ActivityController::class, 'form'])->name('activities_edit');
                 Route::post('/activities/edit', [ActivityController::class, 'edit'])->name('activities_edit_form');
 
                 Route::post('/activities/view/search', [ActivityController::class, 'ajaxUserSearch'])->name('activities_user_search');
@@ -186,12 +186,12 @@ Route::middleware('auth')->group(function () {
                 Route::get('/settings/roles/new', [RoleController::class, 'form'])->name('settings_roles_new');
                 Route::post('/settings/roles/new', [RoleController::class, 'new'])->name('settings_roles_new_form');
 
-                Route::get('/settings/roles/edit/{id}', [RoleController::class, 'form'])->name('settings_roles_edit');
+                Route::get('/settings/roles/edit/{role}', [RoleController::class, 'form'])->name('settings_roles_edit');
                 Route::post('/settings/roles/edit', [RoleController::class, 'edit'])->name('settings_roles_edit_form');
 
                 Route::get('/settings/roles/order', [RoleController::class, 'order'])->name('settings_roles_order_ajax');
 
-                Route::get('/settings/roles/delete/{id}', [RoleController::class, 'delete'])->name('settings_roles_delete');
+                Route::get('/settings/roles/delete/{role}', [RoleController::class, 'delete'])->name('settings_roles_delete');
             });
 
             /*
@@ -201,7 +201,7 @@ Route::middleware('auth')->group(function () {
                 Route::get('/settings/rotations/new', [RotationController::class, 'form'])->name('settings_rotations_new');
                 Route::post('/settings/categories/new', [RotationController::class, 'new'])->name('settings_rotations_new_form');
 
-                Route::get('/settings/rotations/edit/{id}', [RotationController::class, 'form'])->name('settings_rotations_edit');
+                Route::get('/settings/rotations/edit/{rotation}', [RotationController::class, 'form'])->name('settings_rotations_edit');
                 Route::post('/settings/rotations/edit', [RotationController::class, 'edit'])->name('settings_rotations_edit_form');
 
                 Route::get('/settings/rotations/delete/{rotation}', [RotationController::class, 'delete'])->name('settings_rotations_delete');
@@ -214,7 +214,7 @@ Route::middleware('auth')->group(function () {
                 Route::get('/settings/categories/new', [CategoryController::class, 'form'])->name('settings_categories_new');
                 Route::post('/settings/categories/new', [CategoryController::class, 'new'])->name('settings_categories_new_form');
 
-                Route::get('/settings/categories/edit/{id}', [CategoryController::class, 'form'])->name('settings_categories_edit');
+                Route::get('/settings/categories/edit/{category}', [CategoryController::class, 'form'])->name('settings_categories_edit');
                 Route::post('/settings/categories/edit', [CategoryController::class, 'edit'])->name('settings_categories_edit_form');
 
                 Route::get('/settings/categories/delete/{category}', [CategoryController::class, 'delete'])->name('settings_categories_delete');
