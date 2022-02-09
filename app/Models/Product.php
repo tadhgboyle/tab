@@ -78,7 +78,7 @@ class Product extends Model
         return false;
     }
 
-    public function getStock()
+    public function getStock(): int|string
     {
         if ($this->unlimited_stock) {
             return '<i>Unlimited</i>';
@@ -89,7 +89,11 @@ class Product extends Model
 
     public function removeStock(int $remove_stock): bool
     {
-        if ($this->stock_override || ($this->unlimited_stock || $this->getStock() >= $remove_stock)) {
+        if ($this->unlimited_stock) {
+            return true;
+        }
+
+        if ($this->stock_override || ($this->getStock() >= $remove_stock)) {
             $this->decrement('stock', $remove_stock);
             return true;
         }
