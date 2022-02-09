@@ -77,7 +77,7 @@ class ActivityController extends Controller
         ]);
     }
 
-    public function form(CategoryHelper $categoryHelper, Activity $activity = null)
+    public function form(CategoryHelper $categoryHelper, ?Activity $activity = null)
     {
         if ($activity === null) {
             $start = request()->route('date') !== null ? Carbon::parse(request()->route('date')) : Carbon::now();
