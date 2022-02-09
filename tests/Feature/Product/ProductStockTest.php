@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Product;
 
+use Tests\TestCase;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
 class ProductStockTest extends TestCase
 {
