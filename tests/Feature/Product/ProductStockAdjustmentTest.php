@@ -26,6 +26,7 @@ class ProductStockAdjustmentTest extends TestCase
     {
         $product = Product::factory()->create([
             'category_id' => Category::factory()->create()->id,
+            'box_size' => 5,
         ]);
 
         $productService = (new ProductStockAdjustmentService(new ProductStockAdjustmentRequest([
