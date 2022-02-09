@@ -73,7 +73,7 @@ class RoleController extends Controller
         return redirect()->route('settings')->with('success', $message);
     }
 
-    public function form(PermissionHelper $permissionHelper, Role $role = null)
+    public function form(PermissionHelper $permissionHelper, ?Role $role = null)
     {
         if (!is_null($role)) {
             if (!auth()->user()->role->canInteract($role)) {
