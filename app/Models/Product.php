@@ -65,7 +65,7 @@ class Product extends Model
 
     // Used to check if items in order have enough stock BEFORE using removeStock() to remove it.
     // If we didnt use this, then stock would be adjusted and then the order could fail, resulting in inaccurate stock.
-    public function hasStock($quantity): bool
+    public function hasStock(int $quantity): bool
     {
         if ($this->unlimited_stock) {
             return true;
