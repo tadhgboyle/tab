@@ -34,7 +34,7 @@ class TransactionProduct extends Model
         'product',
     ];
 
-    public static function of(int $product_id, int $category_id, int $quantity, float $price, float $gst, float $pst = null, int $returned = 0): TransactionProduct
+    public static function of(int $product_id, int $category_id, int $quantity, float $price, float $gst, ?float $pst = null, int $returned = 0): TransactionProduct
     {
         return new TransactionProduct([
             'product_id' => $product_id,
