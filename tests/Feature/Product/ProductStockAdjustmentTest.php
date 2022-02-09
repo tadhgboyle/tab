@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\Product;
 
-use App\Http\Requests\ProductStockAdjustmentRequest;
-use App\Models\Category;
-use App\Models\Product;
-use App\Services\Products\ProductStockAdjustmentService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\Models\Product;
+use App\Models\Category;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Http\Requests\ProductStockAdjustmentRequest;
+use App\Services\Products\ProductStockAdjustmentService;
 
 class ProductStockAdjustmentTest extends TestCase
 {
