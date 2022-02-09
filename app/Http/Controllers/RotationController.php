@@ -9,7 +9,7 @@ use App\Http\Requests\RotationRequest;
 
 class RotationController extends Controller
 {
-    public function form(Rotation $rotation = null)
+    public function form(?Rotation $rotation = null)
     {
         return view('pages.settings.rotations.form', [
             'rotation' => $rotation,
