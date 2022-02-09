@@ -23,9 +23,9 @@ class UserController extends Controller
         return (new UserEditService($request))->redirect();
     }
 
-    public function delete(int $user_id)
+    public function delete(User $user)
     {
-        return (new UserDeleteService($user_id))->redirect();
+        return (new UserDeleteService($user->id))->redirect();
     }
 
     public function list(RotationHelper $rotationHelper)
@@ -62,9 +62,8 @@ class UserController extends Controller
         ]);
     }
 
-    public function form(CategoryHelper $categoryHelper, RotationHelper $rotationHelper)
+    public function form(CategoryHelper $categoryHelper, RotationHelper $rotationHelper, User $user = null)
     {
-        $user = User::query()->find(request()->route('id'));
         if ($user !== null) {
             if ($user->trashed()) {
                 return redirect()->route('users_list')->with('error', 'That user has been deleted.')->send();

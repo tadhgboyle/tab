@@ -35,10 +35,10 @@ class ProductController extends Controller
         ]);
     }
 
-    public function form()
+    public function form(Product $product = null)
     {
         return view('pages.products.form', [
-            'product' => Product::find(request()->route('id')),
+            'product' => $product,
             'categories' => CategoryHelper::getInstance()->getProductCategories(),
         ]);
     }

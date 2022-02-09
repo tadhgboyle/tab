@@ -9,7 +9,10 @@
             <h4 class="title has-text-weight-bold is-4">General</h4>
             <form action="/users/{{ is_null($user) ? 'new' : 'edit' }}" id="user_form" method="POST">
                 @csrf
-                <input type="hidden" name="id" id="user_id" value="{{ request()->route('id') }}">
+
+                @if(!is_null($user))
+                    <input type="hidden" name="id" id="user_id" value="{{ $user->id }}">
+                @endif
 
                 <div class="field">
                     <label class="label">Full Name<sup style="color: red">*</sup></label>

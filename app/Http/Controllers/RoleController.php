@@ -43,14 +43,13 @@ class RoleController extends Controller
         return redirect()->route('settings')->with('success', 'Edited role ' . $request->name . '.');
     }
 
-    public function delete(Request $request)
+    public function delete(Request $request, Role $role)
     {
         // TODO: add same validation from frontend
-        $old_role = Role::find($request->old_role);
         if (!$request->has('new_role')) {
-            $old_role->delete();
+            $role->delete();
 
-            $message = 'Deleted role ' . $old_role->name . '.';
+            $message = 'Deleted role ' . $role->name . '.';
         } else {
             $new_role = Role::find($request->new_role);
 
@@ -64,20 +63,18 @@ class RoleController extends Controller
                 ]);
             }
 
-            User::where('role_id', $old_role->id)->update($fields);
+            User::where('role_id', $role->id)->update($fields);
 
-            $old_role->delete();
+            $role->delete();
 
-            $message = "Deleted role {$old_role->name}, and placed all it's users into {$new_role->name}.";
+            $message = "Deleted role {$role->name}, and placed all it's users into {$new_role->name}.";
         }
 
         return redirect()->route('settings')->with('success', $message);
     }
 
-    public function form(PermissionHelper $permissionHelper)
+    public function form(PermissionHelper $permissionHelper, Role $role = null)
     {
-        $role = Role::find(request()->route('id'));
-
         if (!is_null($role)) {
             if (!auth()->user()->role->canInteract($role)) {
                 return redirect()->route('settings')->with('error', 'You cannot interact with that role.')->send();

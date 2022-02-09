@@ -77,10 +77,8 @@ class ActivityController extends Controller
         ]);
     }
 
-    public function form(CategoryHelper $categoryHelper)
+    public function form(CategoryHelper $categoryHelper, Activity $activity = null)
     {
-        $activity = Activity::find(request()->route('id'));
-
         if ($activity === null) {
             $start = request()->route('date') !== null ? Carbon::parse(request()->route('date')) : Carbon::now();
             $end = Carbon::parse($start)->addHour();

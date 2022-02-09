@@ -9,7 +9,10 @@
         @include('includes.messages')
         <form action="{{ is_null($activity) ? route('activities_new_form') : route('activities_edit_form') }}" id="product_form" method="POST" class="form-horizontal">
             @csrf
-            <input type="hidden" name="activity_id" id="activity_id" value="{{ request()->route('id') }}">
+
+            @if(!is_null($activity))
+                <input type="hidden" name="activity_id" id="activity_id" value="{{ $activity->id }}">
+            @endif
 
             <div class="field">
                 <label class="label">Name<sup style="color: red">*</sup></label>
