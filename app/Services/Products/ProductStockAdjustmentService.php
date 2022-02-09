@@ -13,7 +13,7 @@ class ProductStockAdjustmentService extends Service
 
     public const RESULT_INVALID_PRODUCT = 0;
     public const RESULT_NO_BOX_INPUT = 1;
-    public const RESULT_BOX_INPUT_ZERO = 2;
+    public const RESULT_BOTH_INPUT_ZERO = 2;
     public const RESULT_SUCCESS = 3;
 
     public function __construct(ProductStockAdjustmentRequest $request)
@@ -33,15 +33,15 @@ class ProductStockAdjustmentService extends Service
         $adjust_box = (int) ($request->adjust_box ?? 0);
 
         if ($adjust_stock === 0) {
-            if (!$request->has('adjust_box')) {
+            if ($product->box_size === -1 && !$request->has('adjust_box')) {
                 $this->_result = self::RESULT_NO_BOX_INPUT;
                 $this->_message = 'Please specify how much stock to add to ' . $product->name . '.';
                 return;
             }
 
-            if ($request->adjust_box === 0) {
-                $this->_result = self::RESULT_BOX_INPUT_ZERO;
-                $this->_message = 'Please specify how many boxes or stock to add to ' . $product->name . '.';
+            if ($adjust_box === 0) {
+                $this->_result = self::RESULT_BOTH_INPUT_ZERO;
+                $this->_message = 'Please specify how much stock to add to ' . $product->name . '.';
                 return;
             }
         }
@@ -59,8 +59,8 @@ class ProductStockAdjustmentService extends Service
     public function redirect(): RedirectResponse
     {
         return match ($this->getResult()) {
-            self::RESULT_INVALID_PRODUCT, self::RESULT_NO_BOX_INPUT, self::RESULT_BOX_INPUT_ZERO => redirect()->route('products_adjust')->with('error', $this->getMessage()),
             self::RESULT_SUCCESS => redirect()->route('products_adjust')->with('success', $this->getMessage()),
+            default => redirect()->route('products_adjust')->with('error', $this->getMessage()),
         };
     }
 }
