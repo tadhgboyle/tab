@@ -22,6 +22,10 @@ class User extends Authenticatable
 
     protected int $cacheFor = 180;
 
+    private Collection $_activity_transactions;
+    private Collection $_transactions;
+    private Collection $_activities;
+
     protected $fillable = [
         'full_name',
         'username',
@@ -49,28 +53,6 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Rotation::class)->distinct();
     }
-
-    private Collection $_activity_transactions;
-    private Collection $_transactions;
-    private Collection $_activities;
-
-    // TODO: add a "root" user? only they can edit superadmin roles
-
-    // TODO: finish
-    // public function limits(): HasMany
-    // {
-    //     return $this->hasMany(UserLimits::class);
-    // }
-
-    // public function getCategoryLimit(string $category): float
-    // {
-    //     foreach ($this->limits as $limit) {
-    //         if ($limit->category == $category) {
-    //             return $limit->duration;
-    //         }
-    //     }
-    //     return -1;
-    // }
 
     #[Pure]
     public function hasPermission($permission): bool
