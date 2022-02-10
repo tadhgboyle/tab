@@ -6,7 +6,6 @@ use App\Models\Category;
 use App\Casts\CategoryType;
 use Illuminate\Support\Collection;
 
-// TODO: tests
 class CategoryHelper extends Helper
 {
     private Collection $categories;
