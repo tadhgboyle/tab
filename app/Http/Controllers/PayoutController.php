@@ -11,7 +11,9 @@ class PayoutController extends Controller
 {
     public function form(Request $request, User $user)
     {
-        //
+        return view('payouts.form', [
+            'user' => $user,
+        ]);
     }
 
     public function new(PayoutRequest $request, User $user)
