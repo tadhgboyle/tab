@@ -6,10 +6,7 @@
 <span><strong>Balance:</strong> ${{ number_format($user->balance, 2) }}, </span>
 <span><strong>Total spent:</strong> ${{ number_format($user->findSpent(), 2) }}, </span>
 <span><strong>Total returned:</strong> ${{ number_format($user->findReturned(), 2) }}, </span>
-@php
-$owing = $user->findOwing()
-@endphp
-<span><strong>Total owing:</strong> ${{ number_format($owing, 2) }}</span>
+<span><strong>Total owing:</strong> ${{ number_format($user->findOwing(), 2) }}</span>
 
 <br>
 <br>
@@ -203,7 +200,7 @@ $owing = $user->findOwing()
                             <h4 class="title has-text-weight-bold is-4">Payouts</h4>
                         </div>
                         <div class="column">
-                            @if($owing > 0 && hasPermission('user_payouts_create'))
+                            @if(hasPermission('user_payouts_create'))
                                 <a class="button is-success is-pulled-right" href="{{ route('users_payout', $user) }}">
                                     <span class="icon is-small">
                                         <i class="fas fa-file-invoice-dollar"></i>

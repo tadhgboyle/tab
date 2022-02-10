@@ -25,6 +25,7 @@ class PayoutCreationService extends Service
 
         $user->payouts()->save($payout);
 
+        $this->_payout = $payout;
         $this->_message = "Successfully created payout of \${$payout->amount} for {$user->full_name}.";
         $this->_result = self::RESULT_SUCCESS;
     }
@@ -32,7 +33,7 @@ class PayoutCreationService extends Service
     public function redirect(): RedirectResponse
     {
         return match ($this->getResult()) {
-            default => redirect()->back()->with('success', $this->getMessage()),
+            default => redirect()->route('users_view', $this->getPayout()->user)->with('success', $this->getMessage()),
         };
     }
 }

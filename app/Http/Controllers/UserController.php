@@ -59,7 +59,7 @@ class UserController extends Controller
             'activity_transactions' => $user->getActivities(),
             'categories' => $processed_categories,
             'rotations' => $user->rotations,
-            'payouts' => $user->payouts,
+            'payouts' => $user->payouts->sortByDesc('created_at'),
         ]);
     }
 

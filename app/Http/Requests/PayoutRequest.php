@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PayoutRequest extends FormRequest
@@ -25,8 +24,8 @@ class PayoutRequest extends FormRequest
     public function rules()
     {
         return [
-            'identifier' => 'string',
-            'amount' => 'required|numeric|gt:0|lte:'.User::find(request()->route('user'))->findOwing(),
+            'identifier' => 'string|nullable',
+            'amount' => 'required|numeric|gt:0',
         ];
     }
 }
