@@ -6,7 +6,10 @@
 <span><strong>Balance:</strong> ${{ number_format($user->balance, 2) }}, </span>
 <span><strong>Total spent:</strong> ${{ number_format($user->findSpent(), 2) }}, </span>
 <span><strong>Total returned:</strong> ${{ number_format($user->findReturned(), 2) }}, </span>
-<span><strong>Total owing:</strong> ${{ number_format($user->findOwing(), 2) }}</span>
+@php
+$owing = $user->findOwing()
+@endphp
+<span><strong>Total owing:</strong> ${{ number_format($owing, 2) }}</span>
 
 <br>
 <br>
@@ -193,6 +196,53 @@
                     </table>
                 </div>
             </div>
+            <div class="column">
+                <div class="box">
+                    <div class="columns">
+                        <div class="column">
+                            <h4 class="title has-text-weight-bold is-4">Payouts</h4>
+                        </div>
+                        <div class="column">
+                            @if($owing > 0 && hasPermission('user_payouts_create'))
+                                <a class="button is-success is-pulled-right" href="{{ route('users_payout', $user) }}">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-file-invoice-dollar"></i>
+                                    </span>
+                                    <span>Create</span>
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                    <table id="payouts_list">
+                        <thead>
+                            <tr>
+                                <th>Identifier</th>
+                                <th>Amount</th>
+                                <th>Cashier</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($payouts as $payout)
+                            <tr>
+                                <td>
+                                    <div>{!! $payout->identifier ?? "<i>None</i>" !!}</div>
+                                </td>
+                                <td>
+                                    <div>${{ number_format($payout->amount, 2) }}</div>
+                                </td>
+                                <td>
+                                    <div>{{ $payout->cashier->full_name }}</div>
+                                </td>
+                                <td>
+                                    <div>{{ $payout->created_at->format('M jS Y h:ia') }}</div>
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -207,6 +257,7 @@
             "searching": false,
             "scrollY": "49vh",
             "scrollCollapse": true,
+            "bInfo": false,
             "columnDefs": [{
                 "orderable": false,
                 "searchable": false,
@@ -224,6 +275,7 @@
             "searching": false,
             "scrollY": "33vh",
             "scrollCollapse": true,
+            "bInfo": false,
             "columnDefs": [{
                 "orderable": false,
                 "searchable": false,
@@ -239,6 +291,11 @@
                 "searchable": false,
                 "targets": [0, 1, 2]
             }]
+        });
+        $('#payouts_list').DataTable({
+            "paging": false,
+            "bInfo": false,
+            "searching": false,
         });
         $('#category_list').DataTable({
             "searching": false,
