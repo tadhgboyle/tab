@@ -23,6 +23,7 @@ class PermissionHelper extends Helper
             'users_list_select_rotation' => 'View Users from other Rotations',
             'users_view' => 'View specific User information',
             'users_manage' => 'Edit/Create/Delete Users',
+            'users_payouts_create' => 'Create Payouts',
         ]);
 
         $this->register('Product Management', 'products', [
