@@ -4,10 +4,10 @@ namespace App\Charts;
 
 use App\Models\Transaction;
 use Chartisan\PHP\Chartisan;
-use ConsoleTVs\Charts\BaseChart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Helpers\RotationHelper;
+use ConsoleTVs\Charts\BaseChart;
 use Illuminate\Support\Facades\DB;
 
 class IncomeHistoryChart extends BaseChart
