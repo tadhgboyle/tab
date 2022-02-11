@@ -34,8 +34,6 @@ class TransactionReturnTest extends TestCase
     {
         [$user, $transaction, $hat] = $this->createFakeRecords();
 
-        $original_cost = $transaction->total_price;
-
         $transactionService = (new TransactionReturnService($transaction))->returnItem($hat->id);
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
 
@@ -48,10 +46,6 @@ class TransactionReturnTest extends TestCase
         $this->assertEquals($hat->getPrice(), number_format($user->findReturned(), 2));
 
         $this->assertEquals($hat->getPrice(), number_format($transaction->getReturnedTotal(), 2));
-        $this->assertEquals(
-            number_format($original_cost - $hat->getPrice(), 2),
-            number_format($transaction->getCurrentTotal(), 2)
-        );
     }
 
     public function testUserBalanceUpdatedAfterTransactionReturn(): void

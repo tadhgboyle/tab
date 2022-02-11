@@ -21,6 +21,12 @@ class Rotation extends Model
 
     protected int $cacheFor = 180;
 
+    protected $fillable = [
+        'name',
+        'start',
+        'end',
+    ];
+
     protected $dates = [
         'start',
         'end',
