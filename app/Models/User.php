@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -51,6 +52,11 @@ class User extends Authenticatable
     public function rotations(): BelongsToMany
     {
         return $this->belongsToMany(Rotation::class)->distinct();
+    }
+
+    public function payouts(): HasMany
+    {
+        return $this->hasMany(Payout::class);
     }
 
     #[Pure]
@@ -142,6 +148,6 @@ class User extends Authenticatable
      */
     public function findOwing(): float
     {
-        return $this->findSpent() - $this->findReturned();
+        return ($this->findSpent() - $this->findReturned()) - $this->payouts()->sum('amount');
     }
 }

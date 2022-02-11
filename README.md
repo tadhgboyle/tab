@@ -110,6 +110,7 @@ Documentation (in the form of a printable user handbook) is being written.
 
 *High to low sort*
 - Fix everything in Issues/Bugs
+- Let them click on a users "Owing" to get a popup modal showing the calculation.
 - Add "rotation" option to user limits (along with day, week, etc)
 - Update codebase to not store periods in DB for money (store as int, and / or * by 10).
 - Let products be purchasable by a parent only.
@@ -126,8 +127,6 @@ Documentation (in the form of a printable user handbook) is being written.
     - Add product option if stock should be added back upon return or not.
 - Change user list to display deleted users (with toggle) & implement un-deleting (for products as well).
     - Livewire?
-- Create user "pay out" page, which will be used to mark how much a user has paid off of their owing amount.
-    - Track what payment method was used, as well as the transaction # + more details (depending on how they pay)
 - Instead/as well as category limits, allow setting a hard limit per day/week.
     - Example: Make user with $35, and each day of the week they can spend max of $5
 - Stats: Income by week, month, most popular products etc (In text form on different page)

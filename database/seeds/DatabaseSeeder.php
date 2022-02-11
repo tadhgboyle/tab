@@ -5,6 +5,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Database\Seeders\RoleSeeder;
 use Database\Seeders\UserSeeder;
+use Database\Seeders\PayoutSeeder;
 use Database\Seeders\ProductSeeder;
 use Illuminate\Support\Facades\App;
 use Database\Seeders\ActivitySeeder;
@@ -66,5 +67,8 @@ class DatabaseSeeder extends Seeder
 
         $this->command->info('Seeding Activity Transactions...');
         $this->resolve(ActivityTransactionSeeder::class)->run();
+
+        $this->command->info('Seeding User Payouts...');
+        $this->resolve(PayoutSeeder::class)->run();
     }
 }
