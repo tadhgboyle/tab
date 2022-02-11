@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Transaction;
+namespace Tests\Feature\Activity;
 
 use Tests\TestCase;
 
