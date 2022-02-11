@@ -2,10 +2,10 @@
 
 namespace Tests;
 
-use App\Http\Requests\FormRequest as FormRequestContract;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\FormRequest as FormRequestContract;
 
 class FormRequestTestCase extends TestCase
 {
