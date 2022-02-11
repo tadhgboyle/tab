@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Activity;
 
+use App\Casts\CategoryType;
 use App\Http\Requests\ActivityRequest;
 use App\Models\Activity;
 use App\Models\Category;
@@ -105,5 +106,78 @@ class ActivityRequestTest extends FormRequestTestCase
         $this->assertNotHaveErrors('slots', new ActivityRequest([
             'slots' => 5,
         ]));
+    }
+
+    public function testPriceIsRequiredAndNumeric(): void
+    {
+        $this->assertHasErrors('price', new ActivityRequest([
+            'price' => null,
+        ]));
+
+        $this->assertHasErrors('price', new ActivityRequest([
+            'price' => 'string',
+        ]));
+
+        $this->assertNotHaveErrors('price', new ActivityRequest([
+            'price' => 5,
+        ]));
+    }
+
+    public function testStartIsRequiredAndIsDate(): void
+    {
+        $this->assertHasErrors('start', new ActivityRequest([
+            'start' => null,
+        ]));
+
+        $this->assertHasErrors('start', new ActivityRequest([
+            'start' => 'string',
+        ]));
+
+        $this->assertNotHaveErrors('start', new ActivityRequest([
+            'start' => now(),
+        ]));
+    }
+
+    public function testEndIsRequiredAndIsDateAndIsAfterStart(): void
+    {
+        $this->assertHasErrors('end', new ActivityRequest([
+            'end' => null,
+        ]));
+
+        $this->assertHasErrors('end', new ActivityRequest([
+            'end' => 'string',
+        ]));
+
+        $this->assertHasErrors('end', new ActivityRequest([
+            'start' => now(),
+            'end' => now()->subDay(),
+        ]));
+
+        $this->assertNotHaveErrors('end', new ActivityRequest([
+            'start' => now(),
+            'end' => now()->addDay(),
+        ]));
+    }
+
+    public function testCategoryIdIsRequiredAndNumericAndInValidValues(): void
+    {
+        $this->assertHasErrors('category_id', new ActivityRequest([
+            'category_id' => null,
+        ]));
+
+        $this->assertHasErrors('category_id', new ActivityRequest([
+            'category_id' => 'string',
+        ]));
+
+        $this->assertHasErrors('category_id', new ActivityRequest([
+            'category_id' => 0,
+        ]));
+
+        // TODO add test for invalid category id
+//        $this->assertNotHaveErrors('category_id', new ActivityRequest([
+//            'category_id' => Category::factory()->create([
+//                'type' => CategoryType::TYPE_PRODUCTS_ACTIVITIES,
+//            ])->id,
+//        ]));
     }
 }
