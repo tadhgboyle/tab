@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Http\Requests\PayoutRequest;
 use App\Models\User;
-use App\Services\Payouts\PayoutCreationService;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Seeder;
+use App\Http\Requests\PayoutRequest;
+use Illuminate\Support\Facades\Auth;
+use App\Services\Payouts\PayoutCreationService;
 
 class PayoutSeeder extends Seeder
 {

@@ -11,7 +11,6 @@
 |
 */
 
-use App\Http\Controllers\PayoutController;
 use App\Models\User;
 use App\Helpers\RotationHelper;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +18,7 @@ use App\Http\Middleware\HasPermission;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PayoutController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\CategoryController;
