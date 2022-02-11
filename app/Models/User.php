@@ -91,7 +91,7 @@ class User extends Authenticatable
                     'created_at' => Carbon::parse($activity->created_at),
                     'cashier' => self::find($activity->cashier_id),
                     'activity' => Activity::find($activity->activity_id),
-                    'price' => $activity->activity_price,
+                    'total_price' => $activity->total_price,
                     'returned' => $activity->returned,
                 ]);
             });
