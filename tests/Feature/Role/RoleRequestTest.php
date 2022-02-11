@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Role;
 
-use App\Http\Requests\RoleRequest;
 use App\Models\Role;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\FormRequestTestCase;
+use App\Http\Requests\RoleRequest;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RoleRequestTest extends FormRequestTestCase
 {

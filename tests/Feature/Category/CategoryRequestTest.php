@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Category;
 
-use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\FormRequestTestCase;
+use App\Http\Requests\CategoryRequest;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CategoryRequestTest extends FormRequestTestCase
 {

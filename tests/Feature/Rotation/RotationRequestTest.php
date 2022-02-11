@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Rotation;
 
-use App\Http\Requests\RotationRequest;
 use App\Models\Rotation;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\FormRequestTestCase;
+use App\Http\Requests\RotationRequest;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RotationRequestTest extends FormRequestTestCase
 {

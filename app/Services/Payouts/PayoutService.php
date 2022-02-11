@@ -12,5 +12,4 @@ trait PayoutService
     {
         return $this->_payout;
     }
-
 }

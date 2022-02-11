@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\User;
 
-use App\Http\Requests\UserRequest;
 use App\Models\Role;
-use App\Models\Rotation;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\Rotation;
 use Tests\FormRequestTestCase;
+use App\Http\Requests\UserRequest;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserRequestTest extends FormRequestTestCase
 {

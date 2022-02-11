@@ -9,7 +9,6 @@ use App\Http\Requests\FormRequest as FormRequestContract;
 
 class FormRequestTestCase extends TestCase
 {
-
     public function assertHasErrors($errors, $request): void
     {
         foreach (Arr::wrap($errors) as $key) {

@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\Payout;
 
-use App\Http\Requests\PayoutRequest;
+use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
+use App\Http\Requests\PayoutRequest;
 use App\Services\Payouts\PayoutCreationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
 class PayoutCreationTest extends TestCase
 {
@@ -65,5 +65,4 @@ class PayoutCreationTest extends TestCase
 
         return [$user, $admin];
     }
-
 }
