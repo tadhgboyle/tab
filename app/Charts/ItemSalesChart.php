@@ -18,20 +18,20 @@ class ItemSalesChart extends BaseChart
     {
         $sales = [];
 
-        $products = Product::all();
+        $products = Product::limit(50)->get();
         $stats_rotation_id = resolve(RotationHelper::class)->getCurrentRotation()->id;
 
         foreach ($products as $product) {
             $sold = $product->findSold($stats_rotation_id);
-            if ($sold < 1) {
-                continue;
+            if ($sold >= 1) {
+                $sales[] = [
+                    'name' => $product->name,
+                    'sold' => $sold
+                ];
             }
-
-            $sales[] = ['name' => $product->name, 'sold' => $sold];
         }
 
         uasort($sales, static fn ($a, $b) => $a['sold'] > $b['sold'] ? -1 : 1);
-        $sales = array_slice($sales, 0, 50);
 
         return Chartisan::build()
             ->labels(array_column($sales, 'name'))

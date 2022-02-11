@@ -4,15 +4,17 @@ namespace App\Charts;
 
 use App\Models\Transaction;
 use Chartisan\PHP\Chartisan;
+use ConsoleTVs\Charts\BaseChart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Helpers\RotationHelper;
+use Illuminate\Support\Facades\DB;
 
-class IncomeHistoryChart
+class IncomeHistoryChart extends BaseChart
 {
     public ?array $middlewares = [
         'auth',
-    ]; // TODO: use HasPermission::class middleware, just dont know how to pass the permission
+    ];
 
     public function handler(Request $request): Chartisan
     {
@@ -20,12 +22,12 @@ class IncomeHistoryChart
 
         $normal_data = Transaction::query()
                             ->where([['rotation_id', $stats_rotation_id], ['returned', false]])
-                            ->selectRaw('DATE(created_at) date, ROUND(SUM(total_price), 2) total_price')
+                            ->select(DB::raw('DATE(created_at) date, ROUND(SUM(total_price), 2) total_price'))
                             ->groupBy('date')
                             ->get();
         $returned_data = Transaction::query()
                             ->where([['rotation_id', $stats_rotation_id], ['returned', true]])
-                            ->selectRaw('DATE(created_at) date, ROUND(SUM(total_price), 2) total_price')
+                            ->select(DB::raw('DATE(created_at) date, ROUND(SUM(total_price), 2) total_price'))
                             ->groupBy('date')
                             ->get();
 

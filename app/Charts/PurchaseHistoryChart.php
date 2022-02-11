@@ -8,12 +8,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Helpers\RotationHelper;
 use ConsoleTVs\Charts\BaseChart;
+use Illuminate\Support\Facades\DB;
 
 class PurchaseHistoryChart extends BaseChart
 {
     public ?array $middlewares = [
         'auth',
-    ]; // TODO: use HasPermission::class middleware, just dont know how to pass the permission
+    ];
 
     // TODO: Semi-Returned orders?
     public function handler(Request $request): Chartisan
@@ -22,12 +23,12 @@ class PurchaseHistoryChart extends BaseChart
 
         $normal_data = Transaction::query()
                             ->where([['rotation_id', $stats_rotation_id], ['returned', false]])
-                            ->selectRaw('COUNT(*) AS count, DATE(created_at) date')
+                            ->select(DB::raw('COUNT(*) AS count, DATE(created_at) date'))
                             ->groupBy('date')
                             ->get();
         $returned_data = Transaction::query()
                             ->where([['rotation_id', $stats_rotation_id], ['returned', true]])
-                            ->selectRaw('COUNT(*) AS count, DATE(created_at) date')
+                            ->select(DB::raw('COUNT(*) AS count, DATE(created_at) date'))
                             ->groupBy('date')
                             ->get();
 
