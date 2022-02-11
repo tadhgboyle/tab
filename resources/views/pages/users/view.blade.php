@@ -260,26 +260,16 @@
                     </td>
                 </tr>
                 @forelse($transactions as $transaction)
+                    <tr>
+                        <td>
+                            <div>Transaction (#{{ $transaction->id }})</div>
+                        </td>
+                        <td>
+                            <div>+${{ number_format($transaction->total_price, 2) }}</div>
+                        </td>
+                    </tr>
                     @switch($transaction->getReturnStatus())
-                        @case(0)
-                            <tr>
-                                <td>
-                                    <div>Transaction (#{{ $transaction->id }})</div>
-                                </td>
-                                <td>
-                                    <div>+${{ number_format($transaction->total_price, 2) }}</div>
-                                </td>
-                            </tr>
-                            @break
                         @case(1)
-                            <tr>
-                                <td>
-                                    <div>Transaction (#{{ $transaction->id }})</div>
-                                </td>
-                                <td>
-                                    <div>+${{ number_format($transaction->total_price, 2) }}</div>
-                                </td>
-                            </tr>
                             <tr>
                                 <td>
                                     <div>Return (#{{ $transaction->id }})</div>
@@ -290,14 +280,6 @@
                             </tr>
                             @break
                         @case(2)
-                            <tr>
-                                <td>
-                                    <div>Transaction (#{{ $transaction->id }})</div>
-                                </td>
-                                <td>
-                                    <div>+${{ number_format($transaction->total_price, 2) }}</div>
-                                </td>
-                            </tr>
                             <tr>
                                 <td>
                                     <div>Partial Return (#{{ $transaction->id }})</div>
