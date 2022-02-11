@@ -23,7 +23,7 @@ class RotationHelper extends Helper
         });
     }
 
-    public function doesRotationOverlap($start, $end, int $ignore_id = null): bool
+    public function doesRotationOverlap($start, $end, ?int $ignore_id = null): bool
     {
         $start = Carbon::parse($start);
         $end = Carbon::parse($end);
