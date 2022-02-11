@@ -61,4 +61,13 @@ class TransactionProduct extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    public function getTax(): float
+    {
+        if ($this->pst === null) {
+            return $this->gst;
+        }
+
+        return ($this->pst + $this->gst) - 1;
+    }
 }

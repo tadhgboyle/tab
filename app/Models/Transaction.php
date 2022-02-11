@@ -53,6 +53,36 @@ class Transaction extends Model
         return $this->hasMany(TransactionProduct::class);
     }
 
+    public function getCurrentTotal(): float
+    {
+        if ($this->isReturned()) {
+            return 0.00;
+        }
+
+        if ($this->getReturnStatus() === self::STATUS_NOT_RETURNED) {
+            return $this->total_price;
+        }
+
+        return $this->products->sum(function (TransactionProduct $product) {
+            return $product->price * ($product->quantity - $product->returned) * $product->getTax();
+        });
+    }
+
+    public function getReturnedTotal(): float
+    {
+        if ($this->isReturned()) {
+            return $this->total_price;
+        }
+
+        if ($this->getReturnStatus() === self::STATUS_NOT_RETURNED) {
+            return 0.00;
+        }
+
+        return $this->products->where('returned', '>=', 1)->sum(function (TransactionProduct $product) {
+            return $product->price * $product->returned * $product->getTax();
+        });
+    }
+
     public function isReturned(): bool
     {
         return $this->getReturnStatus() === self::STATUS_FULLY_RETURNED;

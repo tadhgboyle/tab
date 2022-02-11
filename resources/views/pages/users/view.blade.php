@@ -6,7 +6,8 @@
 <span><strong>Balance:</strong> ${{ number_format($user->balance, 2) }}, </span>
 <span><strong>Total spent:</strong> ${{ number_format($user->findSpent(), 2) }}, </span>
 <span><strong>Total returned:</strong> ${{ number_format($user->findReturned(), 2) }}, </span>
-<span><strong>Total owing:</strong> ${{ number_format($user->findOwing(), 2) }}</span>
+@php $owing = $user->findOwing(); @endphp
+<span><strong>Total owing:</strong> <span style="text-decoration: underline; cursor: help;" onclick="openOwingModal();">${{ number_format($owing, 2) }}</span></span>
 
 <br>
 <br>
@@ -102,7 +103,7 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <div>{!! $transaction['price'] > 0 ? '$' . number_format($transaction['price'], 2) : '<i>Free</i>' !!}</div>
+                                    <div>{!! $transaction['total_price'] > 0 ? '$' . number_format($transaction['total_price'], 2) : '<i>Free</i>' !!}</div>
                                 </td>
                                 <td>
                                     <div>
@@ -244,9 +245,153 @@
     </div>
 </div>
 
-<br>
+<div class="modal">
+    <div class="modal-background" onclick="closeModal();"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Owing</p>
+        </header>
+        <section class="modal-card-body">
+            <table class="table is-fullwidth">
+                <tbody>
+                <tr>
+                    <td colspan="2">
+                        <strong>Transactions</strong>
+                    </td>
+                </tr>
+                @forelse($transactions as $transaction)
+                    @switch($transaction->getReturnStatus())
+                        @case(0)
+                            <tr>
+                                <td>
+                                    <div>Transaction (#{{ $transaction->id }})</div>
+                                </td>
+                                <td>
+                                    <div>+${{ number_format($transaction->total_price, 2) }}</div>
+                                </td>
+                            </tr>
+                            @break
+                        @case(1)
+                            <tr>
+                                <td>
+                                    <div>Transaction (#{{ $transaction->id }})</div>
+                                </td>
+                                <td>
+                                    <div>+${{ number_format($transaction->total_price, 2) }}</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div>Return (#{{ $transaction->id }})</div>
+                                </td>
+                                <td>
+                                    <div>-${{ number_format($transaction->total_price, 2) }}</div>
+                                </td>
+                            </tr>
+                            @break
+                        @case(2)
+                            <tr>
+                                <td>
+                                    <div>Transaction (#{{ $transaction->id }})</div>
+                                </td>
+                                <td>
+                                    <div>+${{ number_format($transaction->getCurrentTotal(), 2) }}</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div>Partial Return (#{{ $transaction->id }})</div>
+                                </td>
+                                <td>
+                                    <div>-${{ number_format($transaction->getReturnedTotal(), 2) }}</div>
+                                </td>
+                            </tr>
+                            @break
+                    @endswitch
+                @empty
+                    <tr>
+                        <td>
+                            <div><i>No Transactions</i></div>
+                        </td>
+                        <td>
+                            <div>+$0.00</div>
+                        </td>
+                    </tr>
+                @endforelse
+                <tr>
+                    <td colspan="2">
+                        <strong>Activities</strong>
+                    </td>
+                </tr>
+                @forelse($activity_transactions as $activity)
+                    <tr>
+                        <td>
+                            <div>Activity ({{ $activity['activity']['name'] }})</div>
+                        </td>
+                        <td>
+                            <div>+${{ number_format($activity['total_price'], 2) }}</div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td>
+                            <div><i>No Activities</i></div>
+                        </td>
+                        <td>
+                            <div>+$0.00</div>
+                        </td>
+                    </tr>
+                @endforelse
+                <tr>
+                    <td colspan="2">
+                        <strong>Payouts</strong>
+                    </td>
+                </tr>
+                @forelse($payouts as $payout)
+                    <tr>
+                        <td>
+                            <div>Payout @if($payout->identifier !== null) ({{ $payout->identifier }}) @endif</div>
+                        </td>
+                        <td>
+                            <div>-${{ number_format($payout->amount, 2) }}</div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td>
+                            <div><i>No Payouts</i></div>
+                        </td>
+                        <td>
+                            <div>-$0.00</div>
+                        </td>
+                    </tr>
+                @endforelse
+                <tr>
+                    <td></td>
+                    <td>
+                        <div><strong>&nbsp;&nbsp;${{ number_format($owing, 2) }}</strong></div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+        <footer class="modal-card-foot">
+            <button class="button" onclick="closeModal();">Close</button>
+        </footer>
+    </div>
+</div>
 
 <script>
+    const modal = document.querySelector('.modal');
+
+    const openOwingModal = () => {
+        modal.classList.add('is-active');
+    }
+
+    const closeModal = () => {
+        modal.classList.remove('is-active');
+    }
+
     $(document).ready(function() {
         $('#order_list').DataTable({
             "order": [],

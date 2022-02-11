@@ -38,8 +38,21 @@
     </div>
 
     <script>
+        // initialize switches
         const switches = document.getElementsByClassName("js-switch");
-        for (let i = 0; i < switches.length; i++) { new Switchery(switches.item(i), {color: '#48C774', secondaryColor: '#F56D71'}) }
+        for (let i = 0; i < switches.length; i++) {
+            new Switchery(switches.item(i), {color: '#48C774', secondaryColor: '#F56D71'})
+        }
+
+        // close modals on esc key press
+        const modals = document.getElementsByClassName('modal');
+        for (const m of modals) {
+            $(document).keyup(function(e) {
+                if (e.key === "Escape") {
+                    m.classList.remove("is-active");
+                }
+            });
+        }
     </script>
 </body>
 

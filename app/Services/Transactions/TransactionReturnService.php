@@ -35,13 +35,7 @@ class TransactionReturnService extends Service
         // Loop through products from the order and deserialize them to get their prices & taxes etc when they were purchased
         foreach ($this->_transaction->products as $product) {
             $product->returned = $product->quantity;
-            if ($product->pst === null) {
-                $total_tax = $product->gst;
-            } else {
-                $total_tax = ($product->gst + $product->pst) - 1;
-            }
-
-            $total_price += ($product->price * $product->quantity) * $total_tax;
+            $total_price += ($product->price * $product->quantity) * $product->getTax();
         }
 
         $purchaser->increment('balance', $total_price);
@@ -78,15 +72,8 @@ class TransactionReturnService extends Service
 
         $transaction_product->increment('returned');
 
-        // Check taxes and apply correct %
-        if ($transaction_product->pst === null) {
-            $total_tax = $transaction_product->gst;
-        } else {
-            $total_tax = (($transaction_product->pst + $transaction_product->gst) - 1);
-        }
-
         // Update their balance
-        $this->_transaction->purchaser->increment('balance', $transaction_product->price * $total_tax);
+        $this->_transaction->purchaser->increment('balance', $transaction_product->price * $transaction_product->getTax());
         $this->_result = self::RESULT_SUCCESS;
         $this->_message = 'Successfully returned x1 ' . $transaction_product->product->name . ' for order #' . $this->_transaction->id . '.';
         return $this;
