@@ -41,6 +41,7 @@ class ActivityRequest extends FormRequest implements FormRequestContract
             'start' => [
                 'required',
                 'date',
+                'after_or_equal:now',
             ],
             'end' => [
                 'required',
