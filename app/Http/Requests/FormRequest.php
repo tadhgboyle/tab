@@ -10,5 +10,4 @@ interface FormRequest
      * @return array
      */
     public function rules(): array;
-
 }
