@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\Activity;
 
-use App\Casts\CategoryType;
-use App\Http\Requests\ActivityRequest;
 use App\Models\Activity;
 use App\Models\Category;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Casts\CategoryType;
 use Tests\FormRequestTestCase;
+use App\Http\Requests\ActivityRequest;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ActivityRequestTest extends FormRequestTestCase
 {

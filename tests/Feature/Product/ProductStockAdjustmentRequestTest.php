@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Product;
 
-use App\Http\Requests\ProductStockAdjustmentRequest;
 use Tests\FormRequestTestCase;
+use App\Http\Requests\ProductStockAdjustmentRequest;
 
 class ProductStockAdjustmentRequestTest extends FormRequestTestCase
 {
@@ -28,5 +28,4 @@ class ProductStockAdjustmentRequestTest extends FormRequestTestCase
             'adjust_box' => 1,
         ]));
     }
-
 }

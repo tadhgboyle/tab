@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Payout;
 
-use App\Http\Requests\PayoutRequest;
 use Tests\FormRequestTestCase;
+use App\Http\Requests\PayoutRequest;
 
 class PayoutRequestTest extends FormRequestTestCase
 {

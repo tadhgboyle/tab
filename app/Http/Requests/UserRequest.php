@@ -45,7 +45,7 @@ class UserRequest extends FormRequest implements FormRequestContract
                 'nullable',
                 'confirmed',
                 'min:6',
-                ValidationRule::requiredIf(function() {
+                ValidationRule::requiredIf(function () {
                     /** @phpstan-ignore-next-line  */
                     return !(request()?->route()?->getName() === 'users_edit_form')
                         && resolve(RoleHelper::class)->isStaffRole(

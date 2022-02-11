@@ -2,8 +2,8 @@
 
 namespace App\Services\Payouts;
 
-use App\Models\Payout;
 use App\Models\User;
+use App\Models\Payout;
 use App\Services\Service;
 use App\Http\Requests\PayoutRequest;
 use Illuminate\Http\RedirectResponse;

@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Product;
 
-use App\Http\Requests\ProductRequest;
-use App\Models\Category;
 use App\Models\Product;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\Category;
 use Tests\FormRequestTestCase;
+use App\Http\Requests\ProductRequest;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ProductRequestTest extends FormRequestTestCase
 {
