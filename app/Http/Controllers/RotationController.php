@@ -6,13 +6,24 @@ use App\Models\Category;
 use App\Models\Rotation;
 use App\Helpers\RotationHelper;
 use App\Http\Requests\RotationRequest;
+use Illuminate\Support\Carbon;
 
 class RotationController extends Controller
 {
     public function form(?Rotation $rotation = null)
     {
+        if ($rotation === null) {
+            $start = Carbon::now();
+            $end = Carbon::now()->addWeek();
+        } else {
+            $start = $rotation->start;
+            $end = $rotation->end;
+        }
+
         return view('pages.settings.rotations.form', [
             'rotation' => $rotation,
+            'start' => $start,
+            'end' => $end,
         ]);
     }
 

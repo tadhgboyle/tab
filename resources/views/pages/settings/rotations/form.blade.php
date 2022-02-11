@@ -1,6 +1,7 @@
 @extends('layouts.default', ['page' => 'settings'])
 @section('content')
 <h2 class="title has-text-weight-bold">{{ is_null($rotation) ? 'Create' : 'Edit' }} Rotation</h2>
+@if(!is_null($rotation)) <h4 class="subtitle"><strong>Rotation:</strong> {{ $rotation->name }}</h4>@endif
 <div class="columns">
     <div class="column"></div>
     <div class="column box">
@@ -100,15 +101,16 @@
     }
 
     $(document).ready(function() {
-        const date = new Date();
+        const startDate = new Date('{{ $start }}');
+        const endDate = new Date('{{ $end }}');
 
         @if(is_null($rotation))
-            flatpickr('#start', { defaultDate: date, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: 'today' });
+            flatpickr('#start', { defaultDate: startDate, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: 'today' });
+            flatpickr('#end', { defaultDate: endDate, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: startDate });
         @else
-            flatpickr('#start', { defaultDate: date, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K' });
+            flatpickr('#start', { defaultDate: startDate, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K' });
+            flatpickr('#end', { defaultDate: endDate, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: startDate });
         @endif
-
-        flatpickr('#end', { enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: date });
     });
 </script>
 @stop
