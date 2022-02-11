@@ -39,7 +39,13 @@
                     @foreach($activity->getAttendees() as $user)
                     <tr>
                         <td>
-                            <div><a href="{{ route('users_view', $user) }}">{{ $user->full_name }}</a></div>
+                            <div>
+                                @permission('users_view')
+                                <a href="{{ route('users_view', $user) }}">{{ $user->full_name }}</a>
+                                @else
+                                {{ $user->full_name }}
+                                @endpermission
+                            </div>
                         </td>
                     </tr>
                     @endforeach

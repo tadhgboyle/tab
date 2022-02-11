@@ -19,17 +19,13 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         height: 650,
         events: {!! $activities !!},
-        eventClick: function(event) {
-            if (event.event.url) {
-                event.jsEvent.preventDefault();
-                location.href = event.event.url;
-            }
-        },
         dateClick: function(day) {
-            if (day.dateStr < new Date().toISOString().split('T')[0]) return;
-            let url = '{{ route('activities_new', ':id') }}';
-            url = url.replace(':id', day.dateStr);
-            location.href = url;
+            @permission('activities_manage')
+                if (day.dateStr < new Date().toISOString().split('T')[0]) return;
+                let url = '{{ route('activities_new', ':id') }}';
+                url = url.replace(':id', day.dateStr);
+                location.href = url;
+            @endpermission
         },
         allDaySlot: false,
     });

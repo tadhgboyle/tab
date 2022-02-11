@@ -19,7 +19,7 @@
                     <span class="icon is-small is-left">
                         <i class="fas fa-dollar-sign"></i>
                     </span>
-                    <input type="number" step="0.01" name="amount" class="input" required value="{{ number_format(old('amount'), 2) }}">
+                    <input type="number" step="0.01" name="amount" class="input" required min="0.01" value="{{ number_format(old('amount'), 2) }}">
                 </div>
             </div>
             <div class="control">

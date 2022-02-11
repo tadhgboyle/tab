@@ -1,12 +1,12 @@
 @extends('layouts.default', ['page' => 'settings'])
 @section('content')
 <h2 class="title has-text-weight-bold">Settings</h2>
+@include('includes.messages')
 <div class="columns">
     @permission('settings_general')
     <div class="column">
         <div class="box">
             <h4 class="title has-text-weight-bold is-4">Taxes</h4>
-            @include('includes.messages')
             <form action="{{ route('settings_form') }}" id="settings" method="POST">
                 @csrf
 
@@ -149,7 +149,7 @@
     <div class="column">
         <div class="box">
             <h4 class="title has-text-weight-bold is-4">Rotations</h4>
-            <h6 class="subtitle">Current Rotation: {!! $currentRotation ?? '<i>None</i>' !!}</h6>
+            <h6 class="subtitle"><strong>Current Rotation:</strong> {!! $currentRotation ?? '<i>None</i>' !!}</h6>
             <div id="rotation_loading" align="center">
                 <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
             </div>

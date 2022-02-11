@@ -7,36 +7,22 @@
 <div class="columns">
     <div class="column" id="user_container" style="visibility: hidden;">
         <div>
-            @permission('users_list_select_rotation')
-            <div class="field">
-                <div class="control">
-                    <div class="select">
-                        <select class="input" wire:model="selectedRotation">
-                            <option value="*">All Rotations</option>
-                            @foreach ($rotations as $rotation)
-                                <option value="{{ $rotation->id }}">{{ $rotation->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-            </div>
-            @endpermission
             <div class="box">
                 @include('includes.messages')
                 <table id="user_list">
                     <thead>
-                    <tr>
-                        <th>Full Name</th>
-                        <th>Username</th>
-                        <th>Balance</th>
-                        <th>Role</th>
-                        @permission('users_view')
-                        <th></th>
-                        @endpermission
-                        @permission('users_manage')
-                        <th></th>
-                        @endpermission
-                    </tr>
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Username</th>
+                            <th>Balance</th>
+                            <th>Role</th>
+                            @permission('users_view')
+                                <th></th>
+                            @endpermission
+                            @permission('users_manage')
+                                <th></th>
+                            @endpermission
+                        </tr>
                     </thead>
                     <tbody>
                     @foreach($users as $user)

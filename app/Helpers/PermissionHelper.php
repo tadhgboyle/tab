@@ -20,10 +20,10 @@ class PermissionHelper extends Helper
 
         $this->register('Users', 'users', [
             'users_list' => 'List all Users',
-            'users_list_select_rotation' => 'View Users from other Rotations',
             'users_view' => 'View specific User information',
             'users_manage' => 'Edit/Create/Delete Users',
             'users_payouts_create' => 'Create Payouts',
+            'users_list_select_rotation' => 'View Users from other Rotations',
         ]);
 
         $this->register('Product Management', 'products', [
@@ -47,11 +47,11 @@ class PermissionHelper extends Helper
         ]);
 
         $this->register('Statistics', 'statistics', [
-            'statistics_select_rotation' => 'View statistics charts from other Rotations',
             'statistics_order_history' => 'View Order history chart',
             'statistics_item_info' => 'View Product info chart',
             'statistics_activity_info' => 'View Activity info chart',
             'statistics_income_info' => 'View Income info chart',
+            'statistics_select_rotation' => 'View statistics charts from other Rotations',
         ]);
 
         $this->register('Settings', 'settings', [

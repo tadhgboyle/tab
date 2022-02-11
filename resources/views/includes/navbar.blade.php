@@ -55,7 +55,7 @@
                         </div>
                     @endpermission
 
-                    @permission('activites')
+                    @permission('activities')
                         <div class="navbar-item has-dropdown is-hoverable">
                             <p class="navbar-link {{ page('activities', @$page) }}"><i class="fas fa-calendar-alt"></i>&nbsp;Activities</p>
                             <div class="navbar-dropdown is-boxed">

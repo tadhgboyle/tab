@@ -79,6 +79,7 @@ class Role extends Model
      * - All non-staff Roles cannot interact with any other Roles
      * - Superuser Roles can interact with all roles
      * - Non-superuser Roles cannot interact with Superuser roles
+     * - If this is a staff role and the $subject is not, allow it
      * - If none of the above applies, it is then determined by if this Role has a higher order (hierarchy) than the $subject Role.
      *
      * @param Role $subject Role to examine if this Role should interact with.
@@ -97,6 +98,10 @@ class Role extends Model
 
         if ($subject->superuser) {
             return false;
+        }
+
+        if (!$subject->staff) {
+            return true;
         }
 
         return $this->order > $subject->order;
