@@ -201,7 +201,7 @@
                             <h4 class="title has-text-weight-bold is-4">Payouts</h4>
                         </div>
                         <div class="column">
-                            @if(hasPermission('user_payouts_create'))
+                            @if(hasPermission('users_payouts_create'))
                                 <a class="button is-success is-pulled-right" href="{{ route('users_payout', $user) }}">
                                     <span class="icon is-small">
                                         <i class="fas fa-file-invoice-dollar"></i>

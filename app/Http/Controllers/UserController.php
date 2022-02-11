@@ -10,6 +10,7 @@ use App\Http\Requests\UserRequest;
 use App\Services\Users\UserEditService;
 use App\Services\Users\UserDeleteService;
 use App\Services\Users\UserCreationService;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 class UserController extends Controller
 {
@@ -30,9 +31,15 @@ class UserController extends Controller
 
     public function list(RotationHelper $rotationHelper)
     {
+        $users = User::query()->unless(hasPermission('users_list_select_rotation'), function (EloquentBuilder $query) use ($rotationHelper) {
+            $query->whereHas('rotations', function (EloquentBuilder $query) use ($rotationHelper) {
+                return $query->where('rotation_id', $rotationHelper->getCurrentRotation()->id);
+            });
+        })->get();
+
         return view('pages.users.list', [
             'rotations' => $rotationHelper->getRotations(),
-            'users' => User::all(),
+            'users' => $users,
             'selectedRotation' => $rotationHelper->getCurrentRotation(),
         ]);
     }

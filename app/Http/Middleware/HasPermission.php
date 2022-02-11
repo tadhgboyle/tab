@@ -22,6 +22,6 @@ class HasPermission
             return $next($request);
         }
 
-        return view('pages.403')->with('error', 'You do not have permission to access that page.');
+        return response()->view('pages.403');
     }
 }

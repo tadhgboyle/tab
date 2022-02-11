@@ -41,7 +41,11 @@ class RotationRequest extends FormRequest implements FormRequestContract
     public function withValidator(Validator $validator): void
     {
         $validator->after(function () {
-            if (resolve(RotationHelper::class)->doesRotationOverlap($this->get('start'), $this->get('end'))) {
+            if (resolve(RotationHelper::class)->doesRotationOverlap(
+                $this->get('start'),
+                $this->get('end'),
+                $this->get('rotation_id'))
+            ) {
                 redirect()->back()->withInput()->with('error', 'That Rotation would overlap an existing Rotation.')->send();
             }
         });

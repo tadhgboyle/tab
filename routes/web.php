@@ -105,7 +105,7 @@ Route::middleware('auth')->group(function () {
                 Route::get('/users/edit/{user}', [UserController::class, 'form'])->name('users_edit');
                 Route::post('/users/edit', [UserController::class, 'edit'])->name('users_edit_form');
 
-                Route::group(['permission' => 'user_payouts_create'], static function () {
+                Route::group(['permission' => 'users_payouts_create'], static function () {
                     Route::get('/users/payout/{user}', [PayoutController::class, 'form'])->name('users_payout');
                     Route::post('/users/payout/{user}', [PayoutController::class, 'new'])->name('users_payout_form');
                 });
@@ -158,10 +158,12 @@ Route::middleware('auth')->group(function () {
                 Route::get('/activities/edit/{activity}', [ActivityController::class, 'form'])->name('activities_edit');
                 Route::post('/activities/edit', [ActivityController::class, 'edit'])->name('activities_edit_form');
 
+                Route::get('/activities/delete/{activity}', [ActivityController::class, 'delete'])->name('activities_delete');
+            });
+
+            Route::group(['permission', 'activities_register_users'], static function () {
                 Route::post('/activities/view/search', [ActivityController::class, 'ajaxUserSearch'])->name('activities_user_search');
                 Route::get('/activities/view/{activity}/add/{user}', [ActivityController::class, 'registerUser'])->name('activities_user_add');
-
-                Route::get('/activities/delete/{activity}', [ActivityController::class, 'delete'])->name('activities_delete');
             });
         });
 

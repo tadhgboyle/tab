@@ -23,12 +23,12 @@ class RotationHelper extends Helper
         });
     }
 
-    public function doesRotationOverlap($start, $end): bool
+    public function doesRotationOverlap($start, $end, int $ignore_id = null): bool
     {
         $start = Carbon::parse($start);
         $end = Carbon::parse($end);
 
-        foreach ($this->getRotations() as $rotation) {
+        foreach ($this->getRotations()->where('id', '<>', $ignore_id) as $rotation) {
             if (
                 ($start->between($rotation->start, $rotation->end) || $end->between($rotation->start, $rotation->end))
                 ||

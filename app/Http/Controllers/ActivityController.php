@@ -105,7 +105,7 @@ class ActivityController extends Controller
                 'title' => $activity->name,
                 'start' => Carbon::parse($activity->start),
                 'end' => Carbon::parse($activity->end),
-                'url' => route('activities_view', $activity->id),
+                'url' => hasPermission('activities_view') ? route('activities_view', $activity->id) : '',
             ];
         }
 
