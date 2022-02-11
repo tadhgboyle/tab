@@ -138,7 +138,7 @@ class ActivityRequestTest extends FormRequestTestCase
         ]));
     }
 
-    public function testEndIsRequiredAndIsDateAndIsAfterStart(): void
+    public function testEndIsRequiredAndIsDateAndIsAfterTodayAndAfterStart(): void
     {
         $this->assertHasErrors('end', new ActivityRequest([
             'end' => null,
@@ -146,6 +146,10 @@ class ActivityRequestTest extends FormRequestTestCase
 
         $this->assertHasErrors('end', new ActivityRequest([
             'end' => 'string',
+        ]));
+
+        $this->assertHasErrors('end', new ActivityRequest([
+            'start' => now()->subDay(),
         ]));
 
         $this->assertHasErrors('end', new ActivityRequest([
