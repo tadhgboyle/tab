@@ -14,7 +14,10 @@ class RotationFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'start' => now(),
+            'end' => now()->addDays(7),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

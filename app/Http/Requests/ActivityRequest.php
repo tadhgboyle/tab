@@ -5,14 +5,10 @@ namespace App\Http\Requests;
 use App\Helpers\CategoryHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule as ValidationRule;
+use App\Http\Requests\FormRequest as FormRequestContract;
 
-class ActivityRequest extends FormRequest
+class ActivityRequest extends FormRequest implements FormRequestContract
 {
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
     public function rules(): array
     {
         return [
@@ -23,19 +19,19 @@ class ActivityRequest extends FormRequest
                 ValidationRule::unique('activities')->ignore($this->get('activity_id')),
             ],
             'location' => [
+                'nullable',
                 'min:3',
                 'max:255',
-                'nullable',
             ],
             'description' => [
+                'nullable',
                 'min:3',
                 'max:255',
-                'nullable',
             ],
             'slots' => [
+                'nullable',
                 'min:1',
                 'numeric',
-                'nullable',
                 ValidationRule::requiredIf(!$this->has('unlimited_slots')),
             ],
             'price' => [
