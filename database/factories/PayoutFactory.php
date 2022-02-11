@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class RotationFactory extends Factory
+class PayoutFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -14,10 +14,7 @@ class RotationFactory extends Factory
     public function definition()
     {
         return [
-            'start' => now(),
-            'end' => now()->addDays(7),
-            'created_at' => now(),
-            'updated_at' => now(),
+            //
         ];
     }
 }

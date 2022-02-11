@@ -18,6 +18,7 @@ use App\Http\Middleware\HasPermission;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PayoutController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\CategoryController;
@@ -103,6 +104,11 @@ Route::middleware('auth')->group(function () {
 
                 Route::get('/users/edit/{user}', [UserController::class, 'form'])->name('users_edit');
                 Route::post('/users/edit', [UserController::class, 'edit'])->name('users_edit_form');
+
+                Route::group(['permission' => 'user_payouts_create'], static function () {
+                    Route::get('/users/payout/{user}', [PayoutController::class, 'form'])->name('users_payout');
+                    Route::post('/users/payout/{user}', [PayoutController::class, 'new'])->name('users_payout_form');
+                });
 
                 Route::get('/users/delete/{user}', [UserController::class, 'delete'])->name('users_delete');
             });

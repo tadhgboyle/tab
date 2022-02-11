@@ -5,14 +5,10 @@ namespace App\Http\Requests;
 use App\Helpers\CategoryHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule as ValidationRule;
+use App\Http\Requests\FormRequest as FormRequestContract;
 
-class ProductRequest extends FormRequest
+class ProductRequest extends FormRequest implements FormRequestContract
 {
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
     public function rules(): array
     {
         return [
