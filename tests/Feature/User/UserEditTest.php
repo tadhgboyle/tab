@@ -42,7 +42,7 @@ class UserEditTest extends TestCase
         $this->actingAs($this->_cashier_user);
 
         $userService = new UserEditService($this->createRequest(
-            id: $this->_superadmin_user->id,
+            user_id: $this->_superadmin_user->id,
             role_id: $this->_superadmin_role->id
         ));
 
@@ -55,7 +55,7 @@ class UserEditTest extends TestCase
 
         foreach ([$this->_cashier_role, $this->_superadmin_role] as $role) {
             $userService = new UserEditService($this->createRequest(
-                id: $this->_cashier_user->id,
+                user_id: $this->_cashier_user->id,
                 full_name: 'Ronan Boyle 1',
                 username: $this->_cashier_user->username,
                 balance: 100.0,
@@ -76,7 +76,7 @@ class UserEditTest extends TestCase
         $this->actingAs($this->_superadmin_user);
 
         $userService = new UserEditService($this->createRequest(
-            id: $this->_cashier_user->id,
+            user_id: $this->_cashier_user->id,
             full_name: $this->_cashier_user->full_name,
             username: $this->_cashier_user->username,
             role_id: $this->_camper_role->id,
@@ -88,10 +88,10 @@ class UserEditTest extends TestCase
         $this->assertNull($user->password);
     }
 
-    private function createRequest(int $id, ?string $full_name = null, ?string $username = null, float $balance = 0, ?int $role_id = null, ?string $password = null, array $limit = [], array $duration = []): UserRequest
+    private function createRequest(int $user_id, ?string $full_name = null, ?string $username = null, float $balance = 0, ?int $role_id = null, ?string $password = null, array $limit = [], array $duration = []): UserRequest
     {
         return new UserRequest([
-            'id' => $id,
+            'user_id' => $user_id,
             'full_name' => $full_name,
             'username' => $username,
             'balance' => $balance,

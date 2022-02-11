@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Models\Rotation;
 use Illuminate\Support\Carbon;
 use App\Helpers\RotationHelper;
@@ -44,7 +43,7 @@ class RotationController extends Controller
 
     public function edit(RotationRequest $request)
     {
-        $rotation = Category::find($request->rotation_id);
+        $rotation = Rotation::find($request->rotation_id);
 
         $rotation->update([
             'name' => $request->name,

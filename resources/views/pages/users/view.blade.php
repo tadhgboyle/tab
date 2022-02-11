@@ -295,7 +295,7 @@
                                     <div>Transaction (#{{ $transaction->id }})</div>
                                 </td>
                                 <td>
-                                    <div>+${{ number_format($transaction->getCurrentTotal(), 2) }}</div>
+                                    <div>+${{ number_format($transaction->total_price, 2) }}</div>
                                 </td>
                             </tr>
                             <tr>

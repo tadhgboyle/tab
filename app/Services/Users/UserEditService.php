@@ -24,7 +24,7 @@ class UserEditService extends Service
     public function __construct(UserRequest $request)
     {
         $this->_request = $request;
-        $user = User::find($this->_request->id);
+        $user = User::find($this->_request->user_id);
         $this->_user = $user;
 
         if (!auth()->user()->role->getRolesAvailable()->pluck('id')->contains($this->_request->role_id)) {
