@@ -296,7 +296,7 @@
                             <div><i>No Transactions</i></div>
                         </td>
                         <td>
-                            <div>+$0.00</div>
+                            <div></div>
                         </td>
                     </tr>
                 @endforelse
@@ -320,7 +320,7 @@
                             <div><i>No Activities</i></div>
                         </td>
                         <td>
-                            <div>+$0.00</div>
+                            <div></div>
                         </td>
                     </tr>
                 @endforelse
@@ -344,7 +344,7 @@
                             <div><i>No Payouts</i></div>
                         </td>
                         <td>
-                            <div>-$0.00</div>
+                            <div></div>
                         </td>
                     </tr>
                 @endforelse
