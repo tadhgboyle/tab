@@ -13,6 +13,7 @@ class PayoutController extends Controller
     {
         return view('pages.users.payouts.form', [
             'user' => $user,
+            'owing' => (float) number_format($user->findOwing(), 2),
         ]);
     }
 
