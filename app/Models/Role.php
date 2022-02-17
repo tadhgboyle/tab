@@ -45,7 +45,7 @@ class Role extends Model
      * - This Role is staff OR (this Role is not staff AND the other Role is not staff)
      * - And finally that the `$compare` Role can interact with it
      *
-     * @return Collection Roles available for this Role to manage.
+     * @return Collection<int, Role> Roles available for this Role to manage.
      */
     public function getRolesAvailable(?Role $compare = null): Collection
     {

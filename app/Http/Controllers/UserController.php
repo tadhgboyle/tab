@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\User;
 use App\Helpers\CategoryHelper;
 use App\Helpers\RotationHelper;
@@ -82,8 +83,10 @@ class UserController extends Controller
             }
         }
 
+        $id = $categoryHelper->getCategories()->map(fn ($cat) => $cat)->get(0)->id;
+
         $processed_categories = [];
-        $categoryHelper->getCategories()->each(function ($category) use ($user, &$processed_categories) {
+        $categoryHelper->getCategories()->each(function (Category $category) use ($user, &$processed_categories) {
             $processed_categories[] = [
                 'id' => $category->id,
                 'name' => $category->name,
