@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class UserFactory extends Factory
@@ -18,7 +17,7 @@ class UserFactory extends Factory
 
         return [
             'full_name' => $full_name,
-            'username' => Str::of($full_name)->lower()->replace(' ', '') . ($this->faker->boolean(25) ? $this->faker->numberBetween(1, 100) : ''),
+            'username' => str($full_name)->lower()->replace(' ', '') . ($this->faker->boolean(25) ? $this->faker->numberBetween(1, 100) : ''),
             'balance' => $this->faker->randomFloat(2, 5, 600)
         ];
     }

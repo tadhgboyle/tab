@@ -11,6 +11,7 @@ class RotationHelper extends Helper
     private Collection $rotations;
     private ?Rotation $currentRotation;
 
+    /** @return Collection<int, Rotation> */
     public function getRotations(): Collection
     {
         return $this->rotations ??= Rotation::query()->orderBy('start', 'ASC')->get();
