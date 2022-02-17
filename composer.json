@@ -9,26 +9,24 @@
     "license": "MIT",
     "require": {
         "php": "8.0.*",
-        "consoletvs/charts": "^7.2",
-        "fideloper/proxy": "^4.0",
-        "laravel/framework": "^8.0",
+        "consoletvs/charts": "^7.0",
+        "laravel/framework": "^9.0",
         "laravel/tinker": "^2.0",
-        "nunomaduro/larastan": "1.x-dev",
-        "rennokki/laravel-eloquent-query-cache": "^2.0"
+        "nunomaduro/larastan": "^2.0",
+        "rennokki/laravel-eloquent-query-cache": "^3.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.5",
         "barryvdh/laravel-ide-helper": "^2.10",
         "brianium/paratest": "^6.3",
-        "facade/ignition": "^2.3.6",
+        "spatie/laravel-ignition": "^1.0",
         "fzaninotto/faker": "^1.9.1",
         "jetbrains/phpstorm-attributes": "^1.0",
         "mockery/mockery": "^1.0",
-        "nunomaduro/collision": "^5.0",
+        "nunomaduro/collision": "^6.0",
         "nunomaduro/phpinsights": "dev-master",
         "phpunit/phpunit": "^9.0",
-        "wulfheart/pretty_routes": "^0.3.0",
-        "symfony/var-dumper": "<5.3.4"
+        "symfony/var-dumper": "^6.0"
     },
     "config": {
         "optimize-autoloader": true,
