@@ -30,16 +30,8 @@ class FormRequestTestCase extends TestCase
         }
     }
 
-    public function assertNotHaveErrors($errors, $request): void
+    public function assertNotHaveErrors($errors, FormRequest&FormRequestContract $request): void
     {
-        if (!($request instanceof FormRequest)) {
-            $this->fail('Request is not instance of "FormRequest"');
-        }
-
-        if (!($request instanceof FormRequestContract)) {
-            $this->fail('Request is not instance of "FormRequestContract"');
-        }
-
         $requestErrors = Validator::make(
             $request->all(),
             collect($request->rules())->only(Arr::wrap($errors))->toArray(),
