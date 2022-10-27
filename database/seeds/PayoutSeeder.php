@@ -26,9 +26,15 @@ class PayoutSeeder extends Seeder
             $cashier = $users->shuffle()->whereIn('role_id', [1, 2])->first();
             Auth::login($cashier);
 
+            // We shouldn't have to do this
+            $amount = $user->findOwing() / random_int(2, 5);
+            if ($amount <= 1) {
+                continue;
+            }
+
             new PayoutCreationService(new PayoutRequest([
                 'identifier' => random_int(0, 1) === 1 ? '#' . random_int(101010, 202020) : null,
-                'amount' => random_int(1, ($user->findOwing() / random_int(2, 5))),
+                'amount' => random_int(1, $amount),
             ]), $user);
         }
     }

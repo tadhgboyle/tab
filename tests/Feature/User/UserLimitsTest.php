@@ -288,9 +288,9 @@ class UserLimitsTest extends TestCase
             'total_price' => 3.15 // TODO
         ]);
 
-        $skittles_product = TransactionProduct::of($skittles->id, $skittles->category_id, 2, $skittles->price, 1.05);
+        $skittles_product = TransactionProduct::from($skittles, 2, 1.05);
         $skittles_product->transaction_id = $transaction1->id;
-        $hat_product = TransactionProduct::of($hat->id, $hat->category_id, 1, $hat->price, 1.05);
+        $hat_product = TransactionProduct::from($hat, 1, 1.05);
         $hat_product->transaction_id = $transaction1->id;
 
         $transaction1->products()->saveMany([
@@ -305,9 +305,9 @@ class UserLimitsTest extends TestCase
             'total_price' => 44.79 // TODO
         ]);
 
-        $sweater_product = TransactionProduct::of($sweater->id, $sweater->category_id, 1, $sweater->price, 1.05, 1.07);
+        $sweater_product = TransactionProduct::from($sweater, 1, 1.05, 1.07);
         $sweater_product->transaction_id = $transaction2->id;
-        $coffee_product = TransactionProduct::of($coffee->id, $coffee->category_id, 2, $coffee->price, 1.05, 1.07);
+        $coffee_product = TransactionProduct::from($coffee, 2, 1.05, 1.07);
         $coffee_product->transaction_id = $transaction2->id;
 
         $transaction2->products()->saveMany([

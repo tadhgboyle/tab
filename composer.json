@@ -8,12 +8,10 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "8.0.*",
-        "consoletvs/charts": "^7.0",
+        "php": "^8.1",
         "laravel/framework": "^9.0",
         "laravel/tinker": "^2.0",
-        "nunomaduro/larastan": "^2.0",
-        "rennokki/laravel-eloquent-query-cache": "^3.0"
+        "nunomaduro/larastan": "^2.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.5",

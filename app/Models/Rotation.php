@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Helpers\RotationHelper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -15,7 +14,6 @@ class Rotation extends Model
     public const STATUS_FUTURE = 1;
     public const STATUS_PAST = 2;
 
-    use QueryCacheable;
     use HasFactory;
     use SoftDeletes;
 

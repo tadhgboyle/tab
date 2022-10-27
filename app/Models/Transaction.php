@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,7 +13,6 @@ class Transaction extends Model
     public const STATUS_FULLY_RETURNED = 1;
     public const STATUS_PARTIAL_RETURNED = 2;
 
-    use QueryCacheable;
     use HasFactory;
 
     protected int $cacheFor = 180;

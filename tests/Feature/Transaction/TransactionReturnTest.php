@@ -147,12 +147,12 @@ class TransactionReturnTest extends TestCase
 
         $transaction = (new TransactionCreationService(new Request(
             [
-                'product' => [
-                    $hat->id,
-                ],
-                'quantity' => [
-                    $hat->id => 2,
-                ],
+                'products' => json_encode([
+                    [
+                        'id' => $hat->id,
+                        'quantity' => 2,
+                    ],
+                ]),
                 'purchaser_id' => $user->id
             ]
         )))->getTransaction(); // $26.8576 -> $3.1424
@@ -169,14 +169,16 @@ class TransactionReturnTest extends TestCase
         ]);
 
         return (new TransactionCreationService(new Request([
-            'product' => [
-                $hat->id,
-                $sweater->id
-            ],
-            'quantity' => [
-                $hat->id => 2,
-                $sweater->id => 1
-            ],
+            'products' => json_encode([
+                [
+                    'id' => $hat->id,
+                    'quantity' => 2,
+                ],
+                [
+                    'id' => $sweater->id,
+                    'quantity' => 1
+                ]
+            ]),
             'purchaser_id' => $user->id
         ])))->getTransaction();
     }

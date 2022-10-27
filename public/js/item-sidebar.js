@@ -1,136 +1,210 @@
-// TODO: refractor
+let ITEMS = [];
+const PST_AMOUNT = document.getElementById('current_pst').value - 1;
+const GST_AMOUNT = document.getElementById('current_gst').value - 1;
+const PURCHASER_ID = document.getElementById('purchaser_id').value
 
-const checked = [];
-let total_gst = 0;
-let total_pst = 0;
-let total_tax_percent = 0;
-let total_price = 0;
-const current_gst = parseFloat(document.getElementById('current_gst').value).toFixed(2);
-const current_pst = parseFloat(document.getElementById('current_pst').value).toFixed(2);
-const purchaser_balance = parseFloat(document.getElementById('purchaser_balance').value).toFixed(2);
+window.onload = () => {
+    const storedItems = localStorage.getItem(`items-${PURCHASER_ID}`);
+    if (storedItems !== null) {
+        ITEMS = JSON.parse(storedItems);
+    }
 
-// Edge Case: Page was reloaded with things selected
-$(document).ready(function () {
-    updateInfo();
-    $('#order').find(':input').each(function () {
-        const input = document.getElementById($(this).attr('id'));
-        if (input != null && $(input).attr('type') == 'checkbox' && input.checked) {
-            const quantity = parseFloat(document.getElementById('quantity[' + input.value + ']').value);
+    render();
+};
 
-            if (quantity < 1) {
-                input.prop('checked', false);
-                return;
+const addProduct = async (productId) => {
+    await fetch(`/products/${productId}`)
+        .then(resp => resp.json())
+        .then(product => {
+            let quantity = 1;
+
+            const existingIndex = indexByProductId(productId);
+            if (existingIndex !== -1) {
+                quantity += ITEMS[existingIndex].quantity;
+                ITEMS = ITEMS.filter(item => item.id !== productId);
             }
 
-            const info = document.getElementsByName('product[' + input.value + ']')[0].id;
-            const price = parseFloat(info.split('$')[1]); // TODO: Use data-price attribute
-            const pst_id = document.getElementById('pst[' + input.value + ']').value;
+            ITEMS.push({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                tax: {
+                    pst: product.pst,
+                    gst: product.gst,
+                },
+                quantity: quantity,
+            });
 
-            if (pst_id == 1) {
-                // I dont know why we need parseFloat(), but shit breaks without it
-                total_tax_percent += (parseFloat(current_pst) + parseFloat(current_gst) - 1);
-                total_pst += price * quantity * current_pst - price * quantity;
-            } else {
-                total_tax_percent += current_gst;
+            cacheItems();
+            render();
+        });
+};
+
+const indexByProductId = (productId) => {
+    return ITEMS.findIndex(item => item.id === productId);
+};
+
+const removeProductSingle = (productId) => {
+    const index = indexByProductId(productId);
+    if (index === -1) {
+        return;
+    }
+
+    const REMOVING = 1;
+
+    const currentQuantity = ITEMS[index].quantity;
+    const newQuantity = currentQuantity - REMOVING;
+
+    if (newQuantity === 0) {
+        removeProductAll(productId);
+        return;
+    }
+
+    ITEMS[index].quantity = newQuantity;
+
+    cacheItems();
+    render();
+};
+
+const removeProductAll = (productId) => {
+    const index = indexByProductId(productId);
+    if (index === -1) {
+        return;
+    }
+
+    ITEMS = ITEMS.filter(item => item.id !== productId);
+
+    (productId, 0);
+    cacheItems();
+    render();
+};
+
+const handleSubmit = () => {
+    document.getElementById('products').value = JSON.stringify(
+        ITEMS.map(item => {
+            return {
+                id: item.id,
+                quantity: item.quantity,
             }
+        }),
+    );
 
-            total_gst += price * quantity * current_gst - price * quantity;
-            total_price += price * quantity * total_tax_percent;
+    document.forms.namedItem('order').submit();
+};
 
-            checked.push(info + ' (x' + quantity + ')<br>');
+const cacheItems = () => {
+    localStorage.setItem(`items-${PURCHASER_ID}`, JSON.stringify(ITEMS));
+};
 
-            document.getElementById('quantity[' + input.value + ']').disabled = true;
+const render = () => {
+    for (const itemRow of document.getElementsByClassName('item-row')) {
+        itemRow.style.display = 'none';
+    }
 
-            updateInfo();
+    if (ITEMS.length > 0) {
+        document.getElementById('no-items').style.display = 'none';
+
+        ITEMS.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.classList.add('item-row');
+
+            const nameTd = document.createElement('td');
+            nameTd.innerText = item.name;
+            tr.appendChild(nameTd);
+            const quantityTd = document.createElement('td');
+            quantityTd.innerText = `${item.quantity} `;
+
+            const removeSingleButton = document.createElement('button');
+            removeSingleButton.setAttribute('onclick', `removeProductSingle(${item.id});`);
+            removeSingleButton.classList.add('button', 'is-small');
+            const removeSingleButtonIconSpan = document.createElement('span');
+            removeSingleButtonIconSpan.classList.add('icon', 'is-small');
+            const removeSingleButtonIcon = document.createElement('i');
+            removeSingleButtonIcon.classList.add('fas', 'fa-minus');
+            removeSingleButtonIconSpan.appendChild(removeSingleButtonIcon);
+            removeSingleButton.appendChild(removeSingleButtonIconSpan);
+            quantityTd.appendChild(removeSingleButton);
+
+            const removeAllButton = document.createElement('button');
+            removeAllButton.setAttribute('onclick', `removeProductAll(${item.id});`);
+            removeAllButton.classList.add('button', 'is-small');
+            const removeAllButtonIconSpan = document.createElement('span');
+            removeAllButtonIconSpan.classList.add('icon', 'is-small');
+            const removeAllButtonIcon = document.createElement('i');
+            removeAllButtonIcon.classList.add('fas', 'fa-times');
+            removeAllButtonIconSpan.appendChild(removeAllButtonIcon);
+            removeAllButton.appendChild(removeAllButtonIconSpan);
+            quantityTd.appendChild(removeAllButton);
+
+            tr.appendChild(quantityTd);
+
+            const priceTd = document.createElement('td');
+            priceTd.innerText = `$${(item.price * item.quantity).toFixed(2)}`;
+            tr.appendChild(priceTd);
+
+            document.getElementById('items-table').appendChild(tr);
+        });
+    } else {
+        document.getElementById('no-items').style.display = 'block';
+    }
+
+    const { pstTotal, gstTotal } = calculateTaxTotals();
+    const remainingBalance = calculateRemainingBalance();
+
+    document.getElementById('subtotal-total').innerText = `$${calculateSubtotal().toFixed(2)}`;
+    document.getElementById('pst-total').innerText = `$${pstTotal.toFixed(2)}`;
+    document.getElementById('gst-total').innerText = `$${gstTotal.toFixed(2)}`;
+    document.getElementById('total-price').innerText = `$${calculateTotalPrice().toFixed(2)}`;
+    document.getElementById('remaining-balance').innerText = `$${remainingBalance.toFixed(2)}`;
+
+    if (remainingBalance < 0) {
+        document.getElementById('remaining-balance').classList.add('has-text-danger');
+        document.getElementById('submit-button').disabled = true;
+    } else {
+        document.getElementById('remaining-balance').classList.remove('has-text-danger');
+        document.getElementById('submit-button').disabled = false;
+    }
+};
+
+const calculateSubtotal = () => {
+    return ITEMS.reduce((total, item) => {
+        return total + (item.price * item.quantity);
+    }, 0);
+};
+
+const calculateTaxTotals = () => {
+    let pstItemTotal = 0;
+    let gstItemTotal = 0;
+
+    ITEMS.forEach(item => {
+        const { pst, gst } = item.tax;
+        const itemTotal = item.price * item.quantity;
+
+        if (pst) {
+            pstItemTotal += itemTotal;
+        }
+
+        if (gst) {
+            gstItemTotal += itemTotal;
         }
     });
-})
 
-// Handle clicks on items
-$('.clickable').click(function () {
+    return {
+        pstTotal: pstItemTotal * PST_AMOUNT,
+        gstTotal: gstItemTotal * GST_AMOUNT,
+    };
+};
 
-    const current_id = document.getElementById($(this).attr('id')).value;
-    const quantity_id = document.getElementById('quantity[' + current_id + ']');
-    const quantity = parseInt(quantity_id.value);
-    const pst_id = document.getElementById('pst[' + current_id + ']').value;
-    const current_price = parseFloat($(this).attr('id').split('$')[1]); // TODO: Use data-price attribute
-    const list_style = $(this).attr('id') + ' (x' + quantity + ')<br>';
+const calculateTotalPrice = () => {
+    const subtotal = calculateSubtotal();
 
-    if (quantity_id == 0) {
-        return;
-    }
+    let taxTotal = 0;
+    const { pstTotal, gstTotal } = calculateTaxTotals();
+    taxTotal = pstTotal + gstTotal;
 
-    if (quantity < 1) {
-        $(this).prop('checked', false);
-        return;
-    }
+    return subtotal + taxTotal;
+};
 
-    if ($(this).is(':checked')) {
-        if (pst_id == 1) {
-            // I dont know why we need parseFloat(), but shit breaks without it
-            total_tax_percent += (parseFloat(current_pst) + parseFloat(current_gst) - 1);
-            total_pst += current_price * quantity * current_pst - current_price * quantity;
-        } else {
-            total_tax_percent += current_gst;
-        }
-
-        quantity_id.disabled = true;
-        
-        checked.push(list_style);
-        total_gst += (current_price * quantity) * current_gst - current_price * quantity;
-        total_price += (current_price * quantity) * total_tax_percent;
-    } else {
-        if (pst_id == 1) {
-            // I dont know why we need parseFloat(), but shit breaks without it
-            total_tax_percent += (parseFloat(current_pst) + parseFloat(current_gst) - 1);
-            total_pst -= current_price * quantity * current_pst - current_price * quantity;
-        } else {
-            total_tax_percent += current_gst;
-        }
-
-        quantity_id.disabled = false;
-
-        const index = checked.indexOf(list_style);
-        if (index < 0) {
-            return;
-        }
-
-        checked.splice(index, 1);
-        total_gst -= (current_price * quantity) * current_gst - current_price * quantity;
-        // Janky fix for after page reloading + unselecting -> negative total price
-        total_price -= (current_price * quantity) * total_tax_percent;
-        if (total_price < 0) total_price = 0;
-    }
-
-    updateInfo();
-
-    // This is needed for some silly reason
-    total_tax_percent = 0;
-});
-
-
-function updateInfo() {
-
-    $("#items").html(checked);
-    $("#gst").html('GST: $' + total_gst.toFixed(2));
-    $("#pst").html('PST: $' + total_pst.toFixed(2))
-
-    if (total_price > purchaser_balance) {
-        // Disable things if they do not have enough money to proceed
-        $('.disableable').prop('disabled', true);
-        $("#total_price").html('<span style="color:red">Total Price: $' + total_price.toFixed(2) + '</span>');
-        $("#remaining_balance").html('<span style="color:red">Remaining Balance: $' + (purchaser_balance - total_price).toFixed(2) + '</span>');
-    } else {
-        $('.disableable').prop('disabled', checked.length < 1);
-        $("#total_price").html('Total Price: $' + total_price.toFixed(2));
-        $("#remaining_balance").html('Remaining Balance: $' + (purchaser_balance - total_price).toFixed(2));
-    }
-}
-
-// Removes the "disabled" attribute from quantity fields. 
-// Without this, no selected items are sent to the controller
-$('form').submit(function () {
-    $(':disabled').each(function () {
-        $(this).removeAttr('disabled');
-    })
-});
+const calculateRemainingBalance = () => {
+    return document.getElementById('purchaser_balance').value - calculateTotalPrice();
+};

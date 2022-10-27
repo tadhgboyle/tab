@@ -36,9 +36,12 @@ class TransactionSeeder extends Seeder
 
                 $product_ids = $products_all->random(random_int(1, 5))->pluck('id');
 
-                $quantity = [];
+                $products = [];
                 foreach ($product_ids as $product_id) {
-                    $quantity[$product_id] = random_int(1, 4);
+                    $products[] = [
+                        'id' => $product_id,
+                        'quantity' => random_int(1, 4),
+                    ];
                 }
 
                 /** @var Rotation $rotation */
@@ -48,8 +51,7 @@ class TransactionSeeder extends Seeder
                     'purchaser_id' => $user->id,
                     'cashier_id' => $cashier->id,
                     'rotation_id' => $rotation->id,
-                    'product' => $product_ids,
-                    'quantity' => $quantity,
+                    'products' => json_encode($products),
                     'created_at' => $rotation->start->addDays(random_int(1, 6))->addMillis(random_int(-99999, 99999)),
                 ]));
 
@@ -64,7 +66,13 @@ class TransactionSeeder extends Seeder
                         (new TransactionReturnService($transaction))->return();
                     } else {
                         $product_id = $product_ids->random();
-                        $returning = random_int(0, $quantity[$product_id]);
+                        $max_to_return = 0;
+                        foreach ($products as $product_info) {
+                            if ($product_info['id'] === $product_id) {
+                                $max_to_return = $product_info['quantity'];
+                            }
+                        }
+                        $returning = random_int(0, $max_to_return);
 
                         for ($j = 0; $j <= $returning; $j++) {
                             (new TransactionReturnService($transaction))->returnItem($product_id);

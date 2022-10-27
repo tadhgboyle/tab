@@ -67,6 +67,9 @@ Route::middleware('auth')->group(function () {
         Route::group(['permission' => 'cashier'], static function () {
             Route::get('/orders/{user}', [TransactionController::class, 'order'])->name('orders_new');
             Route::post('/orders/submit', [TransactionController::class, 'submit'])->name('orders_new_form');
+
+            // Get product metadata via JS fetch
+            Route::get('/products/{product}', [ProductController::class, 'ajaxGetInfo'])->name('products_show');
         });
 
         /*
