@@ -3,13 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TransactionProduct extends Model
 {
-    use QueryCacheable;
     use HasFactory;
 
     protected $fillable = [
@@ -34,13 +32,19 @@ class TransactionProduct extends Model
         'product',
     ];
 
-    public static function of(int $product_id, int $category_id, int $quantity, float $price, float $gst, ?float $pst = null, int $returned = 0): TransactionProduct
+    public static function from(
+        Product $product,
+        int $quantity,
+        float $gst,
+        ?float $pst = null,
+        int $returned = 0
+    ): TransactionProduct
     {
         return new TransactionProduct([
-            'product_id' => $product_id,
-            'category_id' => $category_id,
+            'product_id' => $product->id,
+            'category_id' => $product->category_id,
             'quantity' => $quantity,
-            'price' => $price,
+            'price' => $product->price,
             'gst' => $gst,
             'pst' => $pst,
             'returned' => $returned,

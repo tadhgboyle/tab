@@ -55,6 +55,17 @@ class ProductController extends Controller
         return (new ProductStockAdjustmentService($request))->redirect();
     }
 
+    public function ajaxGetInfo(Product $product)
+    {
+        return response()->json([
+            'id' => $product->id,
+            'name' => $product->name,
+            'price' => $product->price,
+            'pst' => $product->pst,
+            'gst' => true,
+        ]);
+    }
+
     public function ajaxGetPage()
     {
         return view('pages.products.adjust.form', [

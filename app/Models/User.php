@@ -7,7 +7,6 @@ use JetBrains\PhpStorm\Pure;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Rennokki\QueryCache\Traits\QueryCacheable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,7 +15,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
-    use QueryCacheable;
     use HasFactory;
     use SoftDeletes;
 
@@ -51,8 +49,7 @@ class User extends Authenticatable
 
     public function transactions(): HasMany
     {
-        return $this->hasMany(Transaction::class, 'purchaser_id', 'id')
-            ->orderBy('created_at', 'DESC');
+        return $this->hasMany(Transaction::class, 'purchaser_id', 'id');
     }
 
     public function rotations(): BelongsToMany

@@ -9,17 +9,17 @@
             <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
         </div>
         <div id="order_container" style="visibility: hidden;">
-            <form method="post" id="order" action="{{ route('orders_new_form') }}">
+            <form method="post" id="order" name="order" action="{{ route('orders_new_form') }}">
                 @csrf
-                <input type="hidden" name="purchaser_id" value="{{ $user->id }}">
-                <input type="hidden" id="current_gst" value="{{ $gst }}">
+                <input type="hidden" id="purchaser_id" name="purchaser_id" value="{{ $user->id }}">
                 <input type="hidden" id="current_pst" value="{{ $pst }}">
+                <input type="hidden" id="current_gst" value="{{ $gst }}">
                 <input type="hidden" id="purchaser_balance" value="{{ $user->balance }}">
+                <input type="hidden" id="products" name="products" value="{}">
 
                 <table id="product_list">
                     <thead>
                         <th></th>
-                        <th>Quantity</th>
                         <th>Name</th>
                         <th>Category</th>
                         <th>Stock</th>
@@ -30,13 +30,11 @@
                         <tr>
                             <td>
                                 @if($product->getStock() != 0)
-                                    <input type="checkbox" name="product[{{ $product->id }}]" value="{{ $product->id }}" id="{{ $product->name . ' $' . $product->price }}" class="clickable" @if(session('product[' . $product->id . ']')) checked @endif />
-                                    <input type="hidden" id="pst[{{ $product->id }}]" name="pst[{{ $product->id }}]" value="{{ $product->pst }}" />
-                                @endif
-                            </td>
-                            <td>
-                                @if($product->getStock() != 0)
-                                    <input type="number" name="quantity[{{ $product->id }}]" id="quantity[{{ $product->id }}]" value="{{ session('quantity[' . $product->id . ']', 1) }}" min="1" class="input is-small" style="width: 80%" />
+                                    <span class="button is-small" onclick="addProduct({{ $product->id }})">
+                                        <span class="icon is-small">
+                                            <i class="fas fa-plus"></i>
+                                        </span>
+                                    </span>
                                 @endif
                             </td>
                             <td>
@@ -60,17 +58,48 @@
     </div>
     <div class="column" align="center">
         <h3 class="title">Items</h3>
-        <div id="items"></div>
-        <hr>
-        <div id="gst"></div>
-        <div id="pst"></div>
-        <div id="total_price"></div>
-        <div id="remaining_balance"></div>
+        <table class="table is-fullwidth">
+            <thead>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+            </thead>
+            <tbody id="items-table">
+                <tr id="no-items" style="display: none;">
+                    <td colspan="3">
+                        <i>No items selected</i>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
         <br>
-        <input type="submit" form="order" value="Submit" class="disableable button is-success" disabled>
-        <a class="button is-outlined" href="{{ route('index') }}">
-            <span>Cancel</span>
-        </a>
+        <table class="table is-fullwidth">
+            <tbody>
+                <tr>
+                    <td colspan="2">Subtotal</td>
+                    <td id="subtotal-total"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">PST</td>
+                    <td id="pst-total"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">GST</td>
+                    <td id="gst-total"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">Total Price</td>
+                    <td id="total-price"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">Remaining Balance</td>
+                    <td id="remaining-balance"></td>
+                </tr>
+            </tbody>
+        </table>
+        <br>
+        <input type="submit" onclick="handleSubmit()" id="submit-button" value="Submit" class="button is-success">
+        <a class="button is-outlined" href="{{ route('index') }}">Cancel</a>
     </div>
 </div>
 <script>
@@ -83,7 +112,7 @@
             "columnDefs": [{
                 "orderable": false,
                 "searchable": false,
-                "targets": [0, 1]
+                "targets": [0]
             }]
         });
         $('#loading').hide();

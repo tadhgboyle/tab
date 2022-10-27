@@ -93,7 +93,8 @@ class TransactionCreationTest extends TestCase
 
         $this->assertSame(TransactionCreationService::RESULT_SUCCESS, $transactionService->getResult());
         $this->assertCount(1, Transaction::all());
-        $this->assertCount(1, $camper_user->refresh()->getTransactions());
+        $this->assertCount(1, $camper_user->refresh()->transactions);
+        $this->assertEquals($camper_user->id, $transactionService->getTransaction()->purchaser_id);
         $this->assertEquals($transactionService->getTotalPrice(), $camper_user->findSpent());
     }
 
@@ -160,25 +161,25 @@ class TransactionCreationTest extends TestCase
 
         if ($with_products) {
             $data = [
-                'product' => [
-                    $chips->id,
-                    $hat->id,
-                    $coffee->id
-                ],
-                'quantity' => [
-                    $chips->id => $negative_product ? -1 : ($over_stock ? 100 : 1),
-                    $hat->id => 2,
-                    $coffee->id => 1
-                ],
-                'purchaser_id' => $purchaser->id
+                'products' => json_encode([
+                    [
+                        'id' => $chips->id,
+                        'quantity' => $negative_product ? -1 : ($over_stock ? 100 : 1),
+                    ],
+                    [
+                        'id' => $hat->id,
+                        'quantity' => 2,
+                    ],
+                    [
+                        'id' => $coffee->id,
+                        'quantity' => 1,
+                    ],
+                ]),
+                'purchaser_id' => $purchaser->id,
             ];
         } else {
             $data = [
-                'quantity' => [
-                    $chips->id => $negative_product ? -1 : ($over_stock ? 100 : 1),
-                    $hat->id => 2,
-                    $coffee->id => 1
-                ],
+                'products' => '{}',
                 'purchaser_id' => $purchaser->id
             ];
         }

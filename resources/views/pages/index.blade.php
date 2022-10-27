@@ -48,6 +48,9 @@
     <div class="column"></div>
 </div>
 <script>
+    @if (session()->has('last_purchaser_id'))
+        localStorage.clear("items-{{ session()->get('last_purchaser_id') }}")
+    @endif
     @if (!is_null($currentRotation))
         $(document).ready(function() {
             $('#user_list').DataTable({
