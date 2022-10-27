@@ -96,12 +96,12 @@ class UserLimitsHelper
         // get all their transactions, as they have no limit set we dont need to worry about
         // when the transaction was created_at.
         if ($info->limit_per === -1) {
-            $transactions = $user->getTransactions()->where('returned', false);
+            $transactions = $user->transactions->where('returned', false);
             $activity_transactions = $user->getActivityTransactions();
         } else {
             $carbon_string = Carbon::now()->subDays($info->duration === 'day' ? 1 : 7)->toDateTimeString();
 
-            $transactions = $user->getTransactions()
+            $transactions = $user->transactions
                 ->where('created_at', '>=', $carbon_string)
                 ->where('returned', false);
 
@@ -117,6 +117,8 @@ class UserLimitsHelper
             // Loop transaction products. Determine if the product's category is the one we are looking at,
             // if so, add its ((value * (quantity - returned)) * tax) to the end result
             foreach ($transaction->products as $product) {
+                // TODO: Should we store category ID in TransactionProduct table?
+                // If category of product is changed in future, our calculation might be off.
                 if ((int) $product->product->category_id !== $category_id) {
                     continue;
                 }

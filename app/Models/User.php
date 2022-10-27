@@ -8,9 +8,9 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Rennokki\QueryCache\Traits\QueryCacheable;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -44,9 +44,15 @@ class User extends Authenticatable
         'role',
     ];
 
-    public function role(): HasOne
+    public function role(): BelongsTo
     {
-        return $this->hasOne(Role::class, 'id', 'role_id');
+        return $this->belongsTo(Role::class);
+    }
+
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class, 'purchaser_id', 'id')
+            ->orderBy('created_at', 'DESC');
     }
 
     public function rotations(): BelongsToMany
@@ -69,14 +75,6 @@ class User extends Authenticatable
     {
         return $this->_activity_transactions ??= DB::table('activity_transactions')
             ->where('user_id', $this->id)
-            ->orderBy('created_at', 'DESC')
-            ->get();
-    }
-
-    public function getTransactions(): Collection
-    {
-        return $this->_transactions ??= Transaction::query()
-            ->where('purchaser_id', $this->id)
             ->orderBy('created_at', 'DESC')
             ->get();
     }
@@ -106,7 +104,7 @@ class User extends Authenticatable
      */
     public function findSpent(): float
     {
-        return (float) ($this->getTransactions()->sum('total_price') + $this->getActivityTransactions()->sum('total_price'));
+        return (float) ($this->transactions->sum('total_price') + $this->getActivityTransactions()->sum('total_price'));
     }
 
     /**
@@ -117,7 +115,7 @@ class User extends Authenticatable
     {
         $returned = 0.00;
 
-        $this->getTransactions()->each(function (Transaction $transaction) use (&$returned) {
+        $this->transactions->each(function (Transaction $transaction) use (&$returned) {
             if ($transaction->returned) {
                 $returned += $transaction->total_price;
                 return;
