@@ -6,8 +6,8 @@ use App\Helpers\SettingsHelper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Rennokki\QueryCache\Traits\QueryCacheable;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Product extends Model
 {
@@ -42,9 +42,9 @@ class Product extends Model
         'pst',
     ];
 
-    public function category(): HasOne
+    public function category(): BelongsTo
     {
-        return $this->hasOne(Category::class, 'id', 'category_id');
+        return $this->belongsTo(Category::class);
     }
 
     public function getPrice(): float
