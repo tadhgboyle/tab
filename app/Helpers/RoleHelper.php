@@ -12,6 +12,7 @@ class RoleHelper extends Helper
 
     /**
      * @param string $order Direction of sorting
+     *
      * @return Collection<int, Role>
      */
     public function getRoles(string $order = 'DESC'): Collection

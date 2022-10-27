@@ -2,16 +2,15 @@
 
 namespace App\Providers;
 
+use App\Helpers\RoleHelper;
 use App\Charts\ItemSalesChart;
+use App\Helpers\CategoryHelper;
+use App\Helpers\RotationHelper;
+use App\Helpers\SettingsHelper;
 use App\Charts\ActivitySalesChart;
 use App\Charts\IncomeHistoryChart;
 use App\Charts\PurchaseHistoryChart;
-use App\Helpers\CategoryHelper;
-use App\Helpers\RoleHelper;
-use App\Helpers\RotationHelper;
-use App\Helpers\SettingsHelper;
 use Illuminate\Support\ServiceProvider;
-use ConsoleTVs\Charts\Registrar as Charts;
 
 class AppServiceProvider extends ServiceProvider
 {
