@@ -30,7 +30,7 @@ class FormRequestTestCase extends TestCase
         }
     }
 
-    public function assertNotHaveErrors($errors, FormRequest&FormRequestContract $request): void
+    public function assertNotHaveErrors($errors, FormRequest & FormRequestContract $request): void
     {
         $requestErrors = Validator::make(
             $request->all(),
