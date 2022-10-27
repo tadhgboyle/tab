@@ -38,8 +38,7 @@ class TransactionProduct extends Model
         float $gst,
         ?float $pst = null,
         int $returned = 0
-    ): TransactionProduct
-    {
+    ): TransactionProduct {
         return new TransactionProduct([
             'product_id' => $product->id,
             'category_id' => $product->category_id,

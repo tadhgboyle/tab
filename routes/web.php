@@ -33,7 +33,6 @@ Route::post('/login/auth', [LoginController::class, 'auth'])->name('login_auth')
 
 Route::middleware('auth')->group(function () {
     Route::get('/', static function () {
-
         if (!hasPermission('cashier') || !hasPermission('cashier_create')) {
             // TODO: figure out what to do with users who dont have permission. when they sign in they get a 403 page, not nice UX
             return view('pages.403');
