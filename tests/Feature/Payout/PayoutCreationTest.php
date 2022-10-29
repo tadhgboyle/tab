@@ -28,8 +28,8 @@ class PayoutCreationTest extends TestCase
 
         $this->assertSame(10.00, $payout->amount);
         $this->assertSame('#1', $payout->identifier);
-        $this->assertSame($admin->id, $payout->cashier_id);
-        $this->assertSame($user->id, $payout->user_id);
+        $this->assertSame($admin->id, $payout->cashier->id);
+        $this->assertSame($user->id, $payout->user->id);
     }
 
     public function testUserOwingCalculatedCorrectlyAfterPayoutCreation(): void

@@ -17,8 +17,6 @@ class Activity extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected int $cacheFor = 180;
-
     protected $fillable = [
         'name',
         'category_id',

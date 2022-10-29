@@ -120,7 +120,8 @@ class TransactionCreationService extends Service
                 continue;
             }
 
-            $category_spent = $category_spent_orig = UserLimitsHelper::findSpent($purchaser, $category_id, $limit_info);
+            $category_spent = 0;
+            $category_spent_orig = UserLimitsHelper::findSpent($purchaser, $category_id, $limit_info);
 
             // Loop all products in this transaction. If the product's category is the current one in the above loop, add its price to category spent
             foreach ($transaction_products->filter(function (TransactionProduct $product) use ($category_id) {

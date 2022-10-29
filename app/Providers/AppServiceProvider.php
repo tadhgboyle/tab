@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Concerns\Taxable;
 use App\Helpers\RoleHelper;
 use App\Charts\ItemSalesChart;
 use App\Helpers\CategoryHelper;
@@ -10,6 +11,8 @@ use App\Helpers\SettingsHelper;
 use App\Charts\ActivitySalesChart;
 use App\Charts\IncomeHistoryChart;
 use App\Charts\PurchaseHistoryChart;
+use App\Models\Product;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -21,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        // Bind our helpers to singletons so we can cache
+        // Bind our helpers to singletons, so we can cache
         // some values for the duration of a request
         foreach ([
             CategoryHelper::class,
