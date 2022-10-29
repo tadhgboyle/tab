@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Transaction;
 
+use App\Helpers\RotationHelper;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
@@ -27,6 +28,7 @@ class TransactionCreationTest extends TestCase
         $transactionService = new TransactionCreationService($this->createFakeRequest($staff_user));
 
         $this->assertSame(TransactionCreationService::RESULT_NO_SELF_PURCHASE, $transactionService->getResult());
+        $this->assertSame('You cannot make purchases for yourself.', $transactionService->getMessage());
     }
 
     public function testCannotMakeTransactionWithNoProductsSelected(): void
@@ -36,6 +38,7 @@ class TransactionCreationTest extends TestCase
         $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user, with_products: false));
 
         $this->assertSame(TransactionCreationService::RESULT_NO_ITEMS_SELECTED, $transactionService->getResult());
+        $this->assertSame('Please select at least one item.', $transactionService->getMessage());
     }
 
     public function testCannotMakeTransactionWithLessThanZeroQuantity(): void
@@ -45,6 +48,7 @@ class TransactionCreationTest extends TestCase
         $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user, negative_product: true));
 
         $this->assertSame(TransactionCreationService::RESULT_NEGATIVE_QUANTITY, $transactionService->getResult());
+        $this->assertSame('Quantity must be >= 1 for item Chips', $transactionService->getMessage());
     }
 
     public function testCannotMakeTransactionWithOutOfStockItem(): void
@@ -54,6 +58,7 @@ class TransactionCreationTest extends TestCase
         $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user, over_stock: true));
 
         $this->assertSame(TransactionCreationService::RESULT_NO_STOCK, $transactionService->getResult());
+        $this->assertSame('Not enough Chips in stock. Only 2 remaining.', $transactionService->getMessage());
     }
 
     public function testCannotMakeTransactionWithoutEnoughBalance(): void
@@ -63,6 +68,7 @@ class TransactionCreationTest extends TestCase
         $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user, over_balance: true));
 
         $this->assertSame(TransactionCreationService::RESULT_NOT_ENOUGH_BALANCE, $transactionService->getResult());
+        $this->assertStringContainsString('only has $999.99. Tried to spend $6335.9583.', $transactionService->getMessage());
     }
 
     public function testCannotMakeTransactionWithoutEnoughBalanceInCategory(): void
@@ -72,6 +78,7 @@ class TransactionCreationTest extends TestCase
         $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user, over_category_limit: true));
 
         $this->assertSame(TransactionCreationService::RESULT_NOT_ENOUGH_CATEGORY_BALANCE, $transactionService->getResult());
+        $this->assertSame('Not enough balance in the Food category. (Limit: $1.00, Remaining: $1.00). Tried to spend $6.04', $transactionService->getMessage());
     }
 
     public function testUserBalanceCorrectAfterTransaction(): void
@@ -81,21 +88,27 @@ class TransactionCreationTest extends TestCase
         $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user));
 
         $this->assertSame(TransactionCreationService::RESULT_SUCCESS, $transactionService->getResult());
+        $this->assertStringContainsString('now has $962.45', $transactionService->getMessage());
         $this->assertEquals($camper_user->balance - $transactionService->getTotalPrice(), $camper_user->refresh()->balance);
         $this->assertEquals($transactionService->getTotalPrice(), $camper_user->findSpent());
     }
 
     public function testSuccessfulTransactionIsStored(): void
     {
-        [$camper_user] = $this->createFakeRecords();
+        [$camper_user, $staff_user] = $this->createFakeRecords();
 
         $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user));
 
         $this->assertSame(TransactionCreationService::RESULT_SUCCESS, $transactionService->getResult());
+        $this->assertStringContainsString('now has $962.45', $transactionService->getMessage());
         $this->assertCount(1, Transaction::all());
         $this->assertCount(1, $camper_user->refresh()->transactions);
-        $this->assertEquals($camper_user->id, $transactionService->getTransaction()->purchaser_id);
+        $this->assertEquals($camper_user->id, $transactionService->getTransaction()->purchaser->id);
+        $this->assertEquals($staff_user->id, $transactionService->getTransaction()->cashier->id);
+        $this->assertEquals(RotationHelper::getInstance()->getCurrentRotation()->id, $transactionService->getTransaction()->rotation->id);
         $this->assertEquals($transactionService->getTotalPrice(), $camper_user->findSpent());
+        $this->assertEquals('Chips', $transactionService->getTransaction()->products->first()->product->name);
+        $this->assertEquals($transactionService->getTransaction()->products->first()->transaction->id, $transactionService->getTransaction()->id);
     }
 
     /** @return User[] */

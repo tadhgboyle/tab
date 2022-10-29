@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class TransactionProduct extends Model
 {
@@ -55,14 +56,14 @@ class TransactionProduct extends Model
         return $this->belongsTo(Transaction::class);
     }
 
-    public function product(): BelongsTo
+    public function product(): HasOne
     {
-        return $this->belongsTo(Product::class);
+        return $this->hasOne(Product::class, 'id', 'product_id');
     }
 
-    public function category(): BelongsTo
+    public function category(): HasOne
     {
-        return $this->belongsTo(Category::class);
+        return $this->hasOne(Category::class);
     }
 
     public function getTax(): float

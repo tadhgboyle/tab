@@ -30,7 +30,7 @@ class ProductCreationTest extends TestCase
         $this->assertModelExists($product);
         $this->assertSame('Test Product', $product->name);
         $this->assertSame(10.50, $product->price);
-        $this->assertSame($category->id, $product->category_id);
+        $this->assertSame($category->id, $product->category->id);
         $this->assertSame(10, $product->stock);
         $this->assertSame(22, $product->box_size);
         $this->assertFalse($product->unlimited_stock);

@@ -17,8 +17,6 @@ class Rotation extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected int $cacheFor = 180;
-
     protected $fillable = [
         'name',
         'start',

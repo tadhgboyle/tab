@@ -71,7 +71,7 @@ class UserLimitsHelper
     {
         $info = UserLimits::query()
             ->where([['user_id', $user->id], ['category_id', $category_id]])
-            ->select('duration', 'limit_per')
+            ->select(['duration', 'limit_per'])
             ->get();
 
         $limit_info = new stdClass();

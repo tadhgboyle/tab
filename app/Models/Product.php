@@ -3,17 +3,18 @@
 namespace App\Models;
 
 use App\Helpers\SettingsHelper;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Collection;
 
 class Product extends Model
 {
     use HasFactory;
     use SoftDeletes;
-
-    protected int $cacheFor = 180;
 
     protected $casts = [
         'name' => 'string',
@@ -61,7 +62,7 @@ class Product extends Model
     }
 
     // Used to check if items in order have enough stock BEFORE using removeStock() to remove it.
-    // If we didnt use this, then stock would be adjusted and then the order could fail, resulting in inaccurate stock.
+    // If we didn't use this, then stock would be adjusted and then the order could fail, resulting in inaccurate stock.
     public function hasStock(int $quantity): bool
     {
         if ($this->unlimited_stock) {
@@ -98,7 +99,7 @@ class Product extends Model
         return false;
     }
 
-    public function adjustStock(int $new_stock): bool|int
+    public function adjustStock(int $new_stock): false|int
     {
         return $this->increment('stock', $new_stock);
     }
@@ -110,14 +111,10 @@ class Product extends Model
 
     public function findSold(int $rotation_id): int
     {
-        $sold = 0;
-
-        Transaction::where('rotation_id', $rotation_id)->with('products')->each(function (Transaction $transaction) use (&$sold) {
-            $transaction->products->where('product_id', $this->id)->each(function (TransactionProduct $transactionProduct) use (&$sold) {
-                $sold += ($transactionProduct->quantity - $transactionProduct->returned);
-            });
-        });
-
-        return $sold;
+        return TransactionProduct::whereHas('transaction', static function (Builder $query) use ($rotation_id) {
+            $query->where('rotation_id', $rotation_id);
+        })->where('product_id', $this->id)->chunkMap(static function (TransactionProduct $transactionProduct) {
+            return $transactionProduct->quantity - $transactionProduct->returned;
+        })->sum();
     }
 }

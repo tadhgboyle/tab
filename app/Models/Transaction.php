@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -14,8 +14,6 @@ class Transaction extends Model
     public const STATUS_PARTIAL_RETURNED = 2;
 
     use HasFactory;
-
-    protected int $cacheFor = 180;
 
     protected $fillable = [
         'returned',
@@ -31,19 +29,19 @@ class Transaction extends Model
         'products',
     ];
 
-    public function purchaser(): HasOne
+    public function purchaser(): BelongsTo
     {
-        return $this->hasOne(User::class, 'id', 'purchaser_id');
+        return $this->belongsTo(User::class);
     }
 
-    public function cashier(): HasOne
+    public function cashier(): BelongsTo
     {
-        return $this->hasOne(User::class, 'id', 'cashier_id');
+        return $this->belongsTo(User::class);
     }
 
-    public function rotation(): HasOne
+    public function rotation(): BelongsTo
     {
-        return $this->hasOne(Rotation::class, 'id', 'rotation_id');
+        return $this->belongsTo(Rotation::class);
     }
 
     public function products(): HasMany
@@ -83,24 +81,22 @@ class Transaction extends Model
         foreach ($this->products as $product) {
             if ($product->returned >= $product->quantity) {
                 $products_returned++;
-            } else {
-                if ($product->returned > 0) {
-                    // semi returned if at least one product has a returned value
-                    return self::STATUS_PARTIAL_RETURNED;
-                }
+            } else if ($product->returned > 0) {
+                // Semi returned if at least one product has a returned value
+                return self::STATUS_PARTIAL_RETURNED;
             }
 
             $product_count++;
         }
 
         if ($products_returned >= $product_count) {
-            // incase something went wrong and the status wasnt updated earlier, do it now
+            // In case something went wrong and the status wasn't updated earlier, do it now
             $this->update(['returned' => true]);
             return self::STATUS_FULLY_RETURNED;
         }
 
         if ($products_returned > 0) {
-            // will occur if two products are ordered with quantity of 1 and then 1 product is returned but not the other
+            // Will occur if two products are ordered with quantity of 1 and then 1 product is returned but not the other
             return self::STATUS_PARTIAL_RETURNED;
         }
 

@@ -18,10 +18,7 @@ class User extends Authenticatable
     use HasFactory;
     use SoftDeletes;
 
-    protected int $cacheFor = 180;
-
     private Collection $_activity_transactions;
-    private Collection $_transactions;
     private Collection $_activities;
 
     protected $fillable = [
