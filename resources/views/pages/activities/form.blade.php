@@ -1,19 +1,21 @@
 @extends('layouts.default', ['page' => 'activities'])
 @section('content')
-<h2 class="title has-text-weight-bold">{{ is_null($activity) ? 'Create' : 'Edit' }} Activity</h2>
-@if(!is_null($activity)) <h4 class="subtitle"><strong>Activity:</strong> {{ $activity->name }} @permission('activities_view')<a href="{{ route('activities_view', $activity->id) }}">(View)</a>@endpermission</h4> @endif
-<div class="columns box">
-    <div class="column is-1"></div>
+<h2 class="title has-text-weight-bold">{{ isset($activity) ? 'Edit' : 'Create' }} Activity</h2>
+@isset($activity) <h4 class="subtitle"><strong>Activity:</strong> {{ $activity->name }} @permission('activities_view')<a href="{{ route('activities_view', $activity->id) }}">(View)</a>@endpermission</h4> @endisset
 
-    <div class="column is-5">
-        @include('includes.messages')
-        <form action="{{ is_null($activity) ? route('activities_new_form') : route('activities_edit_form') }}" id="product_form" method="POST" class="form-horizontal">
-            @csrf
+<form action="{{ isset($activity) ? route('activities_update', $activity->id) : route('activities_store') }}" id="product_form" method="POST" class="form-horizontal">
+    @csrf
 
-            @if(!is_null($activity))
-                <input type="hidden" name="activity_id" id="activity_id" value="{{ $activity->id }}">
-            @endif
+    @isset($activity)
+        @method('PUT')
+        <input type="hidden" name="activity_id" id="activity_id" value="{{ $activity->id }}">
+    @endif
 
+    <div class="columns box">
+        <div class="column is-1"></div>
+
+        <div class="column is-5">
+            @include('includes.messages')
             <div class="field">
                 <label class="label">Name<sup style="color: red">*</sup></label>
                 <div class="control">
@@ -53,9 +55,8 @@
                     </label>
                 </div>
             </div>
-
-    </div>
-    <div class="column is-4">
+        </div>
+        <div class="column is-4">
             <div class="field">
                 <label class="label">Start Time<sup style="color: red">*</sup></label>
                 <div class="control">
@@ -82,10 +83,10 @@
                 <div class="control">
                     <div class="select">
                         <select name="category_id" required>
-                            {{!! !isset($activity->category) ? "<option value=\"\" disabled selected>Select Category...</option>" : '' !!}}
+                            {{!! (isset($activity) && !isset($activity->category)) ? "<option value=\"\" disabled selected>Select Category...</option>" : '' !!}}
                             @foreach($categories as $category)
                                 <option value="{{ $category->id }}"
-                                    {{ (!is_null($activity) && $activity->category_id == $category->id) || old('category') == $category->id  ? 'selected' : '' }}>
+                                    {{ (isset($activity) && $activity->category_id == $category->id) || old('category') == $category->id  ? 'selected' : '' }}>
                                     {{ $category->name }}
                                 </option>
                             @endforeach
@@ -93,37 +94,36 @@
                     </div>
                 </div>
             </div>
-
-        </form>
-    </div>
-    <div class="column is-2">
-        <form>
-            <div class="control">
-                <button class="button is-success" type="submit" form="product_form">
-                    <span class="icon is-small">
-                        <i class="fas fa-check"></i>
-                    </span>
-                    <span>Submit</span>
-                </button>
-            </div>
-        </form>
-        <br>
-        @if(!is_null($activity))
-        <div class="control">
-            <form>
-                <button class="button is-danger is-outlined" type="button" onclick="openModal();">
-                    <span>Delete</span>
-                    <span class="icon is-small">
-                        <i class="fas fa-times"></i>
-                    </span>
-                </button>
-            </form>
         </div>
-        @endif
+        <div class="column is-2">
+            <form>
+                <div class="control">
+                    <button class="button is-success" type="submit" form="product_form">
+                        <span class="icon is-small">
+                            <i class="fas fa-check"></i>
+                        </span>
+                        <span>Submit</span>
+                    </button>
+                </div>
+            </form>
+            <br>
+            @isset($activity)
+            <div class="control">
+                <form>
+                    <button class="button is-danger is-outlined" type="button" onclick="openModal();">
+                        <span>Delete</span>
+                        <span class="icon is-small">
+                            <i class="fas fa-times"></i>
+                        </span>
+                    </button>
+                </form>
+            </div>
+            @endisset
+        </div>
     </div>
-</div>
+</form>
 
-@if(!is_null($activity))
+@isset($activity)
 <div class="modal">
     <div class="modal-background" onclick="closeModal();"></div>
     <div class="modal-card">
@@ -132,17 +132,18 @@
         </header>
         <section class="modal-card-body">
             <p>Are you sure you want to delete the activity {{ $activity->name }}?</p>
-            <form action="" id="deleteForm" method="GET">
+            <form action="{{ route('activities_delete', $activity->id) }}" id="deleteForm" method="POST">
                 @csrf
+                @method('DELETE')
             </form>
         </section>
         <footer class="modal-card-foot">
-            <button class="button is-success" type="submit" onclick="deleteData();">Confirm</button>
+            <button class="button is-success" type="submit" form="deleteForm">Confirm</button>
             <button class="button" onclick="closeModal();">Cancel</button>
         </footer>
     </div>
 </div>
-@endif
+@endisset
 
 <script type="text/javascript">
     let endMinDate = null;
@@ -156,13 +157,8 @@
         const startDate = new Date('{{ $start }}');
         const endDate = new Date('{{ $end }}');
 
-        @if(is_null($activity))
-            flatpickr('#start', { defaultDate: startDate, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: 'today' });
-            flatpickr('#end', { defaultDate: endDate, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: startDate });
-        @else
-            flatpickr('#start', { defaultDate: startDate, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K' });
-            flatpickr('#end', { defaultDate: endDate, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: startDate });
-        @endif
+        flatpickr('#start', { defaultDate: startDate, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K' });
+        flatpickr('#end', { defaultDate: endDate, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: startDate });
 
         updatedUnlimitedSlots($('input[type=checkbox][name=unlimited_slots]').prop('checked'));
     });
@@ -177,7 +173,7 @@
         else div.show(200);
     }
 
-    @if(!is_null($activity))
+    @isset($activity)
         const modal = document.querySelector('.modal');
 
         function openModal() {
@@ -187,14 +183,6 @@
         function closeModal() {
             modal.classList.remove('is-active');
         }
-
-        function deleteData() {
-            let url = '{{ route("activities_delete", ":id") }}';
-            url = url.replace(':id', '{{ $activity->id }}');
-            const deleteForm = $('#deleteForm');
-            deleteForm.attr('action', url);
-            deleteForm.submit();
-        }
-    @endif
+    @endisset
 </script>
 @endsection

@@ -78,12 +78,14 @@
     });
 
    $(document).on("click", "#adjust_select", function() {
+        let url = "{{ route('products_adjust_ajax', ":id") }}";
+        url = url.replace(':id', $(this).attr('value'));
+
         $.ajax({
-            type : "POST",
-            url : "{{ route('products_adjust_ajax') }}",
+            type : "GET",
+            url : url,
             data: {
                 "_token": "{{ csrf_token() }}",
-                "id": $(this).attr("value")
             },
             beforeSend : function() {
                 $('#adjust_product').show().html("<center><img src='{{ url('img/loader.gif') }}' class='loading-spinner'></img></center>");

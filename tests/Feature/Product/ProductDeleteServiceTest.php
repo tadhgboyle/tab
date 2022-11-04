@@ -9,16 +9,9 @@ use App\Services\Products\ProductEditService;
 use App\Services\Products\ProductDeleteService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class ProductDeleteTest extends TestCase
+class ProductDeleteServiceTest extends TestCase
 {
     use RefreshDatabase;
-
-    public function testCannotDeleteNonexistentProduct(): void
-    {
-        $productService = new ProductDeleteService(-1);
-
-        $this->assertSame(ProductEditService::RESULT_NOT_EXIST, $productService->getResult());
-    }
 
     public function testCanDeleteProduct(): void
     {
@@ -27,7 +20,7 @@ class ProductDeleteTest extends TestCase
             'category_id' => $category->id,
         ])->create();
 
-        $productService = new ProductDeleteService($product->id);
+        $productService = new ProductDeleteService($product);
 
         $this->assertSame(ProductEditService::RESULT_SUCCESS, $productService->getResult());
         $this->assertSoftDeleted($product);

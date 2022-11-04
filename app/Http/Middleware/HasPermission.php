@@ -12,13 +12,13 @@ class HasPermission
      *
      * @param Request $request
      * @param Closure $next
+     * @param string $permission
      *
      * @return mixed
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next, string $permission)
     {
-        /** @phpstan-ignore-next-line  */
-        if (hasPermission($request->route()->action['permission'])) {
+        if (hasPermission($permission)) {
             return $next($request);
         }
 

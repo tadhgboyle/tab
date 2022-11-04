@@ -4,35 +4,66 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Helpers\PermissionHelper;
 use App\Http\Requests\RoleRequest;
 
 class RoleController extends Controller
 {
-    public function new(RoleRequest $request)
+    public function create(PermissionHelper $permissionHelper)
+    {
+        return view('pages.settings.roles.form', [
+            'permissionHelper' => $permissionHelper,
+        ]);
+    }
+
+    public function store(RoleRequest $request): RedirectResponse
     {
         $staff = $request->has('staff');
         $superuser = $staff && $request->has('superuser');
+        $permissions = $staff
+            ? PermissionHelper::parseNodes($request->permissions)
+            : [];
 
         $role = new Role();
         $role->name = $request->name;
         $role->order = $request->order;
         $role->staff = $staff;
         $role->superuser = $superuser;
-        $role->permissions = PermissionHelper::parseNodes($request->permissions);
+        $role->permissions = $permissions;
         $role->save();
 
-        return redirect()->route('settings')->with('success', 'Created role ' . $request->name . '.');
+        return redirect()->route('settings')->with('success', 'Created role ' . $role->name . '.');
     }
 
-    public function edit(RoleRequest $request)
+    public function edit(PermissionHelper $permissionHelper, Role $role)
     {
+        if (!auth()->user()->role->canInteract($role)) {
+            return redirect()->route('settings')->with('error', 'You cannot interact with that role.')->send();
+        }
+
+        return view('pages.settings.roles.form', [
+            'role' => $role,
+            'affected_users' => $role->users,
+            'available_roles' => $role->getRolesAvailable(auth()->user()->role)->all(),
+            'permissionHelper' => $permissionHelper,
+        ]);
+    }
+
+    public function update(RoleRequest $request, Role $role): RedirectResponse
+    {
+        if (!auth()->user()->role->canInteract($role)) {
+            return redirect()->route('settings')->with('error', 'You cannot interact with that role.')->send();
+        }
+
         $staff = $request->has('staff');
         $superuser = $staff && $request->has('superuser');
-        $permissions = PermissionHelper::parseNodes($request->permissions);
+        $permissions = $staff
+            ? PermissionHelper::parseNodes($request->permissions)
+            : [];
 
-        Role::find($request->role_id)->update([
+        $role->update([
             'name' => $request->name,
             'order' => $request->order,
             'staff' => $staff,
@@ -40,12 +71,13 @@ class RoleController extends Controller
             'permissions' => $permissions,
         ]);
 
-        return redirect()->route('settings')->with('success', 'Edited role ' . $request->name . '.');
+        return redirect()->route('settings')->with('success', 'Edited role ' . $role->name . '.');
     }
 
     public function delete(Request $request, Role $role)
     {
         // TODO: add same validation from frontend
+        // TODO: tests
         if (!$request->has('new_role')) {
             $role->delete();
 
@@ -63,7 +95,7 @@ class RoleController extends Controller
                 ]);
             }
 
-            User::where('role_id', $role->id)->update($fields);
+            $role->users()->update($fields);
 
             $role->delete();
 
@@ -73,28 +105,9 @@ class RoleController extends Controller
         return redirect()->route('settings')->with('success', $message);
     }
 
-    public function form(PermissionHelper $permissionHelper, ?Role $role = null)
-    {
-        if (!is_null($role)) {
-            if (!auth()->user()->role->canInteract($role)) {
-                return redirect()->route('settings')->with('error', 'You cannot interact with that role.')->send();
-            }
-
-            $affected_users = User::where('role_id', $role->id)->count();
-            $available_roles = $role->getRolesAvailable(auth()->user()->role)->all();
-        }
-
-        return view('pages.settings.roles.form', [
-            'role' => $role,
-            'affected_users' => $affected_users ?? null,
-            'available_roles' => $available_roles ?? null,
-            'permissionHelper' => $permissionHelper,
-        ]);
-    }
-
     public function order()
     {
-        $roles = json_decode(request()->get('roles'))->roles;
+        $roles = json_decode(request()->get('roles'));
 
         $i = 1;
         foreach ($roles as $role) {

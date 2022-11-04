@@ -8,7 +8,7 @@ use App\Http\Requests\ProductRequest;
 use App\Services\Products\ProductCreationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class ProductCreationTest extends TestCase
+class ProductCreationServiceTest extends TestCase
 {
     use RefreshDatabase;
 

@@ -11,22 +11,12 @@ class ProductStockAdjustmentService extends Service
 {
     use ProductService;
 
-    public const RESULT_INVALID_PRODUCT = 0;
     public const RESULT_NO_BOX_INPUT = 1;
     public const RESULT_BOTH_INPUT_ZERO = 2;
     public const RESULT_SUCCESS = 3;
 
-    public function __construct(ProductStockAdjustmentRequest $request)
+    public function __construct(ProductStockAdjustmentRequest $request, Product $product)
     {
-        $product_id = $request->product_id;
-        $product = Product::find($product_id);
-
-        if ($product === null) {
-            $this->_result = self::RESULT_INVALID_PRODUCT;
-            $this->_message = 'Invalid product';
-            return;
-        }
-
         session()->flash('last_product', $product);
 
         $adjust_stock = (int) $request->adjust_stock;

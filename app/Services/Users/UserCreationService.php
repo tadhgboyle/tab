@@ -66,7 +66,7 @@ class UserCreationService extends Service
     {
         return match ($this->getResult()) {
             self::RESULT_SUCCESS => redirect()->route('users_list')->with('success', $this->getMessage()),
-            default => redirect()->back()->withInput()->with('error', $this->getMessage()),
+            default => redirect()->back()->with('error', $this->getMessage()),
         };
     }
 }

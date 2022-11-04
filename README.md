@@ -118,9 +118,6 @@ Documentation (in the form of a printable user handbook) is being written.
     - If repeating activity, add a column (nullable), for root activity, the ID of the original activity it is duplicating
 - Disable submit button when anything goes wrong *(Remaining: Stock, Categories)* 
     - Then on the backend, if they somehow bypass the disabled submit button: on errors during order, return back with their input + quantities
-- Rework how to select items and quantities. Right now it is somewhat not intuitive. New system:
-    - **Similar to GBBC tab, click an item to add it to a list of all items. Click more times for more quantity**
-    - Use livewire
 - Complete inventory features
     - "Set stock" in adjust page as well as add/subtract.
     - Add product option if stock should be added back upon return or not.
@@ -150,5 +147,5 @@ Documentation (in the form of a printable user handbook) is being written.
 
 ## Issues/Bugs
 - Rotation end selector is broken in edit/create page
-- When an error happens on order screen, it returns back with selection, but when you unselect a box it all gets NaN
 - Rotation selection dropdown not working on Stats page + general clean up of it
+- Chart library v7 went awol, need to downgrade to v6

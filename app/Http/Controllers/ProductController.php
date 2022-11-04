@@ -10,37 +10,46 @@ use App\Services\Products\ProductDeleteService;
 use App\Services\Products\ProductCreationService;
 use App\Http\Requests\ProductStockAdjustmentRequest;
 use App\Services\Products\ProductStockAdjustmentService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 
 class ProductController extends Controller
 {
-    public function new(ProductRequest $request)
-    {
-        return (new ProductCreationService($request))->redirect();
-    }
-
-    public function edit(ProductRequest $request)
-    {
-        return (new ProductEditService($request))->redirect();
-    }
-
-    public function delete(Product $product)
-    {
-        return (new ProductDeleteService($product->id))->redirect();
-    }
-
-    public function list()
+    public function index()
     {
         return view('pages.products.list', [
             'products' => Product::all(),
         ]);
     }
 
-    public function form(?Product $product = null)
+    public function create()
+    {
+        return view('pages.products.form', [
+            'categories' => CategoryHelper::getInstance()->getProductCategories(),
+        ]);
+    }
+
+    public function store(ProductRequest $request): RedirectResponse
+    {
+        return (new ProductCreationService($request))->redirect();
+    }
+
+    public function edit(Product $product = null)
     {
         return view('pages.products.form', [
             'product' => $product,
             'categories' => CategoryHelper::getInstance()->getProductCategories(),
         ]);
+    }
+
+    public function update(ProductRequest $request, Product $product): RedirectResponse
+    {
+        return (new ProductEditService($request, $product))->redirect();
+    }
+
+    public function delete(Product $product): RedirectResponse
+    {
+        return (new ProductDeleteService($product))->redirect();
     }
 
     public function adjustList()
@@ -50,26 +59,27 @@ class ProductController extends Controller
         ]);
     }
 
-    public function adjustStock(ProductStockAdjustmentRequest $request)
+    public function adjustStock(ProductStockAdjustmentRequest $request, Product $product): RedirectResponse
     {
-        return (new ProductStockAdjustmentService($request))->redirect();
+        return (new ProductStockAdjustmentService($request, $product))->redirect();
     }
 
-    public function ajaxGetInfo(Product $product)
+    public function ajaxGetInfo(Product $product): JsonResponse
     {
         return response()->json([
             'id' => $product->id,
             'name' => $product->name,
             'price' => $product->price,
             'pst' => $product->pst,
-            'gst' => true,
+            'gst' => true, // taxes suck
         ]);
     }
 
-    public function ajaxGetPage()
+    public function ajaxGetPage(Product $product)
     {
+        // TODO: Load same product back when adjust page is reloaded
         return view('pages.products.adjust.form', [
-            'product' => Product::find(request('id')),
+            'product' => $product,
         ]);
     }
 }

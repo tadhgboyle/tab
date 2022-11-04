@@ -1,14 +1,21 @@
 @extends('layouts.default', ['page' => 'settings'])
 @section('content')
-<h2 class="title has-text-weight-bold">{{ is_null($role) ? 'Create' : 'Edit' }} Role</h2>
-@if(!is_null($role)) <h4 class="subtitle"><strong>Role:</strong> {{ $role->name }}</h4>@endif
-<div class="columns">
-    <div class="column">
-        <div class="box">
-            @include('includes.messages')
-            <form action="{{ is_null($role) ? route('settings_roles_new_form') : route('settings_roles_edit_form') }}" method="POST" id="role_form">
-                @csrf
-                <input type="hidden" name="role_id" id="role_id" value="{{ $role->id ?? null }}">
+<h2 class="title has-text-weight-bold">{{ isset($role) ? 'Edit' : 'Create' }} Role</h2>
+@isset($role)
+    <h4 class="subtitle"><strong>Role:</strong> {{ $role->name }}</h4>
+@endisset
+
+<form action="{{ isset($role) ? route('settings_roles_update', $role->id) : route('settings_roles_store') }}" method="POST" id="role_form">
+    @csrf
+    @isset($role)
+        @method('PUT')
+        <input type="hidden" name="role_id" value="{{ $role->id }}">
+    @endisset
+
+    <div class="columns">
+        <div class="column">
+            <div class="box">
+                @include('includes.messages')
                 <div class="field">
                     <label class="label">Name<sup style="color: red">*</sup></label>
                     <div class="control">
@@ -47,26 +54,26 @@
                     <a class="button is-outlined" href="{{ route('settings') }}">
                         <span>Cancel</span>
                     </a>
-                    @if(!is_null($role))
+                    @isset($role)
                     <button class="button is-danger is-outlined is-pulled-right" type="button" onclick="openModal();">
                         <span>Delete</span>
                         <span class="icon is-small">
                             <i class="fas fa-times"></i>
                         </span>
                     </button>
-                    @endif
+                    @endisset
                 </div>
+            </div>
+        </div>
+        <div class="column box is-8" id="permissions_box" style="visibility: hidden;">
+            <h4 class="title has-text-weight-bold is-4">Permissions</h4>
+            <hr>
+            {!! $permissionHelper->renderForm($role ?? null) !!}
         </div>
     </div>
-    <div class="column box is-8" id="permissions_box" style="visibility: hidden;">
-        <h4 class="title has-text-weight-bold is-4">Permissions</h4>
-        <hr>
-            {!! $permissionHelper->renderForm($role) !!}
-        </form>
-    </div>
-</div>
+</form>
 
-@if(!is_null($role))
+@isset($role)
 <div class="modal">
     <div class="modal-background" onclick="closeModal();"></div>
     <div class="modal-card">
@@ -74,20 +81,21 @@
             <p class="modal-card-title">Confirmation</p>
         </header>
         <section class="modal-card-body">
-            <p><strong>{{ $affected_users }}</strong>@if($affected_users > 1 || $affected_users === 0) users @else user @endif currently have this role.</p>
+            <p><strong>{{ count($affected_users) }}</strong>@if(count($affected_users) > 1 || count($affected_users) === 0) users @else user @endif currently have this role.</p>
             <!--
                 Rules:
                 - Only roles which the current user can interact with
                 - If the deleted role is not a staff role, only other non-staff roles are shown
                 - If the role is a staff role, roles of any type are shown
             -->
-            @if(!(count($available_roles) > 0))
+            @if(count($available_roles) === 0)
                 <strong>No appropriate backup roles. Cannot delete.</strong>
             @else
-                <form action="" id="deleteForm" method="GET">
+                <form action="{{ route('settings_roles_delete', $role->id) }}" id="deleteForm" method="POST">
                     @csrf
-                    <input type="hidden" name="old_role" value="{{ $role->id }}">
-                    @if ($affected_users >= 1)
+                    @method('DELETE')
+
+                    @if(count($affected_users) > 0)
                         <p>Please select a new role for them to be placed in:</p>
                         <div class="control">
                             <div class="select">
@@ -103,12 +111,12 @@
             @endif
         </section>
         <footer class="modal-card-foot">
-            <button class="button is-success" type="submit" onclick="deleteData();" @if(!count($available_roles) > 0) disabled @endif>Confirm</button>
+            <button class="button is-success" type="submit" form="deleteForm" @if(count($available_roles) === 0) disabled @endif>Confirm</button>
             <button class="button" onclick="closeModal();">Cancel</button>
         </footer>
     </div>
 </div>
-@endif
+@endisset
 
 <script>
     $(document).ready(() => {
@@ -170,7 +178,7 @@
         });
     });
 
-    @if(!is_null($role))
+    @isset($role)
         const modal = document.querySelector('.modal');
 
         function openModal() {
@@ -180,13 +188,6 @@
         function closeModal() {
             modal.classList.remove('is-active');
         }
-
-        function deleteData() {
-            let url = '{{ route("settings_roles_delete", ":id") }}';
-            url = url.replace(':id', {{ $role->id }});
-            $("#deleteForm").attr('action', url);
-            $("#deleteForm").submit();
-        }
-    @endif
+    @endisset
 </script>
 @stop

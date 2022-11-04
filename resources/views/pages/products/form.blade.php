@@ -1,7 +1,7 @@
 @extends('layouts.default', ['page' => 'products'])
 @section('content')
-<h2 class="title has-text-weight-bold">{{ is_null($product) ? 'Create' : 'Edit' }} Product</h2>
-@if(!is_null($product)) <h4 class="subtitle"><strong>Product:</strong> {{ $product->name }}</h4> @endif
+<h2 class="title has-text-weight-bold">{{ isset($product) ? 'Create' : 'Edit' }} Product</h2>
+@if(isset($product)) <h4 class="subtitle"><strong>Product:</strong> {{ $product->name }}</h4> @endif
 <style>
     select:required:invalid {
         color: gray;
@@ -15,15 +15,19 @@
         color: black;
     }
 </style>
-<div class="columns box">
-    <div class="column is-1"></div>
+<form action="{{ isset($product) ? route('products_update', $product->id) : route('products_store') }}" id="product_form" method="POST" class="form-horizontal">
+    @csrf
 
-    <div class="column is-5">
-        @include('includes.messages')
-        <form action="{{ is_null($product) ? route('products_new_form') : route('products_edit_form') }}" id="product_form" method="POST"
-            class="form-horizontal">
-            @csrf
-            <input type="hidden" name="product_id" id="product_id" value="{{ $product->id ?? null }}">
+    @isset($product)
+        @method('PUT')
+        <input type="hidden" name="product_id" value="{{ $product->id }}">
+    @endisset
+
+    <div class="columns box">
+        <div class="column is-1"></div>
+
+        <div class="column is-5">
+            @include('includes.messages')
 
             <div class="field">
                 <label class="label">Name<sup style="color: red">*</sup></label>
@@ -56,10 +60,10 @@
                 <div class="control">
                     <div class="select">
                         <select name="category_id" required>
-                            {!! !isset($product->category) ? "<option value=\"\" disabled selected>Select Category...</option>" : '' !!}
+                            {!! (isset($product) && !isset($product->category)) ? "<option value=\"\" disabled selected>Select Category...</option>" : '' !!}
                             @foreach($categories as $category)
                                 <option value="{{ $category->id }}"
-                                    {{ (!is_null($product) && $product->category_id === $category->id) || old('category') === $category->id  ? 'selected' : '' }}>
+                                    {{ (isset($product) && $product->category_id === $category->id) || old('category') === $category->id  ? 'selected' : '' }}>
                                     {{ $category->name }}
                                 </option>
                             @endforeach
@@ -67,80 +71,78 @@
                     </div>
                 </div>
             </div>
-    </div>
-    <div class="column is-4">
-
-        <div class="field">
-            <div class="control">
-                <label class="checkbox label">
-                    Unlimited Stock
-                    <input type="checkbox" class="js-switch" name="unlimited_stock" {{ (isset($product->unlimited_stock) && $product->unlimited_stock) || old('unlimited_stock') ? 'checked' : '' }}>
-                </label>
-            </div>
         </div>
-
-        <div id="stock_attr" style="display: none;">
+        <div class="column is-4">
 
             <div class="field">
                 <div class="control">
                     <label class="checkbox label">
-                        Stock Override
-                        <input type="checkbox" class="js-switch" name="stock_override" {{ (isset($product->stock_override) && $product->stock_override) || old('stock_override') ? 'checked' : '' }}>
+                        Unlimited Stock
+                        <input type="checkbox" class="js-switch" name="unlimited_stock" {{ (isset($product->unlimited_stock) && $product->unlimited_stock) || old('unlimited_stock') ? 'checked' : '' }}>
                     </label>
                 </div>
             </div>
 
-            <div class="field">
-                <label class="label">Stock</label>
-                <div class="control has-icons-left">
-                    <span class="icon is-small is-left">
-                        <i class="fas fa-hashtag"></i>
-                    </span>
-                    <input type="number" step="1" name="stock" class="input" placeholder="Stock" value="{{ $product->stock ?? old('stock') }}">
+            <div id="stock_attr" style="display: none;">
+                <div class="field">
+                    <div class="control">
+                        <label class="checkbox label">
+                            Stock Override
+                            <input type="checkbox" class="js-switch" name="stock_override" {{ (isset($product->stock_override) && $product->stock_override) || old('stock_override') ? 'checked' : '' }}>
+                        </label>
+                    </div>
                 </div>
-            </div>
 
-            <div class="field">
-                <label class="label">Box Size</label>
-                <div class="control has-icons-left">
-                    <span class="icon is-small is-left">
-                        <i class="fas fa-hashtag"></i>
-                    </span>
-                    <input type="number" step="1" name="box_size" class="input" placeholder="Box Size" value="{{ $product->box_size ?? old('stock') }}">
+                <div class="field">
+                    <label class="label">Stock</label>
+                    <div class="control has-icons-left">
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-hashtag"></i>
+                        </span>
+                        <input type="number" step="1" name="stock" class="input" placeholder="Stock" value="{{ $product->stock ?? old('stock') }}">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Box Size</label>
+                    <div class="control has-icons-left">
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-hashtag"></i>
+                        </span>
+                        <input type="number" step="1" name="box_size" class="input" placeholder="Box Size" value="{{ $product->box_size ?? old('stock') }}">
+                    </div>
                 </div>
             </div>
         </div>
-
-        </form>
-    </div>
-    <div class="column is-2">
-        <form>
-            <div class="control">
-                <button class="button is-success" type="submit" form="product_form">
-                    <span class="icon is-small">
-                        <i class="fas fa-check"></i>
-                    </span>
-                    <span>Submit</span>
-                </button>
-            </div>
-        </form>
-        <br>
-        @if(!is_null($product))
-            <div class="control">
-                <form>
-                    <button class="button is-danger is-outlined" type="button" onclick="openModal();">
-                        <span>Delete</span>
+        <div class="column is-2">
+            <form>
+                <div class="control">
+                    <button class="button is-success" type="submit" form="product_form">
                         <span class="icon is-small">
-                            <i class="fas fa-times"></i>
+                            <i class="fas fa-check"></i>
                         </span>
+                        <span>Submit</span>
                     </button>
-                </form>
-            </div>
-        @endif
+                </div>
+            </form>
+            <br>
+            @isset($product)
+                <div class="control">
+                    <form>
+                        <button class="button is-danger is-outlined" type="button" onclick="openModal();">
+                            <span>Delete</span>
+                            <span class="icon is-small">
+                                <i class="fas fa-times"></i>
+                            </span>
+                        </button>
+                    </form>
+                </div>
+            @endisset
+        </div>
     </div>
-</div>
+</form>
 
-@if(!is_null($product))
+@isset($product)
     <div class="modal">
         <div class="modal-background" onclick="closeModal();"></div>
         <div class="modal-card">
@@ -149,17 +151,18 @@
             </header>
             <section class="modal-card-body">
                 <p>Are you sure you want to delete the product {{ $product->name }}?</p>
-                <form action="" id="deleteForm" method="GET">
+                <form action="{{ route('products_delete', $product->id) }}" id="deleteForm" method="POST">
                     @csrf
+                    @method('DELETE')
                 </form>
             </section>
             <footer class="modal-card-foot">
-                <button class="button is-success" type="submit" onclick="deleteData();">Confirm</button>
+                <button class="button is-success" type="submit" form="deleteForm">Confirm</button>
                 <button class="button" onclick="closeModal();">Cancel</button>
             </footer>
         </div>
     </div>
-@endif
+@endisset
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -176,7 +179,7 @@
         else div.fadeIn(200);
     }
 
-    @if(!is_null($product))
+    @isset($product)
         const modal = document.querySelector('.modal');
 
         function openModal() {
@@ -186,14 +189,6 @@
         function closeModal() {
             modal.classList.remove('is-active');
         }
-
-        function deleteData() {
-            const id = document.getElementById('product_id').value;
-            let url = '{{ route("products_delete", ":id") }}';
-            url = url.replace(':id', id);
-            $("#deleteForm").attr('action', url);
-            $("#deleteForm").submit();
-        }
-    @endif
+    @endisset
 </script>
 @endsection

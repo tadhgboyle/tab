@@ -13,15 +13,6 @@ class ProductEditTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testCannotEditNonexistentProduct()
-    {
-        $productService = new ProductEditService(new ProductRequest([
-            'product_id' => -1,
-        ]));
-
-        $this->assertSame(ProductEditService::RESULT_NOT_EXIST, $productService->getResult());
-    }
-
     public function testCanEditProductNormally(): void
     {
         $category = Category::factory()->create();
@@ -36,7 +27,7 @@ class ProductEditTest extends TestCase
             'box_size' => 22,
             'stock' => 10,
             'pst' => true,
-        ]));
+        ]), $product);
 
         $this->assertSame(ProductEditService::RESULT_SUCCESS, $productService->getResult());
 
@@ -64,7 +55,7 @@ class ProductEditTest extends TestCase
             'name' => 'Test Product',
             'price' => 10.50,
             'category_id' => $category2->id,
-        ]));
+        ]), $product);
 
         $this->assertSame(ProductEditService::RESULT_SUCCESS, $productService->getResult());
 
@@ -86,7 +77,7 @@ class ProductEditTest extends TestCase
             'name' => 'Test Product',
             'price' => 10.50,
             'category_id' => $product->category_id,
-        ]));
+        ]), $product);
 
         $this->assertSame(ProductEditService::RESULT_SUCCESS, $productService->getResult());
 

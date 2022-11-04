@@ -9,7 +9,7 @@
             <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
         </div>
         <div id="order_container" style="visibility: hidden;">
-            <form method="post" id="order" name="order" action="{{ route('orders_new_form') }}">
+            <form method="post" id="order" name="order" action="{{ route('orders_store', $user->id) }}">
                 @csrf
                 <input type="hidden" id="purchaser_id" name="purchaser_id" value="{{ $user->id }}">
                 <input type="hidden" id="current_pst" value="{{ $pst }}">

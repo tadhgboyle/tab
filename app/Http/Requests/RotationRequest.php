@@ -46,7 +46,7 @@ class RotationRequest extends FormRequest implements FormRequestContract
                 $this->get('end'),
                 $this->get('rotation_id')
             )) {
-                redirect()->back()->withInput()->with('error', 'That Rotation would overlap an existing Rotation.')->send();
+                redirect()->back()->with('error', 'That Rotation would overlap an existing Rotation.')->send();
             }
         });
     }

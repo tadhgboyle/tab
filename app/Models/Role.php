@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Helpers\RoleHelper;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
 use JetBrains\PhpStorm\Pure;
 use Illuminate\Support\Collection;
@@ -30,6 +32,11 @@ class Role extends Model
         'staff' => 'boolean',
         'permissions' => 'array',
     ];
+
+    public function users(): HasMany
+    {
+        return $this->hasMany(User::class);
+    }
 
     /**
      * Get a set of all Roles which this Role has permission to interact with.

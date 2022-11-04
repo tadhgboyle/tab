@@ -8,7 +8,7 @@ use App\Models\Rotation;
 use App\Helpers\RotationHelper;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class RotationTest extends TestCase
+class RotationHelperTest extends TestCase
 {
     use RefreshDatabase;
 

@@ -5,7 +5,7 @@
     <div class="column"></div>
     <div class="column box">
         @include('includes.messages')
-        <form action="{{ route('users_payout_form', $user) }}" method="POST">
+        <form action="{{ route('users_payout_store', $user) }}" method="POST">
             @csrf
             <div class="field">
                 <label class="label">Identifier</label>

@@ -8,22 +8,15 @@ use App\Models\User;
 use App\Services\Users\UserDeleteService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class UserDeleteTest extends TestCase
+class UserDeleteServiceTest extends TestCase
 {
     use RefreshDatabase;
-
-    public function testCannotDeleteNonexistentUser(): void
-    {
-        $userService = new UserDeleteService(-1);
-
-        $this->assertSame(UserDeleteService::RESULT_NOT_EXIST, $userService->getResult());
-    }
 
     public function testCanDeleteUser(): void
     {
         $user = $this->createUser();
 
-        $userService = new UserDeleteService($user->id);
+        $userService = new UserDeleteService($user);
 
         $this->assertSame(UserDeleteService::RESULT_SUCCESS, $userService->getResult());
         $this->assertTrue($user->refresh()->trashed());

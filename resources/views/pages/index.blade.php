@@ -23,7 +23,7 @@
                     @foreach($users as $user)
                     <tr>
                         <td>
-                            <div><a href="{{ route('orders_new', $user->id) }}">{{ $user->full_name }}</a></div>
+                            <div><a href="{{ route('orders_create', $user->id) }}">{{ $user->full_name }}</a></div>
                         </td>
                         <td>
                             <div>

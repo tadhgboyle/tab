@@ -46,7 +46,7 @@ class User extends Authenticatable
 
     public function transactions(): HasMany
     {
-        return $this->hasMany(Transaction::class, 'purchaser_id', 'id');
+        return $this->hasMany(Transaction::class, 'purchaser_id');
     }
 
     public function rotations(): BelongsToMany

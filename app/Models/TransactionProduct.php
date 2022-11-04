@@ -63,7 +63,7 @@ class TransactionProduct extends Model
 
     public function category(): HasOne
     {
-        return $this->hasOne(Category::class);
+        return $this->hasOne(Category::class, 'id', 'category_id');
     }
 
     public function getTax(): float

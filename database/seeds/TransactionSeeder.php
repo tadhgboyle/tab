@@ -53,7 +53,7 @@ class TransactionSeeder extends Seeder
                     'rotation_id' => $rotation->id,
                     'products' => json_encode($products),
                     'created_at' => $rotation->start->addDays(random_int(1, 6))->addMillis(random_int(-99999, 99999)),
-                ]));
+                ]), $user);
 
                 if ($service->getResult() !== TransactionCreationService::RESULT_SUCCESS) {
                     continue;
@@ -75,7 +75,7 @@ class TransactionSeeder extends Seeder
                         $returning = random_int(0, $max_to_return);
 
                         for ($j = 0; $j <= $returning; $j++) {
-                            (new TransactionReturnService($transaction))->returnItem($product_id);
+                            (new TransactionReturnService($transaction))->returnItem(Product::find($product_id));
                         }
                     }
                 }

@@ -13,7 +13,7 @@ use Database\Seeders\RotationSeeder;
 use App\Services\Users\UserCreationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class UserCreationTest extends TestCase
+class UserCreationServiceTest extends TestCase
 {
     use RefreshDatabase;
 
