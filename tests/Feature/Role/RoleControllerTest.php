@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Role;
 
+use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
 class RoleControllerTest extends TestCase
 {
@@ -19,7 +19,8 @@ class RoleControllerTest extends TestCase
     private User $_cashier;
     private User $_manager;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
 
         $this->_superadmin_role = Role::factory()->create([
@@ -189,7 +190,7 @@ class RoleControllerTest extends TestCase
 
         $this->assertDatabaseHas(Role::class, [
             'name' => 'Test Role',
-            'permissions' => "[]",
+            'permissions' => '[]',
         ]);
     }
 
@@ -366,7 +367,7 @@ class RoleControllerTest extends TestCase
 
         $this->assertDatabaseHas(Role::class, [
             'name' => 'Updated Camper Role',
-            'permissions' => "[]",
+            'permissions' => '[]',
         ]);
     }
 

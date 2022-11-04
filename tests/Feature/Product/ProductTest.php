@@ -2,17 +2,17 @@
 
 namespace Tests\Feature\Product;
 
-use App\Helpers\RotationHelper;
-use App\Models\Role;
-use App\Models\Settings;
-use App\Models\Transaction;
-use App\Models\TransactionProduct;
-use App\Models\User;
-use App\Models\UserLimits;
-use Database\Seeders\RotationSeeder;
 use Tests\TestCase;
+use App\Models\Role;
+use App\Models\User;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Settings;
+use App\Models\UserLimits;
+use App\Models\Transaction;
+use App\Helpers\RotationHelper;
+use App\Models\TransactionProduct;
+use Database\Seeders\RotationSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ProductTest extends TestCase

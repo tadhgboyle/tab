@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Http\Requests\CategoryRequest;
 use Illuminate\Http\RedirectResponse;
+use App\Http\Requests\CategoryRequest;
 
 class CategoryController extends Controller
 {

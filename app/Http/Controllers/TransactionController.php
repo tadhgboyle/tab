@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Transaction;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Helpers\SettingsHelper;
+use Illuminate\Http\RedirectResponse;
 use App\Services\Transactions\TransactionReturnService;
 use App\Services\Transactions\TransactionCreationService;
 

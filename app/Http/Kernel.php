@@ -2,10 +2,10 @@
 
 namespace App\Http;
 
-use App\Http\Middleware\HasPermission;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\TrustProxies;
+use App\Http\Middleware\HasPermission;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Auth\Middleware\Authorize;
