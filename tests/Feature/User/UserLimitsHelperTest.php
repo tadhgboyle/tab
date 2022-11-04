@@ -23,7 +23,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 // TODO: test with different limit durations (day/week)
 // TODO: test when categories are made after user is made
 // TODO: activity transaction stuff
-class UserLimitsTest extends TestCase
+class UserLimitsHelperTest extends TestCase
 {
     use RefreshDatabase;
 

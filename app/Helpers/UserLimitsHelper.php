@@ -119,7 +119,7 @@ class UserLimitsHelper
             foreach ($transaction->products as $product) {
                 // TODO: Should we store category ID in TransactionProduct table?
                 // If category of product is changed in future, our calculation might be off.
-                if ((int) $product->product->category_id !== $category_id) {
+                if ($product->category_id != $category_id) {
                     continue;
                 }
 

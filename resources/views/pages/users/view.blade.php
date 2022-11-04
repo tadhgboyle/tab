@@ -202,7 +202,7 @@
                         </div>
                         <div class="column">
                             @if(hasPermission('users_payouts_create'))
-                                <a class="button is-success is-pulled-right" href="{{ route('users_payout', $user) }}">
+                                <a class="button is-success is-pulled-right" href="{{ route('users_payout_create', $user) }}">
                                     <span class="icon is-small">
                                         <i class="fas fa-file-invoice-dollar"></i>
                                     </span>

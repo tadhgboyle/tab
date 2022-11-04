@@ -14,7 +14,7 @@ use App\Services\Users\UserEditService;
 use App\Services\Users\UserCreationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class UserEditTest extends TestCase
+class UserEditServiceTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -44,7 +44,7 @@ class UserEditTest extends TestCase
         $userService = new UserEditService($this->createRequest(
             user_id: $this->_superadmin_user->id,
             role_id: $this->_superadmin_role->id
-        ));
+        ), $this->_superadmin_user);
 
         $this->assertSame(UserEditService::RESULT_CANT_MANAGE_THAT_ROLE, $userService->getResult());
     }
@@ -61,13 +61,12 @@ class UserEditTest extends TestCase
                 balance: 100.0,
                 role_id: $role->id,
                 password: 'should_be_ignored'
-            ));
-            $user = $userService->getUser();
+            ), $this->_cashier_user);
 
             $this->assertSame(UserEditService::RESULT_SUCCESS_IGNORED_PASSWORD, $userService->getResult());
-            $this->assertTrue(Hash::check('password', $user->password));
-            $this->assertEquals('Ronan Boyle 1', $user->full_name);
-            $this->assertEquals(100.0, $user->balance);
+            $this->assertTrue(Hash::check('password', $userService->getUser()->password));
+            $this->assertEquals('Ronan Boyle 1', $userService->getUser()->full_name);
+            $this->assertEquals(100.0, $userService->getUser()->balance);
         }
     }
 
@@ -81,11 +80,10 @@ class UserEditTest extends TestCase
             username: $this->_cashier_user->username,
             role_id: $this->_camper_role->id,
             password: 'should_be_ignored'
-        ));
-        $user = $userService->getUser();
+        ), $this->_cashier_user);
 
         $this->assertSame(UserEditService::RESULT_SUCCESS_APPLIED_PASSWORD, $userService->getResult());
-        $this->assertNull($user->password);
+        $this->assertNull($userService->getUser()->password);
     }
 
     private function createRequest(int $user_id, ?string $full_name = null, ?string $username = null, float $balance = 0, ?int $role_id = null, ?string $password = null, array $limit = [], array $duration = []): UserRequest

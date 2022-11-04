@@ -163,9 +163,9 @@
         }
 
         function returnProductData() {
-            let url = '{{ route("orders_return_item", [":item", ":order"]) }}';
-            url = url.replace(':item', product);
+            let url = '{{ route("orders_return_item", [":order", ":product"]) }}';
             url = url.replace(':order', {{ $transaction->id }});
+            url = url.replace(':product', product);
             $("#returnItemForm").attr('action', url);
             $("#returnItemForm").submit();
         }

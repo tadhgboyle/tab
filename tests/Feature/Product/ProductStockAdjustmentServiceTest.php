@@ -9,18 +9,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Http\Requests\ProductStockAdjustmentRequest;
 use App\Services\Products\ProductStockAdjustmentService;
 
-class ProductStockAdjustmentTest extends TestCase
+class ProductStockAdjustmentServiceTest extends TestCase
 {
     use RefreshDatabase;
-
-    public function testCannotAdjustStockWhenProductIsNotFound(): void
-    {
-        $productService = (new ProductStockAdjustmentService(new ProductStockAdjustmentRequest([
-            'product_id' => -1,
-        ])));
-
-        $this->assertSame(ProductStockAdjustmentService::RESULT_INVALID_PRODUCT, $productService->getResult());
-    }
 
     public function testCannotAdjustStockWithoutInput(): void
     {
@@ -32,7 +23,7 @@ class ProductStockAdjustmentTest extends TestCase
         $productService = (new ProductStockAdjustmentService(new ProductStockAdjustmentRequest([
             'product_id' => $product->id,
             'adjust_stock' => 0,
-        ])));
+        ]), $product));
 
         $this->assertSame(ProductStockAdjustmentService::RESULT_NO_BOX_INPUT, $productService->getResult());
     }
@@ -47,7 +38,7 @@ class ProductStockAdjustmentTest extends TestCase
             'product_id' => $product->id,
             'adjust_stock' => 0,
             'adjust_box' => 0,
-        ])));
+        ]), $product));
 
         $this->assertSame(ProductStockAdjustmentService::RESULT_BOTH_INPUT_ZERO, $productService->getResult());
     }
@@ -62,7 +53,7 @@ class ProductStockAdjustmentTest extends TestCase
         $productService = (new ProductStockAdjustmentService(new ProductStockAdjustmentRequest([
             'product_id' => $product->id,
             'adjust_stock' => 7,
-        ])));
+        ]), $product));
 
         $this->assertSame(ProductStockAdjustmentService::RESULT_SUCCESS, $productService->getResult());
 
@@ -83,7 +74,7 @@ class ProductStockAdjustmentTest extends TestCase
         $productService = (new ProductStockAdjustmentService(new ProductStockAdjustmentRequest([
             'product_id' => $product->id,
             'adjust_box' => 5,
-        ])));
+        ]), $product));
 
         $this->assertSame(ProductStockAdjustmentService::RESULT_SUCCESS, $productService->getResult());
 
@@ -105,7 +96,7 @@ class ProductStockAdjustmentTest extends TestCase
             'product_id' => $product->id,
             'adjust_stock' => 1,
             'adjust_box' => 5,
-        ])));
+        ]), $product));
 
         $this->assertSame(ProductStockAdjustmentService::RESULT_SUCCESS, $productService->getResult());
 

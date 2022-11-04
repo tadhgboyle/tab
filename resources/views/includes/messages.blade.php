@@ -1,15 +1,15 @@
-@if (Session::has('success'))
+@if (session()->has('success'))
 <div class="notification is-primary is-light">
-    <span>{!! Session::get('success') !!}</span>
+    <span>{!! session()->get('success') !!}</span>
     <button class="delete close-notification"></button>
 </div>
 @endif
 
-@if (Session::has('error'))
-<div class="notification is-danger is-light">
-    <span>{!! Session::get('error') !!}</span>
-    <button class="delete close-notification"></button>
-</div>
+@if (session()->has('error'))
+    <div class="notification is-danger is-light">
+        <span>{!! session()->get('error') !!}</span>
+        <button class="delete close-notification"></button>
+    </div>
 @endif
 
 @foreach ($errors->all() as $error)

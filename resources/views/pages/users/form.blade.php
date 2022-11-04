@@ -1,19 +1,20 @@
 @extends('layouts.default', ['page' => 'users'])
 @section('content')
-<h2 class="title has-text-weight-bold">{{ is_null($user) ? 'Create' : 'Edit' }} User</h2>
-@if(!is_null($user)) <h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @permission('users_view')<a href="{{ route('users_view', $user->id) }}">(View)</a>@endpermission</h4>@endif
-<div class="columns">
-    <div class="column is-5">
-        @include('includes.messages')
-        <div class="box">
-            <h4 class="title has-text-weight-bold is-4">General</h4>
-            <form action="/users/{{ is_null($user) ? 'new' : 'edit' }}" id="user_form" method="POST">
-                @csrf
+<h2 class="title has-text-weight-bold">{{ isset($user) ? 'Edit' : 'Create' }} User</h2>
+@isset($user)<h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @permission('users_view')<a href="{{ route('users_view', $user->id) }}">(View)</a>@endpermission</h4>@endisset
+<form action="{{ isset($user) ? route('users_update', $user->id) : route('users_store') }}" id="user_form" method="POST">
+    @csrf
 
-                @if(!is_null($user))
-                    <input type="hidden" name="user_id" id="user_id" value="{{ $user->id }}">
-                @endif
+    @isset($user)
+        @method('PUT')
+        <input type="hidden" name="user_id" value="{{ $user->id }}">
+    @endisset
 
+    <div class="columns">
+        <div class="column is-5">
+            @include('includes.messages')
+            <div class="box">
+                <h4 class="title has-text-weight-bold is-4">General</h4>
                 <div class="field">
                     <label class="label">Full Name<sup style="color: red">*</sup></label>
                     <div class="control">
@@ -46,7 +47,7 @@
                     <div class="select is-multiple is-fullwidth">
                         <select multiple size="4" name="rotations[]">
                             @foreach ($rotations as $rotation)
-                                <option value="{{ $rotation->id }}" @if ($user !== null && $user->rotations->contains($rotation)) selected  @endif>
+                                <option value="{{ $rotation->id }}" @if (isset($user) && $user->rotations->contains($rotation)) selected  @endif>
                                     {{ $rotation->name }}
                                 </option>
                             @endforeach
@@ -70,9 +71,9 @@
                     </div>
                 </div>
 
-                <div id="password_hidable" style="display: none;">
+                <div id="password_hideable" style="display: none;">
                     <div class="field">
-                        <label class="label">{{ !is_null($user) ? 'Change ' : '' }}Password</label>
+                        <label class="label">{{ isset($user) ? 'Change ' : '' }}Password</label>
                         <div class="control has-icons-left">
                             <span class="icon is-small is-left">
                                 <i class="fas fa-lock"></i>
@@ -89,65 +90,65 @@
                         </div>
                     </div>
                 </div>
-        </div>
-    </div>
-
-    <div class="column">
-        <div class="box">
-            <h4 class="title has-text-weight-bold is-4">Category Limits</h4>
-
-            @foreach($categories as $category)
-                <div class="field">
-                    <label class="label">{{ $category['name'] }} Limit</label>
-                    <div class="control has-icons-left">
-                        <span class="icon is-small is-left">
-                            <i class="fas fa-dollar-sign"></i>
-                        </span>
-                        <input type="number" step="0.01" name="limit[{{ $category['id'] }}]" class="input" placeholder="Limit" value="{{ $user !== null ? number_format($category['info']->limit_per, 2, '.', '') : -1.00}}" required>
-                    </div>
-                    <div class="control">
-                        <label class="radio">
-                            <input type="radio" name="duration[{{ $category['id'] }}]" value="0" @if(($user !== null && $category['info']->duration === "day") || $user === null) checked @endif>
-                            Day
-                        </label>
-                        <label class="radio">
-                            <input type="radio" name="duration[{{ $category['id'] }}]" value="1" @if($user !== null && $category['info']->duration === "week") checked @endif>
-                            Week
-                        </label>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    </div>
-    </form>
-    <div class="column is-2">
-        <form>
-            <div class="control">
-                <button class="button is-success" type="submit" form="user_form">
-                    <span class="icon is-small">
-                        <i class="fas fa-check"></i>
-                    </span>
-                    <span>Submit</span>
-                </button>
             </div>
-        </form>
-        <br>
-        @if(!is_null($user))
-        <div class="control">
-            <form>
-                <button class="button is-danger is-outlined" type="button" onclick="openModal();">
-                    <span>Delete</span>
-                    <span class="icon is-small">
-                        <i class="fas fa-times"></i>
-                    </span>
-                </button>
-            </form>
         </div>
-        @endif
-    </div>
-</div>
 
-@if(!is_null($user))
+        <div class="column">
+            <div class="box">
+                <h4 class="title has-text-weight-bold is-4">Category Limits</h4>
+
+                @foreach($categories as $category)
+                    <div class="field">
+                        <label class="label">{{ $category['name'] }} Limit</label>
+                        <div class="control has-icons-left">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-dollar-sign"></i>
+                            </span>
+                            <input type="number" step="0.01" name="limit[{{ $category['id'] }}]" class="input" placeholder="Limit" value="{{ isset($user) ? number_format($category['info']->limit_per, 2, '.', '') : -1.00}}" required>
+                        </div>
+                        <div class="control">
+                            <label class="radio">
+                                <input type="radio" name="duration[{{ $category['id'] }}]" value="0" @if((isset($user) && $category['info']->duration === "day") || !isset($user)) checked @endif>
+                                Day
+                            </label>
+                            <label class="radio">
+                                <input type="radio" name="duration[{{ $category['id'] }}]" value="1" @if(isset($user) && $category['info']->duration === "week") checked @endif>
+                                Week
+                            </label>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+        <div class="column is-2">
+            <form>
+                <div class="control">
+                    <button class="button is-success" type="submit" form="user_form">
+                        <span class="icon is-small">
+                            <i class="fas fa-check"></i>
+                        </span>
+                        <span>Submit</span>
+                    </button>
+                </div>
+            </form>
+            <br>
+            @isset($user)
+            <div class="control">
+                <form>
+                    <button class="button is-danger is-outlined" type="button" onclick="openModal();">
+                        <span>Delete</span>
+                        <span class="icon is-small">
+                            <i class="fas fa-times"></i>
+                        </span>
+                    </button>
+                </form>
+            </div>
+            @endisset
+        </div>
+    </div>
+</form>
+
+@isset($user)
 <div class="modal">
     <div class="modal-background" onclick="closeModal();"></div>
     <div class="modal-card">
@@ -156,17 +157,18 @@
         </header>
         <section class="modal-card-body">
             <p>Are you sure you want to delete the user {{ $user->full_name }}?</p>
-            <form action="" id="deleteForm" method="GET">
+            <form action="{{ route('users_delete', $user) }}" id="deleteForm" method="POST">
                 @csrf
+                @method('DELETE')
             </form>
         </section>
         <footer class="modal-card-foot">
-            <button class="button is-success" type="submit" onclick="deleteData();">Confirm</button>
+            <button class="button is-success" type="submit" form="deleteForm">Confirm</button>
             <button class="button" onclick="closeModal();">Cancel</button>
         </footer>
     </div>
 </div>
-@endif
+@endisset
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -179,7 +181,7 @@
 
     function updatePassword(staff) {
         if (staff !== undefined) {
-            let div = $('#password_hidable');
+            const div = $('#password_hideable');
             if (staff) {
                 div.fadeIn(200);
             } else {
@@ -188,7 +190,7 @@
         }
     }
 
-    @if(!is_null($user))
+    @isset($user)
         const modal = document.querySelector('.modal');
 
         function openModal() {
@@ -198,14 +200,6 @@
         function closeModal() {
             modal.classList.remove('is-active');
         }
-
-        function deleteData() {
-            const id = document.getElementById('user_id').value;
-            let url = '{{ route("users_delete", ":id") }}';
-            url = url.replace(':id', id);
-            $("#deleteForm").attr('action', url);
-            $("#deleteForm").submit();
-        }
-    @endif
+    @endisset
 </script>
 @endsection

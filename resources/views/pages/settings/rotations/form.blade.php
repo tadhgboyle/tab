@@ -1,14 +1,18 @@
 @extends('layouts.default', ['page' => 'settings'])
 @section('content')
-<h2 class="title has-text-weight-bold">{{ is_null($rotation) ? 'Create' : 'Edit' }} Rotation</h2>
-@if(!is_null($rotation)) <h4 class="subtitle"><strong>Rotation:</strong> {{ $rotation->name }}</h4>@endif
+<h2 class="title has-text-weight-bold">{{ isset($rotation) ? 'Edit' : 'Create' }} Rotation</h2>
+@isset($rotation) <h4 class="subtitle"><strong>Rotation:</strong> {{ $rotation->name }}</h4>@endisset
 <div class="columns">
     <div class="column"></div>
     <div class="column box">
         @include('includes.messages')
-        <form action="{{ is_null($rotation) ? route('settings_rotations_new_form') : route('settings_rotations_edit_form') }}" method="POST">
+        <form action="{{ isset($rotation) ? route('settings_rotations_update', $rotation->id) : route('settings_rotations_store') }}" method="POST">
             @csrf
-            <input type="hidden" name="rotation_id" id="rotation_id" value="{{ $rotation->id ?? null }}">
+            @isset($rotation)
+                @method('PUT')
+                <input type="hidden" name="rotation_id" value="{{ $rotation->id }}">
+            @endisset
+
             <div class="field">
                 <label class="label">Name<sup style="color: red">*</sup></label>
                 <div class="control">
@@ -37,14 +41,14 @@
                 <a class="button is-outlined" href="{{ route('settings') }}">
                     <span>Cancel</span>
                 </a>
-                @if(!is_null($rotation))
+                @isset($rotation)
                 <button class="button is-danger is-outlined is-pulled-right" type="button" onclick="openModal();">
                     <span>Delete</span>
                     <span class="icon is-small">
                         <i class="fas fa-times"></i>
                     </span>
                 </button>
-                @endif
+                @endisset
             </div>
         </form>
     </div>
@@ -52,7 +56,7 @@
     </div>
 </div>
 
-@if(!is_null($rotation))
+@isset($rotation)
 <div class="modal">
     <div class="modal-background" onclick="closeModal();"></div>
     <div class="modal-card">
@@ -61,20 +65,21 @@
         </header>
         <section class="modal-card-body">
             <p>Are you sure you want to delete the rotation <strong>{{ $rotation->name }}</strong>?</p>
-            <form action="" id="deleteForm" method="GET">
+            <form action="{{ route('settings_rotations_delete', $rotation->id) }}" id="deleteForm" method="POST">
                 @csrf
+                @method('DELETE')
             </form>
         </section>
         <footer class="modal-card-foot">
-            <button class="button is-success" type="submit" onclick="deleteData();">Confirm</button>
+            <button class="button is-success" type="submit">Confirm</button>
             <button class="button" onclick="closeModal();">Cancel</button>
         </footer>
     </div>
 </div>
-@endif
+@endisset
 
 <script>
-    @if(!is_null($rotation))
+    @isset($rotation)
         const modal = document.querySelector('.modal');
 
         function openModal() {
@@ -84,14 +89,7 @@
         function closeModal() {
             modal.classList.remove('is-active');
         }
-
-        function deleteData() {
-            let url = '{{ route("settings_rotations_delete", ":id") }}';
-            url = url.replace(':id', {{ $rotation->id }});
-            $("#deleteForm").attr('action', url);
-            $("#deleteForm").submit();
-        }
-    @endif
+    @endisset
 
     let endMinDate = null;
 
@@ -104,13 +102,12 @@
         const startDate = new Date('{{ $start }}');
         const endDate = new Date('{{ $end }}');
 
-        @if(is_null($rotation))
+        @isset($rotation)
             flatpickr('#start', { defaultDate: startDate, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: 'today' });
-            flatpickr('#end', { defaultDate: endDate, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: startDate });
         @else
             flatpickr('#start', { defaultDate: startDate, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K' });
-            flatpickr('#end', { defaultDate: endDate, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: startDate });
         @endif
+        flatpickr('#end', { defaultDate: endDate, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: startDate });
     });
 </script>
 @stop

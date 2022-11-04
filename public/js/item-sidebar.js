@@ -1,7 +1,7 @@
 let ITEMS = [];
 const PST_AMOUNT = document.getElementById('current_pst').value - 1;
 const GST_AMOUNT = document.getElementById('current_gst').value - 1;
-const PURCHASER_ID = document.getElementById('purchaser_id').value
+const PURCHASER_ID = document.getElementById('purchaser_id').value;
 
 window.onload = () => {
     const storedItems = localStorage.getItem(`items-${PURCHASER_ID}`);
@@ -13,6 +13,7 @@ window.onload = () => {
 };
 
 const addProduct = async (productId) => {
+    // TODO: check stock and don't add if it would be over the limit
     await fetch(`/products/${productId}`)
         .then(resp => resp.json())
         .then(product => {
@@ -74,7 +75,6 @@ const removeProductAll = (productId) => {
 
     ITEMS = ITEMS.filter(item => item.id !== productId);
 
-    (productId, 0);
     cacheItems();
     render();
 };
@@ -198,9 +198,8 @@ const calculateTaxTotals = () => {
 const calculateTotalPrice = () => {
     const subtotal = calculateSubtotal();
 
-    let taxTotal = 0;
     const { pstTotal, gstTotal } = calculateTaxTotals();
-    taxTotal = pstTotal + gstTotal;
+    const taxTotal = pstTotal + gstTotal;
 
     return subtotal + taxTotal;
 };

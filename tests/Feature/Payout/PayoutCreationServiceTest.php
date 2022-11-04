@@ -9,7 +9,7 @@ use App\Http\Requests\PayoutRequest;
 use App\Services\Payouts\PayoutCreationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class PayoutCreationTest extends TestCase
+class PayoutCreationServiceTest extends TestCase
 {
     use RefreshDatabase;
 

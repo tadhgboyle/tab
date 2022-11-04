@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Cookie;
 
 class StatisticsPageController extends Controller
 {
-    public function view(RotationHelper $rotationHelper)
+    public function index(RotationHelper $rotationHelper)
     {
         return view('pages.statistics.statistics', [
             'rotations' => $rotationHelper->getRotations(),

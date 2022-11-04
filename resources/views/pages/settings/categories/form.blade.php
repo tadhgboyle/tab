@@ -3,14 +3,18 @@
 @php
 use App\Casts\CategoryType
 @endphp
-<h2 class="title has-text-weight-bold">{{ is_null($category) ? 'Create' : 'Edit' }} Category</h2>
+<h2 class="title has-text-weight-bold">{{ isset($category) ? 'Edit' : 'Create' }} Category</h2>
 <div class="columns">
     <div class="column"></div>
     <div class="column box">
         @include('includes.messages')
-        <form action="{{ is_null($category) ? route('settings_categories_new_form') : route('settings_categories_edit_form') }}" method="POST">
+        <form action="{{ isset($category) ? route('settings_categories_update', $category->id) : route('settings_categories_store') }}" method="POST">
             @csrf
-            <input type="hidden" name="category_id" id="category_id" value="{{ $category->id ?? null }}">
+            @isset($category)
+                @method('PUT')
+                <input type="hidden" name="category_id" value="{{ $category->id }}">
+            @endisset
+
             <div class="field">
                 <label class="label">Name<sup style="color: red">*</sup></label>
                 <div class="control">
@@ -22,14 +26,14 @@ use App\Casts\CategoryType
                 <div class="control">
                     <div class="select" id="type">
                         <select name="type" class="input" required>
-                            {!! is_null($category) ? "<option value=\"\" disabled selected>Select Type...</option>" : '' !!}
-                            <option value="1" {{ (!is_null($category) && $category->type->id === CategoryType::TYPE_PRODUCTS_ACTIVITIES) || old('type') === CategoryType::TYPE_PRODUCTS_ACTIVITIES ? "selected" : "" }}>
+                            {!! !isset($category) ? "<option value=\"\" disabled selected>Select Type...</option>" : '' !!}
+                            <option value="1" {{ (isset($category) && $category->type->id === CategoryType::TYPE_PRODUCTS_ACTIVITIES) || old('type') === CategoryType::TYPE_PRODUCTS_ACTIVITIES ? "selected" : "" }}>
                                 Products + Activities
                             </option>
-                            <option value="2" {{ (!is_null($category) && $category->type->id === CategoryType::TYPE_PRODUCTS) || old('type') === CategoryType::TYPE_PRODUCTS ? "selected" : "" }}>
+                            <option value="2" {{ (isset($category) && $category->type->id === CategoryType::TYPE_PRODUCTS) || old('type') === CategoryType::TYPE_PRODUCTS ? "selected" : "" }}>
                                 Products
                             </option>
-                            <option value="3" {{ (!is_null($category) && $category->type->id === CategoryType::TYPE_ACTIVITIES) || old('type') === CategoryType::TYPE_ACTIVITIES ? "selected" : "" }}>
+                            <option value="3" {{ (isset($category) && $category->type->id === CategoryType::TYPE_ACTIVITIES) || old('type') === CategoryType::TYPE_ACTIVITIES ? "selected" : "" }}>
                                 Activities
                             </option>
                         </select>
@@ -46,14 +50,14 @@ use App\Casts\CategoryType
                 <a class="button is-outlined" href="{{ route('settings') }}">
                     <span>Cancel</span>
                 </a>
-                @if(!is_null($category))
+                @isset($category)
                 <button class="button is-danger is-outlined is-pulled-right" type="button" onclick="openModal();">
                     <span>Delete</span>
                     <span class="icon is-small">
                         <i class="fas fa-times"></i>
                     </span>
                 </button>
-                @endif
+                @endisset
             </div>
         </form>
     </div>
@@ -61,7 +65,7 @@ use App\Casts\CategoryType
     </div>
 </div>
 
-@if(!is_null($category))
+@isset($category)
 <div class="modal">
     <div class="modal-background" onclick="closeModal();"></div>
     <div class="modal-card">
@@ -70,36 +74,28 @@ use App\Casts\CategoryType
         </header>
         <section class="modal-card-body">
             <p>Are you sure you want to delete the category <strong>{{ $category->name }}</strong>?</p>
-            <form action="" id="deleteForm" method="GET">
+            <form action="{{ route('settings_categories_delete', $category->id) }}" id="deleteForm" method="POST">
                 @csrf
+                @method('DELETE')
             </form>
         </section>
         <footer class="modal-card-foot">
-            <button class="button is-success" type="submit" onclick="deleteData();">Confirm</button>
+            <button class="button is-success" type="submit" form="deleteForm">Confirm</button>
             <button class="button" onclick="closeModal();">Cancel</button>
         </footer>
     </div>
 </div>
-@endif
 
 <script>
-    @if(!is_null($category))
-        const modal = document.querySelector('.modal');
+    const modal = document.querySelector('.modal');
 
-        function openModal() {
-            modal.classList.add('is-active');
-        }
+    function openModal() {
+        modal.classList.add('is-active');
+    }
 
-        function closeModal() {
-            modal.classList.remove('is-active');
-        }
-
-        function deleteData() {
-            let url = '{{ route("settings_categories_delete", ":id") }}';
-            url = url.replace(':id', {{ $category->id }});
-            $("#deleteForm").attr('action', url);
-            $("#deleteForm").submit();
-        }
-    @endif
+    function closeModal() {
+        modal.classList.remove('is-active');
+    }
 </script>
+@endisset
 @stop

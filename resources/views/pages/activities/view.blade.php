@@ -115,13 +115,14 @@
     });
 
     @if($can_register)
+        // TODO: on page reload, check if text exists in search box and if so, search automatically
         $('#search').on('keyup', function() {
             if (this.value === undefined || this.value === '') {
                 return;
             }
             $.ajax({
-                type : "POST",
-                url : "{{ route('activities_user_search') }}",
+                type : "GET",
+                url : "{{ route('activities_user_search', $activity->id) }}",
                 data: {
                     "_token": "{{ csrf_token() }}",
                     "search": this.value,

@@ -8,7 +8,7 @@ use Tests\FormRequestTestCase;
 use App\Http\Requests\ProductRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class ProductRequestTest extends FormRequestTestCase
+class ProductRequestEditTest extends FormRequestTestCase
 {
     use RefreshDatabase;
 

@@ -47,7 +47,7 @@ class UserRequest extends FormRequest implements FormRequestContract
                 'min:6',
                 ValidationRule::requiredIf(function () {
                     /** @phpstan-ignore-next-line  */
-                    return !(request()?->route()?->getName() === 'users_edit_form')
+                    return !(request()?->route()?->getName() === 'users_update')
                         && resolve(RoleHelper::class)->isStaffRole(
                             // jank stuff to make testing this request possible
                             is_numeric($this->get('role_id')) ? $this->get('role_id') : 0

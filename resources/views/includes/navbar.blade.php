@@ -24,7 +24,7 @@
                                     </a>
                                 @endpermission
                                 @permission('users_manage')
-                                    <a class="navbar-item" href="{{ route('users_new') }}">
+                                    <a class="navbar-item" href="{{ route('users_create') }}">
                                         Create
                                     </a>
                                 @endpermission
@@ -42,7 +42,7 @@
                                     </a>
                                 @endpermission
                                 @permission('products_manage')
-                                    <a class="navbar-item" href="{{ route('products_new') }}">
+                                    <a class="navbar-item" href="{{ route('products_create') }}">
                                         Create
                                     </a>
                                 @endpermission
@@ -65,7 +65,7 @@
                                     </a>
                                 @endpermission
                                 @permission('activities_manage')
-                                    <a class="navbar-item" href="{{ route('activities_new') }}">
+                                    <a class="navbar-item" href="{{ route('activities_create') }}">
                                         Create
                                     </a>
                                 @endpermission

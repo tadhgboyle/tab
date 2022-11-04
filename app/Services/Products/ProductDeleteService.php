@@ -11,18 +11,9 @@ class ProductDeleteService extends Service
     use ProductService;
 
     public const RESULT_SUCCESS = 0;
-    public const RESULT_NOT_EXIST = 1;
 
-    public function __construct(int $product_id)
+    public function __construct(Product $product)
     {
-        $product = Product::find($product_id);
-
-        if ($product === null) {
-            $this->_result = self::RESULT_NOT_EXIST;
-            $this->_message = 'Product does not exist.';
-            return;
-        }
-
         $product->delete();
 
         $this->_product = $product;

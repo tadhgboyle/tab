@@ -14,7 +14,7 @@ class ProductEditService extends Service
     public const RESULT_SUCCESS = 0;
     public const RESULT_NOT_EXIST = 1;
 
-    public function __construct(ProductRequest $request)
+    public function __construct(ProductRequest $request, Product $product)
     {
         $unlimited_stock = $request->has('unlimited_stock');
 
@@ -23,14 +23,6 @@ class ProductEditService extends Service
             $unlimited_stock = true;
         } else {
             $stock = $request->stock;
-        }
-
-        $product = Product::find($request->product_id);
-
-        if ($product === null) {
-            $this->_result = self::RESULT_NOT_EXIST;
-            $this->_message = 'Product not found with that ID';
-            return;
         }
 
         $product->update([
@@ -46,7 +38,7 @@ class ProductEditService extends Service
 
         $this->_product = $product;
         $this->_result = self::RESULT_SUCCESS;
-        $this->_message = 'Successfully edited ' . $request->name . '.';
+        $this->_message = "Successfully edited {$product->name}.";
     }
 
     public function redirect(): RedirectResponse

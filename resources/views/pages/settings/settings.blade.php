@@ -7,7 +7,7 @@
     <div class="column">
         <div class="box">
             <h4 class="title has-text-weight-bold is-4">Taxes</h4>
-            <form action="{{ route('settings_form') }}" id="settings" method="POST">
+            <form action="{{ route('settings_edit') }}" id="settings" method="POST">
                 @csrf
 
                 <div class="field">
@@ -77,7 +77,7 @@
                 </table>
             </div>
             <br>
-            <a class="button is-success" href="{{ route('settings_categories_new') }}">
+            <a class="button is-success" href="{{ route('settings_categories_create') }}">
                 <span class="icon is-small">
                     <i class="fas fa-plus"></i>
                 </span>
@@ -135,7 +135,7 @@
                 </table>
             </div>
             <br>
-            <a class="button is-success" href="{{ route('settings_roles_new') }}">
+            <a class="button is-success" href="{{ route('settings_roles_create') }}">
                 <span class="icon is-small">
                     <i class="fas fa-plus"></i>
                 </span>
@@ -190,7 +190,7 @@
                 </table>
             </div>
             <br>
-            <a class="button is-success" href="{{ route('settings_rotations_new') }}">
+            <a class="button is-success" href="{{ route('settings_rotations_create') }}">
                 <span class="icon is-small">
                     <i class="fas fa-plus"></i>
                 </span>
@@ -248,11 +248,10 @@
 
                         $.ajax({
                             url: "{{ route('settings_roles_order_ajax') }}",
-                            type: "GET",
+                            type: "PUT",
                             data: {
-                                roles: JSON.stringify({
-                                    "roles": toSubmit
-                                })
+                                _token: "{{ csrf_token() }}",
+                                roles: JSON.stringify(toSubmit),
                             },
                             error: function(xhr) {
                                 console.log(xhr);

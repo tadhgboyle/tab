@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 class SettingsController extends Controller
 {
+    // TODO: settingsrequest
     public function editSettings(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -20,7 +21,7 @@ class SettingsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('settings')->withInput()->withErrors($validator);
+            return redirect()->route('settings')->withErrors($validator);
         }
 
         DB::table('settings')->where('setting', 'gst')->update(['value' => $request->gst]);

@@ -21,10 +21,9 @@ class UserEditService extends Service
 
     private UserRequest $_request;
 
-    public function __construct(UserRequest $request)
+    public function __construct(UserRequest $request, User $user)
     {
         $this->_request = $request;
-        $user = User::find($this->_request->user_id);
         $this->_user = $user;
 
         if (!auth()->user()->role->getRolesAvailable()->pluck('id')->contains($this->_request->role_id)) {
@@ -95,7 +94,7 @@ class UserEditService extends Service
     {
         return match ($this->getResult()) {
             self::RESULT_SUCCESS_IGNORED_PASSWORD, self::RESULT_SUCCESS_APPLIED_PASSWORD => redirect()->route('users_list')->with('success', $this->getMessage()),
-            default => redirect()->back()->withInput()->with('error', $this->getMessage()),
+            default => redirect()->back()->with('error', $this->getMessage()),
         };
     }
 }

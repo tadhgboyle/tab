@@ -2,6 +2,7 @@
 
 namespace App\Services\Transactions;
 
+use App\Models\Product;
 use App\Services\Service;
 use App\Models\Transaction;
 use Illuminate\Http\RedirectResponse;
@@ -46,7 +47,7 @@ class TransactionReturnService extends Service
         return $this;
     }
 
-    public function returnItem(int $product_id): TransactionReturnService
+    public function returnItem(Product $product): TransactionReturnService
     {
         if ($this->_transaction->isReturned()) {
             $this->_result = self::RESULT_ALREADY_RETURNED;
@@ -55,13 +56,13 @@ class TransactionReturnService extends Service
         }
 
         $transaction_products = $this->_transaction->products;
-        if (!$transaction_products->pluck('product_id')->contains($product_id)) {
+        if (!$transaction_products->contains('product_id', $product->id)) {
             $this->_result = self::RESULT_ITEM_NOT_IN_ORDER;
             $this->_message = 'That item is not in this order.';
             return $this;
         }
 
-        $transaction_product = $transaction_products->firstWhere('product_id', $product_id);
+        $transaction_product = $transaction_products->firstWhere('product_id', $product->id);
 
         // If it has not been returned more times than it was purchased, then ++ the returned count and refund the original cost + taxes
         if ($transaction_product->returned >= $transaction_product->quantity) {
