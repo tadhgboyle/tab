@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use App\Http\Requests\PayoutRequest;
+use Illuminate\Http\RedirectResponse;
 use App\Services\Payouts\PayoutCreationService;
 
 class PayoutController extends Controller

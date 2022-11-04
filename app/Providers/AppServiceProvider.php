@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Concerns\Taxable;
 use App\Helpers\RoleHelper;
 use App\Charts\ItemSalesChart;
 use App\Helpers\CategoryHelper;
@@ -11,8 +10,6 @@ use App\Helpers\SettingsHelper;
 use App\Charts\ActivitySalesChart;
 use App\Charts\IncomeHistoryChart;
 use App\Charts\PurchaseHistoryChart;
-use App\Models\Product;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

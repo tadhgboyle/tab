@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Helpers\CategoryHelper;
+use Illuminate\Http\JsonResponse;
 use App\Http\Requests\ProductRequest;
+use Illuminate\Http\RedirectResponse;
 use App\Services\Products\ProductEditService;
 use App\Services\Products\ProductDeleteService;
 use App\Services\Products\ProductCreationService;
 use App\Http\Requests\ProductStockAdjustmentRequest;
 use App\Services\Products\ProductStockAdjustmentService;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 
 class ProductController extends Controller
 {
@@ -34,7 +34,7 @@ class ProductController extends Controller
         return (new ProductCreationService($request))->redirect();
     }
 
-    public function edit(Product $product = null)
+    public function edit(?Product $product = null)
     {
         return view('pages.products.form', [
             'product' => $product,
