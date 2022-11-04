@@ -34,7 +34,7 @@ class ProductController extends Controller
         return (new ProductCreationService($request))->redirect();
     }
 
-    public function edit(?Product $product = null)
+    public function edit(Product $product)
     {
         return view('pages.products.form', [
             'product' => $product,

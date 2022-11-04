@@ -154,6 +154,30 @@ class UserLimitsHelperTest extends TestCase
         $this->assertSame(UserCreationService::RESULT_INVALID_LIMIT, $result);
     }
 
+    public function testLimitOfZeroIsAllowed(): void
+    {
+        [$superadmin_role] = $this->createRoles();
+
+        $user = $this->createSuperadminUser($superadmin_role);
+
+        $this->actingAs($user);
+
+        $candy_category = Category::factory()->create([
+            'name' => 'Candy'
+        ]);
+
+        [$message, $result] = UserLimitsHelper::createOrEditFromRequest(new UserRequest([
+            'limit' => [
+                $candy_category->id => "0"
+            ]
+        ]), $user, UserCreationService::class);
+
+        $this->assertNull($message);
+        $this->assertNull($result);
+
+        $this->assertSame(0.0, UserLimitsHelper::getInfo($user, $candy_category->id)->limit_per);
+    }
+
     public function testNoLimitProvidedDefaultsToNegativeOneFromUserRequest(): void
     {
         [$superadmin_role] = $this->createRoles();

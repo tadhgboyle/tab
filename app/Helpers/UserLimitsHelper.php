@@ -28,7 +28,7 @@ class UserLimitsHelper
             $duration = $request->duration[$category_id] ?? UserLimits::LIMIT_DAILY;
 
             // Default to -1 if limit not typed in
-            if (empty($limit)) {
+            if (empty($limit) && $limit !== "0") {
                 $limit = -1;
             }
 

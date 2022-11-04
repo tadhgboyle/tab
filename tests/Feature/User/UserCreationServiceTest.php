@@ -98,7 +98,35 @@ class UserCreationServiceTest extends TestCase
         $this->assertSame(0.0, $user->balance);
     }
 
-    private function createRequest(?string $full_name = null, ?string $username = null, float $balance = 0, ?int $role_id = null, ?string $password = null, array $limit = [], array $duration = []): UserRequest
+    public function testRotationsAreAttachedToUser(): void
+    {
+        [, $camper_role] = $this->createRoles();
+
+        $rotations = [
+            Rotation::first()->id,
+            Rotation::skip(1)->first()->id,
+        ];
+
+        $user = (new UserCreationService($this->createRequest(
+            full_name: 'Tadhg Boyle',
+            role_id: $camper_role->id,
+            rotations: $rotations,
+        )))->getUser();
+
+        $this->assertSame($rotations, $user->rotations->pluck('id')->toArray());
+    }
+
+
+    private function createRequest(
+        ?string $full_name = null,
+        ?string $username = null,
+        float $balance = 0,
+        ?int $role_id = null,
+        ?string $password = null,
+        array $limit = [],
+        array $duration = [],
+        array $rotations = [],
+    ): UserRequest
     {
         return new UserRequest([
             'full_name' => $full_name,
@@ -108,7 +136,7 @@ class UserCreationServiceTest extends TestCase
             'password' => $password,
             'limit' => $limit,
             'duration' => $duration,
-            'rotations' => [Arr::random(Rotation::all()->pluck('id')->all())]
+            'rotations' => $rotations ?: [Arr::random(Rotation::all()->pluck('id')->all())]
         ]);
     }
 
