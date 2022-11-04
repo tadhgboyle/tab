@@ -146,6 +146,7 @@
                                     <td>
                                         <div>{{ $category['name'] }}</div>
                                     </td>
+{{--                                    TODO: display "none" for limits of $0--}}
                                     <td>
                                         <div>{!! $category['limit'] == -1.0 ? "<i>Unlimited</i>" : "$" . number_format($category['limit'], 2) . "/" . $category['duration'] !!}</div>
                                     </td>
