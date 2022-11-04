@@ -56,168 +56,164 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
-    // Check their role can access the page
-    // Route::middleware(HasPermission::class)->group(function () {
+    /*
+     * Cashier
+     */
+    Route::group(['middleware' => 'permission:cashier'], static function () {
+        Route::get('/orders/create/{user}', [TransactionController::class, 'create'])->name('orders_create');
+        Route::post('/orders/create/{user}', [TransactionController::class, 'store'])->name('orders_store');
+
+        // Get product metadata via JS fetch
+        Route::get('/products/{product}', [ProductController::class, 'ajaxGetInfo'])->whereNumber('product')->name('products_show');
+    });
+
+    /*
+     * Orders
+     */
+    Route::group(['middleware' => 'permission:orders', 'prefix' => '/orders'], static function () {
+        Route::group(['middleware' => 'permission:orders_list'], static function () {
+            Route::get('/', [TransactionController::class, 'index'])->name('orders_list');
+        });
+
+        Route::group(['middleware' => 'permission:orders_view'], static function () {
+            Route::get('/{transaction}', [TransactionController::class, 'show'])->name('orders_view');
+        });
+
+        Route::group(['middleware' => 'permission:orders_return'], static function () {
+            Route::get('/{transaction}/return', [TransactionController::class, 'returnTransaction'])->name('orders_return');
+            Route::get('/{transaction}/return/{product}', [TransactionController::class, 'returnProduct'])->name('orders_return_item');
+        });
+    });
+
+    /*
+     * Users
+     */
+    Route::group(['middleware' => 'permission:users', 'prefix' => '/users'], static function () {
+        Route::group(['middleware' => 'permission:users_list'], static function () {
+            Route::get('/', [UserController::class, 'index'])->name('users_list');
+        });
+
+        Route::group(['middleware' => 'permission:users_view'], static function () {
+            Route::get('/{user}', [UserController::class, 'show'])->whereNumber('user')->name('users_view');
+        });
+
+        Route::group(['middleware' => 'permission:users_manage'], static function () {
+            Route::get('/create', [UserController::class, 'create'])->name('users_create');
+            Route::post('/create', [UserController::class, 'store'])->name('users_store');
+            Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users_edit');
+            Route::put('/{user}/edit', [UserController::class, 'update'])->name('users_update');
+            Route::delete('/{user}', [UserController::class, 'delete'])->name('users_delete');
+
+            Route::group(['middleware' => 'permission:users_payouts_create'], static function () {
+                Route::get('/{user}/payout', [PayoutController::class, 'create'])->name('users_payout_create');
+                Route::post('/{user}/payout', [PayoutController::class, 'store'])->name('users_payout_store');
+            });
+        });
+    });
+
+    /*
+     * Products
+     */
+    Route::group(['middleware' => 'permission:products', 'prefix' => '/products'], static function () {
+        Route::group(['middleware' => 'permission:products_list'], static function () {
+            Route::get('/', [ProductController::class, 'index'])->name('products_list');
+        });
+
+        Route::group(['middleware' => 'permission:products_manage'], static function () {
+            Route::get('/create', [ProductController::class, 'create'])->name('products_create');
+            Route::post('/create', [ProductController::class, 'store'])->name('products_store');
+            Route::get('/{product}/edit', [ProductController::class, 'edit'])->name('products_edit');
+            Route::put('/{product}/edit', [ProductController::class, 'update'])->name('products_update');
+            Route::delete('/{product}', [ProductController::class, 'delete'])->name('products_delete');
+        });
+
+        Route::group(['middleware' => 'permission:products_adjust'], static function () {
+            Route::get('/adjust', [ProductController::class, 'adjustList'])->name('products_adjust');
+            Route::get('/adjust/{product}', [ProductController::class, 'ajaxGetPage'])->name('products_adjust_ajax');
+            Route::patch('/adjust/{product}', [ProductController::class, 'adjustStock'])->name('products_adjust_form');
+        });
+    });
+
+    /*
+     * Activities
+     */
+    Route::group(['middleware' => 'permission:activities', 'prefix' => '/activities'], static function () {
+        Route::group(['middleware' => 'permission:activities_list'], static function () {
+            Route::get('/', [ActivityController::class, 'index'])->name('activities_list');
+        });
+
+        Route::group(['middleware' => 'permission:activities_view'], static function () {
+            Route::get('/{activity}', [ActivityController::class, 'show'])->whereNumber('activity')->name('activities_view');
+        });
+
+        Route::group(['middleware' => 'permission:activities_manage'], static function () {
+            Route::get('/create/{date?}', [ActivityController::class, 'create'])->name('activities_create');
+            Route::post('/create', [ActivityController::class, 'store'])->name('activities_store');
+            Route::get('/{activity}/edit', [ActivityController::class, 'edit'])->name('activities_edit');
+            Route::put('/{activity}/edit', [ActivityController::class, 'update'])->name('activities_update');
+            Route::post('/{activity}', [ActivityController::class, 'delete'])->name('activities_delete');
+        });
+
+        Route::group(['permission', 'activities_register_users'], static function () {
+            Route::get('/{activity}/search', [ActivityController::class, 'ajaxUserSearch'])->name('activities_user_search');
+            // TODO: make POST
+            Route::get('/{activity}/add/{user}', [ActivityController::class, 'registerUser'])->name('activities_user_add');
+        });
+    });
+
+    /*
+     * Statistics
+     */
+    Route::group(['middleware' => 'permission:statistics'], static function () {
+        Route::get('/statistics', [StatisticsPageController::class, 'index'])->name('statistics');
+    });
+
+    /*
+     * Settings
+     */
+    Route::group(['middleware' => 'permission:settings', 'prefix' => '/settings'], static function () {
+        Route::get('/', [SettingsController::class, 'view'])->name('settings');
 
         /*
-         * Cashier
+         * Tax editing
          */
-        Route::group(['middleware' => 'permission:cashier'], static function () {
-            Route::get('/orders/create/{user}', [TransactionController::class, 'create'])->name('orders_create');
-            Route::post('/orders/create/{user}', [TransactionController::class, 'store'])->name('orders_store');
-
-            // Get product metadata via JS fetch
-            Route::get('/products/{product}', [ProductController::class, 'ajaxGetInfo'])->whereNumber('product')->name('products_show');
+        Route::group(['middleware' => 'permission:settings_general'], static function () {
+            Route::post('/', [SettingsController::class, 'editSettings'])->name('settings_edit');
         });
 
         /*
-         * Orders
+         * Roles
          */
-        Route::group(['middleware' => 'permission:orders', 'prefix' => '/orders'], static function () {
-            Route::group(['middleware' => 'permission:orders_list'], static function () {
-                Route::get('/', [TransactionController::class, 'index'])->name('orders_list');
-            });
+        Route::group(['middleware' => 'permission:settings_roles_manage', 'prefix' => '/roles'], static function () {
+            Route::get('/create', [RoleController::class, 'create'])->name('settings_roles_create');
+            Route::post('/create', [RoleController::class, 'store'])->name('settings_roles_store');
+            Route::get('/{role}/edit', [RoleController::class, 'edit'])->name('settings_roles_edit');
+            Route::put('/{role}/edit', [RoleController::class, 'update'])->name('settings_roles_update');
+            Route::delete('/{role}', [RoleController::class, 'delete'])->name('settings_roles_delete');
 
-            Route::group(['middleware' => 'permission:orders_view'], static function () {
-                Route::get('/{transaction}', [TransactionController::class, 'show'])->name('orders_view');
-            });
-
-            Route::group(['middleware' => 'permission:orders_return'], static function () {
-                Route::get('/{transaction}/return', [TransactionController::class, 'returnTransaction'])->name('orders_return');
-                Route::get('/{transaction}/return/{product}', [TransactionController::class, 'returnProduct'])->name('orders_return_item');
-            });
+            Route::put('/order', [RoleController::class, 'order'])->name('settings_roles_order_ajax');
         });
 
         /*
-         * Users
+         * Rotations
          */
-        Route::group(['middleware' => 'permission:users', 'prefix' => '/users'], static function () {
-            Route::group(['middleware' => 'permission:users_list'], static function () {
-                Route::get('/', [UserController::class, 'index'])->name('users_list');
-            });
-
-            Route::group(['middleware' => 'permission:users_view'], static function () {
-                Route::get('/{user}', [UserController::class, 'show'])->whereNumber('user')->name('users_view');
-            });
-
-            Route::group(['middleware' => 'permission:users_manage'], static function () {
-                Route::get('/create', [UserController::class, 'create'])->name('users_create');
-                Route::post('/create', [UserController::class, 'store'])->name('users_store');
-                Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users_edit');
-                Route::put('/{user}/edit', [UserController::class, 'update'])->name('users_update');
-                Route::delete('/{user}', [UserController::class, 'delete'])->name('users_delete');
-
-                Route::group(['middleware' => 'permission:users_payouts_create'], static function () {
-                    Route::get('/{user}/payout', [PayoutController::class, 'create'])->name('users_payout_create');
-                    Route::post('/{user}/payout', [PayoutController::class, 'store'])->name('users_payout_store');
-                });
-            });
+        Route::group(['middleware' => 'permission:settings_rotations_manage', 'prefix' => '/rotations'], static function () {
+            Route::get('/create', [RotationController::class, 'create'])->name('settings_rotations_create');
+            Route::post('/create', [RotationController::class, 'store'])->name('settings_rotations_store');
+            Route::get('/{rotation}/edit', [RotationController::class, 'edit'])->name('settings_rotations_edit');
+            Route::put('/{rotation}/edit', [RotationController::class, 'update'])->name('settings_rotations_update');
+            Route::delete('/{rotation}', [RotationController::class, 'delete'])->name('settings_rotations_delete');
         });
 
         /*
-         * Products
+         * Categories
          */
-        Route::group(['middleware' => 'permission:products', 'prefix' => '/products'], static function () {
-            Route::group(['middleware' => 'permission:products_list'], static function () {
-                Route::get('/', [ProductController::class, 'index'])->name('products_list');
-            });
-
-            Route::group(['middleware' => 'permission:products_manage'], static function () {
-                Route::get('/create', [ProductController::class, 'create'])->name('products_create');
-                Route::post('/create', [ProductController::class, 'store'])->name('products_store');
-                Route::get('/{product}/edit', [ProductController::class, 'edit'])->name('products_edit');
-                Route::put('/{product}/edit', [ProductController::class, 'update'])->name('products_update');
-                Route::delete('/{product}', [ProductController::class, 'delete'])->name('products_delete');
-            });
-
-            Route::group(['middleware' => 'permission:products_adjust'], static function () {
-                Route::get('/adjust', [ProductController::class, 'adjustList'])->name('products_adjust');
-                Route::get('/adjust/{product}', [ProductController::class, 'ajaxGetPage'])->name('products_adjust_ajax');
-                Route::patch('/adjust/{product}', [ProductController::class, 'adjustStock'])->name('products_adjust_form');
-            });
+        Route::group(['middleware' => 'permission:settings_categories_manage', 'prefix' => '/categories'], static function () {
+            Route::get('/create', [CategoryController::class, 'create'])->name('settings_categories_create');
+            Route::post('/create', [CategoryController::class, 'store'])->name('settings_categories_store');
+            Route::get('/{category}/edit', [CategoryController::class, 'edit'])->name('settings_categories_edit');
+            Route::put('/{category}/edit', [CategoryController::class, 'update'])->name('settings_categories_update');
+            Route::delete('/{category}', [CategoryController::class, 'delete'])->name('settings_categories_delete');
         });
-
-        /*
-         * Activities
-         */
-        Route::group(['middleware' => 'permission:activities', 'prefix' => '/activities'], static function () {
-            Route::group(['middleware' => 'permission:activities_list'], static function () {
-                Route::get('/', [ActivityController::class, 'index'])->name('activities_list');
-            });
-
-            Route::group(['middleware' => 'permission:activities_view'], static function () {
-                Route::get('/{activity}', [ActivityController::class, 'show'])->whereNumber('activity')->name('activities_view');
-            });
-
-            Route::group(['middleware' => 'permission:activities_manage'], static function () {
-                Route::get('/create/{date?}', [ActivityController::class, 'create'])->name('activities_create');
-                Route::post('/create', [ActivityController::class, 'store'])->name('activities_store');
-                Route::get('/{activity}/edit', [ActivityController::class, 'edit'])->name('activities_edit');
-                Route::put('/{activity}/edit', [ActivityController::class, 'update'])->name('activities_update');
-                Route::post('/{activity}', [ActivityController::class, 'delete'])->name('activities_delete');
-            });
-
-            Route::group(['permission', 'activities_register_users'], static function () {
-                Route::get('/{activity}/search', [ActivityController::class, 'ajaxUserSearch'])->name('activities_user_search');
-                // TODO: make POST
-                Route::get('/{activity}/add/{user}', [ActivityController::class, 'registerUser'])->name('activities_user_add');
-            });
-        });
-
-        /*
-         * Statistics
-         */
-        Route::group(['middleware' => 'permission:statistics'], static function () {
-            Route::get('/statistics', [StatisticsPageController::class, 'index'])->name('statistics');
-        });
-
-        /*
-         * Settings
-         */
-        Route::group(['middleware' => 'permission:settings', 'prefix' => '/settings'], static function () {
-            Route::get('/', [SettingsController::class, 'view'])->name('settings');
-
-            /*
-             * Tax editing
-             */
-            Route::group(['middleware' => 'permission:settings_general'], static function () {
-                Route::post('/', [SettingsController::class, 'editSettings'])->name('settings_edit');
-            });
-
-            /*
-             * Roles
-             */
-            Route::group(['middleware' => 'permission:settings_roles_manage', 'prefix' => '/roles'], static function () {
-                Route::get('/create', [RoleController::class, 'create'])->name('settings_roles_create');
-                Route::post('/create', [RoleController::class, 'store'])->name('settings_roles_store');
-                Route::get('/{role}/edit', [RoleController::class, 'edit'])->name('settings_roles_edit');
-                Route::put('/{role}/edit', [RoleController::class, 'update'])->name('settings_roles_update');
-                Route::delete('/{role}', [RoleController::class, 'delete'])->name('settings_roles_delete');
-
-                Route::put('/order', [RoleController::class, 'order'])->name('settings_roles_order_ajax');
-            });
-
-            /*
-             * Rotations
-             */
-            Route::group(['middleware' => 'permission:settings_rotations_manage', 'prefix' => '/rotations'], static function () {
-                Route::get('/create', [RotationController::class, 'create'])->name('settings_rotations_create');
-                Route::post('/create', [RotationController::class, 'store'])->name('settings_rotations_store');
-                Route::get('/{rotation}/edit', [RotationController::class, 'edit'])->name('settings_rotations_edit');
-                Route::put('/{rotation}/edit', [RotationController::class, 'update'])->name('settings_rotations_update');
-                Route::delete('/{rotation}', [RotationController::class, 'delete'])->name('settings_rotations_delete');
-            });
-
-            /*
-             * Categories
-             */
-            Route::group(['middleware' => 'permission:settings_categories_manage', 'prefix' => '/categories'], static function () {
-                Route::get('/create', [CategoryController::class, 'create'])->name('settings_categories_create');
-                Route::post('/create', [CategoryController::class, 'store'])->name('settings_categories_store');
-                Route::get('/{category}/edit', [CategoryController::class, 'edit'])->name('settings_categories_edit');
-                Route::put('/{category}/edit', [CategoryController::class, 'update'])->name('settings_categories_update');
-                Route::delete('/{category}', [CategoryController::class, 'delete'])->name('settings_categories_delete');
-            });
-        });
-    // });
+    });
 });
