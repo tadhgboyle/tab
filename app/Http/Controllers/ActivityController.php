@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Activity;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Carbon;
 use App\Helpers\CategoryHelper;
+use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\ActivityRequest;
 
 // TODO: add return/cancel functionality
@@ -107,7 +107,6 @@ class ActivityController extends Controller
 
         return redirect()->route('activities_list')->with('success', 'Deleted activity ' . $activity->name . '.');
     }
-
 
     // TODO: livewire
     public function ajaxUserSearch(Activity $activity): string
