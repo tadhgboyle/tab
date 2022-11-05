@@ -1,19 +1,14 @@
 {
-    "name": "laravel/laravel",
+    "name": "aberdeener/tab",
     "type": "project",
-    "description": "The Laravel Framework.",
-    "keywords": [
-        "framework",
-        "laravel"
-    ],
     "license": "MIT",
     "require": {
         "php": "^8.1",
         "laravel/framework": "^9.0",
-        "laravel/tinker": "^2.0",
-        "nunomaduro/larastan": "^2.0"
+        "bahadorbzd/consoletvs-charts": "dev-main"
     },
     "require-dev": {
+        "roave/security-advisories": "dev-latest",
         "barryvdh/laravel-debugbar": "^3.5",
         "barryvdh/laravel-ide-helper": "^2.10",
         "brianium/paratest": "^6.3",
@@ -24,7 +19,9 @@
         "nunomaduro/collision": "^6.0",
         "nunomaduro/phpinsights": "dev-master",
         "phpunit/phpunit": "^9.0",
-        "symfony/var-dumper": "^6.0"
+        "symfony/var-dumper": "^6.0",
+        "laravel/tinker": "^2.0",
+        "nunomaduro/larastan": "^2.0"
     },
     "config": {
         "optimize-autoloader": true,

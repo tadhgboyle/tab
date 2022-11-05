@@ -10,6 +10,7 @@ use App\Helpers\SettingsHelper;
 use App\Charts\ActivitySalesChart;
 use App\Charts\IncomeHistoryChart;
 use App\Charts\PurchaseHistoryChart;
+use ConsoleTVs\Charts\Registrar;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -38,13 +39,13 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot(): void
+    public function boot(Registrar $charts): void
     {
-        // $charts->register([
-        //     PurchaseHistoryChart::class,
-        //     ItemSalesChart::class,
-        //     ActivitySalesChart::class,
-        //     IncomeHistoryChart::class,
-        // ]);
+         $charts->register([
+             PurchaseHistoryChart::class,
+             ItemSalesChart::class,
+             ActivitySalesChart::class,
+             IncomeHistoryChart::class,
+         ]);
     }
 }
