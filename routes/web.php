@@ -27,8 +27,10 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\StatisticsPageController;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
-Route::get('/login', [LoginController::class, 'login'])->name('login');
-Route::post('/login', [LoginController::class, 'auth'])->name('login_auth');
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [LoginController::class, 'login'])->name('login');
+    Route::post('/login', [LoginController::class, 'auth'])->name('login_auth');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/', static function () {
