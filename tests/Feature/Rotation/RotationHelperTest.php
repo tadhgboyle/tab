@@ -2,7 +2,10 @@
 
 namespace Tests\Feature\Rotation;
 
+use App\Models\Role;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cookie;
 use Tests\TestCase;
 use App\Models\Rotation;
 use App\Helpers\RotationHelper;
@@ -12,25 +15,51 @@ class RotationHelperTest extends TestCase
 {
     use RefreshDatabase;
 
+    private Role $_cashier_role;
+    private User $_cashier_user;
+    private Role $_superuser_role;
+    private User $_superuser_user;
+
+    public function setUp(): void {
+        parent::setUp();
+
+        $this->_cashier_role = Role::factory()->create([
+            'name' => 'Cashier',
+            'superuser' => false,
+        ]);
+
+        $this->_cashier_user = User::factory()->create([
+            'role_id' => $this->_cashier_role->id,
+        ]);
+
+        $this->_superuser_role = Role::factory()->create();
+
+        $this->_superuser_user = User::factory()->create([
+            'role_id' => $this->_superuser_role->id,
+        ]);
+    }
+
     public function testGetCurrentRotationWorksAsExpected(): void
     {
-        $rotationHelper = resolve(RotationHelper::class);
+        $rotationHelper = new RotationHelper();
 
-        $rotation2 = Rotation::factory()->create([
+        Rotation::factory()->create([
             'name' => 'Rotation 2',
             'start' => Carbon::now()->addDays(3),
             'end' => Carbon::now()->addDays(6),
         ]);
 
-        // TODO: seems to cache current rotation even if we remove caching stuff $this->assertNull($rotationHelper->getCurrentRotation());
+        $this->assertNull($rotationHelper->getCurrentRotation());
 
-        $rotation1 = Rotation::factory()->create([
+        $rotationHelper = new RotationHelper();
+
+        $rotation = Rotation::factory()->create([
             'name' => 'Rotation 1',
             'start' => Carbon::now()->subDays(2),
             'end' => Carbon::now()->addDays(2),
         ]);
 
-        $this->assertSame($rotation1->id, $rotationHelper->getCurrentRotation()->id);
+        $this->assertSame($rotation->id, $rotationHelper->getCurrentRotation()->id);
     }
 
     public function testDoesRotationOverlapWorksAsExpected(): void
@@ -45,5 +74,49 @@ class RotationHelperTest extends TestCase
 
         $this->assertTrue($rotationHelper->doesRotationOverlap(Carbon::now(), Carbon::now()->addDay()));
         $this->assertFalse($rotationHelper->doesRotationOverlap(Carbon::now()->addWeek(), Carbon::now()->addWeeks(2)));
+    }
+
+    public function testGetStatisticsRotationIdReturnsNullWhenNoCurrentRotationOrExtraPermission(): void
+    {
+        $this->actingAs($this->_cashier_user);
+
+        $this->assertNull(resolve(RotationHelper::class)->getStatisticsRotationId());
+    }
+
+    public function testGetStatisticsRotationIdReturnsCurrentRotationIdWhenNoExtraPermission(): void
+    {
+        $this->actingAs($this->_cashier_user);
+
+        $rotation = Rotation::factory()->create([
+            'name' => 'Rotation 1',
+            'start' => Carbon::now()->subDays(2),
+            'end' => Carbon::now()->addDays(2),
+        ]);
+
+        $this->assertEquals($rotation->id, resolve(RotationHelper::class)->getStatisticsRotationId());
+    }
+
+    public function testGetStatisticsRotationIdReturnsCookiedIdWhenExtraPermission(): void
+    {
+        $this->markTestSkipped('Skipped because we cannot mock the Cookie facade.');
+
+        $cookie_value = random_int(1, 100);
+
+        Cookie::queue('stats_rotation_id', $cookie_value);
+
+        $this->actingAs($this->_superuser_user);
+
+        $this->assertEquals($cookie_value, resolve(RotationHelper::class)->getStatisticsRotationId());
+    }
+
+    public function testGetStatisticsRotationIdReturnsAsteriskWhenNoCookieStoredAndHasExtraPermission(): void
+    {
+        $this->markTestSkipped('Skipped because we cannot mock the Cookie facade.');
+
+        Cookie::queue('stats_rotation_id', null);
+
+        $this->actingAs($this->_superuser_user);
+
+        $this->assertEquals('*', resolve(RotationHelper::class)->getStatisticsRotationId());
     }
 }

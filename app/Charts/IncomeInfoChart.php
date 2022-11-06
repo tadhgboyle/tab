@@ -4,32 +4,29 @@ namespace App\Charts;
 
 use App\Models\Transaction;
 use Chartisan\PHP\Chartisan;
+use Cookie;
+use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Helpers\RotationHelper;
 use ConsoleTVs\Charts\BaseChart;
 use Illuminate\Support\Facades\DB;
 
-class IncomeHistoryChart extends BaseChart
+class IncomeInfoChart extends BaseChart
 {
     public ?array $middlewares = [
         'auth',
+        'permission:statistics_income_info',
     ];
 
     public function handler(Request $request): Chartisan
     {
-        $stats_rotation_id = resolve(RotationHelper::class)->getCurrentRotation()->id;
-
-        $normal_data = Transaction::query()
-                            ->where([['rotation_id', $stats_rotation_id], ['returned', false]])
-                            ->select(DB::raw('DATE(created_at) date, ROUND(SUM(total_price), 2) total_price'))
-                            ->groupBy('date')
-                            ->get();
-        $returned_data = Transaction::query()
-                            ->where([['rotation_id', $stats_rotation_id], ['returned', true]])
-                            ->select(DB::raw('DATE(created_at) date, ROUND(SUM(total_price), 2) total_price'))
-                            ->groupBy('date')
-                            ->get();
+        $normal_data = $this->createBuilder()
+            ->where('returned', false)
+            ->get();
+        $returned_data = $this->createBuilder()
+            ->where('returned', true)
+            ->get();
 
         $normal_orders = $returned_orders = $labels = [];
 
@@ -55,5 +52,18 @@ class IncomeHistoryChart extends BaseChart
             ->labels($labels)
             ->dataset('Returned', $returned_orders)
             ->dataset('Income', $normal_orders);
+    }
+
+    private function createBuilder(): Builder
+    {
+        $stats_rotation_id = resolve(RotationHelper::class)->getStatisticsRotationId();
+
+        return Transaction::query()
+            ->when($stats_rotation_id !== '*', static function (Builder $builder) use ($stats_rotation_id) {
+                $builder->where('rotation_id', $stats_rotation_id);
+            })
+            ->select(DB::raw('DATE(created_at) date, ROUND(SUM(total_price), 2) total_price'))
+            ->orderBy('date')
+            ->groupBy('date');
     }
 }

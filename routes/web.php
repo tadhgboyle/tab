@@ -24,7 +24,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\RotationController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\StatisticsPageController;
+use App\Http\Controllers\StatisticsController;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 Route::middleware('guest')->group(function () {
@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
             return view('pages.403');
         }
 
+        // TODO: similar handling of rotation selection/invalidity to statistics page
         return view('pages.index', [
             'users' => User::query()
                 ->unless(hasPermission('cashier_self_purchases'), function (EloquentBuilder $query) {
@@ -166,8 +167,8 @@ Route::middleware('auth')->group(function () {
     /*
      * Statistics
      */
-    Route::group(['middleware' => 'permission:statistics'], static function () {
-        Route::get('/statistics', [StatisticsPageController::class, 'index'])->name('statistics');
+    Route::group(['middleware' => ['permission:statistics']], static function () {
+        Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics');
     });
 
     /*

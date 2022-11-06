@@ -3,13 +3,13 @@
 namespace App\Providers;
 
 use App\Helpers\RoleHelper;
-use App\Charts\ItemSalesChart;
+use App\Charts\ProductSalesChart;
 use App\Helpers\CategoryHelper;
 use App\Helpers\RotationHelper;
 use App\Helpers\SettingsHelper;
 use App\Charts\ActivitySalesChart;
-use App\Charts\IncomeHistoryChart;
-use App\Charts\PurchaseHistoryChart;
+use App\Charts\IncomeInfoChart;
+use App\Charts\OrderHistoryChart;
 use ConsoleTVs\Charts\Registrar;
 use Illuminate\Support\ServiceProvider;
 
@@ -42,10 +42,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot(Registrar $charts): void
     {
          $charts->register([
-             PurchaseHistoryChart::class,
-             ItemSalesChart::class,
+             OrderHistoryChart::class,
+             ProductSalesChart::class,
              ActivitySalesChart::class,
-             IncomeHistoryChart::class,
+             IncomeInfoChart::class,
          ]);
     }
 }
