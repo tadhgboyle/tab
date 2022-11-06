@@ -39,7 +39,7 @@ class RotationRequestTest extends FormRequestTestCase
         ]));
     }
 
-    public function testStartIsRequiredAndIsDateAndIsNotInThePast(): void
+    public function testStartIsRequiredAndIsDate(): void
     {
         $this->assertHasErrors('start', new RotationRequest([
             'start' => null,
@@ -51,10 +51,6 @@ class RotationRequestTest extends FormRequestTestCase
 
         $this->assertNotHaveErrors('start', new RotationRequest([
             'start' => now(),
-        ]));
-
-        $this->assertHasErrors('start', new RotationRequest([
-            'start' => now()->subDay(),
         ]));
     }
 
@@ -80,6 +76,35 @@ class RotationRequestTest extends FormRequestTestCase
         $this->assertNotHaveErrors('end', new RotationRequest([
             'start' => now(),
             'end' => now()->addDay(),
+        ]));
+    }
+
+    public function testStartAndEndCannotOverlapExistingRotation(): void
+    {
+        Rotation::factory()->create([
+            'name' => 'Rotation',
+            'start' => now()->subDay(),
+            'end' => now()->addDay(),
+        ]);
+
+        $this->assertHasErrors('start_or_end', new RotationRequest([
+            'start' => now()->subDays(2),
+            'end' => now()->addDays(2),
+        ]));
+    }
+
+    public function testOverlapErrorNotAddedIfEditingRotation(): void
+    {
+        $rotation = Rotation::factory()->create([
+            'name' => 'Rotation',
+            'start' => now()->subDay(),
+            'end' => now()->addDay(),
+        ]);
+
+        $this->assertNotHaveErrors('start_or_end', new RotationRequest([
+            'start' => now()->subDays(2),
+            'end' => now()->addDays(2),
+            'rotation_id' => $rotation->id,
         ]));
     }
 }
