@@ -25,8 +25,6 @@ class TransactionController extends Controller
     {
         return view('pages.orders.view', [
             'transaction' => $transaction,
-            'transaction_items' => $transaction->products,
-            'transaction_returned' => $transaction->getReturnStatus(),
         ]);
     }
 

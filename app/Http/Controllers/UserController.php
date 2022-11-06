@@ -23,7 +23,7 @@ class UserController extends Controller
             $query->whereHas('rotations', function (EloquentBuilder $query) use ($rotationHelper) {
                 return $query->where('rotation_id', $rotationHelper->getCurrentRotation()->id);
             });
-        })->get();
+        })->with('role')->get();
 
         return view('pages.users.list', [
             'rotations' => $rotationHelper->getRotations(),
@@ -50,11 +50,9 @@ class UserController extends Controller
         return view('pages.users.view', [
             'user' => $user,
             'can_interact' => auth()->user()->role->canInteract($user->role),
-            'transactions' => $user->transactions->sortByDesc('created_at'),
             'activity_transactions' => $user->getActivities(),
             'categories' => $processed_categories,
             'rotations' => $user->rotations,
-            'payouts' => $user->payouts->sortByDesc('created_at'),
         ]);
     }
 

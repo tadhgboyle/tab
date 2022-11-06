@@ -34,7 +34,7 @@
                             @endpermission
                         </thead>
                         <tbody>
-                            @foreach($transactions as $transaction)
+                            @foreach($user->transactions->sortByDesc('created_at') as $transaction)
                             <tr>
                                 <td>
                                     <div>{{ $transaction->created_at->format('M jS Y h:ia') }}</div>
@@ -175,7 +175,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($rotations as $rotation)
+                            @foreach($user->rotations as $rotation)
                                 <tr>
                                     <td>
                                         <div>{{ $rotation->name }}</div>
@@ -222,7 +222,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                        @foreach($payouts as $payout)
+                        @foreach($user->payouts->sortByDesc('created_at') as $payout)
                             <tr>
                                 <td>
                                     <div>{!! $payout->identifier ?? "<i>None</i>" !!}</div>
@@ -260,7 +260,7 @@
                         <strong>Transactions</strong>
                     </td>
                 </tr>
-                @forelse($transactions as $transaction)
+                @forelse($user->transactions->sortByDesc('created_at') as $transaction)
                     <tr>
                         <td>
                             <div>Transaction (#{{ $transaction->id }})</div>
@@ -270,7 +270,7 @@
                         </td>
                     </tr>
                     @switch($transaction->getReturnStatus())
-                        @case(1)
+                        @case(\App\Models\Transaction::STATUS_FULLY_RETURNED)
                             <tr>
                                 <td>
                                     <div>Return (#{{ $transaction->id }})</div>
@@ -280,7 +280,7 @@
                                 </td>
                             </tr>
                             @break
-                        @case(2)
+                        @case(\App\Models\Transaction::STATUS_PARTIAL_RETURNED)
                             <tr>
                                 <td>
                                     <div>Partial Return (#{{ $transaction->id }})</div>
@@ -330,7 +330,7 @@
                         <strong>Payouts</strong>
                     </td>
                 </tr>
-                @forelse($payouts as $payout)
+                @forelse($user->payouts->sortByDesc('created_at') as $payout)
                     <tr>
                         <td>
                             <div>Payout @if($payout->identifier !== null) ({{ $payout->identifier }}) @endif</div>

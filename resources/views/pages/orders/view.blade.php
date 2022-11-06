@@ -10,9 +10,9 @@
         <p><strong>Purchaser:</strong> @permission(\App\Helpers\Permission::USERS_VIEW) <a href="{{ route('users_view', $transaction->purchaser_id) }}">{{ $transaction->purchaser->full_name }}</a> @else {{ $transaction->purchaser->full_name }} @endpermission</p>
         <p><strong>Cashier:</strong> @permission(\App\Helpers\Permission::USERS_VIEW) <a href="{{ route('users_view', $transaction->cashier_id) }}">{{ $transaction->cashier->full_name }}</a> @else {{ $transaction->cashier->full_name }} @endpermission</p>
         <p><strong>Total Price:</strong> ${{ number_format($transaction->total_price, 2) }}</p>
-        <p><strong>Status:</strong> @switch($transaction_returned) @case(0) Not Returned @break @case(1) Returned @break @case(2) Semi Returned @break @endswitch</p>
+        <p><strong>Status:</strong> @switch($transaction->getReturnStatus()) @case(0) Not Returned @break @case(1) Returned @break @case(2) Semi Returned @break @endswitch</p>
         <br>
-        @if($transaction_returned !== 1 && hasPermission(\App\Helpers\Permission::ORDERS_RETURN))
+        @if($transaction->getReturnStatus() !== 1 && hasPermission(\App\Helpers\Permission::ORDERS_RETURN))
         <button class="button is-danger is-outlined" type="button" onclick="openModal();">
             <span>Return</span>
             <span class="icon is-small">
@@ -38,24 +38,24 @@
                     @endpermission
                 </thead>
                 <tbody>
-                    @foreach($transaction_items as $product)
+                    @foreach($transaction->products as $product)
                     <tr>
                         <td>
-                            <div>{{ $product['product']['name'] }}</div>
+                            <div>{{ $product->product->name }}</div>
                         </td>
                         <td>
-                            <div>${{ number_format($product['price'], 2) }}</div>
+                            <div>${{ number_format($product->price, 2) }}</div>
                         </td>
                         <td>
-                            <div>{{ $product['quantity'] }}</div>
+                            <div>{{ $product->quantity }}</div>
                         </td>
                         <td>
-                            <div>${{ number_format($product['price'] * $product['quantity'], 2) }}</div>
+                            <div>${{ number_format($product->price * $product->quantity, 2) }}</div>
                         </td>
                         @permission(\App\Helpers\Permission::ORDERS_RETURN)
                         <td>
                             <div>
-                                @if(!$transaction->returned && $product['returned'] < $product['quantity'])
+                                @if(!$transaction->returned && $product->returned < $product->quantity)
                                     <button class="button is-danger is-small"  onclick="openProductModal({{ $product['product_id'] }});">Return ({{ $product['quantity'] - $product['returned'] }})</button>
                                 @else
                                     <div><i>Returned</i></div>
@@ -80,12 +80,13 @@
         </header>
         <section class="modal-card-body">
             <p>Are you sure you want to return this transaction?</p>
-            <form action="" id="returnForm" method="GET">
+            <form action="{{ route('orders_return', $transaction->id) }}" id="returnOrderForm" method="POST">
                 @csrf
+                @method('PUT')
             </form>
         </section>
         <footer class="modal-card-foot">
-            <button class="button is-success" type="submit" onclick="returnData();">Confirm</button>
+            <button class="button is-success" type="submit" form="returnOrderForm">Confirm</button>
             <button class="button" onclick="closeModal();">Cancel</button>
         </footer>
     </div>
@@ -99,8 +100,9 @@
         </header>
         <section class="modal-card-body">
             <p>Are you sure you want to return this product?</p>
-            <form action="" id="returnItemForm" method="GET">
+            <form action="" id="returnItemForm" method="POST">
                 @csrf
+                @method('PUT')
             </form>
         </section>
         <footer class="modal-card-foot">
@@ -138,13 +140,6 @@
 
         function closeModal() {
             modal_order.classList.remove('is-active');
-        }
-
-        function returnData() {
-            let url = '{{ route("orders_return", ":id") }}';
-            url = url.replace(':id', {{ $transaction->id }});
-            $("#returnForm").attr('action', url);
-            $("#returnForm").submit();
         }
 
         let product = null;

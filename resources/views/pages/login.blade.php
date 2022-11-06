@@ -19,6 +19,10 @@
                     <input type="password" name="password" class="input" placeholder="Password">
                 </div>
             </div>
+            <label class="checkbox">
+                <input type="checkbox" name="remember">
+                Remember me
+            </label>
             <div class="control">
                 <button class="button is-primary" type="submit">
                     <span class="icon is-small">
