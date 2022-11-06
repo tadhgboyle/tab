@@ -10,6 +10,7 @@ use App\Helpers\SettingsHelper;
 use App\Charts\ActivitySalesChart;
 use App\Charts\IncomeInfoChart;
 use App\Charts\OrderHistoryChart;
+use App\Helpers\TaxHelper;
 use ConsoleTVs\Charts\Registrar;
 use Illuminate\Support\ServiceProvider;
 
@@ -29,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
             RotationHelper::class,
             RoleHelper::class,
             SettingsHelper::class,
+            TaxHelper::class,
         ] as $singleton) {
             $this->app->singleton($singleton);
         }

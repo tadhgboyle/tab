@@ -201,11 +201,11 @@ class ProductTest extends TestCase
         Settings::factory()->createMany([
             [
                 'setting' => 'gst',
-                'value' => '1.05',
+                'value' => '5.00',
             ],
             [
                 'setting' => 'pst',
-                'value' => '1.07',
+                'value' => '7.00',
             ]
         ]);
 
@@ -235,9 +235,9 @@ class ProductTest extends TestCase
             'total_price' => 3.15 // TODO
         ]);
 
-        $skittles_product = TransactionProduct::from($skittles, 2, 1.05);
+        $skittles_product = TransactionProduct::from($skittles, 2, 5);
         $skittles_product->transaction_id = $transaction1->id;
-        $hat_product = TransactionProduct::from($hat, 1, 1.05);
+        $hat_product = TransactionProduct::from($hat, 1, 5);
         $hat_product->transaction_id = $transaction1->id;
 
         $transaction1->products()->saveMany([
@@ -252,9 +252,9 @@ class ProductTest extends TestCase
             'total_price' => 44.79 // TODO
         ]);
 
-        $sweater_product = TransactionProduct::from($sweater, 1, 1.05, 1.07);
+        $sweater_product = TransactionProduct::from($sweater, 1, 5, 7);
         $sweater_product->transaction_id = $transaction2->id;
-        $coffee_product = TransactionProduct::from($coffee, 2, 1.05, 1.07);
+        $coffee_product = TransactionProduct::from($coffee, 2, 5, 7);
         $coffee_product->transaction_id = $transaction2->id;
 
         $transaction2->products()->saveMany([
@@ -271,9 +271,9 @@ class ProductTest extends TestCase
             'total_price' => 3.15 // TODO
         ]);
 
-        $skittles_product = TransactionProduct::from($skittles, 2, 1.05);
+        $skittles_product = TransactionProduct::from($skittles, 2, 5);
         $skittles_product->transaction_id = $transaction1->id;
-        $hat_product = TransactionProduct::from($hat, 1, 1.05);
+        $hat_product = TransactionProduct::from($hat, 1, 5);
         $hat_product->transaction_id = $transaction1->id;
 
         $transaction3->products()->saveMany([
@@ -288,9 +288,9 @@ class ProductTest extends TestCase
             'total_price' => 44.79 // TODO
         ]);
 
-        $sweater_product = TransactionProduct::from($sweater, 1, 1.05, 1.07);
+        $sweater_product = TransactionProduct::from($sweater, 1, 5, 7);
         $sweater_product->transaction_id = $transaction2->id;
-        $coffee_product = TransactionProduct::from($coffee, 2, 1.05, 1.07);
+        $coffee_product = TransactionProduct::from($coffee, 2, 5, 7);
         $coffee_product->transaction_id = $transaction2->id;
 
         $transaction4->products()->saveMany([

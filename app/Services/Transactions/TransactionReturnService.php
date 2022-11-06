@@ -2,9 +2,11 @@
 
 namespace App\Services\Transactions;
 
+use App\Helpers\TaxHelper;
 use App\Models\Product;
 use App\Services\Service;
 use App\Models\Transaction;
+use App\Models\TransactionProduct;
 use Illuminate\Http\RedirectResponse;
 
 class TransactionReturnService extends Service
@@ -30,16 +32,13 @@ class TransactionReturnService extends Service
             return $this;
         }
 
-        $total_price = 0;
         $purchaser = $this->_transaction->purchaser;
 
-        // Loop through products from the order and deserialize them to get their prices & taxes etc when they were purchased
-        foreach ($this->_transaction->products as $product) {
-            $product->returned = $product->quantity;
-            $total_price += ($product->price * $product->quantity) * $product->getTax();
-        }
+        $this->_transaction->products->each(function (TransactionProduct $product) {
+            $product->update(['returned' => $product->quantity]);
+        });
 
-        $purchaser->increment('balance', $total_price);
+        $purchaser->increment('balance', $this->_transaction->total_price);
         $this->_transaction->update(['returned' => true]);
 
         $this->_result = self::RESULT_SUCCESS;
@@ -73,8 +72,18 @@ class TransactionReturnService extends Service
 
         $transaction_product->increment('returned');
 
-        // Update their balance
-        $this->_transaction->purchaser->increment('balance', $transaction_product->price * $transaction_product->getTax());
+        $product_total = TaxHelper::calculateFor(
+            $transaction_product->price,
+            $transaction_product->quantity - $transaction_product->returned,
+            $transaction_product->pst !== null,
+            [
+                'pst' => $transaction_product->pst,
+                'gst' => $transaction_product->gst,
+            ]
+        );
+
+        $this->_transaction->purchaser->increment('balance', $product_total);
+
         $this->_result = self::RESULT_SUCCESS;
         $this->_message = 'Successfully returned x1 ' . $transaction_product->product->name . ' for order #' . $this->_transaction->id . '.';
         return $this;

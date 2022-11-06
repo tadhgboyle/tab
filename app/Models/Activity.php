@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\SettingsHelper;
+use App\Helpers\TaxHelper;
 use App\Helpers\UserLimitsHelper;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -73,9 +74,9 @@ class Activity extends Model
         return ($this->slots - ($current_attendees + $count)) >= 0;
     }
 
-    public function getPrice(): float
+    public function getPriceAfterTax(): float
     {
-        return $this->price * resolve(SettingsHelper::class)->getGst();
+        return TaxHelper::calculateFor($this->price, 1, true);
     }
 
     public function getAttendees(): Collection
@@ -111,11 +112,11 @@ class Activity extends Model
             return redirect()->back()->with('error', "Could not register $user->full_name for $this->name, this activity is out of slots.");
         }
 
-        if ($this->getPrice() > $user->balance) {
+        if ($this->getPriceAfterTax() > $user->balance) {
             return redirect()->back()->with('error', "Could not register $user->full_name for $this->name, they do not have enough balance.");
         }
 
-        if (!UserLimitsHelper::canSpend($user, $this->getPrice(), $this->category_id)) {
+        if (!UserLimitsHelper::canSpend($user, $this->getPriceAfterTax(), $this->category_id)) {
             return redirect()->back()->with('error', "Could not register $user->full_name for $this->name, they have reached their limit for the {$this->category->name} category.");
         }
 
@@ -124,13 +125,15 @@ class Activity extends Model
             'cashier_id' => auth()->id(),
             'activity_id' => $this->id,
             'activity_price' => $this->price,
+            'category_id' => $this->category_id,
             'activity_gst' => resolve(SettingsHelper::class)->getGst(),
-            'total_price' => $this->getPrice(),
+            'activity_pst' => resolve(SettingsHelper::class)->getPst(),
+            'total_price' => $this->getPriceAfterTax(),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        $user->decrement('balance', $this->getPrice());
+        $user->decrement('balance', $this->getPriceAfterTax());
 
         return redirect()->back()->with('success', "Successfully registered $user->full_name to $this->name.");
     }

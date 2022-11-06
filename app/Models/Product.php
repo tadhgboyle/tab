@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\SettingsHelper;
+use App\Helpers\TaxHelper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Database\Eloquent\Builder;
@@ -44,19 +45,9 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function getPrice(): float
+    public function getPriceAfterTax(): float
     {
-        // TODO: tax calc and implementation
-        $total_tax = 0.00;
-        if ($this->pst) {
-            $total_tax += resolve(SettingsHelper::class)->getPst();
-        }
-
-        $total_tax += resolve(SettingsHelper::class)->getGst();
-
-        $total_tax--;
-
-        return (float) number_format($this->price * $total_tax, 2);
+        return TaxHelper::calculateFor($this->price, 1, $this->pst);
     }
 
     // Used to check if items in order have enough stock BEFORE using removeStock() to remove it.

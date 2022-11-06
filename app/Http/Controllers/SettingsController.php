@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\RoleHelper;
+use App\Models\Settings;
 use Illuminate\Http\Request;
 use App\Helpers\CategoryHelper;
 use App\Helpers\RotationHelper;
@@ -24,8 +25,8 @@ class SettingsController extends Controller
             return redirect()->route('settings')->withErrors($validator);
         }
 
-        DB::table('settings')->where('setting', 'gst')->update(['value' => $request->gst]);
-        DB::table('settings')->where('setting', 'pst')->update(['value' => $request->pst]);
+        Settings::where('setting', 'gst')->update(['value' => $request->gst]);
+        Settings::where('setting', 'pst')->update(['value' => $request->pst]);
 
         return redirect()->route('settings')->with('success', 'Updated tax settings.');
     }

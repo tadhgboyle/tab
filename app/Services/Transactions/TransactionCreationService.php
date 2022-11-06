@@ -3,6 +3,7 @@
 namespace App\Services\Transactions;
 
 use App\Helpers\Permission;
+use App\Helpers\TaxHelper;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Category;
@@ -57,7 +58,6 @@ class TransactionCreationService extends Service
         $transaction_products = Collection::make();
 
         $total_price = 0;
-        $total_tax = $settingsHelper->getGst();
 
         foreach ($order_products->all() as $product_meta) {
             $id = $product_meta->id;
@@ -78,10 +78,6 @@ class TransactionCreationService extends Service
                 return;
             }
 
-            if ($product->pst) {
-                $total_tax = ($total_tax + $settingsHelper->getPst()) - 1;
-            }
-
             $transaction_products->add(TransactionProduct::from(
                 $product,
                 $quantity,
@@ -89,8 +85,7 @@ class TransactionCreationService extends Service
                 $product->pst ? $settingsHelper->getPst() : null
             ));
 
-            $total_price += ($product->price * $quantity) * $total_tax;
-            $total_tax = $settingsHelper->getGst();
+            $total_price += TaxHelper::calculateFor($product->price, $quantity, $product->pst);
         }
 
         $remaining_balance = $purchaser->balance - $total_price;
@@ -110,24 +105,18 @@ class TransactionCreationService extends Service
                 continue;
             }
 
-            $category_spent = 0;
+            $category_spent = 0.00;
             $category_spent_orig = UserLimitsHelper::findSpent($purchaser, $category_id, $limit_info);
 
             // Loop all products in this transaction. If the product's category is the current one in the above loop, add its price to category spent
             foreach ($transaction_products->filter(fn (TransactionProduct $product) => $product->category_id === $category_id) as $product) {
-                $tax_percent = $product->gst;
-
-                if ($product->pst !== null) {
-                    $tax_percent += $product->pst - 1;
-                }
-
-                $category_spent += ($product->price * $product->quantity) * $tax_percent;
+                $category_spent += TaxHelper::calculateFor($product->price,  $product->quantity, $product->pst !== null);
             }
 
             // Break loop if we exceed their limit
             if (!UserLimitsHelper::canSpend($purchaser, $category_spent, $category_id, $limit_info)) {
                 $this->_result = self::RESULT_NOT_ENOUGH_CATEGORY_BALANCE;
-                $this->_message = 'Not enough balance in the ' . Category::find($category_id)->name . ' category. (Limit: $' . number_format($category_limit, 2) . ', Remaining: $' . number_format($category_limit - $category_spent_orig, 2) . '). Tried to spend $' . number_format($category_spent, 2);
+                $this->_message = 'Not enough balance in the ' . Category::find($category_id)->name . ' category. (Limit: $' . number_format($category_limit, 2) . ', Remaining: $' . number_format($category_limit - $category_spent_orig, 2) . '). Tried to spend $' . number_format(round($category_spent, 2), 2);
                 return;
             }
         }

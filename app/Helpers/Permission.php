@@ -12,12 +12,14 @@ class Permission {
     public const USERS = 'users';
     public const USERS_LIST = 'users_list';
     public const USERS_VIEW = 'users_view';
+    public const USERS_VIEW_DELETED = 'users_view_deleted'; // TODO
     public const USERS_MANAGE = 'users_manage';
     public const USERS_PAYOUTS_CREATE = 'users_payouts_create';
-    public const USERS_LIST_SELECT_ROTATION = 'users_list_select_rotation'; // TODO
+    public const USERS_LIST_SELECT_ROTATION = 'users_list_select_rotation';
 
     public const PRODUCTS = 'products';
     public const PRODUCTS_LIST = 'products_list';
+    public const PRODUCTS_VIEW_DELETED = 'products_view_deleted'; // TODO
     public const PRODUCTS_MANAGE = 'products_manage';
     public const PRODUCTS_ADJUST = 'products_adjust';
 

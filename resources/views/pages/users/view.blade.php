@@ -27,7 +27,7 @@
                         <thead>
                             <th>Time</th>
                             <th>Cashier</th>
-                            <th>Price</th>
+                            <th>Total Price</th>
                             <th>Status</th>
                             @permission(\App\Helpers\Permission::ORDERS_VIEW)
                             <th></th>
@@ -80,7 +80,7 @@
                                 <th>Time</th>
                                 <th>Cashier</th>
                                 <th>Activity</th>
-                                <th>Price</th>
+                                <th>Total Price</th>
                                 <th>Status</th>
                             </tr>
                         </thead>

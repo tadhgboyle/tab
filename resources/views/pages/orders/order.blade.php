@@ -12,8 +12,8 @@
             <form method="post" id="order" name="order" action="{{ route('orders_store', $user->id) }}">
                 @csrf
                 <input type="hidden" id="purchaser_id" name="purchaser_id" value="{{ $user->id }}">
-                <input type="hidden" id="current_pst" value="{{ $pst }}">
-                <input type="hidden" id="current_gst" value="{{ $gst }}">
+                <input type="hidden" id="current_pst" value="{{ $current_pst }}">
+                <input type="hidden" id="current_gst" value="{{ $current_gst }}">
                 <input type="hidden" id="purchaser_balance" value="{{ $user->balance }}">
                 <input type="hidden" id="products" name="products" value="{}">
 
