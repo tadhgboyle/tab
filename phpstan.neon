@@ -7,5 +7,6 @@ parameters:
     excludePaths:
         - app/Exceptions/Handler.php
         - app/Http/Kernel.php
+        - app/Providers/AuthServiceProvider.php
     level: 5
     checkMissingIterableValueType: false
