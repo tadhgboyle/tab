@@ -2,18 +2,19 @@
 
 namespace Tests\Feature;
 
+use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
-class LoginControllerTest extends TestCase {
-
+class LoginControllerTest extends TestCase
+{
     use RefreshDatabase;
 
     private User $_user;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
 
         $role = Role::factory()->create();
@@ -30,7 +31,8 @@ class LoginControllerTest extends TestCase {
             ->assertViewIs('pages.login');
     }
 
-    public function testCanLoginWithValidCredentials(): void {
+    public function testCanLoginWithValidCredentials(): void
+    {
         $this
             ->post(route('login_auth'), [
                 'username' => $this->_user->username,
@@ -39,7 +41,8 @@ class LoginControllerTest extends TestCase {
             ->assertRedirect(route('index'));
     }
 
-    public function testCannotLoginWithInvalidCredentials(): void {
+    public function testCannotLoginWithInvalidCredentials(): void
+    {
         $this
             ->post(route('login_auth'), [
                 'username' => $this->_user->username,
@@ -49,7 +52,8 @@ class LoginControllerTest extends TestCase {
             ->assertSessionHas('error', 'Invalid credentials. Please try again.');
     }
 
-    public function testCanLogoutIfLoggedIn(): void {
+    public function testCanLogoutIfLoggedIn(): void
+    {
         $this
             ->actingAs($this->_user)
             ->get(route('logout'))

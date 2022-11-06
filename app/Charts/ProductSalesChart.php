@@ -2,11 +2,9 @@
 
 namespace App\Charts;
 
-use App\Helpers\Permission;
 use App\Models\Product;
-use App\Models\User;
+use App\Helpers\Permission;
 use Chartisan\PHP\Chartisan;
-use Cookie;
 use Illuminate\Http\Request;
 use App\Helpers\RotationHelper;
 use ConsoleTVs\Charts\BaseChart;

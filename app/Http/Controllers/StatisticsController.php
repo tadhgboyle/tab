@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\RotationHelper;
-use Illuminate\Support\Facades\Cookie;
 
 class StatisticsController extends Controller
 {

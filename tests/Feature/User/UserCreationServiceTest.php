@@ -116,7 +116,6 @@ class UserCreationServiceTest extends TestCase
         $this->assertSame($rotations, $user->rotations->pluck('id')->toArray());
     }
 
-
     private function createRequest(
         ?string $full_name = null,
         ?string $username = null,
@@ -126,8 +125,7 @@ class UserCreationServiceTest extends TestCase
         array $limit = [],
         array $duration = [],
         array $rotations = [],
-    ): UserRequest
-    {
+    ): UserRequest {
         return new UserRequest([
             'full_name' => $full_name,
             'username' => $username,

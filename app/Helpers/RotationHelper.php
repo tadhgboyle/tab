@@ -4,8 +4,8 @@ namespace App\Helpers;
 
 use App\Models\Rotation;
 use Illuminate\Support\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Database\Eloquent\Collection;
 
 class RotationHelper extends Helper
 {

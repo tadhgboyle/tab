@@ -2,13 +2,13 @@
 
 namespace Tests\Feature\Rotation;
 
+use Carbon\Carbon;
+use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Cookie;
-use Tests\TestCase;
 use App\Models\Rotation;
 use App\Helpers\RotationHelper;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RotationHelperTest extends TestCase
@@ -20,7 +20,8 @@ class RotationHelperTest extends TestCase
     private Role $_superuser_role;
     private User $_superuser_user;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
 
         $this->_cashier_role = Role::factory()->create([
