@@ -82,7 +82,7 @@ class Rotation extends Model
     // - extra permission: show only transactions in x rotation
 
     // statistics page
-    // - update statistics page to use "all rotations" or "x rotation"
+    // - update statistics page to use "all rotations" or "x rotation" - DONE
 
     // misc
     // - if no rotation is in action (ie: one ends on saturday morning and the next starts on sunday afternoon), dont allow staff to login without extra permission

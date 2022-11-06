@@ -37,7 +37,7 @@ class PermissionHelperTest extends TestCase
         $permissionHelper = PermissionHelper::getInstance();
 
         $this->assertEquals(
-            "'cashier','users','products','activities','orders','statistics','settings','misc'",
+            "'cashier','users','products','activities','orders','statistics','settings'",
             $permissionHelper->getCategoryKeys()
         );
     }

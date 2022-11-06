@@ -1,7 +1,7 @@
 @extends('layouts.default', ['page' => 'activities'])
 @section('content')
 <h2 class="title has-text-weight-bold">{{ isset($activity) ? 'Edit' : 'Create' }} Activity</h2>
-@isset($activity) <h4 class="subtitle"><strong>Activity:</strong> {{ $activity->name }} @permission('activities_view')<a href="{{ route('activities_view', $activity->id) }}">(View)</a>@endpermission</h4> @endisset
+@isset($activity) <h4 class="subtitle"><strong>Activity:</strong> {{ $activity->name }} @permission(\App\Helpers\Permission::ACTIVITIES_VIEW)<a href="{{ route('activities_view', $activity->id) }}">(View)</a>@endpermission</h4> @endisset
 
 <form action="{{ isset($activity) ? route('activities_update', $activity->id) : route('activities_store') }}" id="product_form" method="POST" class="form-horizontal">
     @csrf

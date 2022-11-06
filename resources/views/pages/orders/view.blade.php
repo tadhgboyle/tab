@@ -7,12 +7,12 @@
         <p><strong>Order ID:</strong> {{ $transaction->id }}</p>
         <p><strong>Date:</strong> {{ $transaction->created_at->format('M jS Y h:ia') }}</p>
         <p><strong>Rotation:</strong> {{ $transaction->rotation->name }}</p>
-        <p><strong>Purchaser:</strong> @permission('users_view') <a href="{{ route('users_view', $transaction->purchaser_id) }}">{{ $transaction->purchaser->full_name }}</a> @else {{ $transaction->purchaser->full_name }} @endpermission</p>
-        <p><strong>Cashier:</strong> @permission('users_view') <a href="{{ route('users_view', $transaction->cashier_id) }}">{{ $transaction->cashier->full_name }}</a> @else {{ $transaction->cashier->full_name }} @endpermission</p>
+        <p><strong>Purchaser:</strong> @permission(\App\Helpers\Permission::USERS_VIEW) <a href="{{ route('users_view', $transaction->purchaser_id) }}">{{ $transaction->purchaser->full_name }}</a> @else {{ $transaction->purchaser->full_name }} @endpermission</p>
+        <p><strong>Cashier:</strong> @permission(\App\Helpers\Permission::USERS_VIEW) <a href="{{ route('users_view', $transaction->cashier_id) }}">{{ $transaction->cashier->full_name }}</a> @else {{ $transaction->cashier->full_name }} @endpermission</p>
         <p><strong>Total Price:</strong> ${{ number_format($transaction->total_price, 2) }}</p>
         <p><strong>Status:</strong> @switch($transaction_returned) @case(0) Not Returned @break @case(1) Returned @break @case(2) Semi Returned @break @endswitch</p>
         <br>
-        @if($transaction_returned !== 1 && hasPermission('orders_return'))
+        @if($transaction_returned !== 1 && hasPermission(\App\Helpers\Permission::ORDERS_RETURN))
         <button class="button is-danger is-outlined" type="button" onclick="openModal();">
             <span>Return</span>
             <span class="icon is-small">
@@ -33,7 +33,7 @@
                     <th>Price</th>
                     <th>Quantity</th>
                     <th>Item Price</th>
-                    @permission('orders_return')
+                    @permission(\App\Helpers\Permission::ORDERS_RETURN)
                     <th></th>
                     @endpermission
                 </thead>
@@ -52,7 +52,7 @@
                         <td>
                             <div>${{ number_format($product['price'] * $product['quantity'], 2) }}</div>
                         </td>
-                        @permission('orders_return')
+                        @permission(\App\Helpers\Permission::ORDERS_RETURN)
                         <td>
                             <div>
                                 @if(!$transaction->returned && $product['returned'] < $product['quantity'])
@@ -71,7 +71,7 @@
     </div>
 </div>
 
-@if(!is_null($transaction) && hasPermission('orders_return'))
+@permission(\App\Helpers\Permission::ORDERS_RETURN)
 <div class="modal modal-order">
     <div class="modal-background" onclick="closeModal();"></div>
     <div class="modal-card">
@@ -90,9 +90,7 @@
         </footer>
     </div>
 </div>
-@endif
 
-@permission('orders_return')
 <div class="modal modal-product">
     <div class="modal-background" onclick="closeProductModal();"></div>
     <div class="modal-card">
@@ -119,7 +117,7 @@
             "paging": false,
             "scrollY": "49vh",
             "scrollCollapse": true,
-            @permission('orders_return')
+            @permission(\App\Helpers\Permission::ORDERS_RETURN)
             "columnDefs": [{
                 "orderable": false,
                 "searchable": false,
@@ -131,7 +129,7 @@
         $('#table_container').css('visibility', 'visible');
     });
 
-    @permission('orders_return')
+    @permission(\App\Helpers\Permission::ORDERS_RETURN)
         const modal_order = document.querySelector('.modal-order');
 
         function openModal() {

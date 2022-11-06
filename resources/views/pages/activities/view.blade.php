@@ -40,7 +40,7 @@
                     <tr>
                         <td>
                             <div>
-                                @permission('users_view')
+                                @permission(\App\Helpers\Permission::USERS_VIEW)
                                 <a href="{{ route('users_view', $user) }}">{{ $user->full_name }}</a>
                                 @else
                                 {{ $user->full_name }}

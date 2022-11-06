@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Permission;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Transaction;
@@ -31,7 +32,7 @@ class TransactionController extends Controller
 
     public function create(User $user, SettingsHelper $settingsHelper)
     {
-        if (!hasPermission('cashier_self_purchases') && $user->id === auth()->id()) {
+        if (!hasPermission(Permission::CASHIER_SELF_PURCHASES) && $user->id === auth()->id()) {
             return redirect('/')->with('error', 'You cannot make purchases for yourself.');
         }
 

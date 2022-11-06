@@ -3,7 +3,7 @@
 <h2 class="title has-text-weight-bold">Settings</h2>
 @include('includes.messages')
 <div class="columns">
-    @permission('settings_general')
+    @permission(\App\Helpers\Permission::SETTINGS_GENERAL)
     <div class="column">
         <div class="box">
             <h4 class="title has-text-weight-bold is-4">Taxes</h4>
@@ -43,7 +43,7 @@
     </div>
     @endpermission
 
-    @permission('settings_categories_manage')
+    @permission(\App\Helpers\Permission::SETTINGS_CATEGORIES_MANAGE)
     <div class="column">
         <div class="box">
             <h4 class="title has-text-weight-bold is-4">Categories</h4>
@@ -89,7 +89,7 @@
 </div>
 
 <div class="columns">
-    @permission('settings_roles_manage')
+    @permission(\App\Helpers\Permission::SETTINGS_ROLES_MANAGE)
     <div class="column is-5">
         <div class="box">
             <h4 class="title has-text-weight-bold is-4">Roles</h4>
@@ -145,7 +145,7 @@
     </div>
     @endpermission
 
-    @permission('settings_rotations_manage')
+    @permission(\App\Helpers\Permission::SETTINGS_ROTATIONS_MANAGE)
     <div class="column">
         <div class="box">
             <h4 class="title has-text-weight-bold is-4">Rotations</h4>
@@ -203,7 +203,7 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        @permission('settings_categories_manage')
+        @permission(\App\Helpers\Permission::SETTINGS_CATEGORIES_MANAGE)
             $('#category_list').DataTable({
                 "paging": false,
                 "searching": false,
@@ -218,7 +218,7 @@
             });
         @endpermission
 
-        @permission('settings_roles_manage')
+        @permission(\App\Helpers\Permission::SETTINGS_ROLES_MANAGE)
             $('#role_list').DataTable({
                 "order": [],
                 "paging": false,
@@ -262,7 +262,7 @@
             @endif
         @endpermission
 
-        @permission('settings_rotations_manage')
+        @permission(\App\Helpers\Permission::SETTINGS_ROTATIONS_MANAGE)
             $('#rotation_list').DataTable({
                 "order": [],
                 "paging": false,

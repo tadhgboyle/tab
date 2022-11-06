@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Permission;
 use App\Models\User;
 use App\Models\Category;
 use App\Helpers\CategoryHelper;
@@ -18,7 +19,7 @@ class UserController extends Controller
 {
     public function index(RotationHelper $rotationHelper)
     {
-        $users = User::query()->unless(hasPermission('users_list_select_rotation'), function (EloquentBuilder $query) use ($rotationHelper) {
+        $users = User::query()->unless(hasPermission(Permission::USERS_LIST_SELECT_ROTATION), function (EloquentBuilder $query) use ($rotationHelper) {
             $query->whereHas('rotations', function (EloquentBuilder $query) use ($rotationHelper) {
                 return $query->where('rotation_id', $rotationHelper->getCurrentRotation()->id);
             });

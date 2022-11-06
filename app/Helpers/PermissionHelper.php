@@ -12,57 +12,53 @@ class PermissionHelper extends Helper
 
     public function __construct()
     {
-        $this->register('Cashier', 'cashier', [
-            'cashier_create' => 'Create Orders',
-            'cashier_self_purchases' => 'Create orders for themselves',
-            'cashier_users_other_rotations' => 'Create orders for users from other Rotations',
+        $this->register('Cashier', Permission::CASHIER, [
+            Permission::CASHIER_CREATE => 'Create Orders',
+            Permission::CASHIER_SELF_PURCHASES => 'Create orders for themselves',
+            Permission::CASHIER_USERS_OTHER_ROTATIONS => 'Create orders for users from other Rotations',
         ]);
 
-        $this->register('Users', 'users', [
-            'users_list' => 'List all Users',
-            'users_view' => 'View specific User information',
-            'users_manage' => 'Edit/Create/Delete Users',
-            'users_payouts_create' => 'Create Payouts',
-            'users_list_select_rotation' => 'View Users from other Rotations',
+        $this->register('Users', Permission::USERS, [
+            Permission::USERS_LIST => 'List all Users',
+            Permission::USERS_VIEW => 'View specific User information',
+            Permission::USERS_MANAGE => 'Edit/Create/Delete Users',
+            Permission::USERS_PAYOUTS_CREATE => 'Create Payouts',
+            Permission::USERS_LIST_SELECT_ROTATION => 'View Users from other Rotations',
         ]);
 
-        $this->register('Product Management', 'products', [
-            'products_list' => 'List all Products',
-            'products_manage' => 'Edit/Create/Delete Products',
-            'products_adjust' => 'Adjust stock for Products',
+        $this->register('Product Management', Permission::PRODUCTS, [
+            Permission::PRODUCTS_LIST => 'List all Products',
+            Permission::PRODUCTS_MANAGE => 'Edit/Create/Delete Products',
+            Permission::PRODUCTS_ADJUST => 'Adjust stock for Products',
         ]);
 
-        $this->register('Activity Management', 'activities', [
-            'activities_list' => 'List all Activities',
-            'activities_view' => 'View specific Activity information',
-            'activities_manage' => 'Edit/Create/Delete Activities',
-            'activities_register_user' => 'Register Users for Activities',
+        $this->register('Activity Management', Permission::ACTIVITIES, [
+            Permission::ACTIVITIES_LIST => 'List all Activities',
+            Permission::ACTIVITIES_VIEW => 'View specific Activity information',
+            Permission::ACTIVITIES_MANAGE => 'Edit/Create/Delete Activities',
+            Permission::ACTIVITIES_REGISTER_USER => 'Register Users for Activities',
         ]);
 
-        $this->register('Order Management', 'orders', [
-            'orders_list' => 'List all Orders',
-            'orders_list_select_rotation' => 'View Orders from other Rotations',
-            'orders_view' => 'View specific Order information',
-            'orders_return' => 'Return whole Orders or individual items',
+        $this->register('Order Management', Permission::ORDERS, [
+            Permission::ORDERS_LIST => 'List all Orders',
+            Permission::ORDERS_LIST_SELECT_ROTATION => 'View Orders from other Rotations',
+            Permission::ORDERS_VIEW => 'View specific Order information',
+            Permission::ORDERS_RETURN => 'Return whole Orders or individual items',
         ]);
 
-        $this->register('Statistics', 'statistics', [
-            'statistics_order_history' => 'View Order history chart',
-            'statistics_product_sales' => 'View Product sales chart',
-            'statistics_activity_sales' => 'View Activity sales chart',
-            'statistics_income_info' => 'View Income info chart',
-            'statistics_select_rotation' => 'View statistics charts from other Rotations',
+        $this->register('Statistics', Permission::STATISTICS, [
+            Permission::STATISTICS_ORDER_HISTORY => 'View Order history chart',
+            Permission::STATISTICS_PRODUCT_SALES => 'View Product sales chart',
+            Permission::STATISTICS_ACTIVITY_SALES => 'View Activity sales chart',
+            Permission::STATISTICS_INCOME_INFO => 'View Income info chart',
+            Permission::STATISTICS_SELECT_ROTATION => 'View statistics charts from other Rotations',
         ]);
 
-        $this->register('Settings', 'settings', [
-            'settings_general' => 'Edit tax rates',
-            'settings_categories_manage' => 'Edit/Create/Delete Categories',
-            'settings_roles_manage' => 'Edit/Create/Delete Roles',
-            'settings_rotations_manage' => 'Edit/Create/Delete Rotations',
-        ]);
-
-        $this->register('Misc', 'misc', [
-            'misc_login_no_rotation' => 'Let Users login when no Rotation is currently active' // TODO implement, or find better UX solution
+        $this->register('Settings', Permission::SETTINGS, [
+            Permission::SETTINGS_GENERAL => 'Edit tax rates',
+            Permission::SETTINGS_CATEGORIES_MANAGE => 'Edit/Create/Delete Categories',
+            Permission::SETTINGS_ROLES_MANAGE => 'Edit/Create/Delete Roles',
+            Permission::SETTINGS_ROTATIONS_MANAGE => 'Edit/Create/Delete Rotations',
         ]);
     }
 

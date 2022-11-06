@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Permission;
 use App\Models\User;
 use App\Models\Activity;
 use Illuminate\Support\Carbon;
@@ -23,7 +24,7 @@ class ActivityController extends Controller
                 'title' => $activity->name,
                 'start' => Carbon::parse($activity->start),
                 'end' => Carbon::parse($activity->end),
-                'url' => hasPermission('activities_view') ? route('activities_view', $activity->id) : '',
+                'url' => hasPermission(Permission::ACTIVITIES_VIEW) ? route('activities_view', $activity->id) : '',
             ];
         }
 
@@ -36,8 +37,8 @@ class ActivityController extends Controller
     {
         return view('pages.activities.view', [
             'activity' => $activity,
-            'activities_manage' => hasPermission('activities_manage'),
-            'can_register' => !$activity->end->isPast() && $activity->hasSlotsAvailable() && hasPermission('activities_register_user'),
+            'activities_manage' => hasPermission(Permission::ACTIVITIES_MANAGE),
+            'can_register' => !$activity->end->isPast() && $activity->hasSlotsAvailable() && hasPermission(Permission::ACTIVITIES_REGISTER_USER),
         ]);
     }
 
