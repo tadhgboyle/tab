@@ -95,19 +95,19 @@
 
     function startChange(e) {
         endMinDate = new Date(e);
-        flatpickr('#end', { enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: endMinDate });
+        createEndDatepicker(null, endMinDate);
     }
 
     $(document).ready(function() {
         const startDate = new Date('{{ $start }}');
         const endDate = new Date('{{ $end }}');
 
-        @isset($rotation)
-            flatpickr('#start', { defaultDate: startDate, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: 'today' });
-        @else
-            flatpickr('#start', { defaultDate: startDate, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K' });
-        @endif
-        flatpickr('#end', { defaultDate: endDate, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: startDate });
+        flatpickr('#start', { defaultDate: startDate, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K' });
+        createEndDatepicker(endDate, startDate);
     });
+
+    function createEndDatepicker(endDate = null, endMinDate) {
+        flatpickr('#end', { defaultDate: endDate, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: endMinDate });
+    }
 </script>
 @stop
