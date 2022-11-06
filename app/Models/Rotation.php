@@ -64,25 +64,12 @@ class Rotation extends Model
             default => "Unknown Status: {$this->getStatus()}",
         };
     }
-
-    // rotation list in settings - DONE
-    // rotation create/edit page - DONE
-    // - fix dates autofilling if editing
-
-    // user page
-    // - editing/creating: multi-select Rotations - DONE
-    // - viewing: view Rotations - DONE
-
-    // user list (and order making user list)
-    // - default: show users in RotationHelper->getCurrentRotation(). if current rotation is null, show all and disable dropdown (if they have permission to see dropdown)
-    // - extra permission: show only users in x rotation
+    // cashier page:
+    // -- dropdown selector if they have perm, otherwise current/alert if current is null
 
     // transaction list
     // - default: show transactions in RotationHelper->getCurrentRotation(). if current rotation is null, show all and disable dropdown (if they have permission to see dropdown)
     // - extra permission: show only transactions in x rotation
-
-    // statistics page
-    // - update statistics page to use "all rotations" or "x rotation" - DONE
 
     // misc
     // - if no rotation is in action (ie: one ends on saturday morning and the next starts on sunday afternoon), dont allow staff to login without extra permission

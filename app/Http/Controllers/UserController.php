@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\Permission;
 use App\Models\User;
 use App\Models\Category;
 use App\Helpers\CategoryHelper;
@@ -19,17 +18,27 @@ class UserController extends Controller
 {
     public function index(RotationHelper $rotationHelper)
     {
-        $users = User::query()->unless(hasPermission(Permission::USERS_LIST_SELECT_ROTATION), function (EloquentBuilder $query) use ($rotationHelper) {
-            $query->whereHas('rotations', function (EloquentBuilder $query) use ($rotationHelper) {
-                return $query->where('rotation_id', $rotationHelper->getCurrentRotation()->id);
-            });
-        })->with('role')->get();
+        $user_list_rotation_id = $rotationHelper->getUserListRotationId();
 
-        return view('pages.users.list', [
-            'rotations' => $rotationHelper->getRotations(),
-            'users' => $users,
-            'selectedRotation' => $rotationHelper->getCurrentRotation(),
-        ]);
+        if ($user_list_rotation_id === null) {
+            $data = [
+                'cannot_view_users' => true,
+            ];
+        } else {
+            $users = User::query()->when($user_list_rotation_id !== '*', function (EloquentBuilder $query) use ($user_list_rotation_id) {
+                $query->whereHas('rotations', function (EloquentBuilder $query) use ($user_list_rotation_id) {
+                    return $query->where('rotation_id', $user_list_rotation_id);
+                });
+            })->with('role', 'rotations')->get();
+
+            $data = [
+                'rotations' => $rotationHelper->getRotations(),
+                'users' => $users,
+                'user_list_rotation_id' => $user_list_rotation_id,
+            ];
+        }
+
+        return view('pages.users.list', $data);
     }
 
     public function show(CategoryHelper $categoryHelper, User $user)
