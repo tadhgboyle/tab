@@ -87,9 +87,11 @@ class Transaction extends Model
         foreach ($this->products as $product) {
             if ($product->returned >= $product->quantity) {
                 $products_returned++;
-            } else if ($product->returned > 0) {
-                // Semi returned if at least one product has a returned value
-                return self::STATUS_PARTIAL_RETURNED;
+            } else {
+                if ($product->returned > 0) {
+                    // Semi returned if at least one product has a returned value
+                    return self::STATUS_PARTIAL_RETURNED;
+                }
             }
 
             $product_count++;

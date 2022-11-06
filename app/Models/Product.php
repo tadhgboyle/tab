@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Helpers\SettingsHelper;
 use App\Helpers\TaxHelper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;

@@ -5,12 +5,12 @@ namespace App\Charts;
 use App\Helpers\Permission;
 use App\Models\Transaction;
 use Chartisan\PHP\Chartisan;
-use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Helpers\RotationHelper;
 use ConsoleTVs\Charts\BaseChart;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Contracts\Database\Query\Builder;
 
 class OrderHistoryChart extends BaseChart
 {

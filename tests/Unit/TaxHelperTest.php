@@ -2,16 +2,17 @@
 
 namespace Tests\Unit;
 
-use App\Helpers\TaxHelper;
-use App\Models\Settings;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\Models\Settings;
+use App\Helpers\TaxHelper;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TaxHelperTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
 
         Settings::factory()->createMany([
