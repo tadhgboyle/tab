@@ -2,6 +2,7 @@
 
 namespace App\Charts;
 
+use App\Helpers\Permission;
 use DB;
 use App\Models\Activity;
 use Chartisan\PHP\Chartisan;
@@ -12,7 +13,7 @@ class ActivitySalesChart extends BaseChart
 {
     public ?array $middlewares = [
         'auth',
-        'permission:statistics_activity_sales',
+        'permission:' . Permission::STATISTICS_ACTIVITY_SALES,
     ];
 
     public function handler(Request $request): Chartisan

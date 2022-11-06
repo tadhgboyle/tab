@@ -2,6 +2,7 @@
 
 namespace App\Charts;
 
+use App\Helpers\Permission;
 use App\Models\Transaction;
 use Chartisan\PHP\Chartisan;
 use Cookie;
@@ -16,7 +17,7 @@ class IncomeInfoChart extends BaseChart
 {
     public ?array $middlewares = [
         'auth',
-        'permission:statistics_income_info',
+        'permission:' . Permission::STATISTICS_INCOME_INFO,
     ];
 
     public function handler(Request $request): Chartisan

@@ -2,6 +2,7 @@
 
 namespace App\Charts;
 
+use App\Helpers\Permission;
 use App\Models\Transaction;
 use Chartisan\PHP\Chartisan;
 use Illuminate\Contracts\Database\Query\Builder;
@@ -15,7 +16,7 @@ class OrderHistoryChart extends BaseChart
 {
     public ?array $middlewares = [
         'auth',
-        'permission:statistics_order_history',
+        'permission:' . Permission::STATISTICS_ORDER_HISTORY,
     ];
 
     // TODO: How should we display semi-Returned orders?

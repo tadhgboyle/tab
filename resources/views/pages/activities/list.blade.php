@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
         height: 650,
         events: {!! $activities !!},
         dateClick: function(day) {
-            @permission('activities_manage')
+            @permission(\App\Helpers\Permission::ACTIVITIES_MANAGE)
                 if (day.dateStr < new Date().toISOString().split('T')[0]) return;
                 let url = '{{ route('activities_create', ':id') }}';
                 url = url.replace(':id', day.dateStr);

@@ -16,7 +16,7 @@
                     <th>Stock</th>
                     <th>Box Size</th>
                     <th>PST</th>
-                    @permission('products_manage')
+                    @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)
                     <th></th>
                     @endpermission
                 </tr>
@@ -42,7 +42,7 @@
                     <td>
                         <div>{!! $product->pst ? "<span class=\"tag is-success is-medium\">Yes</span>" : "<span class=\"tag is-danger is-medium\">No</span>" !!}</div>
                     </td>
-                    @permission('products_manage')
+                    @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)
                     <td>
                         <div><a href="{{ route('products_edit', $product->id) }}">Edit</a></div>
                     </td>
@@ -64,7 +64,7 @@
                 "searchable": false,
                 "targets": [
                     5,
-                    @permission('products_manage')
+                    @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)
                     6
                     @endpermission
                 ]

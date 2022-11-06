@@ -16,10 +16,10 @@
                             <th>Username</th>
                             <th>Balance</th>
                             <th>Role</th>
-                            @permission('users_view')
+                            @permission(\App\Helpers\Permission::USERS_VIEW)
                                 <th></th>
                             @endpermission
-                            @permission('users_manage')
+                            @permission(\App\Helpers\Permission::USERS_MANAGE)
                                 <th></th>
                             @endpermission
                         </tr>
@@ -39,12 +39,12 @@
                             <td>
                                 <div>{{ $user->role->name }}</div>
                             </td>
-                            @permission('users_view')
+                            @permission(\App\Helpers\Permission::USERS_VIEW)
                             <td>
                                 <div><a href="{{ route('users_view', $user) }}">View</a></div>
                             </td>
                             @endpermission
-                            @permission('users_manage')
+                            @permission(\App\Helpers\Permission::USERS_MANAGE)
                             @if (Auth::user()->role->canInteract($user->role))
                                 <td>
                                     <div><a href="{{ route('users_edit', $user->id) }}">Edit</a></div>
@@ -79,12 +79,12 @@
                 "orderable": false,
                 "searchable": false,
                 "targets": [
-                    @if(hasPermission('users_view') && hasPermission('users_manage'))
+                    @if(hasPermission(\App\Helpers\Permission::USERS_VIEW) && hasPermission(\App\Helpers\Permission::USERS_MANAGE))
                     4,
                     5
-                    @elseif(hasPermission('users_view') && !hasPermission('users_manage'))
+                    @elseif(hasPermission(\App\Helpers\Permission::USERS_VIEW) && !hasPermission(\App\Helpers\Permission::USERS_MANAGE))
                     4
-                    @elseif(!hasPermission('users_view') && hasPermission('users_manage'))
+                    @elseif(!hasPermission(\App\Helpers\Permission::USERS_VIEW) && hasPermission(\App\Helpers\Permission::USERS_MANAGE))
                     4
                     @endif
                 ]

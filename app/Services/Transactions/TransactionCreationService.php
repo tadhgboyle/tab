@@ -2,6 +2,7 @@
 
 namespace App\Services\Transactions;
 
+use App\Helpers\Permission;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Category;
@@ -36,7 +37,7 @@ class TransactionCreationService extends Service
             return;
         }
 
-        if (!hasPermission('cashier_self_purchases') && $purchaser->id === auth()->id()) {
+        if (!hasPermission(Permission::CASHIER_SELF_PURCHASES) && $purchaser->id === auth()->id()) {
             $this->_result = self::RESULT_NO_SELF_PURCHASE;
             $this->_message = 'You cannot make purchases for yourself.';
             return;

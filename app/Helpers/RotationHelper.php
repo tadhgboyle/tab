@@ -47,7 +47,7 @@ class RotationHelper extends Helper
     {
         $default = $this->getCurrentRotation()?->id;
 
-        if (hasPermission('statistics_select_rotation')) {
+        if (hasPermission(Permission::STATISTICS_SELECT_ROTATION)) {
             return Cookie::get('stats_rotation_id', $default ?? '*');
         }
 

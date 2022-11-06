@@ -2,7 +2,7 @@
 @section('content')
 <h2 class="title has-text-weight-bold">Statistics</h2>
 <div class="columns is-multiline box">
-    @permission('statistics_select_rotation')
+    @permission(\App\Helpers\Permission::STATISTICS_SELECT_ROTATION)
     <div class="column is-12">
         <div class="field">
             <div class="control">
@@ -26,7 +26,7 @@
         </div>
     @else
         <div class="column is-half">
-            @permission('statistics_order_history')
+            @permission(\App\Helpers\Permission::STATISTICS_ORDER_HISTORY)
             <h4 class="title has-text-weight-bold is-4">Order Info</h4>
             <div>
                 <div id="order_history_chart" style="height: 400px;"></div>
@@ -34,7 +34,7 @@
             @endpermission
         </div>
         <div class="column is-half">
-            @permission('statistics_product_sales')
+            @permission(\App\Helpers\Permission::STATISTICS_PRODUCT_SALES)
             <h4 class="title has-text-weight-bold is-4">Product Sales</h4>
             <h6 class="subtitle">(Only top 50 products are shown)</h6>
             <div>
@@ -43,7 +43,7 @@
             @endpermission
         </div>
         <div class="column is-half">
-            @permission('statistics_activity_sales')
+            @permission(\App\Helpers\Permission::STATISTICS_ACTIVITY_SALES)
             <h4 class="title has-text-weight-bold is-4">Activity Sales</h4>
             <div>
                 <div id="activity_sales_chart" style="height: 400px;"></div>
@@ -51,7 +51,7 @@
             @endpermission
         </div>
         <div class="column is-half">
-            @permission('statistics_income_info')
+            @permission(\App\Helpers\Permission::STATISTICS_INCOME_INFO)
             <h4 class="title has-text-weight-bold is-4">Income Info</h4>
             <div>
                 <div id="income_info_chart" style="height: 400px;"></div>
@@ -66,7 +66,14 @@
 
 <script>
     @unless(isset($cannot_view_statistics))
-        @permission('statistics_order_history')
+        @permission(\App\Helpers\Permission::STATISTICS_SELECT_ROTATION)
+        $('#rotation').change(function() {
+            document.cookie = "stats_rotation_id=" + $(this).val();
+            location.reload();
+        });
+        @endpermission
+
+        @permission(\App\Helpers\Permission::STATISTICS_ORDER_HISTORY)
             new Chartisan({
                 el: '#order_history_chart',
                 url: "@chart('order_history_chart')",
@@ -77,7 +84,7 @@
             });
         @endpermission
 
-        @permission('statistics_product_sales')
+        @permission(\App\Helpers\Permission::STATISTICS_PRODUCT_SALES)
             new Chartisan({
                 el: '#product_sales_chart',
                 url: "@chart('product_sales_chart')",
@@ -87,7 +94,7 @@
             });
         @endpermission
 
-        @permission('statistics_activity_sales')
+        @permission(\App\Helpers\Permission::STATISTICS_ACTIVITY_SALES)
             new Chartisan({
                 el: '#activity_sales_chart',
                 url: "@chart('activity_sales_chart')",
@@ -98,7 +105,7 @@
             });
         @endpermission
 
-        @permission('statistics_income_info')
+        @permission(\App\Helpers\Permission::STATISTICS_INCOME_INFO)
         new Chartisan({
             el: '#income_info_chart',
             url: "@chart('income_info_chart')",
@@ -107,13 +114,6 @@
                 .datasets([{ type: 'line', fill: false }, 'bar'])
                 .colors(['#512D38', '#B27092'])
                 .tooltip()
-        });
-        @endpermission
-
-        @permission('statistics_select_rotation')
-        $('#rotation').change(function() {
-            document.cookie = "stats_rotation_id=" + $(this).val();
-            location.reload();
         });
         @endpermission
     @endunless

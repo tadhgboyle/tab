@@ -1,7 +1,7 @@
 @extends('layouts.default', ['page' => 'users'])
 @section('content')
 <h2 class="title has-text-weight-bold">View User</h2>
-<h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if($user->trashed()) <strong>(Deleted)</strong> @endif @if(!$user->trashed() && hasPermission('users_manage') && $can_interact)<a href="{{ route('users_edit', $user->id) }}">(Edit)</a>@endif</h4>
+<h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if($user->trashed()) <strong>(Deleted)</strong> @endif @if(!$user->trashed() && hasPermission(\App\Helpers\Permission::USERS_MANAGE) && $can_interact)<a href="{{ route('users_edit', $user->id) }}">(Edit)</a>@endif</h4>
 <p><strong>Role:</strong> {{ $user->role->name }}</p>
 <span><strong>Balance:</strong> ${{ number_format($user->balance, 2) }}, </span>
 <span><strong>Total spent:</strong> ${{ number_format($user->findSpent(), 2) }}, </span>
@@ -29,7 +29,7 @@
                             <th>Cashier</th>
                             <th>Price</th>
                             <th>Status</th>
-                            @permission('orders_view')
+                            @permission(\App\Helpers\Permission::ORDERS_VIEW)
                             <th></th>
                             @endpermission
                         </thead>
@@ -60,7 +60,7 @@
                                         @endswitch
                                     </div>
                                 </td>
-                                @permission('orders_view')
+                                @permission(\App\Helpers\Permission::ORDERS_VIEW)
                                 <td>
                                     <div><a href="{{ route('orders_view', $transaction->id) }}">View</a></div>
                                 </td>
@@ -95,7 +95,7 @@
                                 </td>
                                 <td>
                                     <div>
-                                        @permission('activities_view')
+                                        @permission(\App\Helpers\Permission::ACTIVITIES_VIEW)
                                             <a href="{{ route('activities_view', $transaction['activity']->id) }}">{{ $transaction['activity']->name }}</a>
                                         @else
                                             {{ $transaction['activity']->name }}
@@ -202,7 +202,7 @@
                             <h4 class="title has-text-weight-bold is-4">Payouts</h4>
                         </div>
                         <div class="column">
-                            @if(hasPermission('users_payouts_create'))
+                            @if(hasPermission(\App\Helpers\Permission::USERS_PAYOUTS_CREATE))
                                 <a class="button is-success is-pulled-right" href="{{ route('users_payout_create', $user) }}">
                                     <span class="icon is-small">
                                         <i class="fas fa-file-invoice-dollar"></i>
@@ -388,7 +388,7 @@
                 "searchable": false,
                 "targets": [
                     3,
-                    @permission('orders_view')
+                    @permission(\App\Helpers\Permission::ORDERS_VIEW)
                     4
                     @endpermission
                 ]

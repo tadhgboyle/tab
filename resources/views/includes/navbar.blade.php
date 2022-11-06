@@ -8,22 +8,22 @@
         <div class="navbar-menu">
             <div class="navbar-start">
                 @auth
-                    @if(hasPermission('cashier') && hasPermission('cashier_create'))
+                    @if(hasPermission(\App\Helpers\Permission::CASHIER) && hasPermission(\App\Helpers\Permission::CASHIER_CREATE))
                         <a class="navbar-item {{ page('cashier', @$page) }}" href="{{ route('index') }}">
                             <i class="fas fa-money-bill-wave-alt"></i>&nbsp;Cashier
                         </a>
                     @endif
 
-                    @permission('users')
+                    @permission(\App\Helpers\Permission::USERS)
                         <div class="navbar-item has-dropdown is-hoverable">
                             <p class="navbar-link {{ page('users', @$page) }}"><i class="fas fa-users"></i>&nbsp;Users</p>
                             <div class="navbar-dropdown is-boxed">
-                                @permission('users_list')
+                                @permission(\App\Helpers\Permission::USERS_LIST)
                                     <a class="navbar-item" href="{{ route('users_list') }}">
                                         List
                                     </a>
                                 @endpermission
-                                @permission('users_manage')
+                                @permission(\App\Helpers\Permission::USERS_MANAGE)
                                     <a class="navbar-item" href="{{ route('users_create') }}">
                                         Create
                                     </a>
@@ -32,21 +32,21 @@
                         </div>
                     @endpermission
 
-                    @permission('products')
+                    @permission(\App\Helpers\Permission::PRODUCTS)
                         <div class="navbar-item has-dropdown is-hoverable">
                             <p class="navbar-link {{ page('products', @$page) }}"><i class="fas fa-tag"></i>&nbsp;Products</p>
                             <div class="navbar-dropdown is-boxed">
-                                @permission('products_list')
+                                @permission(\App\Helpers\Permission::PRODUCTS_LIST)
                                     <a class="navbar-item" href="{{ route('products_list') }}">
                                         List
                                     </a>
                                 @endpermission
-                                @permission('products_manage')
+                                @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)
                                     <a class="navbar-item" href="{{ route('products_create') }}">
                                         Create
                                     </a>
                                 @endpermission
-                                @permission('products_adjust')
+                                @permission(\App\Helpers\Permission::PRODUCTS_ADJUST)
                                     <a class="navbar-item" href="{{ route('products_adjust') }}">
                                         Adjust
                                     </a>
@@ -55,16 +55,16 @@
                         </div>
                     @endpermission
 
-                    @permission('activities')
+                    @permission(\App\Helpers\Permission::ACTIVITIES)
                         <div class="navbar-item has-dropdown is-hoverable">
                             <p class="navbar-link {{ page('activities', @$page) }}"><i class="fas fa-calendar-alt"></i>&nbsp;Activities</p>
                             <div class="navbar-dropdown is-boxed">
-                                @permission('activities_list')
+                                @permission(\App\Helpers\Permission::ACTIVITIES_LIST)
                                     <a class="navbar-item" href="{{ route('activities_list') }}">
                                         List
                                     </a>
                                 @endpermission
-                                @permission('activities_manage')
+                                @permission(\App\Helpers\Permission::ACTIVITIES_MANAGE)
                                     <a class="navbar-item" href="{{ route('activities_create') }}">
                                         Create
                                     </a>
@@ -73,13 +73,13 @@
                         </div>
                     @endpermission
 
-                    @permission('orders_list')
+                    @permission(\App\Helpers\Permission::ORDERS_LIST)
                         <a class="navbar-item {{ page('orders', @$page) }}" href="{{ route('orders_list') }}">
                             <i class="fas fa-shopping-basket"></i>&nbsp;Orders
                         </a>
                     @endpermission
 
-                    @permission('statistics')
+                    @permission(\App\Helpers\Permission::STATISTICS)
                         <a class="navbar-item {{ page('statistics', @$page) }}" href="{{ route('statistics') }}">
                             <i class="fas fa-chart-pie"></i>&nbsp;Statistics
                         </a>
@@ -91,7 +91,7 @@
                 @auth
                     <div class="navbar-item">
                         <div class="field is-grouped">
-                            @permission('settings')
+                            @permission(\App\Helpers\Permission::SETTINGS)
                                 <div class="control">
                                     <a class="button is-warning" href="{{ route('settings') }}">
                                         <span class="icon">

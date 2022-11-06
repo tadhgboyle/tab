@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Helpers\Permission;
 use App\Models\Role;
 use Illuminate\Database\Seeder;
 
@@ -22,8 +23,8 @@ class RoleSeeder extends Seeder
             'superuser' => false,
             'order' => 2,
             'permissions' => [
-                'cashier',
-                'cashier_create'
+                Permission::CASHIER,
+                Permission::CASHIER_CREATE
             ]
         ]);
 

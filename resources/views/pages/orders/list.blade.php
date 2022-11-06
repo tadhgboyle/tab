@@ -15,7 +15,7 @@
                     <th>Cashier</th>
                     <th>Total Price</th>
                     <th>Status</th>
-                    @permission('orders_view')
+                    @permission(\App\Helpers\Permission::ORDERS_VIEW)
                     <th></th>
                     @endpermission
                 </tr>
@@ -28,7 +28,7 @@
                     </td>
                     <td>
                         <div>
-                            @permission('users_view')
+                            @permission(\App\Helpers\Permission::USERS_VIEW)
                                 <a href="{{ route('users_view', $transaction->purchaser) }}">{{ $transaction->purchaser->full_name }}</a>
                             @else
                                 {{ $transaction->purchaser->full_name }}
@@ -56,7 +56,7 @@
                             @endswitch
                         </div>
                     </td>
-                    @permission('orders_view')
+                    @permission(\App\Helpers\Permission::ORDERS_VIEW)
                     <td>
                         <div><a href="{{ route('orders_view', $transaction->id) }}">View</a></div>
                     </td>
@@ -79,7 +79,7 @@
                 "searchable": false,
                 "targets": [
                     4,
-                    @permission('orders_view')
+                    @permission(\App\Helpers\Permission::ORDERS_VIEW)
                     5
                     @endpermission
                 ]
