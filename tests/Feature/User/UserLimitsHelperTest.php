@@ -23,6 +23,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 // TODO: test with different limit durations (day/week)
 // TODO: test when categories are made after user is made
 // TODO: activity transaction stuff
+// TODO: test after changing tax rates to ensure it is using historical data
 class UserLimitsHelperTest extends TestCase
 {
     use RefreshDatabase;
@@ -44,12 +45,12 @@ class UserLimitsHelperTest extends TestCase
         $activities_limit_info = UserLimitsHelper::getInfo($user, $activities_category->id);
         $activities_category_spent = UserLimitsHelper::findSpent($user, $activities_category->id, $activities_limit_info);
 
-        $this->assertEquals(6.6, $activities_category_spent);
+        $this->assertEquals(6.71, $activities_category_spent);
 
         $waterfront_limit_info = UserLimitsHelper::getInfo($user, $waterfront_category->id);
         $waterfront_category_spent = UserLimitsHelper::findSpent($user, $waterfront_category->id, $waterfront_limit_info);
         // Special case, they have no limit set for the waterfront category
-        $this->assertEquals(0, $waterfront_category_spent);
+        $this->assertEquals(0.00, $waterfront_category_spent);
     }
 
     public function testFindSpentCalculationIsCorrectAfterItemReturn(): void
@@ -273,11 +274,11 @@ class UserLimitsHelperTest extends TestCase
         Settings::factory()->createMany([
             [
                 'setting' => 'gst',
-                'value' => '1.05',
+                'value' => '5.00',
             ],
             [
                 'setting' => 'pst',
-                'value' => '1.07',
+                'value' => '7.00',
             ]
         ]);
 
@@ -312,9 +313,9 @@ class UserLimitsHelperTest extends TestCase
             'total_price' => 3.15 // TODO
         ]);
 
-        $skittles_product = TransactionProduct::from($skittles, 2, 1.05);
+        $skittles_product = TransactionProduct::from($skittles, 2, 5);
         $skittles_product->transaction_id = $transaction1->id;
-        $hat_product = TransactionProduct::from($hat, 1, 1.05);
+        $hat_product = TransactionProduct::from($hat, 1, 5);
         $hat_product->transaction_id = $transaction1->id;
 
         $transaction1->products()->saveMany([
@@ -329,9 +330,9 @@ class UserLimitsHelperTest extends TestCase
             'total_price' => 44.79 // TODO
         ]);
 
-        $sweater_product = TransactionProduct::from($sweater, 1, 1.05, 1.07);
+        $sweater_product = TransactionProduct::from($sweater, 1, 5, 7);
         $sweater_product->transaction_id = $transaction2->id;
-        $coffee_product = TransactionProduct::from($coffee, 2, 1.05, 1.07);
+        $coffee_product = TransactionProduct::from($coffee, 2, 5, 7);
         $coffee_product->transaction_id = $transaction2->id;
 
         $transaction2->products()->saveMany([
@@ -343,11 +344,13 @@ class UserLimitsHelperTest extends TestCase
             'user_id' => $user->id,
             'cashier_id' => $user->id,
             'activity_id' => $widegame->id,
-            'activity_price' => $widegame->getPrice(),
-            'activity_gst' => 1.05,
-            'total_price' => $widegame->getPrice() * 1.05,
+            'activity_price' => $widegame->price,
+            'category_id' => $widegame->category_id,
+            'activity_gst' => 5,
+            'activity_pst' => 7,
+            'total_price' => $widegame->getPriceAfterTax(),
             'returned' => false,
-            'created_at' => now()
+            'created_at' => now(),
         ]);
 
         // TODO: General category with hat and widegame on it

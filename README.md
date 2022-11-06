@@ -2,16 +2,6 @@
 
 A lightweight, selfhosted web app that camps, resorts and schools can use as a Point Of Sale system.
 
-#### Credits
-
-- :page_with_curl: [DataTables](https://datatables.net) for the fast and interactive tables.
-- :bar_chart: [ChartJS](https://www.chartjs.org) for the beautiful statistics charts, and [ConsoleTVs/Charts](https://github.com/ConsoleTVs/Charts) for the Laravel package.
-- :art: [Bulma](https://bulma.io) for their lightweight, easy to use and great-looking CSS framework.
-- :white_check_mark::x: [Switchery](https://github.com/abpetkov/switchery) for the simple to use & nice looking Switches replacement for ugly HTML checkboxes.
-- :calendar: [FullCalendar](https://fullcalendar.io) for their simple and responsive calendar library.
-
-Documentation (in the form of a printable user handbook) is being written. 
-
 ## Features
 
 - User control
@@ -144,6 +134,7 @@ Documentation (in the form of a printable user handbook) is being written.
 - Lazy loading of users/products (especially in cashier view).
     - Use this https://github.com/yajra/laravel-datatables
     - They should type a query first, or use some ajax to fetch data. or else it could take forever to load
+- Tax free products
 
 ## Issues/Bugs
-- Rotation selection dropdown not working on cashier page and user page
+- *Phew*

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\TaxHelper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -64,14 +65,5 @@ class TransactionProduct extends Model
     public function category(): HasOne
     {
         return $this->hasOne(Category::class, 'id', 'category_id');
-    }
-
-    public function getTax(): float
-    {
-        if ($this->pst === null) {
-            return $this->gst;
-        }
-
-        return ($this->pst + $this->gst) - 1;
     }
 }

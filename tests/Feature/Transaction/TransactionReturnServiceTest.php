@@ -38,14 +38,25 @@ class TransactionReturnServiceTest extends TestCase
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
 
         $this->assertSame(Transaction::STATUS_PARTIAL_RETURNED, $transaction->getReturnStatus());
-        // TODO: not need to use number format to round (3 and 4 decimal places are off)
-        $this->assertEquals(
-            number_format($user->balance + $hat->getPrice(), 2),
-            number_format($user->refresh()->balance, 2)
-        );
-        $this->assertEquals($hat->getPrice(), number_format($user->findReturned(), 2));
 
-        $this->assertEquals($hat->getPrice(), number_format($transaction->getReturnedTotal(), 2));
+        $this->assertEquals(
+            $user->balance + $hat->getPriceAfterTax(),
+            $user->refresh()->balance
+        );
+        $this->assertEquals($hat->getPriceAfterTax(), $user->findReturned());
+
+        $this->assertEquals($hat->getPriceAfterTax(), $transaction->getReturnedTotal());
+    }
+
+    public function testProductReturnedValueUpdatedAfterItemReturn(): void
+    {
+        [, $transaction, $hat] = $this->createFakeRecords();
+
+        $transactionService = (new TransactionReturnService($transaction))->returnItem($hat);
+        $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
+
+        $hatTransactionProduct = $transaction->products->firstWhere('product_id', $hat->id);
+        $this->assertSame(1, $hatTransactionProduct->refresh()->returned);
     }
 
     public function testUserBalanceUpdatedAfterTransactionReturn(): void
@@ -62,6 +73,17 @@ class TransactionReturnServiceTest extends TestCase
             $user->refresh()->balance
         );
         $this->assertEquals($transaction->total_price, $user->findReturned());
+    }
+
+    public function testProductReturnedValueUpdatedAfterTransactionReturn(): void
+    {
+        [, $transaction, $hat] = $this->createFakeRecords();
+
+        $transactionService = (new TransactionReturnService($transaction))->return();
+        $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
+
+        $hatTransactionProduct = $transaction->products->firstWhere('product_id', $hat->id);
+        $this->assertSame(2, $hatTransactionProduct->refresh()->returned);
     }
 
     public function testCanReturnPartiallyReturnedItemInTransaction(): void
@@ -106,7 +128,7 @@ class TransactionReturnServiceTest extends TestCase
         $this->assertSame(TransactionReturnService::RESULT_ITEM_RETURNED_MAX_TIMES, $transactionService3->getResult());
 
         $this->assertSame(Transaction::STATUS_PARTIAL_RETURNED, $transaction_2_items->getReturnStatus());
-        $this->assertEquals($hat->getPrice() * 2, number_format($user->findReturned(), 2));
+        $this->assertEquals($hat->getPriceAfterTax() * 2, $user->findReturned());
     }
 
     private function createFakeRecords(): array
@@ -137,11 +159,11 @@ class TransactionReturnServiceTest extends TestCase
         Settings::factory()->createMany([
             [
                 'setting' => 'gst',
-                'value' => '1.05',
+                'value' => '5.00',
             ],
             [
                 'setting' => 'pst',
-                'value' => '1.07',
+                'value' => '7.00',
             ]
         ]);
 

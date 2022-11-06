@@ -37,8 +37,8 @@ class TransactionController extends Controller
         return view('pages.orders.order', [
             'user' => $user,
             'products' => Product::orderBy('name', 'ASC')->get(),
-            'gst' => $settingsHelper->getGst(),
-            'pst' => $settingsHelper->getPst(),
+            'current_gst' => $settingsHelper->getGst() / 100,
+            'current_pst' => $settingsHelper->getPst() / 100,
         ]);
     }
 

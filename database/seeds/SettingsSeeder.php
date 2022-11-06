@@ -17,11 +17,11 @@ class SettingsSeeder extends Seeder
         Settings::factory()->createMany([
             [
                 'setting' => 'gst',
-                'value' => '1.05',
+                'value' => '5.00',
             ],
             [
                 'setting' => 'pst',
-                'value' => '1.07',
+                'value' => '7.00',
             ],
         ]);
     }

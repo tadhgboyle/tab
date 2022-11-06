@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\TransactionProduct;
 use stdClass;
 use App\Models\User;
 use App\Models\Product;
@@ -116,34 +117,24 @@ class UserLimitsHelper
 
             // Loop transaction products. Determine if the product's category is the one we are looking at,
             // if so, add its ((value * (quantity - returned)) * tax) to the end result
-            foreach ($transaction->products as $product) {
-                // TODO: Should we store category ID in TransactionProduct table?
-                // If category of product is changed in future, our calculation might be off.
-                if ($product->category_id != $category_id) {
-                    continue;
-                }
-
-                $tax_percent = $product->gst;
-
-                if ($product->pst !== null) {
-                    $tax_percent += $product->pst - 1;
-                }
-
+            foreach ($transaction->products->filter(fn (TransactionProduct $product) => $product->category_id === $category_id) as $product) {
                 $quantity_available = $product->quantity - $product->returned;
 
-                $category_spent += ($product->price * $quantity_available) * $tax_percent;
+                $category_spent += TaxHelper::calculateFor($product->price, $quantity_available, $product->pst !== null, [
+                    'gst' => $product->gst,
+                    'pst' => $product->pst,
+                ]);
             }
         }
 
         foreach ($activity_transactions as $activity_transaction) {
-            $activity = Activity::find($activity_transaction->activity_id);
-            if ((int) $activity->category_id !== $category_id) {
+            if ($activity_transaction->category_id !== $category_id) {
                 continue;
             }
 
             $category_spent += $activity_transaction->total_price;
         }
 
-        return (float) number_format($category_spent, 2);
+        return round($category_spent, 2);
     }
 }

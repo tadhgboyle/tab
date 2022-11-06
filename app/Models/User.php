@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\TaxHelper;
 use Carbon\Carbon;
 use JetBrains\PhpStorm\Pure;
 use Illuminate\Support\Collection;
@@ -111,17 +112,11 @@ class User extends Authenticatable
                 return;
             }
 
-            foreach ($transaction->products as $product) {
-                if ($product->returned === 0) {
-                    continue;
-                }
-
-                $tax = $product->gst;
-                if ($product->pst !== null) {
-                    $tax += ($product->pst - 1);
-                }
-
-                $returned += ($product->returned * $product->price * $tax);
+            foreach ($transaction->products->filter(fn (TransactionProduct $product) => $product->returned > 0) as $product) {
+                $returned += TaxHelper::calculateFor($product->price, $product->returned, $product->pst !== null, [
+                    'gst' => $product->gst,
+                    'pst' => $product->pst,
+                ]);
             }
         });
 

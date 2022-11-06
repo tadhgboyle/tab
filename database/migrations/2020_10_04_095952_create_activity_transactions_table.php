@@ -19,8 +19,10 @@ class CreateActivityTransactionsTable extends Migration
             $table->unsignedBigInteger('cashier_id');
             $table->foreign('cashier_id')->references('id')->on('users');
             $table->foreignId('activity_id')->constrained();
+            $table->foreignId('category_id')->constrained();
             $table->float('activity_price');
             $table->float('activity_gst');
+            $table->float('activity_pst');
             $table->float('total_price');
             $table->boolean('returned')->default(false);
             $table->timestamps();

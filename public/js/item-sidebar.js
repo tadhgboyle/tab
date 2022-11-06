@@ -1,6 +1,6 @@
 let ITEMS = [];
-const PST_AMOUNT = document.getElementById('current_pst').value - 1;
-const GST_AMOUNT = document.getElementById('current_gst').value - 1;
+const PST_AMOUNT = document.getElementById('current_pst').value;
+const GST_AMOUNT = document.getElementById('current_gst').value;
 const PURCHASER_ID = document.getElementById('purchaser_id').value;
 
 window.onload = () => {

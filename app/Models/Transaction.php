@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\TaxHelper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -59,9 +60,14 @@ class Transaction extends Model
             return 0.00;
         }
 
-        return $this->products->where('returned', '>=', 1)->sum(function (TransactionProduct $product) {
-            return $product->price * $product->returned * $product->getTax();
-        });
+        return $this->products
+            ->where('returned', '>=', 1)
+            ->sum(function (TransactionProduct $product) {
+                return TaxHelper::calculateFor($product->price, $product->returned, $product->pst !== null, [
+                    'pst' => $product->pst,
+                    'gst' => $product->gst,
+                ]);
+            });
     }
 
     public function isReturned(): bool
@@ -81,11 +87,9 @@ class Transaction extends Model
         foreach ($this->products as $product) {
             if ($product->returned >= $product->quantity) {
                 $products_returned++;
-            } else {
-                if ($product->returned > 0) {
-                    // Semi returned if at least one product has a returned value
-                    return self::STATUS_PARTIAL_RETURNED;
-                }
+            } else if ($product->returned > 0) {
+                // Semi returned if at least one product has a returned value
+                return self::STATUS_PARTIAL_RETURNED;
             }
 
             $product_count++;
