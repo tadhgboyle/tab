@@ -150,7 +150,7 @@
 
     function startChange(e) {
         endMinDate = new Date(e);
-        flatpickr('#end', { enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: endMinDate });
+        createEndDatepicker(null, endMinDate);
     }
 
     $(document).ready(function() {
@@ -158,10 +158,14 @@
         const endDate = new Date('{{ $end }}');
 
         flatpickr('#start', { defaultDate: startDate, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K' });
-        flatpickr('#end', { defaultDate: endDate, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: startDate });
+        createEndDatepicker(endDate, startDate);
 
         updatedUnlimitedSlots($('input[type=checkbox][name=unlimited_slots]').prop('checked'));
     });
+
+    function createEndDatepicker(endDate = null, endMinDate) {
+        flatpickr('#end', { defaultDate: endDate, onChange: startChange, enableTime: true, altInput: true, altFormat: 'F j, Y h:i K', minDate: endMinDate });
+    }
 
     $('input[type=checkbox][name=unlimited_slots]').change(function() {
         updatedUnlimitedSlots($(this).prop('checked'))
