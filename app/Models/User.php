@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\Helpers\TaxHelper;
 use Carbon\Carbon;
+use App\Helpers\TaxHelper;
 use JetBrains\PhpStorm\Pure;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;

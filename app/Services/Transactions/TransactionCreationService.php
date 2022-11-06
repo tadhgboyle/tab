@@ -2,12 +2,12 @@
 
 namespace App\Services\Transactions;
 
-use App\Helpers\Permission;
-use App\Helpers\TaxHelper;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Category;
 use App\Services\Service;
+use App\Helpers\TaxHelper;
+use App\Helpers\Permission;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Helpers\RotationHelper;
@@ -110,7 +110,7 @@ class TransactionCreationService extends Service
 
             // Loop all products in this transaction. If the product's category is the current one in the above loop, add its price to category spent
             foreach ($transaction_products->filter(fn (TransactionProduct $product) => $product->category_id === $category_id) as $product) {
-                $category_spent += TaxHelper::calculateFor($product->price,  $product->quantity, $product->pst !== null);
+                $category_spent += TaxHelper::calculateFor($product->price, $product->quantity, $product->pst !== null);
             }
 
             // Break loop if we exceed their limit

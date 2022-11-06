@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\RoleHelper;
 use App\Models\Settings;
+use App\Helpers\RoleHelper;
 use Illuminate\Http\Request;
 use App\Helpers\CategoryHelper;
 use App\Helpers\RotationHelper;
 use App\Helpers\SettingsHelper;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class SettingsController extends Controller

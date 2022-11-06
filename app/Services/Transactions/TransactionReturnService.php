@@ -2,9 +2,9 @@
 
 namespace App\Services\Transactions;
 
-use App\Helpers\TaxHelper;
 use App\Models\Product;
 use App\Services\Service;
+use App\Helpers\TaxHelper;
 use App\Models\Transaction;
 use App\Models\TransactionProduct;
 use Illuminate\Http\RedirectResponse;

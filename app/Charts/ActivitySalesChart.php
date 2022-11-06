@@ -2,9 +2,9 @@
 
 namespace App\Charts;
 
-use App\Helpers\Permission;
 use DB;
 use App\Models\Activity;
+use App\Helpers\Permission;
 use Chartisan\PHP\Chartisan;
 use Illuminate\Http\Request;
 use ConsoleTVs\Charts\BaseChart;
