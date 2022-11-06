@@ -35,10 +35,6 @@ class User extends Authenticatable
         'balance' => 'float'
     ];
 
-    protected $with = [
-        'role',
-    ];
-
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);

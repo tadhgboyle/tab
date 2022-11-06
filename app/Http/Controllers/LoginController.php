@@ -15,7 +15,10 @@ class LoginController extends Controller
 
     public function auth(Request $request): RedirectResponse
     {
-        if (Auth::attempt($request->except(['_token']))) {
+        if (Auth::attempt([
+            'username' => $request->username,
+            'password' => $request->password,
+        ], $request->has('remember'))) {
             return redirect()->route('index');
         }
 
