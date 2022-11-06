@@ -16,8 +16,6 @@ class RotationFactory extends Factory
         return [
             'start' => now(),
             'end' => now()->addDays(7),
-            'created_at' => now(),
-            'updated_at' => now(),
         ];
     }
 }

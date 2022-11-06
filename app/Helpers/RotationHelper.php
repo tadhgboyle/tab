@@ -5,6 +5,7 @@ namespace App\Helpers;
 use App\Models\Rotation;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Cookie;
 
 class RotationHelper extends Helper
 {
@@ -40,5 +41,16 @@ class RotationHelper extends Helper
         }
 
         return false;
+    }
+
+    public function getStatisticsRotationId(): string|int|null
+    {
+        $default = $this->getCurrentRotation()?->id;
+
+        if (hasPermission('statistics_select_rotation')) {
+            return Cookie::get('stats_rotation_id', $default ?? '*');
+        }
+
+        return $default;
     }
 }

@@ -48,8 +48,8 @@ class PermissionHelper extends Helper
 
         $this->register('Statistics', 'statistics', [
             'statistics_order_history' => 'View Order history chart',
-            'statistics_item_info' => 'View Product info chart',
-            'statistics_activity_info' => 'View Activity info chart',
+            'statistics_product_sales' => 'View Product sales chart',
+            'statistics_activity_sales' => 'View Activity sales chart',
             'statistics_income_info' => 'View Income info chart',
             'statistics_select_rotation' => 'View statistics charts from other Rotations',
         ]);

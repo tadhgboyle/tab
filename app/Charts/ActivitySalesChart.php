@@ -12,10 +12,14 @@ class ActivitySalesChart extends BaseChart
 {
     public ?array $middlewares = [
         'auth',
+        'permission:statistics_activity_sales',
     ];
 
     public function handler(Request $request): Chartisan
     {
+        // $stats_rotation_id = resolve(RotationHelper::class)->getStatisticsRotationId();
+        // TODO: Store rotation_id when creating activity_transaction
+
         $sales = [];
 
         $activity_transactions = DB::table('activity_transactions')

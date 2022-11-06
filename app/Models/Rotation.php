@@ -8,6 +8,34 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+/**
+ * App\Models\Rotation
+ *
+ * @property int $id
+ * @property string $name
+ * @property \Illuminate\Support\Carbon $start
+ * @property \Illuminate\Support\Carbon $end
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
+ * @property-read int|null $users_count
+ * @method static \Database\Factories\RotationFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|Rotation newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Rotation newQuery()
+ * @method static \Illuminate\Database\Query\Builder|Rotation onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Rotation query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Rotation whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Rotation whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Rotation whereEnd($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Rotation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Rotation whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Rotation whereStart($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Rotation whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|Rotation withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|Rotation withoutTrashed()
+ * @mixin \Eloquent
+ */
 class Rotation extends Model
 {
     public const STATUS_PRESENT = 0;
@@ -31,6 +59,11 @@ class Rotation extends Model
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
+    }
+
+    public function isPresent(): bool
+    {
+        return $this->getStatus() === self::STATUS_PRESENT;
     }
 
     public function getStatus(): int

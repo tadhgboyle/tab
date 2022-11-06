@@ -155,11 +155,16 @@ class ProductTest extends TestCase
     {
         $this->createFakeRecords();
 
-        $current_rotation = resolve(RotationHelper::class)->getCurrentRotation()->id;
+        $current_rotation = resolve(RotationHelper::class)->getRotations()->first()->id;
 
         foreach ([['Skittles', 2], ['Hat', 1], ['Sweater', 1], ['Coffee', 2]] as $product) {
             [$name, $sold_count] = $product;
             $this->assertEquals($sold_count, Product::firstWhere('name', $name)->findSold($current_rotation));
+        }
+
+        foreach ([['Skittles', 4], ['Hat', 2], ['Sweater', 2], ['Coffee', 4]] as $product) {
+            [$name, $sold_count] = $product;
+            $this->assertEquals($sold_count, Product::firstWhere('name', $name)->findSold('*'));
         }
     }
 
@@ -221,10 +226,12 @@ class ProductTest extends TestCase
 
         [$skittles, $sweater, $coffee, $hat] = $this->createFakeProducts($food_category->id, $merch_category->id);
 
+        $rotation = resolve(RotationHelper::class)->getRotations()->first()->id;
+
         $transaction1 = Transaction::factory()->create([
             'purchaser_id' => $user->id,
             'cashier_id' => $user->id,
-            'rotation_id' => resolve(RotationHelper::class)->getCurrentRotation()->id,
+            'rotation_id' => $rotation,
             'total_price' => 3.15 // TODO
         ]);
 
@@ -241,7 +248,7 @@ class ProductTest extends TestCase
         $transaction2 = Transaction::factory()->create([
             'purchaser_id' => $user->id,
             'cashier_id' => $user->id,
-            'rotation_id' => resolve(RotationHelper::class)->getCurrentRotation()->id,
+            'rotation_id' => $rotation,
             'total_price' => 44.79 // TODO
         ]);
 
@@ -255,6 +262,41 @@ class ProductTest extends TestCase
             $coffee_product,
         ]);
 
+        $rotation = resolve(RotationHelper::class)->getRotations()->last()->id;
+
+        $transaction3 = Transaction::factory()->create([
+            'purchaser_id' => $user->id,
+            'cashier_id' => $user->id,
+            'rotation_id' => $rotation,
+            'total_price' => 3.15 // TODO
+        ]);
+
+        $skittles_product = TransactionProduct::from($skittles, 2, 1.05);
+        $skittles_product->transaction_id = $transaction1->id;
+        $hat_product = TransactionProduct::from($hat, 1, 1.05);
+        $hat_product->transaction_id = $transaction1->id;
+
+        $transaction3->products()->saveMany([
+            $skittles_product,
+            $hat_product,
+        ]);
+
+        $transaction4 = Transaction::factory()->create([
+            'purchaser_id' => $user->id,
+            'cashier_id' => $user->id,
+            'rotation_id' => $rotation,
+            'total_price' => 44.79 // TODO
+        ]);
+
+        $sweater_product = TransactionProduct::from($sweater, 1, 1.05, 1.07);
+        $sweater_product->transaction_id = $transaction2->id;
+        $coffee_product = TransactionProduct::from($coffee, 2, 1.05, 1.07);
+        $coffee_product->transaction_id = $transaction2->id;
+
+        $transaction4->products()->saveMany([
+            $sweater_product,
+            $coffee_product,
+        ]);
         return [$user, $food_category, $merch_category];
     }
 

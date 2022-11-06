@@ -9,6 +9,43 @@ use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * App\Models\Product
+ *
+ * @property int $id
+ * @property string $name
+ * @property float $price
+ * @property int $category_id
+ * @property bool $pst
+ * @property int $stock
+ * @property bool $unlimited_stock
+ * @property int $box_size
+ * @property bool $stock_override
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\Category $category
+ * @method static \Database\Factories\ProductFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Product newQuery()
+ * @method static \Illuminate\Database\Query\Builder|Product onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Product query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereBoxSize($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product wherePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product wherePst($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereStock($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereStockOverride($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereUnlimitedStock($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|Product withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|Product withoutTrashed()
+ * @mixin \Eloquent
+ */
 class Product extends Model
 {
     use HasFactory;
@@ -107,10 +144,12 @@ class Product extends Model
         return $this->adjustStock($box_count * $this->box_size);
     }
 
-    public function findSold(int $rotation_id): int
+    public function findSold(string|int $rotation_id): int
     {
-        return TransactionProduct::whereHas('transaction', static function (Builder $query) use ($rotation_id) {
-            $query->where('rotation_id', $rotation_id);
+        return TransactionProduct::when($rotation_id !== '*', static function (Builder $query) use ($rotation_id) {
+            $query->whereHas('transaction', function (Builder $query) use ($rotation_id) {
+                $query->where('rotation_id', $rotation_id);
+            });
         })->where('product_id', $this->id)->chunkMap(static function (TransactionProduct $transactionProduct) {
             return $transactionProduct->quantity - $transactionProduct->returned;
         })->sum();
