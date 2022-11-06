@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\Permission;
 use App\Models\User;
 use App\Models\Activity;
+use App\Helpers\Permission;
 use Illuminate\Support\Carbon;
 use App\Helpers\CategoryHelper;
 use Illuminate\Http\RedirectResponse;

@@ -2,15 +2,14 @@
 
 namespace App\Helpers;
 
-use App\Models\TransactionProduct;
 use stdClass;
 use App\Models\User;
 use App\Models\Product;
-use App\Models\Activity;
 use App\Models\Category;
 use App\Models\UserLimits;
 use Illuminate\Support\Carbon;
 use App\Http\Requests\UserRequest;
+use App\Models\TransactionProduct;
 use App\Services\Users\UserEditService;
 use App\Services\Users\UserCreationService;
 
@@ -29,7 +28,7 @@ class UserLimitsHelper
             $duration = $request->duration[$category_id] ?? UserLimits::LIMIT_DAILY;
 
             // Default to -1 if limit not typed in
-            if (empty($limit) && $limit !== "0") {
+            if (empty($limit) && $limit !== '0') {
                 $limit = -1;
             }
 

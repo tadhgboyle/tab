@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\Helpers\SettingsHelper;
 use App\Helpers\TaxHelper;
+use App\Helpers\SettingsHelper;
 use App\Helpers\UserLimitsHelper;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;

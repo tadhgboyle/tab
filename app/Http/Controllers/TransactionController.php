@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\Permission;
 use App\Models\User;
 use App\Models\Product;
+use App\Helpers\Permission;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Helpers\SettingsHelper;

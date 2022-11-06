@@ -11,8 +11,8 @@
 |
 */
 
-use App\Helpers\Permission;
 use App\Models\User;
+use App\Helpers\Permission;
 use App\Helpers\RotationHelper;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
@@ -24,8 +24,8 @@ use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\RotationController;
 use App\Http\Controllers\SettingsController;
-use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\StatisticsController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 Route::middleware('guest')->group(function () {

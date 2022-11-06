@@ -4,7 +4,6 @@ namespace App\Helpers;
 
 use App\Models\Category;
 use App\Casts\CategoryType;
-use Arr;
 use Illuminate\Support\Collection;
 
 class CategoryHelper extends Helper

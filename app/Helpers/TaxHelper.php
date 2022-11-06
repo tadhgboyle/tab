@@ -2,8 +2,8 @@
 
 namespace App\Helpers;
 
-class TaxHelper {
-
+class TaxHelper
+{
     /**
      * Calculate the tax for a given price and quantity.
      *
@@ -11,9 +11,11 @@ class TaxHelper {
      * @param int $quantity Quantity to calculate tax for
      * @param bool $apply_pst Whether to apply PST or not
      * @param array $rates Array of tax rates to use instead of current defaults. Used in returns, so we can use the original tax rates.
+     *
      * @return float The price after tax
      */
-    public static function calculateFor(float $price, int $quantity, bool $apply_pst, array $rates = []): float {
+    public static function calculateFor(float $price, int $quantity, bool $apply_pst, array $rates = []): float
+    {
         $settingsHelper = resolve(SettingsHelper::class);
 
         $default_rates = [
