@@ -73,8 +73,11 @@
 
             <div class="field" id="slots_div" style="display: none;">
                 <label class="label">Slots</label>
-                <div class="control">
-                    <input type="number" step="1.00" name="slots" min="1" class="input" value="{{ $activity->slots ?? old('slots') }}">
+                <div class="control has-icons-left">
+                    <span class="icon is-small is-left">
+                        <i class="fas fa-hashtag"></i>
+                    </span>
+                    <input type="number" step="1.00" name="slots" min="1" placeholder="10" class="input" value="{{ $activity->slots ?? old('slots') }}">
                 </div>
             </div>
 
