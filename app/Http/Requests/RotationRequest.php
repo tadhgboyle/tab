@@ -21,7 +21,6 @@ class RotationRequest extends FormRequest implements FormRequestContract
             'start' => [
                 'required',
                 'date',
-                'after_or_equal:now'
             ],
             'end' => [
                 'required',
@@ -40,13 +39,13 @@ class RotationRequest extends FormRequest implements FormRequestContract
      */
     public function withValidator(Validator $validator): void
     {
-        $validator->after(function () {
+        $validator->after(function (Validator $validator) {
             if (resolve(RotationHelper::class)->doesRotationOverlap(
                 $this->get('start'),
                 $this->get('end'),
                 $this->get('rotation_id')
             )) {
-                redirect()->back()->with('error', 'That Rotation would overlap an existing Rotation.')->send();
+                $validator->errors()->add('start_or_end', 'That Rotation would overlap an existing Rotation.');
             }
         });
     }

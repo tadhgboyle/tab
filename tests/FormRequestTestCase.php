@@ -9,33 +9,37 @@ use App\Http\Requests\FormRequest as FormRequestContract;
 
 class FormRequestTestCase extends TestCase
 {
-    public function assertHasErrors($errors, $request): void
+    public function assertHasErrors($errors, FormRequest & FormRequestContract $request): void
     {
         foreach (Arr::wrap($errors) as $key) {
-            if (!($request instanceof FormRequest)) {
-                $this->fail('Request is not instance of "FormRequest"');
-            }
+            $validator = Validator::make(
+                $request->all(),
+                collect($request->rules())->only(Arr::wrap($errors))->toArray(),
+            );
 
-            if (!($request instanceof FormRequestContract)) {
-                $this->fail('Request is not instance of "FormRequestContract"');
+            if (method_exists($request, 'withValidator')) {
+                $request->withValidator($validator);
             }
 
             $this->assertContains(
                 $key,
-                Validator::make(
-                    $request->all(),
-                    collect($request->rules())->only(Arr::wrap($errors))->toArray(),
-                )->errors()->keys()
+                $validator->errors()->keys()
             );
         }
     }
 
     public function assertNotHaveErrors($errors, FormRequest & FormRequestContract $request): void
     {
-        $requestErrors = Validator::make(
+        $validator = Validator::make(
             $request->all(),
             collect($request->rules())->only(Arr::wrap($errors))->toArray(),
-        )->errors()->keys();
+        );
+
+        if (method_exists($request, 'withValidator')) {
+            $request->withValidator($validator);
+        }
+
+        $requestErrors = $validator->errors()->keys();
 
         $errors = Arr::wrap($errors);
         if (empty($errors)) {
