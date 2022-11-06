@@ -83,7 +83,7 @@
                 <div class="control">
                     <div class="select">
                         <select name="category_id" required>
-                            {{!! (isset($activity) && !isset($activity->category)) ? "<option value=\"\" disabled selected>Select Category...</option>" : '' !!}}
+                            {!! !isset($activity) ? "<option value=\"\" disabled selected>Select Category...</option>" : '' !!}
                             @foreach($categories as $category)
                                 <option value="{{ $category->id }}"
                                     {{ (isset($activity) && $activity->category_id == $category->id) || old('category') == $category->id  ? 'selected' : '' }}>

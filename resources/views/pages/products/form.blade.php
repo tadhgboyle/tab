@@ -1,20 +1,7 @@
 @extends('layouts.default', ['page' => 'products'])
 @section('content')
-<h2 class="title has-text-weight-bold">{{ isset($product) ? 'Create' : 'Edit' }} Product</h2>
+<h2 class="title has-text-weight-bold">{{ isset($product) ? 'Edit' : 'Create' }} Product</h2>
 @if(isset($product)) <h4 class="subtitle"><strong>Product:</strong> {{ $product->name }}</h4> @endif
-<style>
-    select:required:invalid {
-        color: gray;
-    }
-
-    option[value=""][disabled] {
-        display: none;
-    }
-
-    option {
-        color: black;
-    }
-</style>
 <form action="{{ isset($product) ? route('products_update', $product->id) : route('products_store') }}" id="product_form" method="POST" class="form-horizontal">
     @csrf
 
@@ -60,7 +47,7 @@
                 <div class="control">
                     <div class="select">
                         <select name="category_id" required>
-                            {!! (isset($product) && !isset($product->category)) ? "<option value=\"\" disabled selected>Select Category...</option>" : '' !!}
+                            {!! !isset($product) ? "<option value=\"\" disabled selected>Select Category...</option>" : '' !!}
                             @foreach($categories as $category)
                                 <option value="{{ $category->id }}"
                                     {{ (isset($product) && $product->category_id === $category->id) || old('category') === $category->id  ? 'selected' : '' }}>

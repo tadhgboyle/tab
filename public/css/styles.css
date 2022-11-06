@@ -16,3 +16,15 @@ img.loading-spinner {
     height: 2em;
     padding-left: calc(.50em - 1px);
 }
+
+select:required:invalid {
+    color: gray;
+}
+
+option[value=""][disabled] {
+    display: none;
+}
+
+option {
+    color: black;
+}
