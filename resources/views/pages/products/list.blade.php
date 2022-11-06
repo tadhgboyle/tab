@@ -14,6 +14,7 @@
                     <th>Category</th>
                     <th>Price</th>
                     <th>Stock</th>
+                    <th>Stock Override</th>
                     <th>Box Size</th>
                     <th>PST</th>
                     @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)
@@ -36,6 +37,10 @@
                     <td>
                         <div>{!! $product->getStock() !!}</div>
                     </td>
+                    <td>
+                        <div><span class="tag is-medium">{{ $product->stock_override ? "Yes" : "No" }}</span></div>
+                    </td>
+
                     <td>
                         <div>{!! $product->box_size === -1 ? '<i>N/A</i>' : $product->box_size !!}</div>
                     </td>
@@ -63,9 +68,10 @@
                 "orderable": false,
                 "searchable": false,
                 "targets": [
-                    5,
+                    4,
+                    6,
                     @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)
-                    6
+                    7
                     @endpermission
                 ]
             }]
