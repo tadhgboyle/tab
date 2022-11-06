@@ -2,29 +2,30 @@
 @section('content')
 <h2 class="title has-text-weight-bold">Statistics</h2>
 <div class="columns is-multiline box">
-    @permission(\App\Helpers\Permission::STATISTICS_SELECT_ROTATION)
-    <div class="column is-12">
-        <div class="field">
-            <div class="control">
-                <div class="select">
-                    <select name="rotation" class="input" id="rotation">
-                        <option value="*" @if ($stats_rotation_id === '*') selected @endif>All Rotations</option>
-                        @foreach ($rotations as $rotation)
-                            <option value="{{ $rotation->id }}" @if ((int) $stats_rotation_id === $rotation->id) selected @endif>
-                                {{ $rotation->name }} @if($rotation->isPresent()) (Present) @endif
-                            </option>
-                        @endforeach
-                    </select>
+    @isset($cannot_view_statistics)
+        <div class="notification is-danger is-light" style="min-width: 100%;">
+            <span>You cannot view statistics in the current Rotation.</span>
+        </div>
+    @else
+        @permission(\App\Helpers\Permission::STATISTICS_SELECT_ROTATION)
+        <div class="column is-12">
+            <div class="field">
+                <div class="control">
+                    <div class="select">
+                        <select name="rotation" class="input" id="rotation">
+                            <option value="*" @if ($stats_rotation_id === '*') selected @endif>All Rotations</option>
+                            @foreach ($rotations as $rotation)
+                                <option value="{{ $rotation->id }}" @if ((int) $stats_rotation_id === $rotation->id) selected @endif>
+                                    {{ $rotation->name }} @if($rotation->isPresent()) (Present) @endif
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    @endpermission
-    @isset($cannot_view_statistics)
-        <div class="notification is-danger is-light">
-            <span>There are no statistics available to view in your Rotation.</span>
-        </div>
-    @else
+        @endpermission
+
         <div class="column is-half">
             @permission(\App\Helpers\Permission::STATISTICS_ORDER_HISTORY)
             <h4 class="title has-text-weight-bold is-4">Order Info</h4>

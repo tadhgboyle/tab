@@ -53,4 +53,15 @@ class RotationHelper extends Helper
 
         return $default;
     }
+
+    public function getUserListRotationId(): string|int|null
+    {
+        $default = $this->getCurrentRotation()?->id;
+
+        if (hasPermission(Permission::USERS_LIST_SELECT_ROTATION)) {
+            return Cookie::get('user_list_rotation_id', $default ?? '*');
+        }
+
+        return $default;
+    }
 }
