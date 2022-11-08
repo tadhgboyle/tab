@@ -32,7 +32,7 @@
                         <div>{{ $product->category->name }}</div>
                     </td>
                     <td>
-                        <div>{!! $product->price > 0 ? '$' . number_format($product->price, 2) : '<i>Free</i>' !!}</div>
+                        <div>{!! $product->price->isZero() ? '<i>Free</i>' :  $product->price !!}</div>
                     </td>
                     <td>
                         <div>{!! $product->getStock() !!}</div>

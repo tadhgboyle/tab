@@ -2,9 +2,9 @@
 
 namespace App\Helpers;
 
+use Cknow\Money\Money;
 use stdClass;
 use App\Models\User;
-use App\Models\Product;
 use App\Models\Category;
 use App\Models\UserLimits;
 use Illuminate\Support\Carbon;
@@ -32,7 +32,9 @@ class UserLimitsHelper
                 $limit = -1;
             }
 
-            if ($limit < -1) {
+            $limit = Money::parse($limit);
+
+            if ($limit->lessThan(Money::parse(-1))) {
                 $message = 'Limit must be -1 or above for ' . Category::find($category_id)->name . '. (-1 means no limit)';
                 $result = ($class === UserCreationService::class)
                             ? UserCreationService::RESULT_INVALID_LIMIT
@@ -52,19 +54,19 @@ class UserLimitsHelper
         return [null, null];
     }
 
-    public static function canSpend(User $user, float $spending, int $category_id, ?object $info = null): bool
+    public static function canSpend(User $user, Money $spending, int $category_id, ?object $info = null): bool
     {
         if ($info === null) {
             $info = self::getInfo($user, $category_id);
         }
 
-        if ((float) $info->limit_per === -1.0) {
+        if ($info->limit_per->equals(Money::parse(-1))) {
             return true;
         }
 
         $spent = self::findSpent($user, $category_id, $info);
 
-        return !(($spent + $spending) > $info->limit_per);
+        return $spent->add($spending) <= $info->limit_per;
     }
 
     public static function getInfo(User $user, int $category_id): stdClass
@@ -79,23 +81,23 @@ class UserLimitsHelper
         if ($info->count()) {
             $info = $info->first();
             $limit_info->duration = $info->duration === UserLimits::LIMIT_DAILY ? 'day' : 'week';
-            $limit_info->duration_int = (int) $info->duration;
+            $limit_info->duration_int = $info->duration;
             $limit_info->limit_per = $info->limit_per;
         } else {
             $limit_info->duration = 'week';
             $limit_info->duration_int = UserLimits::LIMIT_WEEKLY;
-            $limit_info->limit_per = -1;
+            $limit_info->limit_per = Money::parse(-1);
         }
 
         return $limit_info;
     }
 
-    public static function findSpent(User $user, int $category_id, object $info): float
+    public static function findSpent(User $user, int $category_id, object $info): Money
     {
         // If they have unlimited money (no limit set) for this category,
         // get all their transactions, as they have no limit set we dont need to worry about
         // when the transaction was created_at.
-        if ($info->limit_per === -1) {
+        if ($info->limit_per->equals(Money::parse(-1))) {
             $transactions = $user->transactions->where('returned', false);
             $activity_transactions = $user->getActivityTransactions();
         } else {
@@ -110,7 +112,7 @@ class UserLimitsHelper
                 ->where('returned', false);
         }
 
-        $category_spent = 0.00;
+        $category_spent = Money::parse(0);
 
         foreach ($transactions as $transaction) {
 
@@ -119,10 +121,10 @@ class UserLimitsHelper
             foreach ($transaction->products->filter(fn (TransactionProduct $product) => $product->category_id === $category_id) as $product) {
                 $quantity_available = $product->quantity - $product->returned;
 
-                $category_spent += TaxHelper::calculateFor($product->price, $quantity_available, $product->pst !== null, [
+                $category_spent = $category_spent->add(TaxHelper::calculateFor($product->price, $quantity_available, $product->pst !== null, [
                     'gst' => $product->gst,
                     'pst' => $product->pst,
-                ]);
+                ]));
             }
         }
 
@@ -131,9 +133,9 @@ class UserLimitsHelper
                 continue;
             }
 
-            $category_spent += $activity_transaction->total_price;
+            $category_spent = $category_spent->add(Money::parse($activity_transaction->total_price));
         }
 
-        return round($category_spent, 2);
+        return $category_spent;
     }
 }

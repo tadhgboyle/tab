@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Helpers\TaxHelper;
 use App\Helpers\SettingsHelper;
 use App\Helpers\UserLimitsHelper;
+use Cknow\Money\Casts\MoneyIntegerCast;
+use Cknow\Money\Money;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
@@ -36,7 +38,7 @@ class Activity extends Model
         'description' => 'string',
         'unlimited_slots' => 'boolean',
         'slots' => 'integer',
-        'price' => 'float',
+        'price' => MoneyIntegerCast::class,
         'pst' => 'boolean',
     ];
 
@@ -74,7 +76,7 @@ class Activity extends Model
         return ($this->slots - ($current_attendees + $count)) >= 0;
     }
 
-    public function getPriceAfterTax(): float
+    public function getPriceAfterTax(): Money
     {
         return TaxHelper::calculateFor($this->price, 1, true);
     }
@@ -124,16 +126,16 @@ class Activity extends Model
             'user_id' => $user->id,
             'cashier_id' => auth()->id(),
             'activity_id' => $this->id,
-            'activity_price' => $this->price,
+            'activity_price' => $this->price->getAmount(),
             'category_id' => $this->category_id,
             'activity_gst' => resolve(SettingsHelper::class)->getGst(),
             'activity_pst' => resolve(SettingsHelper::class)->getPst(),
-            'total_price' => $this->getPriceAfterTax(),
+            'total_price' => $this->getPriceAfterTax()->getAmount(),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        $user->decrement('balance', $this->getPriceAfterTax());
+        $user->balance = $user->balance->subtract($this->getPriceAfterTax());
 
         return redirect()->back()->with('success', "Successfully registered $user->full_name to $this->name.");
     }

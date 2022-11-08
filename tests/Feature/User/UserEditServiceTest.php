@@ -3,6 +3,7 @@
 namespace Tests\Feature\User;
 
 use Arr;
+use Cknow\Money\Money;
 use Hash;
 use Tests\TestCase;
 use App\Models\Role;
@@ -58,7 +59,7 @@ class UserEditServiceTest extends TestCase
                 user_id: $this->_cashier_user->id,
                 full_name: 'Ronan Boyle 1',
                 username: $this->_cashier_user->username,
-                balance: 100.0,
+                balance: 100,
                 role_id: $role->id,
                 password: 'should_be_ignored'
             ), $this->_cashier_user);
@@ -66,7 +67,7 @@ class UserEditServiceTest extends TestCase
             $this->assertSame(UserEditService::RESULT_SUCCESS_IGNORED_PASSWORD, $userService->getResult());
             $this->assertTrue(Hash::check('password', $userService->getUser()->password));
             $this->assertEquals('Ronan Boyle 1', $userService->getUser()->full_name);
-            $this->assertEquals(100.0, $userService->getUser()->balance);
+            $this->assertEquals(Money::parse(100_00), $userService->getUser()->balance);
         }
     }
 

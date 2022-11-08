@@ -19,7 +19,7 @@ class CreateTransactionsTable extends Migration
             $table->foreign('purchaser_id')->references('id')->on('users');
             $table->unsignedBigInteger('cashier_id');
             $table->foreign('cashier_id')->references('id')->on('users');
-            $table->float('total_price');
+            $table->integer('total_price');
             $table->tinyInteger('returned')->default(0);
             $table->foreignId('rotation_id')->constrained();
             $table->nullableTimestamps();

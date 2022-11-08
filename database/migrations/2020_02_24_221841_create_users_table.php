@@ -17,7 +17,7 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('full_name');
             $table->string('username')->unique();
-            $table->float('balance');
+            $table->integer('balance');
             $table->integer('role_id');
             $table->string('password')->nullable();
             $table->rememberToken();

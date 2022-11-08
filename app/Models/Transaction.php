@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Helpers\TaxHelper;
+use Cknow\Money\Casts\MoneyIntegerCast;
+use Cknow\Money\Money;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,6 +23,7 @@ class Transaction extends Model
     ];
 
     protected $casts = [
+        'total_price' => MoneyIntegerCast::class,
         'returned' => 'boolean',
     ];
 
@@ -50,24 +53,24 @@ class Transaction extends Model
         return $this->hasMany(TransactionProduct::class);
     }
 
-    public function getReturnedTotal(): float
+    public function getReturnedTotal(): Money
     {
         if ($this->isReturned()) {
             return $this->total_price;
         }
 
         if ($this->getReturnStatus() === self::STATUS_NOT_RETURNED) {
-            return 0.00;
+            return Money::parse(0);
         }
 
         return $this->products
             ->where('returned', '>=', 1)
-            ->sum(function (TransactionProduct $product) {
-                return TaxHelper::calculateFor($product->price, $product->returned, $product->pst !== null, [
+            ->reduce(function (Money $carry, TransactionProduct $product) {
+                return $carry->add(TaxHelper::calculateFor($product->price, $product->returned, $product->pst !== null, [
                     'pst' => $product->pst,
                     'gst' => $product->gst,
-                ]);
-            });
+                ]));
+            }, Money::parse(0));
     }
 
     public function isReturned(): bool

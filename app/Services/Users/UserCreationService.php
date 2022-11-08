@@ -2,6 +2,7 @@
 
 namespace App\Services\Users;
 
+use Cknow\Money\Money;
 use DB;
 use App\Models\User;
 use App\Services\Service;

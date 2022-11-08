@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Product;
 
+use Cknow\Money\Money;
 use Tests\TestCase;
 use App\Models\Category;
 use App\Http\Requests\ProductRequest;
@@ -17,7 +18,7 @@ class ProductCreationServiceTest extends TestCase
         $category = Category::factory()->create();
         $productService = new ProductCreationService(new ProductRequest([
             'name' => 'Test Product',
-            'price' => 10.50,
+            'price' => 10_50,
             'category_id' => $category->id,
             'box_size' => 22,
             'stock' => 10,
@@ -29,7 +30,7 @@ class ProductCreationServiceTest extends TestCase
         $product = $productService->getProduct();
         $this->assertModelExists($product);
         $this->assertSame('Test Product', $product->name);
-        $this->assertSame(10.50, $product->price);
+        $this->assertEquals(Money::parse(10_50), $product->price);
         $this->assertSame($category->id, $product->category->id);
         $this->assertSame(10, $product->stock);
         $this->assertSame(22, $product->box_size);
@@ -42,7 +43,7 @@ class ProductCreationServiceTest extends TestCase
     {
         $productService = new ProductCreationService(new ProductRequest([
             'name' => 'Test Product',
-            'price' => 10.50,
+            'price' => 10_50,
             'category_id' => Category::factory()->create()->id,
             'stock' => null
         ]));
@@ -59,7 +60,7 @@ class ProductCreationServiceTest extends TestCase
     {
         $productService = new ProductCreationService(new ProductRequest([
             'name' => 'Test Product',
-            'price' => 10.50,
+            'price' => 10_50,
             'category_id' => Category::factory()->create()->id,
         ]));
 

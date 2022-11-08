@@ -59,7 +59,7 @@
                                     <div>{{ $user->username }}</div>
                                 </td>
                                 <td>
-                                    <div>${{ number_format($user->balance, 2) }}</div>
+                                    <div>{{ $user->balance }}</div>
                                 </td>
                                 <td>
                                     <div>{{ $user->role->name }}</div>
