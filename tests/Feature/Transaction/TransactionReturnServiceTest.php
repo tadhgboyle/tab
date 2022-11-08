@@ -40,7 +40,7 @@ class TransactionReturnServiceTest extends TestCase
         $this->assertSame(Transaction::STATUS_PARTIAL_RETURNED, $transaction->getReturnStatus());
 
         $this->assertEquals(
-            $user->balance + $hat->getPriceAfterTax(),
+            $user->balance->add($hat->getPriceAfterTax()),
             $user->refresh()->balance
         );
         $this->assertEquals($hat->getPriceAfterTax(), $user->findReturned());
@@ -69,7 +69,7 @@ class TransactionReturnServiceTest extends TestCase
         $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->getReturnStatus());
         $this->assertTrue($transaction->isReturned());
         $this->assertEquals(
-            $user->balance + $transaction->total_price,
+            $user->balance->add($transaction->total_price),
             $user->refresh()->balance
         );
         $this->assertEquals($transaction->total_price, $user->findReturned());
@@ -128,7 +128,7 @@ class TransactionReturnServiceTest extends TestCase
         $this->assertSame(TransactionReturnService::RESULT_ITEM_RETURNED_MAX_TIMES, $transactionService3->getResult());
 
         $this->assertSame(Transaction::STATUS_PARTIAL_RETURNED, $transaction_2_items->getReturnStatus());
-        $this->assertEquals($hat->getPriceAfterTax() * 2, $user->findReturned());
+        $this->assertEquals($hat->getPriceAfterTax()->multiply(2), $user->findReturned());
     }
 
     private function createFakeRecords(): array
@@ -140,7 +140,7 @@ class TransactionReturnServiceTest extends TestCase
         /** @var User */
         $user = User::factory()->create([
             'role_id' => $role->id,
-            'balance' => 300.00
+            'balance' => 300_00
         ]);
 
         $this->actingAs($user);
@@ -151,7 +151,7 @@ class TransactionReturnServiceTest extends TestCase
 
         $hat = Product::factory()->create([
             'name' => 'Hat',
-            'price' => 11.99, // $13.43
+            'price' => 11_99, // $13.43
             'category_id' => $merch_category->id,
             'pst' => true
         ]);
@@ -187,7 +187,7 @@ class TransactionReturnServiceTest extends TestCase
         $sweater = Product::factory()->create([
             'name' => 'Sweater',
             'category_id' => $hat->category_id,
-            'price' => 39.99
+            'price' => 39_99
         ]);
 
         return (new TransactionCreationService(new Request([

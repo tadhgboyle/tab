@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use App\Helpers\TaxHelper;
+use Cknow\Money\Casts\MoneyIntegerCast;
+use Cknow\Money\Money;
 use JetBrains\PhpStorm\Pure;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -33,7 +35,7 @@ class User extends Authenticatable
     protected $casts = [
         'full_name' => 'string',
         'username' => 'string',
-        'balance' => 'float'
+        'balance' => MoneyIntegerCast::class,
     ];
 
     public function role(): BelongsTo
@@ -93,44 +95,61 @@ class User extends Authenticatable
      * Find how much a user has spent in total.
      * Does not factor in returned items/orders.
      */
-    public function findSpent(): float
+    public function findSpent(): Money
     {
-        return (float) ($this->transactions->sum('total_price') + $this->getActivityTransactions()->sum('total_price'));
+        return collect($this->transactions)
+            ->reduce(function (Money $carry, Transaction $transaction) {
+                return $carry->add($transaction->total_price);
+            }, Money::parse(0))
+            ->add(
+                collect($this->getActivityTransactions())
+                    ->reduce(function (Money $carry, $transaction) {
+                        return $carry->add(Money::parse($transaction->total_price));
+                    }, Money::parse(0))
+            );
     }
 
     /**
      * Find how much a user has returned in total.
      * This will see if a whole order has been returned, or if not, check all items in an unreturned order.
      */
-    public function findReturned(): float
+    public function findReturned(): Money
     {
-        $returned = 0.00;
+        $returned = Money::parse(0);
 
         $this->transactions->each(function (Transaction $transaction) use (&$returned) {
             if ($transaction->returned) {
-                $returned += $transaction->total_price;
+                $returned = $returned->add($transaction->total_price);
                 return;
             }
 
             foreach ($transaction->products->filter(fn (TransactionProduct $product) => $product->returned > 0) as $product) {
-                $returned += TaxHelper::calculateFor($product->price, $product->returned, $product->pst !== null, [
+                $returned = $returned->add(TaxHelper::calculateFor($product->price, $product->returned, $product->pst !== null, [
                     'gst' => $product->gst,
                     'pst' => $product->pst,
-                ]);
+                ]));
             }
         });
 
-        $returned += $this->getActivityTransactions()->where('returned', true)->sum('total_price');
+        $returned = $returned->add(collect($this->getActivityTransactions()->where('returned', true))
+            ->reduce(function (Money $carry, $transaction) {
+                return $carry->add(Money::parse($transaction->total_price));
+            }, Money::parse(0)));
 
-        return (float) $returned;
+        return $returned;
     }
 
     /**
      * Find how much money a user owes.
      * Taking their amount spent and subtracting the amount they have returned.
      */
-    public function findOwing(): float
+    public function findOwing(): Money
     {
-        return ($this->findSpent() - $this->findReturned()) - $this->payouts()->sum('amount');
+        return $this->findSpent()
+            ->subtract($this->findReturned())
+            ->subtract(collect($this->payouts)
+                ->reduce(function (Money $carry, Payout $payout) {
+                    return $carry->add($payout->amount);
+                }, Money::parse(0)));
     }
 }

@@ -29,7 +29,7 @@
                     <span class="icon is-small is-left">
                         <i class="fas fa-dollar-sign"></i>
                     </span>
-                    <input type="number" step="0.01" name="price" class="input" required value="{{ isset($product->price) ? number_format($product->price, 2) : number_format(old('price'), 2) }}">
+                    <input type="number" step="0.01" name="price" class="input" required value="{{ $product->price ?? number_format(old('price'), 2) }}">
                 </div>
             </div>
 

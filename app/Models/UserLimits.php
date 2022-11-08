@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Casts\CategoryType;
+use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -24,7 +25,7 @@ class UserLimits extends Model
     ];
 
     protected $casts = [
-        'limit_per' => 'float',
+        'limit_per' => MoneyIntegerCast::class,
         'category_id' => CategoryType::class,
     ];
 

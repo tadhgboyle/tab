@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,7 +15,7 @@ class Payout extends Model
 
     protected $casts = [
         'identifier' => 'string',
-        'amount' => 'float',
+        'amount' => MoneyIntegerCast::class,
     ];
 
     protected $dates = [

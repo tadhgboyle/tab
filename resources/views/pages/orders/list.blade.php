@@ -39,7 +39,7 @@
                         <div>{{ $transaction->cashier->full_name }}</div>
                     </td>
                     <td>
-                        <div>${{ number_format($transaction->total_price, 2) }}</div>
+                        <div>{{ $transaction->total_price }}</div>
                     </td>
                     <td>
                         <div>

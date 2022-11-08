@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Helpers\TaxHelper;
+use Cknow\Money\Casts\MoneyIntegerCast;
+use Cknow\Money\Money;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Database\Eloquent\Builder;
@@ -16,7 +18,7 @@ class Product extends Model
 
     protected $casts = [
         'name' => 'string',
-        'price' => 'float',
+        'price' => MoneyIntegerCast::class,
         'pst' => 'boolean',
         'stock' => 'integer',
         'unlimited_stock' => 'boolean', // stock is never checked
@@ -44,7 +46,7 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function getPriceAfterTax(): float
+    public function getPriceAfterTax(): Money
     {
         return TaxHelper::calculateFor($this->price, 1, $this->pst);
     }

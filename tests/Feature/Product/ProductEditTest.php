@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Product;
 
+use Cknow\Money\Money;
 use Tests\TestCase;
 use App\Models\Product;
 use App\Models\Category;
@@ -22,7 +23,7 @@ class ProductEditTest extends TestCase
         $productService = new ProductEditService(new ProductRequest([
             'product_id' => $product->id,
             'name' => 'Test Product',
-            'price' => 10.50,
+            'price' => 10_50,
             'category_id' => $category->id,
             'box_size' => 22,
             'stock' => 10,
@@ -34,7 +35,7 @@ class ProductEditTest extends TestCase
         $product = $productService->getProduct();
         $this->assertModelExists($product);
         $this->assertSame('Test Product', $product->name);
-        $this->assertSame(10.50, $product->price);
+        $this->assertEquals(Money::parse(10_50), $product->price);
         $this->assertSame($category->id, $product->category_id);
         $this->assertSame(10, $product->stock);
         $this->assertSame(22, $product->box_size);
@@ -53,7 +54,7 @@ class ProductEditTest extends TestCase
         $productService = new ProductEditService(new ProductRequest([
             'product_id' => $product->id,
             'name' => 'Test Product',
-            'price' => 10.50,
+            'price' => 10_50,
             'category_id' => $category2->id,
         ]), $product);
 
@@ -75,7 +76,7 @@ class ProductEditTest extends TestCase
         $productService = new ProductEditService(new ProductRequest([
             'product_id' => $product->id,
             'name' => 'Test Product',
-            'price' => 10.50,
+            'price' => 10_50,
             'category_id' => $product->category_id,
         ]), $product);
 

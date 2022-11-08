@@ -14,7 +14,7 @@ class PayoutController extends Controller
         // TODO: don't allow creation if they don't owe anything
         return view('pages.users.payouts.form', [
             'user' => $user,
-            'owing' => (float) number_format($user->findOwing(), 2),
+            'owing' => $user->findOwing(),
         ]);
     }
 

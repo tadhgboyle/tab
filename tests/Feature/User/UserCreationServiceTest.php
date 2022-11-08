@@ -3,6 +3,7 @@
 namespace Tests\Feature\User;
 
 use Arr;
+use Cknow\Money\Money;
 use Hash;
 use Tests\TestCase;
 use App\Models\Role;
@@ -95,7 +96,7 @@ class UserCreationServiceTest extends TestCase
             role_id: $camper_role->id,
         )))->getUser();
 
-        $this->assertSame(0.0, $user->balance);
+        $this->assertEquals(Money::parse(0), $user->balance);
     }
 
     public function testRotationsAreAttachedToUser(): void

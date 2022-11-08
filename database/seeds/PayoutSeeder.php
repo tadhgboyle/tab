@@ -20,21 +20,21 @@ class PayoutSeeder extends Seeder
         $users = User::all();
 
         foreach ($users as $user) {
-            if ($user->findOwing() <= 1 || random_int(0, 5) <= 3) {
+            if ($user->findOwing()->isNegative() || random_int(0, 5) <= 3) {
                 continue;
             }
             $cashier = $users->shuffle()->whereIn('role_id', [1, 2])->first();
             Auth::login($cashier);
 
             // We shouldn't have to do this
-            $amount = $user->findOwing() / random_int(2, 5);
-            if ($amount <= 1) {
+            $amount = $user->findOwing()->divide(random_int(2, 5));
+            if ($amount->isNegative() || $amount->isZero()) {
                 continue;
             }
 
             new PayoutCreationService(new PayoutRequest([
                 'identifier' => random_int(0, 1) === 1 ? '#' . random_int(101010, 202020) : null,
-                'amount' => random_int(1, $amount),
+                'amount' => random_int(1, $amount->getAmount()),
             ]), $user);
         }
     }
