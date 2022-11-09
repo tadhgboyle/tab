@@ -32,13 +32,14 @@ class TransactionReturnService extends Service
             return $this;
         }
 
-        $purchaser = $this->_transaction->purchaser;
-
         $this->_transaction->products->each(function (TransactionProduct $product) {
             $product->update(['returned' => $product->quantity]);
         });
 
+        $purchaser = $this->_transaction->purchaser;
         $purchaser->balance = $purchaser->balance->add($this->_transaction->total_price);
+        $purchaser->save();
+
         $this->_transaction->update(['returned' => true]);
 
         $this->_result = self::RESULT_SUCCESS;
@@ -82,7 +83,9 @@ class TransactionReturnService extends Service
             ]
         );
 
-        $this->_transaction->purchaser->balance = $this->_transaction->purchaser->balance->add($product_total);
+        $purchaser = $this->_transaction->purchaser;
+        $purchaser->balance = $purchaser->balance->add($product_total);
+        $purchaser->save();
 
         $this->_result = self::RESULT_SUCCESS;
         $this->_message = 'Successfully returned x1 ' . $transaction_product->product->name . ' for order #' . $this->_transaction->id . '.';
