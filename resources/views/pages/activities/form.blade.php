@@ -43,7 +43,7 @@
                     <span class="icon is-small is-left">
                         <i class="fas fa-dollar-sign"></i>
                     </span>
-                    <input type="number" step="0.01" name="price" id="price" class="input" placeholder="Price" required value="{{ (isset($activity) ? $activity->price->formatForInput() : null) ?? number_format(old('price'), 2) }}">
+                    <input type="number" step="0.01" name="price" class="input money-input" placeholder="Price" required value="{{ (isset($activity) ? $activity->price->formatForInput() : null) ?? number_format(old('price'), 2) }}">
                 </div>
             </div>
 
@@ -196,12 +196,6 @@
         if (checked) div.hide(200);
         else div.show(200);
     }
-
-    document.getElementById('price').onchange = function() {
-        if (this.value && this.value.indexOf('.') === -1) {
-            this.value += '.00';
-        }
-    };
 
     @isset($activity)
         const modal = document.querySelector('.modal');

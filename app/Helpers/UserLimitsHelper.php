@@ -27,15 +27,15 @@ class UserLimitsHelper
             // Default to limit per day rather than week if not specified
             $duration = $request->duration[$category_id] ?? UserLimits::LIMIT_DAILY;
 
-            // Default to $-1.00 if limit not typed in, or they just typed "-1"
-            if ((empty($limit) && $limit !== '0') || $limit === "-1") {
+            // Default to $-1.00 if limit not typed in
+            if (empty($limit) && $limit !== '0') {
                 $limit = -1_00;
             }
 
             $limit = Money::parse($limit);
 
             if ($limit->lessThan(Money::parse(-1_00))) {
-                $message = 'Limit must be $-1.00 or above for ' . Category::find($category_id)->name . '. (-1 means no limit)';
+                $message = 'Limit must be $-1.00 or above for ' . Category::find($category_id)->name . '. ($-1.00 means no limit)';
                 $result = ($class === UserCreationService::class)
                             ? UserCreationService::RESULT_INVALID_LIMIT
                             : UserEditService::RESULT_INVALID_LIMIT;
