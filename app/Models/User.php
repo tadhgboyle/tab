@@ -97,16 +97,9 @@ class User extends Authenticatable
      */
     public function findSpent(): Money
     {
-        return collect($this->transactions)
-            ->reduce(function (Money $carry, Transaction $transaction) {
-                return $carry->add($transaction->total_price);
-            }, Money::parse(0))
-            ->add(
-                collect($this->getActivityTransactions())
-                    ->reduce(function (Money $carry, $transaction) {
-                        return $carry->add(Money::parse($transaction->total_price));
-                    }, Money::parse(0))
-            );
+        return Money::parse(0)
+            ->add(...$this->transactions->map->total_price)
+            ->add(...$this->getActivityTransactions()->map->total_price);
     }
 
     /**
@@ -131,10 +124,10 @@ class User extends Authenticatable
             }
         });
 
-        $returned = $returned->add(collect($this->getActivityTransactions()->where('returned', true))
-            ->reduce(function (Money $carry, $transaction) {
-                return $carry->add(Money::parse($transaction->total_price));
-            }, Money::parse(0)));
+        $returned = $returned->add(...$this->getActivityTransactions()
+            ->where('returned', true)
+            ->map->total_price
+        );
 
         return $returned;
     }
@@ -147,9 +140,6 @@ class User extends Authenticatable
     {
         return $this->findSpent()
             ->subtract($this->findReturned())
-            ->subtract(collect($this->payouts)
-                ->reduce(function (Money $carry, Payout $payout) {
-                    return $carry->add($payout->amount);
-                }, Money::parse(0)));
+            ->subtract(...$this->payouts->map->amount);
     }
 }

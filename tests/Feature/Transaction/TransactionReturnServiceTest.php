@@ -33,6 +33,7 @@ class TransactionReturnServiceTest extends TestCase
     public function testUserBalanceAndTransactionTotalsUpdatedAfterItemReturn(): void
     {
         [$user, $transaction, $hat] = $this->createFakeRecords();
+        $balance_before = $user->balance;
 
         $transactionService = (new TransactionReturnService($transaction))->returnItem($hat);
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
@@ -40,7 +41,7 @@ class TransactionReturnServiceTest extends TestCase
         $this->assertSame(Transaction::STATUS_PARTIAL_RETURNED, $transaction->getReturnStatus());
 
         $this->assertEquals(
-            $user->balance->add($hat->getPriceAfterTax()),
+            $balance_before->add($hat->getPriceAfterTax()),
             $user->refresh()->balance
         );
         $this->assertEquals($hat->getPriceAfterTax(), $user->findReturned());
@@ -62,6 +63,7 @@ class TransactionReturnServiceTest extends TestCase
     public function testUserBalanceUpdatedAfterTransactionReturn(): void
     {
         [$user, $transaction] = $this->createFakeRecords();
+        $balance_before = $user->balance;
 
         $transactionService = (new TransactionReturnService($transaction))->return();
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
@@ -69,7 +71,7 @@ class TransactionReturnServiceTest extends TestCase
         $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->getReturnStatus());
         $this->assertTrue($transaction->isReturned());
         $this->assertEquals(
-            $user->balance->add($transaction->total_price),
+            $balance_before->add($transaction->total_price),
             $user->refresh()->balance
         );
         $this->assertEquals($transaction->total_price, $user->findReturned());
@@ -179,7 +181,7 @@ class TransactionReturnServiceTest extends TestCase
             ]
         ), $user))->getTransaction(); // $26.8576 -> $3.1424
 
-        return [$user->refresh(), $transaction, $hat];
+        return [$user, $transaction, $hat];
     }
 
     private function createTwoItemTransaction(User $user, Product $hat): Transaction

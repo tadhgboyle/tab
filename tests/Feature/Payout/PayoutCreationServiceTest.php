@@ -46,9 +46,10 @@ class PayoutCreationServiceTest extends TestCase
         ]), $user);
 
         $this->assertSame(PayoutCreationService::RESULT_SUCCESS, $payoutService->getResult());
+        $this->assertStringContainsString("Successfully created payout of $10.00 for {$user->full_name}", $payoutService->getMessage());
 
         $payout = $payoutService->getPayout();
-        $this->assertEquals($owing_before_payout->subtract($payout->amount), $user->findOwing());
+        $this->assertEquals($owing_before_payout->subtract($payout->amount), $user->refresh()->findOwing());
     }
 
     /** @return User[] */
