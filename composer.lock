@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8ee9eb9c9f570ce471fad24545e41a96",
+    "content-hash": "d996b4fb0887ab60faddedbf191cde9f",
     "packages": [
         {
             "name": "bahadorbzd/consoletvs-charts",
@@ -10639,7 +10639,8 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.1"
+        "php": "^8.1",
+        "ext-intl": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"

@@ -29,7 +29,7 @@
                     <span class="icon is-small is-left">
                         <i class="fas fa-dollar-sign"></i>
                     </span>
-                    <input type="number" step="0.01" name="price" class="input" required value="{{ $product->price ?? number_format(old('price'), 2) }}">
+                    <input type="number" step="0.01" name="price" id="price" class="input" required value="{{ (isset($product) ? $product->price->formatForInput() : null) ?? number_format(old('price'), 2) }}">
                 </div>
             </div>
 
@@ -165,6 +165,12 @@
         if (checked) div.fadeOut(200);
         else div.fadeIn(200);
     }
+
+    document.getElementById('price').onchange = function() {
+        if (this.value && this.value.indexOf('.') === -1) {
+            this.value += '.00';
+        }
+    };
 
     @isset($product)
         const modal = document.querySelector('.modal');

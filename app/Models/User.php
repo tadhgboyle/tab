@@ -99,7 +99,11 @@ class User extends Authenticatable
     {
         return Money::parse(0)
             ->add(...$this->transactions->map->total_price)
-            ->add(...$this->getActivityTransactions()->map->total_price);
+            ->add(...$this->getActivityTransactions()
+                ->map(function ($activity) {
+                    return Money::parse($activity->total_price);
+                })
+            );
     }
 
     /**

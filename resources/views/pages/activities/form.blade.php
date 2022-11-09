@@ -3,7 +3,7 @@
 <h2 class="title has-text-weight-bold">{{ isset($activity) ? 'Edit' : 'Create' }} Activity</h2>
 @isset($activity) <h4 class="subtitle"><strong>Activity:</strong> {{ $activity->name }} @permission(\App\Helpers\Permission::ACTIVITIES_VIEW)<a href="{{ route('activities_view', $activity->id) }}">(View)</a>@endpermission</h4> @endisset
 
-<form action="{{ isset($activity) ? route('activities_update', $activity->id) : route('activities_store') }}" id="product_form" method="POST" class="form-horizontal">
+<form action="{{ isset($activity) ? route('activities_update', $activity->id) : route('activities_store') }}" id="activity_form" method="POST" class="form-horizontal">
     @csrf
 
     @isset($activity)
@@ -43,7 +43,7 @@
                     <span class="icon is-small is-left">
                         <i class="fas fa-dollar-sign"></i>
                     </span>
-                    <input type="number" step="0.01" name="price" class="input" required value="{{ $activity->price ?? number_format(old('price'), 2) }}">
+                    <input type="number" step="0.01" name="price" id="price" class="input" placeholder="Price" required value="{{ (isset($activity) ? $activity->price->formatForInput() : null) ?? number_format(old('price'), 2) }}">
                 </div>
             </div>
 
@@ -51,7 +51,16 @@
                 <div class="control">
                     <label class="checkbox label">
                         Unlimited Slots
-                        <input type="checkbox" class="js-switch" name="unlimited_slots" {{ (isset($activity->unlimited_slots) && $activity->unlimited_slots) || old('unlimited_slots') ? 'checked' : '' }}>
+                        <input type="checkbox" class="js-switch" name="unlimited_slots" {{ (isset($activity) && $activity->unlimited_slots) || old('unlimited_slots') ? 'checked' : '' }}>
+                    </label>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <label class="checkbox label">
+                        PST
+                        <input type="checkbox" class="js-switch" name="pst" {{ (isset($activity) && $activity->pst === true) || old('pst') ? 'checked' : '' }}>
                     </label>
                 </div>
             </div>
@@ -101,7 +110,7 @@
         <div class="column is-2">
             <form>
                 <div class="control">
-                    <button class="button is-success" type="submit" form="product_form">
+                    <button class="button is-success" type="submit" form="activity_form">
                         <span class="icon is-small">
                             <i class="fas fa-check"></i>
                         </span>
@@ -187,6 +196,12 @@
         if (checked) div.hide(200);
         else div.show(200);
     }
+
+    document.getElementById('price').onchange = function() {
+        if (this.value && this.value.indexOf('.') === -1) {
+            this.value += '.00';
+        }
+    };
 
     @isset($activity)
         const modal = document.querySelector('.modal');

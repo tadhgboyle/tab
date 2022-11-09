@@ -149,7 +149,7 @@ class UserLimitsHelperTest extends TestCase
 
         [, $result] = UserLimitsHelper::createOrEditFromRequest(new UserRequest([
             'limit' => [
-                $candy_category->id => -2
+                $candy_category->id => -2_00
             ]
         ]), $user, UserCreationService::class);
 
@@ -206,7 +206,7 @@ class UserLimitsHelperTest extends TestCase
         $this->assertNull($message);
         $this->assertNull($result);
 
-        $this->assertEquals(Money::parse(-1), UserLimitsHelper::getInfo($user, $candy_category->id)->limit_per);
+        $this->assertEquals(Money::parse(-1_00), UserLimitsHelper::getInfo($user, $candy_category->id)->limit_per);
     }
 
     public function testNoDurationProvidedDefaultsToDailyFromUserRequest(): void
@@ -295,7 +295,7 @@ class UserLimitsHelperTest extends TestCase
         UserLimits::factory()->create([
             'user_id' => $user->id,
             'category_id' => $merch_category->id,
-            'limit_per' => -1
+            'limit_per' => -1_00
         ]);
 
         UserLimits::factory()->create([

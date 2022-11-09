@@ -27,15 +27,15 @@ class UserLimitsHelper
             // Default to limit per day rather than week if not specified
             $duration = $request->duration[$category_id] ?? UserLimits::LIMIT_DAILY;
 
-            // Default to -1 if limit not typed in
-            if (empty($limit) && $limit !== '0') {
-                $limit = -1;
+            // Default to $-1.00 if limit not typed in, or they just typed "-1"
+            if ((empty($limit) && $limit !== '0') || $limit === "-1") {
+                $limit = -1_00;
             }
 
             $limit = Money::parse($limit);
 
-            if ($limit->lessThan(Money::parse(-1))) {
-                $message = 'Limit must be -1 or above for ' . Category::find($category_id)->name . '. (-1 means no limit)';
+            if ($limit->lessThan(Money::parse(-1_00))) {
+                $message = 'Limit must be $-1.00 or above for ' . Category::find($category_id)->name . '. (-1 means no limit)';
                 $result = ($class === UserCreationService::class)
                             ? UserCreationService::RESULT_INVALID_LIMIT
                             : UserEditService::RESULT_INVALID_LIMIT;
@@ -60,13 +60,13 @@ class UserLimitsHelper
             $info = self::getInfo($user, $category_id);
         }
 
-        if ($info->limit_per->equals(Money::parse(-1))) {
+        if ($info->limit_per->equals(Money::parse(-1_00))) {
             return true;
         }
 
         $spent = self::findSpent($user, $category_id, $info);
 
-        return $spent->add($spending) <= $info->limit_per;
+        return $spent->add($spending)->lessThanOrEqual($info->limit_per);
     }
 
     public static function getInfo(User $user, int $category_id): stdClass
@@ -86,7 +86,7 @@ class UserLimitsHelper
         } else {
             $limit_info->duration = 'week';
             $limit_info->duration_int = UserLimits::LIMIT_WEEKLY;
-            $limit_info->limit_per = Money::parse(-1);
+            $limit_info->limit_per = Money::parse(-1_00);
         }
 
         return $limit_info;
@@ -97,7 +97,7 @@ class UserLimitsHelper
         // If they have unlimited money (no limit set) for this category,
         // get all their transactions, as they have no limit set we dont need to worry about
         // when the transaction was created_at.
-        if ($info->limit_per->equals(Money::parse(-1))) {
+        if ($info->limit_per->equals(Money::parse(-1_00))) {
             $transactions = $user->transactions->where('returned', false);
             $activity_transactions = $user->getActivityTransactions();
         } else {
