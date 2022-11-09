@@ -28,6 +28,7 @@ class Activity extends Model
         'unlimited_slots',
         'slots',
         'price',
+        'pst',
         'start',
         'end',
     ];
@@ -78,7 +79,7 @@ class Activity extends Model
 
     public function getPriceAfterTax(): Money
     {
-        return TaxHelper::calculateFor($this->price, 1, true);
+        return TaxHelper::calculateFor($this->price, 1, $this->pst);
     }
 
     public function getAttendees(): Collection

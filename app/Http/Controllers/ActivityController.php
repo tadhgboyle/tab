@@ -64,6 +64,7 @@ class ActivityController extends Controller
         $activity->unlimited_slots = $request->has('unlimited_slots');
         $activity->slots = $request->has('unlimited_slots') ? -1 : $request->slots;
         $activity->price = $request->price;
+        $activity->pst = $request->has('pst');
         $activity->start = $request->start;
         $activity->end = $request->end;
         $activity->save();
@@ -95,6 +96,7 @@ class ActivityController extends Controller
             'unlimited_slots' => $request->has('unlimited_slots'),
             'slots' => $request->has('unlimited_slots') ? -1 : $request->slots,
             'price' => $request->price,
+            'pst' => $request->has('pst'),
             'start' => $request->start,
             'end' => $request->end,
         ]);

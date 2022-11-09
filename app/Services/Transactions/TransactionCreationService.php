@@ -103,7 +103,7 @@ class TransactionCreationService extends Service
             $category_limit = $limit_info->limit_per;
 
             // Skip this category if they have unlimited. Saves time querying
-            if ($category_limit->equals(Money::parse(-1))) {
+            if ($category_limit->equals(Money::parse(-1_00))) {
                 continue;
             }
 
