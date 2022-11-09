@@ -38,7 +38,7 @@
                         <span class="icon is-small is-left">
                             <i class="fas fa-dollar-sign"></i>
                         </span>
-                        <input type="number" step="0.01" name="balance" id="balance" class="input" placeholder="Balance" value="{{ (isset($user) ? $user->balance->formatForInput() : null) ?? number_format(old('balance'), 2, '.', '') }}">
+                        <input type="number" step="0.01" name="balance" class="input money-input" placeholder="Balance" value="{{ (isset($user) ? $user->balance->formatForInput() : null) ?? number_format(old('balance'), 2, '.', '') }}">
                     </div>
                 </div>
 
@@ -104,7 +104,7 @@
                             <span class="icon is-small is-left">
                                 <i class="fas fa-dollar-sign"></i>
                             </span>
-                            <input type="number" step="0.01" name="limit[{{ $category['id'] }}]" class="input" placeholder="Limit" value="{{ isset($user) ? $category['info']->limit_per->formatForInput() : "0.00"}}">
+                            <input type="number" step="0.01" name="limit[{{ $category['id'] }}]" class="input money-input" placeholder="Limit" value="{{ isset($user) ? $category['info']->limit_per->formatForInput() : "0.00"}}">
                         </div>
                         <div class="control">
                             <label class="radio">
@@ -189,12 +189,6 @@
             }
         }
     }
-
-    document.getElementById('balance').onchange = function() {
-        if (this.value && this.value.indexOf('.') === -1) {
-            this.value += '.00';
-        }
-    };
 
     @isset($user)
         const modal = document.querySelector('.modal');
