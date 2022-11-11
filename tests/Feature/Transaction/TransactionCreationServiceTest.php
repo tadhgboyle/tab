@@ -68,7 +68,7 @@ class TransactionCreationServiceTest extends TestCase
         $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user, over_balance: true), $camper_user);
 
         $this->assertSame(TransactionCreationService::RESULT_NOT_ENOUGH_BALANCE, $transactionService->getResult());
-        $this->assertStringContainsString('only has $999.99. Tried to spend $6335.96.', $transactionService->getMessage());
+        $this->assertStringContainsString('only has $999.99. Tried to spend $6,335.96.', $transactionService->getMessage());
     }
 
     public function testCannotMakeTransactionWithoutEnoughBalanceInCategory(): void
@@ -90,7 +90,7 @@ class TransactionCreationServiceTest extends TestCase
 
         $this->assertSame(TransactionCreationService::RESULT_SUCCESS, $transactionService->getResult());
         $this->assertStringContainsString('now has $962.44', $transactionService->getMessage());
-        $this->assertEquals($balance_before - $transactionService->getTransaction()->total_price, $camper_user->refresh()->balance);
+        $this->assertEquals($balance_before->subtract($transactionService->getTransaction()->total_price), $camper_user->refresh()->balance);
         $this->assertEquals($transactionService->getTransaction()->total_price, $camper_user->findSpent());
     }
 
@@ -221,13 +221,13 @@ class TransactionCreationServiceTest extends TestCase
         UserLimits::factory()->create([
             'user_id' => $user->id,
             'category_id' => $food_category->id,
-            'limit_per' => 1,
+            'limit_per' => 1_00,
         ]);
 
         UserLimits::factory()->create([
             'user_id' => $user->id,
             'category_id' => $merch_category->id,
-            'limit_per' => 1,
+            'limit_per' => 1_00,
         ]);
     }
 
@@ -236,7 +236,7 @@ class TransactionCreationServiceTest extends TestCase
     {
         $chips = Product::factory()->create([
             'name' => 'Chips',
-            'price' => $over_balance ? 5999.99 : 1.50,
+            'price' => $over_balance ? 5999_99 : 1_50,
             'pst' => false,
             'category_id' => $food_category->id,
             'stock' => 2,
@@ -246,14 +246,14 @@ class TransactionCreationServiceTest extends TestCase
 
         $hat = Product::factory()->create([
             'name' => 'Hat',
-            'price' => 15.00,
+            'price' => 15_00,
             'pst' => false,
             'category_id' => $merch_category->id
         ]);
 
         $coffee = Product::factory()->create([
             'name' => 'Coffee',
-            'price' => 3.99,
+            'price' => 3_99,
             'pst' => true,
             'category_id' => $food_category->id
         ]);

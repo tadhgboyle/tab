@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\User;
 
+use Cknow\Money\Money;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
@@ -15,14 +16,13 @@ use App\Helpers\RotationHelper;
 use App\Helpers\UserLimitsHelper;
 use App\Http\Requests\UserRequest;
 use App\Models\TransactionProduct;
-use Illuminate\Support\Facades\DB;
 use Database\Seeders\RotationSeeder;
 use App\Services\Users\UserCreationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Services\Activities\ActivityRegistrationCreationService;
 
 // TODO: test with different limit durations (day/week)
 // TODO: test when categories are made after user is made
-// TODO: activity transaction stuff
 // TODO: test after changing tax rates to ensure it is using historical data
 class UserLimitsHelperTest extends TestCase
 {
@@ -31,43 +31,49 @@ class UserLimitsHelperTest extends TestCase
     public function testFindSpentCalculationIsCorrect(): void
     {
         [$user, $food_category, $merch_category, $activities_category, $waterfront_category] = $this->createFakeRecords();
+        $user = $user->refresh();
 
         $food_limit_info = UserLimitsHelper::getInfo($user, $food_category->id);
         $food_category_spent = UserLimitsHelper::findSpent($user, $food_category->id, $food_limit_info);
 
-        $this->assertEquals(12.09, $food_category_spent);
+        $this->assertEquals(Money::parse(12_09), $food_category_spent);
 
         $merch_limit_info = UserLimitsHelper::getInfo($user, $merch_category->id);
         $merch_category_spent = UserLimitsHelper::findSpent($user, $merch_category->id, $merch_limit_info);
 
-        $this->assertEquals(60.54, $merch_category_spent);
+        $this->assertEquals(Money::parse(60_54), $merch_category_spent);
 
         $activities_limit_info = UserLimitsHelper::getInfo($user, $activities_category->id);
         $activities_category_spent = UserLimitsHelper::findSpent($user, $activities_category->id, $activities_limit_info);
 
-        $this->assertEquals(6.71, $activities_category_spent);
+        $this->assertEquals(Money::parse(6_71), $activities_category_spent);
 
         $waterfront_limit_info = UserLimitsHelper::getInfo($user, $waterfront_category->id);
         $waterfront_category_spent = UserLimitsHelper::findSpent($user, $waterfront_category->id, $waterfront_limit_info);
         // Special case, they have no limit set for the waterfront category
-        $this->assertEquals(0.00, $waterfront_category_spent);
+        $this->assertEquals(Money::parse(0_00), $waterfront_category_spent);
     }
 
     public function testFindSpentCalculationIsCorrectAfterItemReturn(): void
     {
-        $this->assertTrue(true); // TODO after rewriting transaction handling
+        $this->markTestIncomplete();
     }
 
     public function testFindSpentCalculationIsCorrectAfterTransactionReturn(): void
     {
-        $this->assertTrue(true); // TODO after rewriting transaction handling
+        $this->markTestIncomplete();
+    }
+
+    public function testFindSpentCalculationIsCorrectAfterActivityReturn(): void
+    {
+        $this->markTestIncomplete();
     }
 
     public function testUserCanSpendUnlimitedInCategoryIfNegativeOneIsLimit(): void
     {
         [$user, , $merch_category] = $this->createFakeRecords();
 
-        $can_spend_1_million_merch = UserLimitsHelper::canSpend($user, 1000000.00, $merch_category->id);
+        $can_spend_1_million_merch = UserLimitsHelper::canSpend($user, Money::parse(1000000_00), $merch_category->id);
         // This should be true as their merch category is unlimited
         $this->assertTrue($can_spend_1_million_merch);
     }
@@ -75,24 +81,25 @@ class UserLimitsHelperTest extends TestCase
     public function testUserCannotSpendOverLimitInCategory(): void
     {
         [$user, $food_category, , $activities_category, $waterfront_category] = $this->createFakeRecords();
+        $user = $user->refresh();
 
-        $can_spend_1_dollar_food = UserLimitsHelper::canSpend($user, 1.00, $food_category->id);
+        $can_spend_1_dollar_food = UserLimitsHelper::canSpend($user, Money::parse(1_00), $food_category->id);
         // This should be true, as they've only spent 12.09 / 15.00 dollars, and another 1 dollar would not go past 15.
         $this->assertTrue($can_spend_1_dollar_food);
 
-        $can_spend_12_dollars_food = UserLimitsHelper::canSpend($user, 12.00, $food_category->id);
+        $can_spend_12_dollars_food = UserLimitsHelper::canSpend($user, Money::parse(12_00), $food_category->id);
         // This should be false, as they've spent 12.09 / 15.00, and another 12 dollars would go past 15
         $this->assertFalse($can_spend_12_dollars_food);
 
-        $can_spent_3_dollars_activities = UserLimitsHelper::canSpend($user, 3.00, $activities_category->id);
+        $can_spent_3_dollars_activities = UserLimitsHelper::canSpend($user, Money::parse(3_00), $activities_category->id);
         // This should be true, as they spent 6.29 / 10, and another 3 would not go over 10
         $this->assertTrue($can_spent_3_dollars_activities);
 
-        $can_spent_5_dollars_activities = UserLimitsHelper::canSpend($user, 5.00, $activities_category->id);
+        $can_spent_5_dollars_activities = UserLimitsHelper::canSpend($user, Money::parse(5_00), $activities_category->id);
         // This should be false, as they spent 6.29 / 10, and another 5 would not go over 10
         $this->assertFalse($can_spent_5_dollars_activities);
 
-        $can_spent_10_dollars_waterfront = UserLimitsHelper::canSpend($user, 10, $waterfront_category->id);
+        $can_spent_10_dollars_waterfront = UserLimitsHelper::canSpend($user, Money::parse(10_00), $waterfront_category->id);
         // This should be true, since they have no explicit limit set it defaults to unlimited
         $this->assertTrue($can_spent_10_dollars_waterfront);
     }
@@ -115,8 +122,8 @@ class UserLimitsHelperTest extends TestCase
 
         [$message, $result] = UserLimitsHelper::createOrEditFromRequest(new UserRequest([
             'limit' => [
-                $merch_category->id => 25,
-                $candy_category->id => 15
+                $merch_category->id => 25_00,
+                $candy_category->id => 15_00
             ],
             'duration' => [
                 $merch_category->id => UserLimits::LIMIT_DAILY,
@@ -127,8 +134,8 @@ class UserLimitsHelperTest extends TestCase
         $this->assertNull($message);
         $this->assertNull($result);
 
-        $this->assertSame(25.0, UserLimitsHelper::getInfo($user, $merch_category->id)->limit_per);
-        $this->assertSame(15.0, UserLimitsHelper::getInfo($user, $candy_category->id)->limit_per);
+        $this->assertEquals(Money::parse(25_00), UserLimitsHelper::getInfo($user, $merch_category->id)->limit_per);
+        $this->assertEquals(Money::parse(15_00), UserLimitsHelper::getInfo($user, $candy_category->id)->limit_per);
 
         $this->assertSame(UserLimits::LIMIT_DAILY, UserLimitsHelper::getInfo($user, $merch_category->id)->duration_int);
         $this->assertSame(UserLimits::LIMIT_WEEKLY, UserLimitsHelper::getInfo($user, $candy_category->id)->duration_int);
@@ -148,7 +155,7 @@ class UserLimitsHelperTest extends TestCase
 
         [, $result] = UserLimitsHelper::createOrEditFromRequest(new UserRequest([
             'limit' => [
-                $candy_category->id => -2
+                $candy_category->id => -2_00
             ]
         ]), $user, UserCreationService::class);
 
@@ -176,7 +183,7 @@ class UserLimitsHelperTest extends TestCase
         $this->assertNull($message);
         $this->assertNull($result);
 
-        $this->assertSame(0.0, UserLimitsHelper::getInfo($user, $candy_category->id)->limit_per);
+        $this->assertEquals(Money::parse(0_00), UserLimitsHelper::getInfo($user, $candy_category->id)->limit_per);
     }
 
     public function testNoLimitProvidedDefaultsToNegativeOneFromUserRequest(): void
@@ -197,7 +204,7 @@ class UserLimitsHelperTest extends TestCase
 
         [$message, $result] = UserLimitsHelper::createOrEditFromRequest(new UserRequest([
             'limit' => [
-                $merch_category->id => 25,
+                $merch_category->id => 25_00,
                 $candy_category->id => null
             ]
         ]), $user, UserCreationService::class);
@@ -205,7 +212,7 @@ class UserLimitsHelperTest extends TestCase
         $this->assertNull($message);
         $this->assertNull($result);
 
-        $this->assertSame(-1.0, UserLimitsHelper::getInfo($user, $candy_category->id)->limit_per);
+        $this->assertEquals(Money::parse(-1_00), UserLimitsHelper::getInfo($user, $candy_category->id)->limit_per);
     }
 
     public function testNoDurationProvidedDefaultsToDailyFromUserRequest(): void
@@ -222,7 +229,7 @@ class UserLimitsHelperTest extends TestCase
 
         [$message, $result] = UserLimitsHelper::createOrEditFromRequest(new UserRequest([
             'limit' => [
-                $merch_category->id => 25,
+                $merch_category->id => 25_00,
             ]
         ]), $user, UserCreationService::class);
 
@@ -287,20 +294,20 @@ class UserLimitsHelperTest extends TestCase
         UserLimits::factory()->create([
             'user_id' => $user->id,
             'category_id' => $food_category->id,
-            'limit_per' => 15,
+            'limit_per' => 15_00,
             'duration' => UserLimits::LIMIT_DAILY
         ]);
 
         UserLimits::factory()->create([
             'user_id' => $user->id,
             'category_id' => $merch_category->id,
-            'limit_per' => -1
+            'limit_per' => -1_00
         ]);
 
         UserLimits::factory()->create([
             'user_id' => $user->id,
             'category_id' => $activities_category->id,
-            'limit_per' => 10
+            'limit_per' => 10_00
         ]);
 
         [$skittles, $sweater, $coffee, $hat] = $this->createFakeProducts($food_category->id, $merch_category->id);
@@ -310,7 +317,7 @@ class UserLimitsHelperTest extends TestCase
             'purchaser_id' => $user->id,
             'cashier_id' => $user->id,
             'rotation_id' => resolve(RotationHelper::class)->getCurrentRotation()->id,
-            'total_price' => 3.15 // TODO
+            'total_price' => 3_15 // TODO
         ]);
 
         $skittles_product = TransactionProduct::from($skittles, 2, 5);
@@ -327,7 +334,7 @@ class UserLimitsHelperTest extends TestCase
             'purchaser_id' => $user->id,
             'cashier_id' => $user->id,
             'rotation_id' => resolve(RotationHelper::class)->getCurrentRotation()->id,
-            'total_price' => 44.79 // TODO
+            'total_price' => 44_79 // TODO
         ]);
 
         $sweater_product = TransactionProduct::from($sweater, 1, 5, 7);
@@ -340,18 +347,8 @@ class UserLimitsHelperTest extends TestCase
             $coffee_product,
         ]);
 
-        DB::table('activity_transactions')->insert([
-            'user_id' => $user->id,
-            'cashier_id' => $user->id,
-            'activity_id' => $widegame->id,
-            'activity_price' => $widegame->price,
-            'category_id' => $widegame->category_id,
-            'activity_gst' => 5,
-            'activity_pst' => 7,
-            'total_price' => $widegame->getPriceAfterTax(),
-            'returned' => false,
-            'created_at' => now(),
-        ]);
+        $this->actingAs($user);
+        (new ActivityRegistrationCreationService($widegame, $user));
 
         // TODO: General category with hat and widegame on it
 
@@ -386,28 +383,28 @@ class UserLimitsHelperTest extends TestCase
     {
         $skittles = Product::factory()->create([
             'name' => 'Skittles',
-            'price' => 1.50,
+            'price' => 1_50,
             'pst' => false,
             'category_id' => $food_category_id
         ]);
 
         $sweater = Product::factory()->create([
             'name' => 'Sweater',
-            'price' => 39.99,
+            'price' => 39_99,
             'pst' => true,
             'category_id' => $merch_category_id
         ]);
 
         $coffee = Product::factory()->create([
             'name' => 'Coffee',
-            'price' => 3.99,
+            'price' => 3_99,
             'pst' => true,
             'category_id' => $food_category_id
         ]);
 
         $hat = Product::factory()->create([
             'name' => 'Hat',
-            'price' => 15.00,
+            'price' => 15_00,
             'pst' => false,
             'category_id' => $merch_category_id
         ]);
@@ -420,7 +417,7 @@ class UserLimitsHelperTest extends TestCase
     {
         $widegame = Activity::factory()->create([
             'name' => 'Widegame',
-            'price' => 5.99,
+            'price' => 5_99,
             'pst' => true,
             'category_id' => $activities_category->id
         ]);

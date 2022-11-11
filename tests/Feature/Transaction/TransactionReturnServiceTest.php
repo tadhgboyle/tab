@@ -33,6 +33,7 @@ class TransactionReturnServiceTest extends TestCase
     public function testUserBalanceAndTransactionTotalsUpdatedAfterItemReturn(): void
     {
         [$user, $transaction, $hat] = $this->createFakeRecords();
+        $balance_before = $user->balance;
 
         $transactionService = (new TransactionReturnService($transaction))->returnItem($hat);
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
@@ -40,7 +41,7 @@ class TransactionReturnServiceTest extends TestCase
         $this->assertSame(Transaction::STATUS_PARTIAL_RETURNED, $transaction->getReturnStatus());
 
         $this->assertEquals(
-            $user->balance + $hat->getPriceAfterTax(),
+            $balance_before->add($hat->getPriceAfterTax()),
             $user->refresh()->balance
         );
         $this->assertEquals($hat->getPriceAfterTax(), $user->findReturned());
@@ -62,6 +63,7 @@ class TransactionReturnServiceTest extends TestCase
     public function testUserBalanceUpdatedAfterTransactionReturn(): void
     {
         [$user, $transaction] = $this->createFakeRecords();
+        $balance_before = $user->balance;
 
         $transactionService = (new TransactionReturnService($transaction))->return();
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
@@ -69,7 +71,7 @@ class TransactionReturnServiceTest extends TestCase
         $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->getReturnStatus());
         $this->assertTrue($transaction->isReturned());
         $this->assertEquals(
-            $user->balance + $transaction->total_price,
+            $balance_before->add($transaction->total_price),
             $user->refresh()->balance
         );
         $this->assertEquals($transaction->total_price, $user->findReturned());
@@ -128,7 +130,7 @@ class TransactionReturnServiceTest extends TestCase
         $this->assertSame(TransactionReturnService::RESULT_ITEM_RETURNED_MAX_TIMES, $transactionService3->getResult());
 
         $this->assertSame(Transaction::STATUS_PARTIAL_RETURNED, $transaction_2_items->getReturnStatus());
-        $this->assertEquals($hat->getPriceAfterTax() * 2, $user->findReturned());
+        $this->assertEquals($hat->getPriceAfterTax()->multiply(2), $user->findReturned());
     }
 
     private function createFakeRecords(): array
@@ -140,7 +142,7 @@ class TransactionReturnServiceTest extends TestCase
         /** @var User */
         $user = User::factory()->create([
             'role_id' => $role->id,
-            'balance' => 300.00
+            'balance' => 300_00
         ]);
 
         $this->actingAs($user);
@@ -151,7 +153,7 @@ class TransactionReturnServiceTest extends TestCase
 
         $hat = Product::factory()->create([
             'name' => 'Hat',
-            'price' => 11.99, // $13.43
+            'price' => 11_99, // $13.43
             'category_id' => $merch_category->id,
             'pst' => true
         ]);
@@ -179,7 +181,7 @@ class TransactionReturnServiceTest extends TestCase
             ]
         ), $user))->getTransaction(); // $26.8576 -> $3.1424
 
-        return [$user->refresh(), $transaction, $hat];
+        return [$user, $transaction, $hat];
     }
 
     private function createTwoItemTransaction(User $user, Product $hat): Transaction
@@ -187,7 +189,7 @@ class TransactionReturnServiceTest extends TestCase
         $sweater = Product::factory()->create([
             'name' => 'Sweater',
             'category_id' => $hat->category_id,
-            'price' => 39.99
+            'price' => 39_99
         ]);
 
         return (new TransactionCreationService(new Request([

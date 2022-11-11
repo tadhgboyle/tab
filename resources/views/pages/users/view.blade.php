@@ -3,11 +3,11 @@
 <h2 class="title has-text-weight-bold">View User</h2>
 <h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if($user->trashed()) <strong>(Deleted)</strong> @endif @if(!$user->trashed() && hasPermission(\App\Helpers\Permission::USERS_MANAGE) && $can_interact)<a href="{{ route('users_edit', $user->id) }}">(Edit)</a>@endif</h4>
 <p><strong>Role:</strong> {{ $user->role->name }}</p>
-<span><strong>Balance:</strong> ${{ number_format($user->balance, 2) }}, </span>
-<span><strong>Total spent:</strong> ${{ number_format($user->findSpent(), 2) }}, </span>
-<span><strong>Total returned:</strong> ${{ number_format($user->findReturned(), 2) }}, </span>
+<span><strong>Balance:</strong> {{ $user->balance }}, </span>
+<span><strong>Total spent:</strong> {{ $user->findSpent() }}, </span>
+<span><strong>Total returned:</strong> {{ $user->findReturned() }}, </span>
 @php $owing = $user->findOwing(); @endphp
-<span><strong>Total owing:</strong> <span style="text-decoration: underline; cursor: help;" onclick="openOwingModal();">${{ number_format($owing, 2) }}</span></span>
+<span><strong>Total owing:</strong> <span style="text-decoration: underline; cursor: help;" onclick="openOwingModal();">{{ $owing }}</span></span>
 
 <br>
 <br>
@@ -43,7 +43,7 @@
                                     <div>{{ $transaction->cashier->full_name }}</div>
                                 </td>
                                 <td>
-                                    <div>${{ number_format($transaction->total_price, 2) }}</div>
+                                    <div>{{ $transaction->total_price }}</div>
                                 </td>
                                 <td>
                                     <div>
@@ -73,7 +73,7 @@
             </div>
             <div class="column">
                 <div class="box">
-                    <h4 class="title has-text-weight-bold is-4">Activity History</h4>
+                    <h4 class="title has-text-weight-bold is-4">Activity Registrations</h4>
                     <table id="activity_list">
                         <thead>
                             <tr>
@@ -85,29 +85,29 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($activity_transactions as $transaction)
+                            @foreach($activity_registrations as $registration)
                             <tr>
                                 <td>
-                                    <div>{{ $transaction['created_at']->format('M jS Y h:ia') }}</div>
+                                    <div>{{ $registration->created_at->format('M jS Y h:ia') }}</div>
                                 </td>
                                 <td>
-                                    <div>{{ $transaction['cashier']->full_name }}</div>
+                                    <div>{{ $registration->cashier->full_name }}</div>
                                 </td>
                                 <td>
                                     <div>
                                         @permission(\App\Helpers\Permission::ACTIVITIES_VIEW)
-                                            <a href="{{ route('activities_view', $transaction['activity']->id) }}">{{ $transaction['activity']->name }}</a>
+                                            <a href="{{ route('activities_view', $registration->activity->id) }}">{{ $registration->activity->name }}</a>
                                         @else
-                                            {{ $transaction['activity']->name }}
+                                            {{ $registration->activity->name }}
                                         @endpermission
                                     </div>
                                 </td>
                                 <td>
-                                    <div>{!! $transaction['total_price'] > 0 ? '$' . number_format($transaction['total_price'], 2) : '<i>Free</i>' !!}</div>
+                                    <div>{!! $registration->total_price->isNegative() ? '<i>Free</i>' : $registration->total_price !!}</div>
                                 </td>
                                 <td>
                                     <div>
-                                        @switch($transaction['returned'])
+                                        @switch($registration->returned)
                                             @case(0)
                                                 <span class="tag is-success is-medium">Normal</span>
                                             @break
@@ -148,13 +148,13 @@
                                     </td>
 {{--                                    TODO: display "none" for limits of $0--}}
                                     <td>
-                                        <div>{!! $category['limit'] == -1.0 ? "<i>Unlimited</i>" : "$" . number_format($category['limit'], 2) . "/" . $category['duration'] !!}</div>
+                                        <div>{!! $category['limit']->isNegative() ? "<i>Unlimited</i>" : $category['limit'] . "/" . $category['duration'] !!}</div>
                                     </td>
                                     <td>
-                                        <div>${{ number_format($category['spent'], 2) }}</div>
+                                        <div>{{ $category['spent'] }}</div>
                                     </td>
                                     <td>
-                                        <div>{!! $category['limit'] == -1.0 ? "<i>Unlimited</i>" : "$" . number_format($category['limit'] - $category['spent'], 2) !!}</div>
+                                        <div>{!! $category['limit']->isNegative() ? "<i>Unlimited</i>" : $category['limit']->subtract($category['spent']) !!}</div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -228,7 +228,7 @@
                                     <div>{!! $payout->identifier ?? "<i>None</i>" !!}</div>
                                 </td>
                                 <td>
-                                    <div>${{ number_format($payout->amount, 2) }}</div>
+                                    <div>{{ $payout->amount }}</div>
                                 </td>
                                 <td>
                                     <div>{{ $payout->cashier->full_name }}</div>
@@ -266,7 +266,7 @@
                             <div>Transaction (#{{ $transaction->id }})</div>
                         </td>
                         <td>
-                            <div>+${{ number_format($transaction->total_price, 2) }}</div>
+                            <div>+{{ $transaction->total_price }}</div>
                         </td>
                     </tr>
                     @switch($transaction->getReturnStatus())
@@ -276,7 +276,7 @@
                                     <div>Return (#{{ $transaction->id }})</div>
                                 </td>
                                 <td>
-                                    <div>-${{ number_format($transaction->total_price, 2) }}</div>
+                                    <div>-{{ $transaction->total_price }}</div>
                                 </td>
                             </tr>
                             @break
@@ -286,7 +286,7 @@
                                     <div>Partial Return (#{{ $transaction->id }})</div>
                                 </td>
                                 <td>
-                                    <div>-${{ number_format($transaction->getReturnedTotal(), 2) }}</div>
+                                    <div>-{{ $transaction->getReturnedTotal() }}</div>
                                 </td>
                             </tr>
                             @break
@@ -306,13 +306,13 @@
                         <strong>Activities</strong>
                     </td>
                 </tr>
-                @forelse($activity_transactions as $activity)
+                @forelse($activity_registrations as $registration)
                     <tr>
                         <td>
-                            <div>Activity ({{ $activity['activity']['name'] }})</div>
+                            <div>Activity ({{ $registration->activity->name }})</div>
                         </td>
                         <td>
-                            <div>+${{ number_format($activity['total_price'], 2) }}</div>
+                            <div>+{{ $registration->total_price }}</div>
                         </td>
                     </tr>
                 @empty
@@ -336,7 +336,7 @@
                             <div>Payout @if($payout->identifier !== null) ({{ $payout->identifier }}) @endif</div>
                         </td>
                         <td>
-                            <div>-${{ number_format($payout->amount, 2) }}</div>
+                            <div>-{{ $payout->amount }}</div>
                         </td>
                     </tr>
                 @empty
@@ -352,7 +352,7 @@
                 <tr>
                     <td></td>
                     <td>
-                        <div><strong>&nbsp;&nbsp;${{ number_format($owing, 2) }}</strong></div>
+                        <div><strong>&nbsp;&nbsp;{{ $owing }}</strong></div>
                     </td>
                 </tr>
                 </tbody>
@@ -426,11 +426,6 @@
             "searching": false,
             "paging": false,
             "bInfo": false,
-            "columnDefs": [{
-                "orderable": false,
-                "searchable": false,
-                "targets": 0
-            }]
         });
         $('#loading').hide();
         $('#table_container').css('visibility', 'visible');

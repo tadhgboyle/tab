@@ -56,6 +56,16 @@
                 }
             });
         }
+
+        // handle formatting money inputs
+        const inputs = document.getElementsByClassName('money-input');
+        for (const i of inputs) {
+            i.onchange = function() {
+                if (this.value && this.value.indexOf('.') === -1) {
+                    this.value += '.00';
+                }
+            };
+        }
     </script>
 </body>
 

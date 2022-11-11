@@ -17,7 +17,7 @@ class CreateUserLimitsTable extends Migration
             $table->id('limit_id');
             $table->foreignId('user_id')->constrained();
             $table->foreignId('category_id')->constrained();
-            $table->float('limit_per');
+            $table->integer('limit_per')->nullable();
             $table->integer('duration');
             $table->timestamps();
         });

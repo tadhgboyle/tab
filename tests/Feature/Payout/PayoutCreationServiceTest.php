@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Payout;
 
+use Cknow\Money\Money;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
@@ -19,14 +20,15 @@ class PayoutCreationServiceTest extends TestCase
 
         $payoutService = new PayoutCreationService(new PayoutRequest([
             'identifier' => '#1',
-            'amount' => 10,
+            'amount' => 10_00,
         ]), $user);
 
         $this->assertSame(PayoutCreationService::RESULT_SUCCESS, $payoutService->getResult());
 
         $payout = $payoutService->getPayout();
 
-        $this->assertSame(10.00, $payout->amount);
+        $this->assertEquals(Money::parse(10_00), $payout->amount);
+        $this->assertEquals(Money::parse(-10_00), $user->findOwing());
         $this->assertSame('#1', $payout->identifier);
         $this->assertSame($admin->id, $payout->cashier->id);
         $this->assertSame($user->id, $payout->user->id);
@@ -40,13 +42,14 @@ class PayoutCreationServiceTest extends TestCase
 
         $payoutService = new PayoutCreationService(new PayoutRequest([
             'identifier' => '#1',
-            'amount' => 10,
+            'amount' => 10_00,
         ]), $user);
 
         $this->assertSame(PayoutCreationService::RESULT_SUCCESS, $payoutService->getResult());
+        $this->assertStringContainsString("Successfully created payout of $10.00 for {$user->full_name}", $payoutService->getMessage());
 
         $payout = $payoutService->getPayout();
-        $this->assertSame($owing_before_payout - $payout->amount, $user->findOwing());
+        $this->assertEquals($owing_before_payout->subtract($payout->amount), $user->refresh()->findOwing());
     }
 
     /** @return User[] */

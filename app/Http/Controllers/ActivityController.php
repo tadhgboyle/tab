@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Activity;
 use App\Helpers\Permission;
+use App\Services\Activities\ActivityRegistrationCreationService;
 use Illuminate\Support\Carbon;
 use App\Helpers\CategoryHelper;
 use Illuminate\Http\RedirectResponse;
@@ -64,6 +65,7 @@ class ActivityController extends Controller
         $activity->unlimited_slots = $request->has('unlimited_slots');
         $activity->slots = $request->has('unlimited_slots') ? -1 : $request->slots;
         $activity->price = $request->price;
+        $activity->pst = $request->has('pst');
         $activity->start = $request->start;
         $activity->end = $request->end;
         $activity->save();
@@ -95,6 +97,7 @@ class ActivityController extends Controller
             'unlimited_slots' => $request->has('unlimited_slots'),
             'slots' => $request->has('unlimited_slots') ? -1 : $request->slots,
             'price' => $request->price,
+            'pst' => $request->has('pst'),
             'start' => $request->start,
             'end' => $request->end,
         ]);
@@ -123,7 +126,7 @@ class ActivityController extends Controller
             $output .=
                 '<tr>' .
                     '<td>' . $user->full_name . '</td>' .
-                    '<td>$' . number_format($user->balance, 2) . '</td>' .
+                    '<td>' . $user->balance . '</td>' .
                     (($user->balance < $activity->getPriceAfterTax() || $activity->isAttending($user))
                         ? '<td><button class="button is-success is-small" disabled>Add</button></td>'
                         : '<td><a href="' . route('activities_user_add', [$activity->id, $user->id]) . '" class="button is-success is-small">Add</a></td>') .
@@ -135,6 +138,6 @@ class ActivityController extends Controller
 
     public function registerUser(Activity $activity, User $user): RedirectResponse
     {
-        return $activity->registerUser($user);
+        return (new ActivityRegistrationCreationService($activity, $user))->redirect();
     }
 }

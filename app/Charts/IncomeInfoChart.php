@@ -32,13 +32,13 @@ class IncomeInfoChart extends BaseChart
 
         foreach ($normal_data as $normal_order) {
             $labels[] = Carbon::parse($normal_order['date'])->format('M jS Y');
-            $normal_orders[] = $normal_order['total_price'];
+            $normal_orders[] = $normal_order['total_price']->divide(100)->getAmount();
             $found = false;
 
             foreach ($returned_data as $returned_order) {
                 if ($normal_order['date'] === $returned_order['date']) {
                     $found = true;
-                    $returned_orders[] = $returned_order['total_price'];
+                    $returned_orders[] = $returned_order['total_price']->divide(100)->getAmount();
                     break;
                 }
             }
