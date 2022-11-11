@@ -14,7 +14,7 @@
                 <input type="hidden" id="purchaser_id" name="purchaser_id" value="{{ $user->id }}">
                 <input type="hidden" id="current_pst" value="{{ $current_pst }}">
                 <input type="hidden" id="current_gst" value="{{ $current_gst }}">
-                <input type="hidden" id="purchaser_balance" value="{{ $user->balance }}">
+                <input type="hidden" id="purchaser_balance" value="{{ $user->balance->getAmount() / 100 }}">
                 <input type="hidden" id="products" name="products" value="{}">
 
                 <table id="product_list">
@@ -47,7 +47,7 @@
                                 <div>{!! $product->getStock() !!}</div>
                             </td>
                             <td>
-                                <div>${{ number_format($product->price, 2) }}</div>
+                                <div>{{ $product->price }}</div>
                             </td>
                         </tr>
                         @endforeach

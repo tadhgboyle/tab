@@ -9,6 +9,7 @@ use App\Services\Service;
 use App\Helpers\TaxHelper;
 use App\Helpers\Permission;
 use App\Models\Transaction;
+use Cknow\Money\Money;
 use Illuminate\Http\Request;
 use App\Helpers\RotationHelper;
 use App\Helpers\SettingsHelper;
@@ -57,7 +58,7 @@ class TransactionCreationService extends Service
         /** @var Collection<TransactionProduct> */
         $transaction_products = Collection::make();
 
-        $total_price = 0;
+        $total_price = Money::parse(0);
 
         foreach ($order_products->all() as $product_meta) {
             $id = $product_meta->id;
@@ -85,38 +86,39 @@ class TransactionCreationService extends Service
                 $product->pst ? $settingsHelper->getPst() : null
             ));
 
-            $total_price += TaxHelper::calculateFor($product->price, $quantity, $product->pst);
+            $total_price = $total_price->add(TaxHelper::calculateFor($product->price, $quantity, $product->pst));
         }
 
-        $remaining_balance = $purchaser->balance - $total_price;
-        if ($remaining_balance < 0) {
+        $remaining_balance = $purchaser->balance->subtract($total_price);
+        if ($remaining_balance->isNegative()) {
             $this->_result = self::RESULT_NOT_ENOUGH_BALANCE;
-            $this->_message = "Not enough balance. {$purchaser->full_name} only has \${$purchaser->balance}. Tried to spend \${$total_price}.";
+            $this->_message = "Not enough balance. {$purchaser->full_name} only has {$purchaser->balance}. Tried to spend {$total_price}.";
             return;
         }
 
         // Loop categories within this transaction
         foreach ($transaction_products->map(fn (TransactionProduct $product) => $product->category_id)->unique() as $category_id) {
             $limit_info = UserLimitsHelper::getInfo($purchaser, $category_id);
+            /** @var Money $category_limit */
             $category_limit = $limit_info->limit_per;
 
             // Skip this category if they have unlimited. Saves time querying
-            if ($category_limit === -1) {
+            if ($category_limit->equals(Money::parse(-1_00))) {
                 continue;
             }
 
-            $category_spent = 0.00;
+            $category_spent = Money::parse(0);
             $category_spent_orig = UserLimitsHelper::findSpent($purchaser, $category_id, $limit_info);
 
             // Loop all products in this transaction. If the product's category is the current one in the above loop, add its price to category spent
             foreach ($transaction_products->filter(fn (TransactionProduct $product) => $product->category_id === $category_id) as $product) {
-                $category_spent += TaxHelper::calculateFor($product->price, $product->quantity, $product->pst !== null);
+                $category_spent = $category_spent->add(TaxHelper::calculateFor($product->price, $product->quantity, $product->pst !== null));
             }
 
             // Break loop if we exceed their limit
             if (!UserLimitsHelper::canSpend($purchaser, $category_spent, $category_id, $limit_info)) {
                 $this->_result = self::RESULT_NOT_ENOUGH_CATEGORY_BALANCE;
-                $this->_message = 'Not enough balance in the ' . Category::find($category_id)->name . ' category. (Limit: $' . number_format($category_limit, 2) . ', Remaining: $' . number_format($category_limit - $category_spent_orig, 2) . '). Tried to spend $' . number_format(round($category_spent, 2), 2);
+                $this->_message = 'Not enough balance in the ' . Category::find($category_id)->name . ' category. (Limit: ' . $category_limit . ', Remaining: ' . $category_limit->subtract($category_spent_orig) . '). Tried to spend ' . $category_spent;
                 return;
             }
         }
@@ -151,7 +153,7 @@ class TransactionCreationService extends Service
         $purchaser->update(['balance' => $remaining_balance]);
 
         $this->_result = self::RESULT_SUCCESS;
-        $this->_message = 'Order #' . $transaction->id . '. ' . $purchaser->full_name . ' now has $' . number_format(round($remaining_balance, 2), 2);
+        $this->_message = 'Order #' . $transaction->id . '. ' . $purchaser->full_name . ' now has ' . $remaining_balance;
         $this->_transaction = $transaction->refresh();
     }
 

@@ -19,7 +19,7 @@ class CreatePayoutsTable extends Migration
             $table->foreignId('user_id')->constrained();
             $table->unsignedBigInteger('cashier_id');
             $table->foreign('cashier_id')->references('id')->on('users');
-            $table->float('amount');
+            $table->integer('amount');
             $table->timestamp('created_at')->useCurrent();
             $table->softDeletes();
         });

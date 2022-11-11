@@ -32,7 +32,7 @@
                         <div>{{ $product->category->name }}</div>
                     </td>
                     <td>
-                        <div>{!! $product->price > 0 ? '$' . number_format($product->price, 2) : '<i>Free</i>' !!}</div>
+                        <div>{!! $product->price->isZero() ? '<i>Free</i>' :  $product->price !!}</div>
                     </td>
                     <td>
                         <div>{!! $product->getStock() !!}</div>
@@ -45,7 +45,7 @@
                         <div>{!! $product->box_size === -1 ? '<i>N/A</i>' : $product->box_size !!}</div>
                     </td>
                     <td>
-                        <div>{!! $product->pst ? "<span class=\"tag is-success is-medium\">Yes</span>" : "<span class=\"tag is-danger is-medium\">No</span>" !!}</div>
+                        <div><span class="tag is-medium">{{ $product->pst ? "Yes" : "No" }}</div>
                     </td>
                     @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)
                     <td>

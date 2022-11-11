@@ -13,6 +13,8 @@ use App\Services\Users\UserEditService;
 use App\Services\Users\UserDeleteService;
 use App\Services\Users\UserCreationService;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Money\Currencies\ISOCurrencies;
+use Money\Formatter\DecimalMoneyFormatter;
 
 class UserController extends Controller
 {
@@ -59,7 +61,7 @@ class UserController extends Controller
         return view('pages.users.view', [
             'user' => $user,
             'can_interact' => auth()->user()->role->canInteract($user->role),
-            'activity_transactions' => $user->getActivities(),
+            'activity_registrations' => $user->activityRegistrations,
             'categories' => $processed_categories,
             'rotations' => $user->rotations,
         ]);

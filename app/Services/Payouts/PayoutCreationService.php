@@ -26,7 +26,7 @@ class PayoutCreationService extends Service
         $user->payouts()->save($payout);
 
         $this->_payout = $payout;
-        $this->_message = "Successfully created payout of \${$payout->amount} for {$user->full_name}.";
+        $this->_message = "Successfully created payout of $payout->amount for $user->full_name.";
         $this->_result = self::RESULT_SUCCESS;
     }
 

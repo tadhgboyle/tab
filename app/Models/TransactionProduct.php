@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -23,7 +24,7 @@ class TransactionProduct extends Model
 
     protected $casts = [
         'quantity' => 'integer',
-        'price' => 'float',
+        'price' => MoneyIntegerCast::class,
         'gst' => 'float',
         'pst' => 'float',
         'returned' => 'integer',

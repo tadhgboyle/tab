@@ -4,8 +4,10 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
-        "laravel/framework": "^9.0",
-        "bahadorbzd/consoletvs-charts": "dev-main"
+        "ext-intl": "*",
+        "bahadorbzd/consoletvs-charts": "dev-main",
+        "cknow/laravel-money": "^7.0",
+        "laravel/framework": "^9.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
