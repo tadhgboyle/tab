@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Product;
 
+use Cknow\Money\Money;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
@@ -18,6 +19,67 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class ProductTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void {
+        parent::setUp();
+
+        Settings::factory()->createMany([
+            [
+                'setting' => 'gst',
+                'value' => '5.00',
+            ],
+            [
+                'setting' => 'pst',
+                'value' => '7.00',
+            ]
+        ]);
+    }
+
+    public function testPriceCastedToMoneyObject(): void
+    {
+        $category = Category::factory()->create();
+        $product = Product::factory()->create([
+            'price' => 10_00,
+            'category_id' => $category->id,
+        ]);
+
+        $this->assertEquals(Money::parse(10_00), $product->price);
+    }
+
+    public function testBelongsToACategory(): void
+    {
+        $category = Category::factory()->create();
+        $product = Product::factory()->create([
+            'category_id' => $category->id,
+        ]);
+
+        $this->assertInstanceOf(Category::class, $product->category);
+        $this->assertEquals($category->id, $product->category->id);
+    }
+
+    public function testGetPriceAfterTaxWithPst(): void
+    {
+        $category = Category::factory()->create();
+        $product = Product::factory()->create([
+            'price' => 10_00,
+            'pst' => true,
+            'category_id' => $category->id,
+        ]);
+
+        $this->assertEquals(Money::parse(11_20), $product->getPriceAfterTax());
+    }
+
+    public function testGetPriceAfterTaxWithoutPst(): void
+    {
+        $category = Category::factory()->create();
+        $product = Product::factory()->create([
+            'price' => 10_00,
+            'pst' => false,
+            'category_id' => $category->id,
+        ]);
+
+        $this->assertEquals(Money::parse(10_50), $product->getPriceAfterTax());
+    }
 
     public function testHasStockOnNormalProduct(): void
     {
@@ -197,17 +259,6 @@ class ProductTest extends TestCase
         [$superadmin_role] = $this->createRoles();
 
         $user = $this->createSuperadminUser($superadmin_role);
-
-        Settings::factory()->createMany([
-            [
-                'setting' => 'gst',
-                'value' => '5.00',
-            ],
-            [
-                'setting' => 'pst',
-                'value' => '7.00',
-            ]
-        ]);
 
         [$food_category, $merch_category] = $this->createFakeCategories();
 

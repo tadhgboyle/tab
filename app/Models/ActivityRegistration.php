@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use Cknow\Money\Casts\MoneyIntegerCast;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ActivityRegistration extends Model
 {
+    use HasFactory;
+
     protected $casts = [
         'activity_price' => MoneyIntegerCast::class,
         'activity_gst' => 'float',
