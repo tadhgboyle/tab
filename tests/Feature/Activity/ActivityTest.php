@@ -4,8 +4,10 @@ namespace Tests\Feature\Activity;
 
 use App\Casts\CategoryType;
 use App\Models\Activity;
+use App\Models\ActivityRegistration;
 use App\Models\Category;
 use App\Models\Role;
+use App\Models\Rotation;
 use App\Models\Settings;
 use App\Models\User;
 use Cknow\Money\Money;
@@ -71,7 +73,19 @@ class ActivityTest extends TestCase
             'unlimited_slots' => false,
             'slots' => 1,
         ]);
-        $activity->attendants()->attach($this->_user);
+        ActivityRegistration::factory()->create([
+            'user_id' => $this->_user->id,
+            'cashier_id' => $this->_user->id,
+            'activity_id' => $activity->id,
+            'category_id' => $this->_activities_category->id,
+            'activity_price' => $activity->price,
+            'activity_gst' => 7_00,
+            'activity_pst' => $activity->pst,
+            'total_price' => $activity->getPriceAfterTax(),
+            'rotation_id' => Rotation::factory()->create([
+                'name' => 'Test Rotation',
+            ])->id,
+        ]);
 
         $this->assertEquals(0, $activity->slotsAvailable());
     }
@@ -126,7 +140,19 @@ class ActivityTest extends TestCase
             'unlimited_slots' => false,
             'slots' => 1,
         ]);
-        $activity->attendants()->attach($this->_user);
+        ActivityRegistration::factory()->create([
+            'user_id' => $this->_user->id,
+            'cashier_id' => $this->_user->id,
+            'activity_id' => $activity->id,
+            'category_id' => $this->_activities_category->id,
+            'activity_price' => $activity->price,
+            'activity_gst' => 7_00,
+            'activity_pst' => $activity->pst,
+            'total_price' => $activity->getPriceAfterTax(),
+            'rotation_id' => Rotation::factory()->create([
+                'name' => 'Test Rotation',
+            ])->id,
+        ]);
 
         $this->assertFalse($activity->hasSlotsAvailable());
     }

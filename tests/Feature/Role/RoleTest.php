@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Role;
 
+use App\Models\User;
 use Tests\TestCase;
 use App\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -102,5 +103,19 @@ class RoleTest extends TestCase
 
         $this->assertFalse($this->_cashier_role->hasPermission('permission_node1'));
         $this->assertFalse($this->_cashier_role->hasPermission(['permission_node1', 'permission_node2']));
+    }
+
+    public function testHasManyUsers(): void
+    {
+        $users = User::factory()->count(5)->create([
+            'role_id' => $this->_superadmin_role->id
+        ]);
+
+        $this->assertCount(5, $this->_superadmin_role->users);
+
+        foreach ($users as $user) {
+            $this->assertTrue($this->_superadmin_role->users->contains($user));
+            $this->assertEquals($this->_superadmin_role->id, $user->role->id);
+        }
     }
 }
