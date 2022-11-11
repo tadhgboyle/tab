@@ -1,19 +1,19 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class CreateActivityTransactionsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('activity_transactions', static function (Blueprint $table) {
+        Schema::create('activity_registrations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->unsignedBigInteger('cashier_id');
@@ -22,9 +22,10 @@ class CreateActivityTransactionsTable extends Migration
             $table->foreignId('category_id')->constrained();
             $table->integer('activity_price');
             $table->float('activity_gst');
-            $table->float('activity_pst');
+            $table->float('activity_pst')->nullable();
             $table->integer('total_price');
             $table->boolean('returned')->default(false);
+            $table->foreignId('rotation_id')->constrained();
             $table->timestamps();
         });
     }
@@ -34,8 +35,8 @@ class CreateActivityTransactionsTable extends Migration
      *
      * @return void
      */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('activity_transactions');
+        Schema::dropIfExists('activity_registrations');
     }
-}
+};

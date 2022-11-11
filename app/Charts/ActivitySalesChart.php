@@ -2,12 +2,14 @@
 
 namespace App\Charts;
 
-use DB;
-use App\Models\Activity;
+use App\Helpers\RotationHelper;
+use App\Models\ActivityRegistration;
 use App\Helpers\Permission;
 use Chartisan\PHP\Chartisan;
+use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Http\Request;
 use ConsoleTVs\Charts\BaseChart;
+use Illuminate\Support\Facades\DB;
 
 class ActivitySalesChart extends BaseChart
 {
@@ -18,21 +20,23 @@ class ActivitySalesChart extends BaseChart
 
     public function handler(Request $request): Chartisan
     {
-        // $stats_rotation_id = resolve(RotationHelper::class)->getStatisticsRotationId();
-        // TODO: Store rotation_id when creating activity_transaction
+        $stats_rotation_id = resolve(RotationHelper::class)->getStatisticsRotationId();
 
         $sales = [];
 
-        $activity_transactions = DB::table('activity_transactions')
+        // TODO: no way to seed random rotation ID currently
+        $activity_registrations = ActivityRegistration::query()
+            ->when($stats_rotation_id !== '*', static function (Builder $builder) use ($stats_rotation_id) {
+                $builder->where('rotation_id', $stats_rotation_id);
+            })
             ->select(DB::raw('activity_id, count(*) as sold'))
             ->groupBy('activity_id')
             ->get();
 
-        foreach ($activity_transactions as $activity_transaction) {
-            $activity = Activity::find($activity_transaction->activity_id);
+        foreach ($activity_registrations as $registration) {
             $sales[] = [
-                'name' => $activity->name,
-                'sold' => $activity_transaction->sold
+                'name' => $registration->activity->name,
+                'sold' => $registration->sold
             ];
         }
 

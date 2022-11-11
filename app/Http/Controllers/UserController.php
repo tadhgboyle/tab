@@ -61,7 +61,7 @@ class UserController extends Controller
         return view('pages.users.view', [
             'user' => $user,
             'can_interact' => auth()->user()->role->canInteract($user->role),
-            'activity_transactions' => $user->getActivities(),
+            'activity_registrations' => $user->activityRegistrations,
             'categories' => $processed_categories,
             'rotations' => $user->rotations,
         ]);

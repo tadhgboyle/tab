@@ -77,6 +77,37 @@ class RotationHelperTest extends TestCase
         $this->assertFalse($rotationHelper->doesRotationOverlap(Carbon::now()->addWeek(), Carbon::now()->addWeeks(2)));
     }
 
+    public function testDoesRotationOverlapReturnsFalseIfEndAndStartAreSameTime(): void
+    {
+        $rotationHelper = resolve(RotationHelper::class);
+
+        $start = Carbon::now()->subDays(2);
+        $end = Carbon::now()->addDays(2);
+        Rotation::factory()->create([
+            'name' => 'Rotation 1',
+            'start' => $start,
+            'end' => $end,
+        ]);
+
+        $new_start = $end->clone();
+        $new_end = $new_start->clone()->addDays(2);
+
+        $this->assertFalse($rotationHelper->doesRotationOverlap($new_start, $new_end));
+    }
+
+    public function testDoesRotationOverlapIgnoresRotationWhenIgnoreIdPassed(): void
+    {
+        $rotationHelper = resolve(RotationHelper::class);
+
+        $rotation = Rotation::factory()->create([
+            'name' => 'Rotation 1',
+            'start' => Carbon::now()->subDays(2),
+            'end' => Carbon::now()->addDays(2),
+        ]);
+
+        $this->assertFalse($rotationHelper->doesRotationOverlap($rotation->start, $rotation->end, $rotation->id));
+    }
+
     public function testGetStatisticsRotationIdReturnsNullWhenNoCurrentRotationOrExtraPermission(): void
     {
         $this->actingAs($this->_cashier_user);

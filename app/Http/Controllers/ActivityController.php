@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Activity;
 use App\Helpers\Permission;
+use App\Services\Activities\ActivityRegistrationCreationService;
 use Illuminate\Support\Carbon;
 use App\Helpers\CategoryHelper;
 use Illuminate\Http\RedirectResponse;
@@ -137,6 +138,6 @@ class ActivityController extends Controller
 
     public function registerUser(Activity $activity, User $user): RedirectResponse
     {
-        return $activity->registerUser($user);
+        return (new ActivityRegistrationCreationService($activity, $user))->redirect();
     }
 }

@@ -17,7 +17,9 @@ class TransactionController extends Controller
     public function index()
     {
         return view('pages.orders.list', [
-            'transactions' => Transaction::orderBy('created_at', 'DESC')->get(),
+            'transactions' => Transaction::orderBy('created_at', 'DESC')
+                ->with('purchaser', 'cashier')
+                ->get(),
         ]);
     }
 

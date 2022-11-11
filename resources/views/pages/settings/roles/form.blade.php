@@ -19,13 +19,13 @@
                 <div class="field">
                     <label class="label">Name<sup style="color: red">*</sup></label>
                     <div class="control">
-                        <input type="text" name="name" class="input" placeholder="Role Name" value="{{ $role->name ?? old('name') }}">
+                        <input type="text" name="name" class="input" placeholder="Role Name" value="{{ $role->name ?? old('name') }}" required>
                     </div>
                 </div>
                 <div class="field">
                     <label class="label">Order<sup style="color: red">*</sup></label>
                     <div class="control">
-                        <input type="number" name="order" class="input" placeholder="Role Order" min="1" value="{{ $role->order ?? old('order') }}">
+                        <input type="number" name="order" class="input" placeholder="Role Order" min="1" value="{{ $role->order ?? old('order') }}" required>
                     </div>
                 </div>
                 <div class="field">

@@ -28,8 +28,6 @@ class Transaction extends Model
     ];
 
     protected $with = [
-        'purchaser',
-        'cashier',
         'products',
     ];
 
