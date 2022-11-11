@@ -112,7 +112,7 @@
                                 <div>{{ $role->name }}</div>
                             </td>
                             <td>
-                                <div>{!! $role->staff ? "<span class=\"tag is-success is-medium\">Yes</span>" : "<span class=\"tag is-danger is-medium\">No</span>" !!}</div>
+                                <div><span class="tag is-medium">{{ $role->staff ? "Yes" : "No" }}</div>
                             </td>
                             <td>
                                 <div>

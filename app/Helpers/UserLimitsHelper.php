@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\ActivityRegistration;
 use Cknow\Money\Money;
 use stdClass;
 use App\Models\User;
@@ -98,8 +99,10 @@ class UserLimitsHelper
         // get all their transactions, as they have no limit set we dont need to worry about
         // when the transaction was created_at.
         if ($info->limit_per->equals(Money::parse(-1_00))) {
-            $transactions = $user->transactions->where('returned', false);
-            $activity_transactions = $user->getActivityTransactions();
+            $transactions = $user->transactions
+                ->where('returned', false);
+            $activity_registrations = $user->activityRegistrations
+                ->where('returned', false);
         } else {
             $carbon_string = Carbon::now()->subDays($info->duration === 'day' ? 1 : 7)->toDateTimeString();
 
@@ -107,7 +110,7 @@ class UserLimitsHelper
                 ->where('created_at', '>=', $carbon_string)
                 ->where('returned', false);
 
-            $activity_transactions = $user->getActivityTransactions()
+            $activity_registrations = $user->activityRegistrations
                 ->where('created_at', '>=', $carbon_string)
                 ->where('returned', false);
         }
@@ -128,13 +131,9 @@ class UserLimitsHelper
             }
         }
 
-        foreach ($activity_transactions as $activity_transaction) {
-            if ($activity_transaction->category_id !== $category_id) {
-                continue;
-            }
-
-            $category_spent = $category_spent->add(Money::parse($activity_transaction->total_price));
-        }
+        $category_spent = $category_spent->add(...$activity_registrations->filter(function (ActivityRegistration $activityRegistration) use ($category_id) {
+            return $activityRegistration->category_id === $category_id;
+        })->map->total_price);
 
         return $category_spent;
     }

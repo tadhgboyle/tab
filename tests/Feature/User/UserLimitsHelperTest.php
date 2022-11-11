@@ -16,14 +16,13 @@ use App\Helpers\RotationHelper;
 use App\Helpers\UserLimitsHelper;
 use App\Http\Requests\UserRequest;
 use App\Models\TransactionProduct;
-use Illuminate\Support\Facades\DB;
 use Database\Seeders\RotationSeeder;
 use App\Services\Users\UserCreationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Services\Activities\ActivityRegistrationCreationService;
 
 // TODO: test with different limit durations (day/week)
 // TODO: test when categories are made after user is made
-// TODO: activity transaction stuff
 // TODO: test after changing tax rates to ensure it is using historical data
 class UserLimitsHelperTest extends TestCase
 {
@@ -32,6 +31,7 @@ class UserLimitsHelperTest extends TestCase
     public function testFindSpentCalculationIsCorrect(): void
     {
         [$user, $food_category, $merch_category, $activities_category, $waterfront_category] = $this->createFakeRecords();
+        $user = $user->refresh();
 
         $food_limit_info = UserLimitsHelper::getInfo($user, $food_category->id);
         $food_category_spent = UserLimitsHelper::findSpent($user, $food_category->id, $food_limit_info);
@@ -56,12 +56,17 @@ class UserLimitsHelperTest extends TestCase
 
     public function testFindSpentCalculationIsCorrectAfterItemReturn(): void
     {
-        $this->assertTrue(true); // TODO after rewriting transaction handling
+        $this->markTestIncomplete();
     }
 
     public function testFindSpentCalculationIsCorrectAfterTransactionReturn(): void
     {
-        $this->assertTrue(true); // TODO after rewriting transaction handling
+        $this->markTestIncomplete();
+    }
+
+    public function testFindSpentCalculationIsCorrectAfterActivityReturn(): void
+    {
+        $this->markTestIncomplete();
     }
 
     public function testUserCanSpendUnlimitedInCategoryIfNegativeOneIsLimit(): void
@@ -76,6 +81,7 @@ class UserLimitsHelperTest extends TestCase
     public function testUserCannotSpendOverLimitInCategory(): void
     {
         [$user, $food_category, , $activities_category, $waterfront_category] = $this->createFakeRecords();
+        $user = $user->refresh();
 
         $can_spend_1_dollar_food = UserLimitsHelper::canSpend($user, Money::parse(1_00), $food_category->id);
         // This should be true, as they've only spent 12.09 / 15.00 dollars, and another 1 dollar would not go past 15.
@@ -341,18 +347,8 @@ class UserLimitsHelperTest extends TestCase
             $coffee_product,
         ]);
 
-        DB::table('activity_transactions')->insert([
-            'user_id' => $user->id,
-            'cashier_id' => $user->id,
-            'activity_id' => $widegame->id,
-            'activity_price' => $widegame->price->getAmount() / 100,
-            'category_id' => $widegame->category_id,
-            'activity_gst' => 5,
-            'activity_pst' => 7,
-            'total_price' => $widegame->getPriceAfterTax()->getAmount() / 100,
-            'returned' => false,
-            'created_at' => now(),
-        ]);
+        $this->actingAs($user);
+        (new ActivityRegistrationCreationService($widegame, $user));
 
         // TODO: General category with hat and widegame on it
 

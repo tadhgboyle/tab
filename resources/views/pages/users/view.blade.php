@@ -73,7 +73,7 @@
             </div>
             <div class="column">
                 <div class="box">
-                    <h4 class="title has-text-weight-bold is-4">Activity History</h4>
+                    <h4 class="title has-text-weight-bold is-4">Activity Registrations</h4>
                     <table id="activity_list">
                         <thead>
                             <tr>
@@ -85,29 +85,29 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($activity_transactions as $transaction)
+                            @foreach($activity_registrations as $registration)
                             <tr>
                                 <td>
-                                    <div>{{ $transaction['created_at']->format('M jS Y h:ia') }}</div>
+                                    <div>{{ $registration->created_at->format('M jS Y h:ia') }}</div>
                                 </td>
                                 <td>
-                                    <div>{{ $transaction['cashier']->full_name }}</div>
+                                    <div>{{ $registration->cashier->full_name }}</div>
                                 </td>
                                 <td>
                                     <div>
                                         @permission(\App\Helpers\Permission::ACTIVITIES_VIEW)
-                                            <a href="{{ route('activities_view', $transaction['activity']->id) }}">{{ $transaction['activity']->name }}</a>
+                                            <a href="{{ route('activities_view', $registration->activity->id) }}">{{ $registration->activity->name }}</a>
                                         @else
-                                            {{ $transaction['activity']->name }}
+                                            {{ $registration->activity->name }}
                                         @endpermission
                                     </div>
                                 </td>
                                 <td>
-                                    <div>{!! $transaction['total_price'] > 0 ? '$' . number_format($transaction['total_price'] / 100, 2) : '<i>Free</i>' !!}</div>
+                                    <div>{!! $registration->total_price->isNegative() ? '<i>Free</i>' : $registration->total_price !!}</div>
                                 </td>
                                 <td>
                                     <div>
-                                        @switch($transaction['returned'])
+                                        @switch($registration->returned)
                                             @case(0)
                                                 <span class="tag is-success is-medium">Normal</span>
                                             @break
@@ -306,13 +306,13 @@
                         <strong>Activities</strong>
                     </td>
                 </tr>
-                @forelse($activity_transactions as $activity)
+                @forelse($activity_registrations as $registration)
                     <tr>
                         <td>
-                            <div>Activity ({{ $activity['activity']['name'] }})</div>
+                            <div>Activity ({{ $registration->activity->name }})</div>
                         </td>
                         <td>
-                            <div>+${{ number_format($activity['total_price'] / 100, 2) }}</div>
+                            <div>+{{ $registration->total_price }}</div>
                         </td>
                     </tr>
                 @empty
@@ -426,11 +426,6 @@
             "searching": false,
             "paging": false,
             "bInfo": false,
-            "columnDefs": [{
-                "orderable": false,
-                "searchable": false,
-                "targets": 0
-            }]
         });
         $('#loading').hide();
         $('#table_container').css('visibility', 'visible');

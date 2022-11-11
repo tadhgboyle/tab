@@ -21,9 +21,6 @@ class User extends Authenticatable
     use HasFactory;
     use SoftDeletes;
 
-    private Collection $_activity_transactions;
-    private Collection $_activities;
-
     protected $fillable = [
         'full_name',
         'username',
@@ -48,6 +45,11 @@ class User extends Authenticatable
         return $this->hasMany(Transaction::class, 'purchaser_id');
     }
 
+    public function activityRegistrations(): HasMany
+    {
+        return $this->hasMany(ActivityRegistration::class, 'user_id', 'id');
+    }
+
     public function rotations(): BelongsToMany
     {
         return $this->belongsToMany(Rotation::class)->distinct();
@@ -64,33 +66,6 @@ class User extends Authenticatable
         return $this->role->hasPermission($permission);
     }
 
-    public function getActivityTransactions(): Collection
-    {
-        return $this->_activity_transactions ??= DB::table('activity_transactions')
-            ->where('user_id', $this->id)
-            ->orderBy('created_at', 'DESC')
-            ->get();
-    }
-
-    public function getActivities(): Collection
-    {
-        if (!isset($this->_activities)) {
-            $this->_activities = new Collection();
-
-            $this->getActivityTransactions()->each(function ($activity) {
-                $this->_activities->add([
-                    'created_at' => Carbon::parse($activity->created_at),
-                    'cashier' => self::find($activity->cashier_id),
-                    'activity' => Activity::find($activity->activity_id),
-                    'total_price' => $activity->total_price,
-                    'returned' => $activity->returned,
-                ]);
-            });
-        }
-
-        return $this->_activities;
-    }
-
     /**
      * Find how much a user has spent in total.
      * Does not factor in returned items/orders.
@@ -99,11 +74,7 @@ class User extends Authenticatable
     {
         return Money::parse(0)
             ->add(...$this->transactions->map->total_price)
-            ->add(...$this->getActivityTransactions()
-                ->map(function ($activity) {
-                    return Money::parse($activity->total_price);
-                })
-            );
+            ->add(...$this->activityRegistrations->map->total_price);
     }
 
     /**
@@ -128,7 +99,7 @@ class User extends Authenticatable
             }
         });
 
-        $returned = $returned->add(...$this->getActivityTransactions()
+        $returned = $returned->add(...$this->activityRegistrations
             ->where('returned', true)
             ->map->total_price
         );

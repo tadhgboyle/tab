@@ -43,6 +43,7 @@ class RotationHelper extends Helper
         return false;
     }
 
+    // TODO extract into more generic for use with cashier list, and more
     public function getStatisticsRotationId(): string|int|null
     {
         $default = $this->getCurrentRotation()?->id;

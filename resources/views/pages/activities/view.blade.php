@@ -36,7 +36,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($activity->getAttendees() as $user)
+                    @foreach($activity->attendants as $user)
                     <tr>
                         <td>
                             <div>
