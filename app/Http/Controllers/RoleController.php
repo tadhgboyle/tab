@@ -56,6 +56,8 @@ class RoleController extends Controller
             return redirect()->route('settings')->with('error', 'You cannot interact with that role.')->send();
         }
 
+        // TODO: what do we do when they make a role staff which has users in it already
+
         $staff = $request->has('staff');
         $superuser = $staff && $request->has('superuser');
         $permissions = $staff
