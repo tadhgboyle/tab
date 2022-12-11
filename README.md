@@ -101,7 +101,6 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
 *High to low sort*
 - Fix everything in Issues/Bugs
 - Add "rotation" option to user limits (along with day, week, etc)
-- Update codebase to not store periods in DB for money (store as int, and / or * by 10).
 - Let products be purchasable by a parent only.
     - Will require a boolean attribute in users table "parent"
 - Repeating activities. When they create activity, ask if repeated daily, weekly, monthly. Create more Activity rows for each day in the duration
