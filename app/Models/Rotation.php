@@ -23,9 +23,9 @@ class Rotation extends Model
         'end',
     ];
 
-    protected $dates = [
-        'start',
-        'end',
+    protected $casts = [
+        'start' => 'date',
+        'end' => 'date',
     ];
 
     public function users(): BelongsToMany

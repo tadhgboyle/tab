@@ -18,12 +18,6 @@ class Payout extends Model
         'amount' => MoneyIntegerCast::class,
     ];
 
-    protected $dates = [
-        'created_at',
-    ];
-
-    public $timestamps = false;
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
