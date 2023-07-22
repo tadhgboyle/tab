@@ -133,7 +133,9 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
 - Lazy loading of users/products (especially in cashier view).
     - Use this https://github.com/yajra/laravel-datatables
     - They should type a query first, or use some ajax to fetch data. or else it could take forever to load
-- Tax free products
+- Tax free products / users
+- User tags (tax free tagged, limit of xyz tag, etc)
+- Rename Transaction classes to Order
 
 ## Issues/Bugs
 - *Phew*
