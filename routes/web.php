@@ -168,7 +168,7 @@ Route::middleware('auth')->group(function () {
     /*
      * Statistics
      */
-    Route::group(['middleware' => ['permission:statistics']], static function () {
+    Route::group(['middleware' => ['permission:' . Permission::STATISTICS]], static function () {
         Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics');
     });
 
