@@ -45,6 +45,7 @@ class ProductEditService extends Service
     {
         return match ($this->getResult()) {
             self::RESULT_SUCCESS => redirect()->route('products_list')->with('success', $this->getMessage()),
+            default => redirect()->back()->withInput()->withErrors($this->getMessage()),
         };
     }
 }

@@ -36,6 +36,7 @@ class ActivitySalesChart extends BaseChart
         foreach ($activity_registrations as $registration) {
             $sales[] = [
                 'name' => $registration->activity->name,
+                /** @phpstan-ignore-next-line  */
                 'sold' => $registration->sold
             ];
         }

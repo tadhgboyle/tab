@@ -33,7 +33,6 @@ class CategoryHelper extends Helper
     private function getCategoriesOfType(int $type): Collection
     {
         return $this->getCategories()->filter(static function (Category $category) use ($type) {
-            /** @phpstan-ignore-next-line  */
             return in_array($category->type->id, [$type, CategoryType::TYPE_PRODUCTS_ACTIVITIES], true);
         });
     }
