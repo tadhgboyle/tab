@@ -29,10 +29,6 @@ jobs:
       run: |
         mkdir -p database
         touch database/database.sqlite
-    - name: Compile assets
-      run: |
-        npm install
-        npm run production
     - name: Execute tests via PHPUnit
       env:
         DB_CONNECTION: sqlite
