@@ -2,13 +2,14 @@
 
 namespace Tests\Feature\Product;
 
+use App\Casts\CategoryType;
 use App\Models\Product;
 use App\Models\Category;
 use Tests\FormRequestTestCase;
 use App\Http\Requests\ProductRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class ProductRequestEditTest extends FormRequestTestCase
+class ProductRequestTest extends FormRequestTestCase
 {
     use RefreshDatabase;
 
@@ -78,6 +79,21 @@ class ProductRequestEditTest extends FormRequestTestCase
 //        $this->assertNotHaveErrors('category_id', new ProductRequest([
 //            'category_id' => $category->id,
 //        ]));
+    }
+
+    public function testStockIsRequiredAndIsInteger(): void
+    {
+        $this->assertHasErrors('stock', new ProductRequest([
+            'stock' => null
+        ]));
+
+        $this->assertHasErrors('stock', new ProductRequest([
+            'stock' => 'string'
+        ]));
+
+        $this->assertNotHaveErrors('stock', new ProductRequest([
+            'stock' => 123
+        ]));
     }
 
     public function testBoxSizeIsInValidValues(): void

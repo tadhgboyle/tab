@@ -2,6 +2,7 @@
 
 namespace App\Casts;
 
+use InvalidArgumentException;
 use stdClass;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
@@ -37,7 +38,7 @@ class CategoryType implements CastsAttributes
             self::TYPE_PRODUCTS_ACTIVITIES => 'Products & Activities',
             self::TYPE_PRODUCTS => 'Products',
             self::TYPE_ACTIVITIES => 'Activities',
-            default => $type,
+            default => throw new InvalidArgumentException("Invalid category type: {$type}"),
         };
     }
 

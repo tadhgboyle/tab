@@ -133,7 +133,67 @@ class TransactionReturnServiceTest extends TestCase
         $this->assertEquals($hat->getPriceAfterTax()->multiply(2), $user->findReturned());
     }
 
-    private function createFakeRecords(): array
+    public function testProductStockIsNotRestoredIfSettingDisabledOnPartialReturn(): void
+    {
+        [, $transaction, $hat] = $this->createFakeRecords(5);
+
+        $hat->update([
+            'restore_stock_on_return' => false,
+            'stock' => $start_stock = 12,
+        ]);
+
+        (new TransactionReturnService($transaction))->returnItem($hat);
+
+        $this->assertSame($start_stock, $hat->refresh()->stock);
+    }
+
+    public function testProductStockIsNotRestoredIfSettingDisabledOnFullReturn(): void
+    {
+        [, $transaction, $hat] = $this->createFakeRecords(5);
+
+        $hat->update([
+            'restore_stock_on_return' => false,
+            'stock' => $start_stock = 12,
+        ]);
+
+        (new TransactionReturnService($transaction))->return();
+
+        $this->assertSame($start_stock, $hat->refresh()->stock);
+    }
+
+    public function testProductStockIsRestoredIfSettingEnabledOnPartialReturn(): void
+    {
+        [, $transaction, $hat] = $this->createFakeRecords(5);
+
+        $hat->update([
+            'restore_stock_on_return' => true,
+            'stock' => $start_stock = 12,
+        ]);
+
+        (new TransactionReturnService($transaction))->returnItem($hat);
+
+        $this->assertEquals($start_stock + 1, $hat->refresh()->stock);
+    }
+
+    public function testProductStockIsRestoredIfSettingEnabledOnFullReturn(): void
+    {
+        [, $transaction, $hat] = $this->createFakeRecords($hat_count = 5);
+
+        $hat->update([
+            'restore_stock_on_return' => true,
+            'stock' => $start_stock = 12,
+        ]);
+
+        (new TransactionReturnService($transaction))->return();
+
+        $this->assertSame($start_stock + $hat_count, $hat->refresh()->stock);
+    }
+
+    /**
+     * @param int $hat_count
+     * @return array<User, Transaction, Product>
+     */
+    private function createFakeRecords(int $hat_count = 2): array
     {
         app(RotationSeeder::class)->run();
 
@@ -174,7 +234,7 @@ class TransactionReturnServiceTest extends TestCase
                 'products' => json_encode([
                     [
                         'id' => $hat->id,
-                        'quantity' => 2,
+                        'quantity' => $hat_count,
                     ],
                 ]),
                 'purchaser_id' => $user->id

@@ -71,7 +71,7 @@
             </form>
         </section>
         <footer class="modal-card-foot">
-            <button class="button is-success" type="submit">Confirm</button>
+            <button class="button is-success" type="submit" form="deleteForm">Confirm</button>
             <button class="button" onclick="closeModal();">Cancel</button>
         </footer>
     </div>

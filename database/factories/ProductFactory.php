@@ -21,6 +21,7 @@ class ProductFactory extends Factory
             'unlimited_stock' => $this->faker->boolean,
             'box_size' => $this->faker->boolean ? -1 : $this->faker->numberBetween(4, 25),
             'stock_override' => $this->faker->boolean,
+            'restore_stock_on_return' => $this->faker->boolean,
         ];
     }
 }

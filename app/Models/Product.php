@@ -24,6 +24,7 @@ class Product extends Model
         'unlimited_stock' => 'boolean', // stock is never checked
         'stock_override' => 'boolean', // stock can go negative
         'box_size' => 'integer',
+        'restore_stock_on_return' => 'boolean',
     ];
 
     protected $with = [
@@ -39,6 +40,7 @@ class Product extends Model
         'unlimited_stock',
         'stock_override',
         'pst',
+        'restore_stock_on_return',
     ];
 
     public function category(): BelongsTo

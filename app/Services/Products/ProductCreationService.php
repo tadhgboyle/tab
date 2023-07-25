@@ -33,6 +33,7 @@ class ProductCreationService extends Service
         $product->unlimited_stock = $unlimited_stock;
         $product->stock_override = $request->has('stock_override');
         $product->pst = $request->has('pst');
+        $product->restore_stock_on_return = $request->has('restore_stock_on_return');
         $product->save();
 
         $this->_result = self::RESULT_SUCCESS;

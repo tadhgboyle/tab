@@ -3,6 +3,7 @@
 namespace Tests;
 
 use App\Helpers\Helper;
+use Closure;
 use Mockery\MockInterface;
 use App\Http\Middleware\HasPermission;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -17,6 +18,17 @@ abstract class TestCase extends BaseTestCase
 
         Helper::wipe();
     }
+//
+//    protected function assertChanges(Closure $callback, mixed $from, mixed $to, Closure $test): void
+//    {
+//        $initial = $callback();
+//
+//        $test();
+//
+//        $this->assertSame($from, $initial);
+//
+//        $this->assertSame($to, $callback());
+//    }
 
     protected function expectPermissionChecks(array $permissions): void
     {
