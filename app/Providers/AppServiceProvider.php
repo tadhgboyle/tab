@@ -2,19 +2,19 @@
 
 namespace App\Providers;
 
+use NumberFormatter;
+use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
 use App\Helpers\RoleHelper;
 use App\Charts\IncomeInfoChart;
 use App\Helpers\CategoryHelper;
 use App\Helpers\RotationHelper;
 use App\Helpers\SettingsHelper;
-use Cknow\Money\Money;
 use ConsoleTVs\Charts\Registrar;
 use App\Charts\OrderHistoryChart;
 use App\Charts\ProductSalesChart;
 use App\Charts\ActivitySalesChart;
 use Illuminate\Support\ServiceProvider;
-use NumberFormatter;
 
 class AppServiceProvider extends ServiceProvider
 {

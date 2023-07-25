@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Transaction;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TransactionProductTest extends TestCase
 {
@@ -11,26 +11,21 @@ class TransactionProductTest extends TestCase
 
     public function testPriceIsCastedToMoneyObject(): void
     {
-
     }
 
     public function testHasTransaction(): void
     {
-
     }
 
     public function testHasProduct(): void
     {
-
     }
 
     public function testHasCategory(): void
     {
-
     }
 
     public function testCanCreateFromProduct(): void
     {
-
     }
 }

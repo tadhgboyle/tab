@@ -2,13 +2,13 @@
 
 namespace App\Services\Activities;
 
+use App\Models\User;
+use App\Models\Activity;
+use App\Services\Service;
 use App\Helpers\RotationHelper;
 use App\Helpers\SettingsHelper;
 use App\Helpers\UserLimitsHelper;
-use App\Models\Activity;
 use App\Models\ActivityRegistration;
-use App\Models\User;
-use App\Services\Service;
 use Illuminate\Http\RedirectResponse;
 
 class ActivityRegistrationCreationService extends Service
@@ -68,7 +68,8 @@ class ActivityRegistrationCreationService extends Service
         $this->_message = "Successfully registered $user->full_name for $activity->name.";
     }
 
-    public function redirect(): RedirectResponse {
+    public function redirect(): RedirectResponse
+    {
         return match ($this->getResult()) {
             self::RESULT_SUCCESS => redirect()->back()->with([
                 'success' => $this->getMessage(),

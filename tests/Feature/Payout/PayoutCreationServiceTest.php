@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Payout;
 
-use Cknow\Money\Money;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
+use Cknow\Money\Money;
 use App\Http\Requests\PayoutRequest;
 use App\Services\Payouts\PayoutCreationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;

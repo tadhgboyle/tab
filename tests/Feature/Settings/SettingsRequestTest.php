@@ -4,7 +4,6 @@ namespace Tests\Feature\Settings;
 
 use App\Models\Activity;
 use App\Models\Category;
-use App\Casts\CategoryType;
 use Tests\FormRequestTestCase;
 use App\Http\Requests\ActivityRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;

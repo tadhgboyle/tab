@@ -2,7 +2,6 @@
 
 use App\Models\Role;
 use App\Models\User;
-use Database\Seeders\ActivityRegistrationSeeder;
 use Illuminate\Database\Seeder;
 use Database\Seeders\RoleSeeder;
 use Database\Seeders\UserSeeder;
@@ -15,7 +14,7 @@ use Database\Seeders\RotationSeeder;
 use Database\Seeders\SettingsSeeder;
 use Database\Seeders\UserLimitsSeeder;
 use Database\Seeders\TransactionSeeder;
-use Database\Seeders\ActivityTransactionSeeder;
+use Database\Seeders\ActivityRegistrationSeeder;
 
 class DatabaseSeeder extends Seeder
 {
