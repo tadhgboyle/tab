@@ -2,28 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SettingsRequest;
 use App\Models\Settings;
 use App\Helpers\RoleHelper;
-use Illuminate\Http\Request;
 use App\Helpers\CategoryHelper;
 use App\Helpers\RotationHelper;
 use App\Helpers\SettingsHelper;
-use Illuminate\Support\Facades\Validator;
 
 class SettingsController extends Controller
 {
-    // TODO: settingsrequest
-    public function editSettings(Request $request)
+    public function editSettings(SettingsRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'gst' => 'required|numeric',
-            'pst' => 'required|numeric',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->route('settings')->withErrors($validator);
-        }
-
         Settings::where('setting', 'gst')->update(['value' => $request->gst]);
         Settings::where('setting', 'pst')->update(['value' => $request->pst]);
 

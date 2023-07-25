@@ -26,6 +26,10 @@ class ProductRequest extends FormRequest implements FormRequestContract
                 'integer',
                 ValidationRule::in(resolve(CategoryHelper::class)->getProductCategories()->pluck('id')),
             ],
+            'stock' => [
+                'required',
+                'integer',
+            ],
             'box_size' => [
                 // TODO: gte -1 (use new Rule::when())
                 ValidationRule::notIn([0]),

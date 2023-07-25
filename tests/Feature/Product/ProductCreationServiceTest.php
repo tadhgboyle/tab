@@ -23,6 +23,7 @@ class ProductCreationServiceTest extends TestCase
             'box_size' => 22,
             'stock' => 10,
             'pst' => true,
+            'restore_stock_on_return' => true,
         ]));
 
         $this->assertSame(ProductCreationService::RESULT_SUCCESS, $productService->getResult());
@@ -48,6 +49,7 @@ class ProductCreationServiceTest extends TestCase
             'category_id' => $category->id,
             'box_size' => 22,
             'stock' => 10,
+            'restore_stock_on_return' => true,
         ]));
 
         $this->assertSame(ProductCreationService::RESULT_SUCCESS, $productService->getResult());
@@ -70,7 +72,8 @@ class ProductCreationServiceTest extends TestCase
             'name' => 'Test Product',
             'price' => 10_50,
             'category_id' => Category::factory()->create()->id,
-            'stock' => null
+            'stock' => null,
+            'restore_stock_on_return' => true,
         ]));
 
         $this->assertSame(ProductCreationService::RESULT_SUCCESS, $productService->getResult());
@@ -87,6 +90,7 @@ class ProductCreationServiceTest extends TestCase
             'name' => 'Test Product',
             'price' => 10_50,
             'category_id' => Category::factory()->create()->id,
+            'restore_stock_on_return' => true,
         ]));
 
         $this->assertSame(ProductCreationService::RESULT_SUCCESS, $productService->getResult());

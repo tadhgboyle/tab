@@ -12,7 +12,6 @@ class ProductEditService extends Service
     use ProductService;
 
     public const RESULT_SUCCESS = 0;
-    public const RESULT_NOT_EXIST = 1;
 
     public function __construct(ProductRequest $request, Product $product)
     {
@@ -34,6 +33,7 @@ class ProductEditService extends Service
             'unlimited_stock' => $unlimited_stock,
             'stock_override' => $request->has('stock_override'),
             'pst' => $request->has('pst'),
+            'restore_stock_on_return' => $request->has('restore_stock_on_return'),
         ]);
 
         $this->_product = $product;
@@ -45,7 +45,6 @@ class ProductEditService extends Service
     {
         return match ($this->getResult()) {
             self::RESULT_SUCCESS => redirect()->route('products_list')->with('success', $this->getMessage()),
-            default => redirect()->route('products_list')->with('error', $this->getMessage()),
         };
     }
 }

@@ -16,6 +16,7 @@
                     <th>Stock</th>
                     <th>Stock Override</th>
                     <th>Box Size</th>
+                    <th>Restore stock on return</th>
                     <th>PST</th>
                     @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)
                     <th></th>
@@ -40,9 +41,11 @@
                     <td>
                         <div><span class="tag is-medium">{{ $product->stock_override ? "Yes" : "No" }}</span></div>
                     </td>
-
                     <td>
                         <div>{!! $product->box_size === -1 ? '<i>N/A</i>' : $product->box_size !!}</div>
+                    </td>
+                    <td>
+                        <div><span class="tag is-medium">{{ $product->restore_stock_on_return ? "Yes" : "No" }}</span></div>
                     </td>
                     <td>
                         <div><span class="tag is-medium">{{ $product->pst ? "Yes" : "No" }}</div>

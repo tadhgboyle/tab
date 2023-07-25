@@ -32,8 +32,14 @@ class TransactionReturnService extends Service
             return $this;
         }
 
-        $this->_transaction->products->each(function (TransactionProduct $product) {
-            $product->update(['returned' => $product->quantity]);
+        $this->_transaction->products->each(function (TransactionProduct $transactionProduct) {
+            $returned = $transactionProduct->returned;
+            $transactionProduct->update(['returned' => $transactionProduct->quantity]);
+            if ($transactionProduct->product->restore_stock_on_return) {
+                $transactionProduct->product->adjustStock(
+                    $transactionProduct->quantity - $returned
+                );
+            }
         });
 
         $purchaser = $this->_transaction->purchaser;
@@ -64,6 +70,12 @@ class TransactionReturnService extends Service
 
         $transaction_product = $transaction_products->firstWhere('product_id', $product->id);
 
+        if (!$transaction_product) {
+            $this->_result = self::RESULT_ITEM_NOT_IN_ORDER;
+            $this->_message = 'That item is not in this order.';
+            return $this;
+        }
+
         // If it has not been returned more times than it was purchased, then ++ the returned count and refund the original cost + taxes
         if ($transaction_product->returned >= $transaction_product->quantity) {
             $this->_result = self::RESULT_ITEM_RETURNED_MAX_TIMES;
@@ -72,6 +84,10 @@ class TransactionReturnService extends Service
         }
 
         $transaction_product->increment('returned');
+
+        if ($transaction_product->product->restore_stock_on_return) {
+            $transaction_product->product->adjustStock(1);
+        }
 
         $product_total = TaxHelper::calculateFor(
             $transaction_product->price,

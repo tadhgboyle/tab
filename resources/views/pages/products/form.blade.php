@@ -59,8 +59,8 @@
                 </div>
             </div>
         </div>
-        <div class="column is-4">
 
+        <div class="column is-4">
             <div class="field">
                 <div class="control">
                     <label class="checkbox label">
@@ -98,6 +98,15 @@
                         </span>
                         <input type="number" step="1" name="box_size" class="input" placeholder="Box Size" value="{{ $product->box_size ?? old('stock') }}">
                     </div>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <label class="checkbox label">
+                        Restore stock on return
+                        <input type="checkbox" class="js-switch" name="restore_stock_on_return" {{ (isset($product->restore_stock_on_return) && $product->restore_stock_on_return) || old('restore_stock_on_return') ? 'checked' : '' }}>
+                    </label>
                 </div>
             </div>
         </div>
