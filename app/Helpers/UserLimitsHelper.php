@@ -2,15 +2,15 @@
 
 namespace App\Helpers;
 
-use App\Models\ActivityRegistration;
-use Cknow\Money\Money;
 use stdClass;
 use App\Models\User;
+use Cknow\Money\Money;
 use App\Models\Category;
 use App\Models\UserLimits;
 use Illuminate\Support\Carbon;
 use App\Http\Requests\UserRequest;
 use App\Models\TransactionProduct;
+use App\Models\ActivityRegistration;
 use App\Services\Users\UserEditService;
 use App\Services\Users\UserCreationService;
 
@@ -24,7 +24,6 @@ class UserLimitsHelper
         }
 
         foreach ($request->limit as $category_id => $limit) {
-
             // Default to limit per day rather than week if not specified
             $duration = $request->duration[$category_id] ?? UserLimits::LIMIT_DAILY;
 
@@ -118,7 +117,6 @@ class UserLimitsHelper
         $category_spent = Money::parse(0);
 
         foreach ($transactions as $transaction) {
-
             // Loop transaction products. Determine if the product's category is the one we are looking at,
             // if so, add its ((value * (quantity - returned)) * tax) to the end result
             foreach ($transaction->products->filter(fn (TransactionProduct $product) => $product->category_id === $category_id) as $product) {

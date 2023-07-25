@@ -191,6 +191,7 @@ class TransactionReturnServiceTest extends TestCase
 
     /**
      * @param int $hat_count
+     *
      * @return array<User, Transaction, Product>
      */
     private function createFakeRecords(int $hat_count = 2): array

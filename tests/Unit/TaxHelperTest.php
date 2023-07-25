@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use Cknow\Money\Money;
 use Tests\TestCase;
+use Cknow\Money\Money;
 use App\Models\Settings;
 use App\Helpers\TaxHelper;
 use Illuminate\Foundation\Testing\RefreshDatabase;

@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Product;
 
-use Cknow\Money\Money;
 use Tests\TestCase;
+use Cknow\Money\Money;
 use App\Models\Category;
 use App\Http\Requests\ProductRequest;
 use App\Services\Products\ProductCreationService;

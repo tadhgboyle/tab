@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Role;
 
-use App\Models\User;
 use Tests\TestCase;
 use App\Models\Role;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RoleTest extends TestCase

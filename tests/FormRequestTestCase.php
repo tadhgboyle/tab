@@ -9,7 +9,7 @@ use App\Http\Requests\FormRequest as FormRequestContract;
 
 class FormRequestTestCase extends TestCase
 {
-    public function assertHasErrors($errors, FormRequest & FormRequestContract $request): void
+    public function assertHasErrors($errors, FormRequest&FormRequestContract $request): void
     {
         foreach (Arr::wrap($errors) as $key) {
             $validator = Validator::make(
@@ -28,7 +28,7 @@ class FormRequestTestCase extends TestCase
         }
     }
 
-    public function assertNotHaveErrors($errors, FormRequest & FormRequestContract $request): void
+    public function assertNotHaveErrors($errors, FormRequest&FormRequestContract $request): void
     {
         $validator = Validator::make(
             $request->all(),

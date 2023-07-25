@@ -13,8 +13,6 @@ use App\Services\Users\UserEditService;
 use App\Services\Users\UserDeleteService;
 use App\Services\Users\UserCreationService;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Money\Currencies\ISOCurrencies;
-use Money\Formatter\DecimalMoneyFormatter;
 
 class UserController extends Controller
 {
