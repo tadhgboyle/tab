@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Product;
 
-use Cknow\Money\Money;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
+use Cknow\Money\Money;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Settings;
@@ -20,7 +20,8 @@ class ProductTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
 
         Settings::factory()->createMany([

@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Rotation;
 
-use App\Models\Role;
-use App\Models\Rotation;
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\Models\Role;
+use App\Models\User;
+use App\Models\Rotation;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RotationTest extends TestCase
 {
@@ -15,7 +15,8 @@ class RotationTest extends TestCase
     private Rotation $_rotation;
     private User $_user;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
 
         $role = Role::factory()->create();

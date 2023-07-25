@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\Payout;
 
-use App\Models\Payout;
+use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Payout;
 use Cknow\Money\Money;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
 class PayoutTest extends TestCase
 {
@@ -17,7 +17,8 @@ class PayoutTest extends TestCase
     private User $_cashier_user;
     private Payout $_payout;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
 
         $role = Role::factory()->create();

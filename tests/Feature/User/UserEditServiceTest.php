@@ -3,11 +3,11 @@
 namespace Tests\Feature\User;
 
 use Arr;
-use Cknow\Money\Money;
 use Hash;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
+use Cknow\Money\Money;
 use App\Models\Rotation;
 use App\Http\Requests\UserRequest;
 use Database\Seeders\RotationSeeder;

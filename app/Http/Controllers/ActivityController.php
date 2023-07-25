@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Activity;
 use App\Helpers\Permission;
-use App\Services\Activities\ActivityRegistrationCreationService;
 use Illuminate\Support\Carbon;
 use App\Helpers\CategoryHelper;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\ActivityRequest;
+use App\Services\Activities\ActivityRegistrationCreationService;
 
 // TODO: add return/cancel functionality
 // TODO: fix - add pst check box
