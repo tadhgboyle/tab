@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\User;
 
-use Cknow\Money\Money;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
+use Cknow\Money\Money;
 use App\Models\Product;
 use App\Models\Activity;
 use App\Models\Category;
@@ -348,7 +348,7 @@ class UserLimitsHelperTest extends TestCase
         ]);
 
         $this->actingAs($user);
-        (new ActivityRegistrationCreationService($widegame, $user));
+        new ActivityRegistrationCreationService($widegame, $user);
 
         // TODO: General category with hat and widegame on it
 

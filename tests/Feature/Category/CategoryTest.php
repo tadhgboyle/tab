@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\Category;
 
-use App\Casts\CategoryType;
-use App\Models\Category;
-use App\Models\Product;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use stdClass;
 use Tests\TestCase;
+use App\Models\Product;
+use App\Models\Category;
+use App\Casts\CategoryType;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CategoryTest extends TestCase
 {

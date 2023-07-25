@@ -2,8 +2,8 @@
 
 namespace App\Casts;
 
-use InvalidArgumentException;
 use stdClass;
+use InvalidArgumentException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 

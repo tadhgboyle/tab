@@ -2,19 +2,19 @@
 
 namespace Tests\Feature\Activity;
 
-use App\Casts\CategoryType;
+use Tests\TestCase;
+use App\Models\Role;
+use App\Models\User;
+use Cknow\Money\Money;
 use App\Models\Activity;
 use App\Models\Category;
-use App\Models\Role;
 use App\Models\Rotation;
 use App\Models\Settings;
-use App\Models\User;
 use App\Models\UserLimits;
-use App\Services\Activities\ActivityRegistrationCreationService;
-use Cknow\Money\Money;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery\MockInterface;
-use Tests\TestCase;
+use App\Casts\CategoryType;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Services\Activities\ActivityRegistrationCreationService;
 
 class ActivityRegistrationCreationServiceTest extends TestCase
 {
@@ -25,7 +25,8 @@ class ActivityRegistrationCreationServiceTest extends TestCase
     private Category $_activities_category;
     private Rotation $_rotation;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
 
         Settings::factory()->createMany([

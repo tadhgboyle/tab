@@ -2,13 +2,10 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
-use App\Helpers\TaxHelper;
-use Cknow\Money\Casts\MoneyIntegerCast;
 use Cknow\Money\Money;
+use App\Helpers\TaxHelper;
 use JetBrains\PhpStorm\Pure;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -99,7 +96,8 @@ class User extends Authenticatable
             }
         });
 
-        $returned = $returned->add(...$this->activityRegistrations
+        $returned = $returned->add(
+            ...$this->activityRegistrations
             ->where('returned', true)
             ->map->total_price
         );

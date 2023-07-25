@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Activity;
 use App\Models\User;
-use App\Services\Activities\ActivityRegistrationCreationService;
+use App\Models\Activity;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Auth;
+use App\Services\Activities\ActivityRegistrationCreationService;
 
 class ActivityRegistrationSeeder extends Seeder
 {
@@ -31,7 +31,7 @@ class ActivityRegistrationSeeder extends Seeder
                 $cashier = $users->shuffle()->whereIn('role_id', [1, 2])->first();
                 Auth::login($cashier);
 
-                (new ActivityRegistrationCreationService($activity, $user));
+                new ActivityRegistrationCreationService($activity, $user);
             }
         }
     }

@@ -2,17 +2,17 @@
 
 namespace Tests\Feature\Activity;
 
-use App\Casts\CategoryType;
-use App\Models\Activity;
-use App\Models\ActivityRegistration;
-use App\Models\Category;
+use Tests\TestCase;
 use App\Models\Role;
-use App\Models\Rotation;
-use App\Models\Settings;
 use App\Models\User;
 use Cknow\Money\Money;
+use App\Models\Activity;
+use App\Models\Category;
+use App\Models\Rotation;
+use App\Models\Settings;
+use App\Casts\CategoryType;
+use App\Models\ActivityRegistration;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
 class ActivityTest extends TestCase
 {
@@ -21,7 +21,8 @@ class ActivityTest extends TestCase
     private User $_user;
     private Category $_activities_category;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
 
         Settings::factory()->createMany([
