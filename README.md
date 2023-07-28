@@ -109,7 +109,6 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
     - Then on the backend, if they somehow bypass the disabled submit button: on errors during order, return back with their input + quantities
 - Complete inventory features
     - "Set stock" in adjust page as well as add/subtract.
-    - Add product option if stock should be added back upon return or not.
 - Change user list to display deleted users (with toggle) & implement un-deleting (for products as well).
     - Livewire?
 - Instead/as well as category limits, allow setting a hard limit per day/week.
