@@ -21,11 +21,10 @@ class TaxHelper
         $settingsHelper = resolve(SettingsHelper::class);
 
         $gst_percent = $rates['gst'] ?? $settingsHelper->getGst();
-        $pst_percent = $rates['pst'] ?? $settingsHelper->getPst();
 
         $tax = $gst_percent;
         if ($apply_pst) {
-            $tax += $pst_percent;
+            $tax += $rates['pst'] ?? $settingsHelper->getPst();
         }
 
         $tax_rate = $tax / 100;

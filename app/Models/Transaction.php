@@ -24,6 +24,8 @@ class Transaction extends Model
 
     protected $casts = [
         'total_price' => MoneyIntegerCast::class,
+        'purchaser_amount' => MoneyIntegerCast::class,
+        'gift_card_amount' => MoneyIntegerCast::class,
         'returned' => 'boolean',
     ];
 
@@ -49,6 +51,11 @@ class Transaction extends Model
     public function products(): HasMany
     {
         return $this->hasMany(TransactionProduct::class);
+    }
+
+    public function giftCard(): BelongsTo
+    {
+        return $this->belongsTo(GiftCard::class);
     }
 
     public function getReturnedTotal(): Money

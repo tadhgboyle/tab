@@ -59,6 +59,7 @@ class PermissionHelper extends Helper
             Permission::SETTINGS_CATEGORIES_MANAGE => 'Edit/Create/Delete Categories',
             Permission::SETTINGS_ROLES_MANAGE => 'Edit/Create/Delete Roles',
             Permission::SETTINGS_ROTATIONS_MANAGE => 'Edit/Create/Delete Rotations',
+            Permission::SETTINGS_GIFT_CARDS_MANAGE => 'Edit/Create/Delete Gift Cards',
         ]);
     }
 
@@ -93,7 +94,6 @@ class PermissionHelper extends Helper
         return rtrim($return, ',');
     }
 
-    #[Pure]
     public function renderForm(?Role $role): string
     {
         $return = '';

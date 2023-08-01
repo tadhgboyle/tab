@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Permission;
+use App\Models\GiftCard;
 use App\Models\Settings;
 use App\Helpers\RoleHelper;
 use App\Helpers\CategoryHelper;
@@ -25,13 +27,32 @@ class SettingsController extends Controller
         RoleHelper $roleHelper,
         RotationHelper $rotationHelper
     ) {
-        return view('pages.settings.settings', [
-            'gst' => $settingsHelper->getGst(),
-            'pst' => $settingsHelper->getPst(),
-            'categories' => $categoryHelper->getCategories(),
-            'roles' => $roleHelper->getRoles('ASC'),
-            'rotations' => $rotationHelper->getRotations(),
-            'currentRotation' => $rotationHelper->getCurrentRotation()?->name
-        ]);
+        $user = auth()->user();
+
+        $vars = [];
+
+        if ($user->hasPermission(Permission::SETTINGS_GENERAL)) {
+            $vars['gst'] = $settingsHelper->getGst();
+            $vars['pst'] = $settingsHelper->getPst();
+        }
+
+        if ($user->hasPermission(Permission::SETTINGS_CATEGORIES_MANAGE)) {
+            $vars['categories'] = $categoryHelper->getCategories();
+        }
+
+        if ($user->hasPermission(Permission::SETTINGS_ROLES_MANAGE)) {
+            $vars['roles'] = $roleHelper->getRoles('ASC');
+        }
+
+        if ($user->hasPermission(Permission::SETTINGS_ROTATIONS_MANAGE)) {
+            $vars['rotations'] = $rotationHelper->getRotations();
+            $vars['currentRotation'] = $rotationHelper->getCurrentRotation()?->name;
+        }
+
+        if ($user->hasPermission(Permission::SETTINGS_GIFT_CARDS_MANAGE)) {
+            $vars['giftCards'] = GiftCard::query()->with('issuer')->orderBy('created_at', 'DESC')->get();
+        }
+
+        return view('pages.settings.settings', $vars);
     }
 }

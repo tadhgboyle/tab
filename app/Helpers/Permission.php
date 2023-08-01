@@ -47,4 +47,5 @@ class Permission
     public const SETTINGS_CATEGORIES_MANAGE = 'settings_categories_manage';
     public const SETTINGS_ROLES_MANAGE = 'settings_roles_manage';
     public const SETTINGS_ROTATIONS_MANAGE = 'settings_rotations_manage';
+    public const SETTINGS_GIFT_CARDS_MANAGE = 'settings_gift_cards_manage';
 }

@@ -57,7 +57,6 @@ class User extends Authenticatable
         return $this->hasMany(Payout::class);
     }
 
-    #[Pure]
     public function hasPermission($permission): bool
     {
         return $this->role->hasPermission($permission);

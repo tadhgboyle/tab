@@ -2,6 +2,7 @@
 
 use App\Models\Role;
 use App\Models\User;
+use Database\Seeders\GiftCardSeeder;
 use Illuminate\Database\Seeder;
 use Database\Seeders\RoleSeeder;
 use Database\Seeders\UserSeeder;
@@ -70,5 +71,8 @@ class DatabaseSeeder extends Seeder
 
         $this->command->info('Seeding User Payouts...');
         $this->resolve(PayoutSeeder::class)->run();
+
+        $this->command->info('Seeding Gift Cards...');
+        $this->resolve(GiftCardSeeder::class)->run();
     }
 }

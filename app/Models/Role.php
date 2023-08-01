@@ -118,7 +118,6 @@ class Role extends Model
      *
      * @return bool Whether this Role has these permissions or not.
      */
-    #[Pure]
     public function hasPermission(string|array $permissions): bool
     {
         if ($this->superuser) {

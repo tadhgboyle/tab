@@ -133,9 +133,15 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
 - Lazy loading of users/products (especially in cashier view).
     - Use this https://github.com/yajra/laravel-datatables
     - They should type a query first, or use some ajax to fetch data. or else it could take forever to load
-- Tax free products / users
+- Tax-free products / users
 - User tags (tax free tagged, limit of xyz tag, etc)
 - Rename Transaction classes to Order
 
 ## Issues/Bugs
-- *Phew*
+- Make seeders only create past entities nothing in the future
+- Make GC edit balance more clear
+- When don't have permission to view statistics/users/transactions from other rotations, still show the dropdown just have it disabled so they can see active rotation
+- Add check balance modal for gift card (under a "tools" dropdown?)
+- Add button to remove gift card from order - replace "Apply" with "Remove" if gift card is already applied?
+- Add way to "hide used gift cards" in gift card list
+- Make settings boxes/columns more fluid so it doesn't look odd when people have subnet of permissions

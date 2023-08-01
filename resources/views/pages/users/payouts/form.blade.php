@@ -1,4 +1,4 @@
-@extends('layouts.default', ['page' => 'settings'])
+@extends('layouts.default', ['page' => 'users'])
 @section('content')
 <h2 class="title has-text-weight-bold">Create Payout</h2>
 <div class="columns">
@@ -15,15 +15,15 @@
             </div>
             <label class="label">Amount<sup style="color: red">*</sup></label>
             <div class="field @if($owing > 0.00) has-addons @endif">
-                <div class="control has-icons-left">
+                <div class="control has-icons-left is-expanded">
                     <span class="icon is-small is-left">
                         <i class="fas fa-dollar-sign"></i>
                     </span>
-                    <input type="number" step="0.01" name="amount" id="amount" class="input" required min="0.01" value="{{ number_format(old('amount'), 2) }}">
+                    <input type="number" step="0.01" name="amount" id="amount" class="input money-input" required min="0.01" value="{{ number_format(old('amount'), 2) }}">
                 </div>
                 @if($owing > 0.00)
                     <div class="control">
-                        <button class="button is-outlined is-info" id="setMax">
+                        <button class="button is-info" id="setMax">
                             Full
                         </button>
                     </div>
