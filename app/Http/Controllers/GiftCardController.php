@@ -63,14 +63,14 @@ class GiftCardController extends Controller
         if (!$giftCard) {
             return response()->json([
                 'valid' => false,
-                'message' => 'Invalid gift card code.',
+                'message' => 'Invalid gift card code',
             ]);
         }
 
         if ($giftCard->remaining_balance->isZero()) {
             return response()->json([
                 'valid' => false,
-                'message' => 'Gift card has no remaining balance.',
+                'message' => 'Gift card has no remaining balance',
             ]);
         }
 
@@ -88,9 +88,10 @@ class GiftCardController extends Controller
         foreach ($giftCard->uses as $transaction) {
             $output .=
                 '<tr>' .
-                '<td>' . $transaction->id . '</td>' .
-                '<td>' . $transaction->created_at->format('M jS Y h:ia') . '</td>' .
-                '<td>' . $transaction->gift_card_amount->format() . '</td>';
+                    '<td>' . $transaction->id . '</td>' .
+                    '<td>' . $transaction->created_at->format('M jS Y h:ia') . '</td>' .
+                    '<td>' . $transaction->gift_card_amount->format() . '</td>' .
+                '</tr>';
         }
 
         return $output;

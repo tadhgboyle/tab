@@ -82,6 +82,11 @@
                 <button class="button is-dark" id="apply_gift_card" disabled>
                     Apply
                 </button>
+                <button class="button is-outlined" id="remove_gift_card" style="display: none;">
+                        <span class="icon is-small">
+                          <i class="fas fa-times"></i>
+                        </span>
+                </button>
             </div>
         </div>
 

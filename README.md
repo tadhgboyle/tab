@@ -142,6 +142,6 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
 - Make GC edit balance more clear
 - When don't have permission to view statistics/users/transactions from other rotations, still show the dropdown just have it disabled so they can see active rotation
 - Add check balance modal for gift card (under a "tools" dropdown?)
-- Add button to remove gift card from order - replace "Apply" with "Remove" if gift card is already applied?
 - Add way to "hide used gift cards" in gift card list
+- When cashier page refreshed with gift card, ensure it still has balance + update balance in table row
 - Make settings boxes/columns more fluid so it doesn't look odd when people have subnet of permissions
