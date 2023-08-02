@@ -16,7 +16,6 @@ window.onload = () => {
 
     const storedGiftCard = localStorage.getItem(`gift-card-${PURCHASER_ID}`);
     if (storedGiftCard !== null) {
-        console.log({ storedGiftCard });
         GIFT_CARD = JSON.parse(storedGiftCard);
         GIFT_CARD_CODE_INPUT.value = GIFT_CARD.code;
         giftCardHelpNotice(true);

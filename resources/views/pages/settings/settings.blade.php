@@ -231,7 +231,7 @@
                             </td>
                             <td>
                                 <code>{{ $giftCard->code }}</code>
-                                <i class="fas fa-copy copy" onclick="copyCode(this, '{{ $giftCard->code }}')"></i>
+                                <i class="fas fa-copy copy" id="gift-card-copy-{{ $giftCard->id }}" onclick="copyCode({{ $giftCard->id }}, '{{ $giftCard->code }}')"></i>
                             </td>
                             <td>
                                 <div>{{ $giftCard->original_balance }}</div>
@@ -403,7 +403,7 @@
     });
 
     @permission(\App\Helpers\Permission::SETTINGS_GIFT_CARDS_MANAGE)
-        const copyCode = (e, code) => {
+        const copyCode = (id, code) => {
             const el = document.createElement('textarea');
             el.value = code;
             document.body.appendChild(el);
@@ -411,9 +411,18 @@
             document.execCommand('copy');
             document.body.removeChild(el);
 
+            const e = document.getElementById(`gift-card-copy-${id}`);
+
             e.classList.remove('fa-copy');
             e.classList.add('fa-check');
             e.style.color = 'green';
+
+            setTimeout(() => {
+                const e = document.getElementById(`gift-card-copy-${id}`);
+                e.classList.remove('fa-check');
+                e.classList.add('fa-copy');
+                e.style.color = 'black';
+            }, 1000);
         }
 
         const modal_gift_card_uses = document.querySelector('.modal-gift-card-uses');
