@@ -138,7 +138,6 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
 - Rename Transaction classes to Order
 
 ## Issues/Bugs
-- Make GC edit balance more clear
 - Add check balance modal for gift card (under a "tools" dropdown?)
 - Add way to "hide used gift cards" in gift card list
 - When cashier page refreshed with gift card, ensure it still has balance + update balance in table row
