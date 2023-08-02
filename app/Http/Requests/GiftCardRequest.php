@@ -22,11 +22,10 @@ class GiftCardRequest extends FormRequest implements FormRequestContract
                 'string',
                 ValidationRule::unique('gift_cards', 'code')->ignore($this->get('gift_card_id')),
             ],
-            'original_balance' => [
+            'balance' => [
                 'required',
                 'numeric',
                 'min:0',
-                ValidationRule::when($this->get('gift_card_id'), 'gte:remaining_balance'),
             ],
         ];
     }

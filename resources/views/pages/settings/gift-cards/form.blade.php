@@ -30,9 +30,8 @@
                     <span class="icon is-small is-left">
                         <i class="fas fa-dollar-sign"></i>
                     </span>
-                    <input type="number" name="original_balance" id="balance" class="input money-input" placeholder="0" step="0.01" min="0" value="{{ (isset($giftCard) ? $giftCard->remaining_balance->formatForInput() : null) ?? number_format(old('original_balance'), 2) }}">
+                    <input type="number" name="balance" id="balance" class="input money-input" placeholder="0" step="0.01" min="0" value="{{ (isset($giftCard) ? $giftCard->remaining_balance->formatForInput() : null) ?? number_format(old('balance'), 2) }}">
                 </div>
-                <p class="help" id="remaining_balance_help" />
             </div>
 
             <label class="label">Code<sup style="color: red">*</sup></label>
@@ -110,17 +109,6 @@
         function closeModal() {
             modal.classList.remove('is-active');
         }
-
-        // when editing we show the remaining balance in the input. but then update
-        document.getElementById('remaining_balance_help').innerText = 'Remaining balance: {{ $giftCard->remaining_balance->format() }}';
-
-        document.getElementById('balance').addEventListener('keyup', event => {
-            if (event.target.value.length === 0) {
-                document.getElementById('remaining_balance_help').innerText = 'Remaining balance: {{ $giftCard->remaining_balance->format() }}';
-                return;
-            }
-            document.getElementById('remaining_balance_help').innerText = 'Remaining balance: $' + parseFloat(Number(event.target.value) + Number({{ $giftCard->remaining_balance->getAmount() / 100 }})).toFixed(2);
-        });
     @endisset
 </script>
 @stop

@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Helpers\CategoryHelper;
 use App\Http\Requests\GiftCardRequest;
 use App\Models\GiftCard;
+use Cknow\Money\Money;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Crypt;
 
 class GiftCardController extends Controller
 {
@@ -24,8 +24,8 @@ class GiftCardController extends Controller
         $giftCard = new GiftCard();
         $giftCard->name = $request->name;
         $giftCard->code = $request->code;
-        $giftCard->original_balance = $request->original_balance;
-        $giftCard->remaining_balance = $request->original_balance;
+        $giftCard->original_balance = $request->balance;
+        $giftCard->remaining_balance = $request->balance;
         $giftCard->issuer_id = auth()->id();
         $giftCard->save();
 
@@ -43,7 +43,10 @@ class GiftCardController extends Controller
     {
         $giftCard->name = $request->name;
         $giftCard->code = $request->code;
-        $giftCard->original_balance = $request->original_balance;
+        if (Money::parse($request->balance)->greaterThan($giftCard->original_balance)) {
+            $giftCard->original_balance = $request->balance;
+        }
+        $giftCard->remaining_balance = $request->balance;
         $giftCard->save();
 
         return redirect()->route('settings')->with('success', "Edited gift card $giftCard->name.");

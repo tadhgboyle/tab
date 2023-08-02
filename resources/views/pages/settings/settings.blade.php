@@ -212,16 +212,16 @@
             <div id="gift_cards_container" style="visibility: hidden;">
                 <table id="gift_cards_list">
                     <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Code</th>
-                        <th>Original Amount</th>
-                        <th>Remaining Amount</th>
-                        <th>Issuer</th>
-                        <th>Created</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
+                        <tr>
+                            <th>Name</th>
+                            <th>Code</th>
+                            <th>Original Balance</th>
+                            <th>Remaining Balance</th>
+                            <th>Issuer</th>
+                            <th>Created</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
                     </thead>
                     <tbody id="sortable">
                     @foreach($giftCards as $giftCard)
