@@ -213,6 +213,8 @@ class TransactionReturnServiceTest extends TestCase
             ])->id,
         ]);
         [$user, $transaction] = $this->createFakeRecords(gift_card_code: $giftCard->code);
+        $charged_transaction_amount = $transaction->purchaser_amount;
+        $balance_before = $user->balance;
 
         $this->assertCount(0, $user->credits);
 
@@ -223,6 +225,8 @@ class TransactionReturnServiceTest extends TestCase
         $this->assertEquals($giftCardAmount, $user->credits->first()->amount);
         $this->assertEquals($giftCardAmount, $transactionService->getTransaction()->gift_card_amount);
         $this->assertEquals($transaction->id, $user->credits->first()->transaction_id);
+        $this->assertEquals($charged_transaction_amount->add($giftCardAmount), $transaction->total_price);
+        $this->assertEquals($balance_before->add($charged_transaction_amount), $user->balance);
     }
 
     /**

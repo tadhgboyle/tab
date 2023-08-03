@@ -45,7 +45,6 @@ class TransactionReturnService extends Service
         });
 
         $purchaser = $this->_transaction->purchaser;
-        // TODO add test
         if ($this->_transaction->gift_card_amount->isPositive()) {
             $purchaser->credits()->create([
                 'transaction_id' => $this->_transaction->id,
@@ -53,7 +52,7 @@ class TransactionReturnService extends Service
             ]);
         }
 
-        $purchaser->update(['balance' => $purchaser->balance->add($this->_transaction->purchaser_amount)]); // TODO add test
+        $purchaser->update(['balance' => $purchaser->balance->add($this->_transaction->purchaser_amount)]);
 
         $this->_transaction->update(['returned' => true]);
 
