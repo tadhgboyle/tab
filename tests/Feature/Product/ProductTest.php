@@ -284,7 +284,9 @@ class ProductTest extends TestCase
             'purchaser_id' => $user->id,
             'cashier_id' => $user->id,
             'rotation_id' => $rotation,
-            'total_price' => 3.15 // TODO
+            'total_price' => 3_15, // TODO
+            'purchaser_amount' => 3_15,
+            'gift_card_amount' => 0_00,
         ]);
 
         $skittles_product = TransactionProduct::from($skittles, 2, 5);
@@ -301,7 +303,9 @@ class ProductTest extends TestCase
             'purchaser_id' => $user->id,
             'cashier_id' => $user->id,
             'rotation_id' => $rotation,
-            'total_price' => 44.79 // TODO
+            'total_price' => 44_79, // TODO
+            'purchaser_amount' => 44_79,
+            'gift_card_amount' => 0_00,
         ]);
 
         $sweater_product = TransactionProduct::from($sweater, 1, 5, 7);
@@ -320,7 +324,9 @@ class ProductTest extends TestCase
             'purchaser_id' => $user->id,
             'cashier_id' => $user->id,
             'rotation_id' => $rotation,
-            'total_price' => 3.15 // TODO
+            'total_price' => 3_15, // TODO
+            'purchaser_amount' => 3_15,
+            'gift_card_amount' => 0_00,
         ]);
 
         $skittles_product = TransactionProduct::from($skittles, 2, 5);
@@ -337,7 +343,9 @@ class ProductTest extends TestCase
             'purchaser_id' => $user->id,
             'cashier_id' => $user->id,
             'rotation_id' => $rotation,
-            'total_price' => 44.79 // TODO
+            'total_price' => 44_79, // TODO
+            'purchaser_amount' => 44_79,
+            'gift_card_amount' => 0_00,
         ]);
 
         $sweater_product = TransactionProduct::from($sweater, 1, 5, 7);

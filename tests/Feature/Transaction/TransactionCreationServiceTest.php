@@ -114,7 +114,7 @@ class TransactionCreationServiceTest extends TestCase
         $this->assertEquals($transactionService->getTransaction()->products->first()->transaction->id, $transactionService->getTransaction()->id);
         $this->assertEquals(1, Product::firstWhere('name', 'Chips')->stock);
         $this->assertEquals(null, $transactionService->getTransaction()->gift_card_id);
-        $this->assertEquals(null, $transactionService->getTransaction()->gift_card_amount);
+        $this->assertEquals(Money::parse(0), $transactionService->getTransaction()->gift_card_amount);
     }
 
     public function testInvalidGiftCardCodeError(): void

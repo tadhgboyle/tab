@@ -15,6 +15,7 @@
                 <input type="hidden" id="current_pst" value="{{ $current_pst }}">
                 <input type="hidden" id="current_gst" value="{{ $current_gst }}">
                 <input type="hidden" id="purchaser_balance" value="{{ $user->balance->getAmount() / 100 }}">
+                <input type="hidden" id="purchaser_available_credit" value="{{ $user->availableCredit()->getAmount() / 100 }}">
                 <input type="hidden" id="products" name="products" value="{}">
                 <input type="hidden" id="gift_card_code" name="gift_card_code" value="">
 
@@ -111,6 +112,10 @@
                 <tr id="gift-card-row" style="display: none;">
                     <td colspan="2">Gift Card</td>
                     <td id="gift-card-balance"></td>
+                </tr>
+                <tr id="credit-row" style="display: none;">
+                    <td colspan="2">Credit</td>
+                    <td id="credit-amount"></td>
                 </tr>
                 <tr>
                     <td colspan="2">Purchaser Amount</td>

@@ -4,6 +4,10 @@
 <h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if($user->trashed()) <strong>(Deleted)</strong> @endif @if(!$user->trashed() && hasPermission(\App\Helpers\Permission::USERS_MANAGE) && $can_interact)<a href="{{ route('users_edit', $user->id) }}">(Edit)</a>@endif</h4>
 <p><strong>Role:</strong> {{ $user->role->name }}</p>
 <span><strong>Balance:</strong> {{ $user->balance }}, </span>
+<span><strong>Available credit:</strong> {{ $user->availableCredit() }}</span>
+
+<br>
+
 <span><strong>Total spent:</strong> {{ $user->findSpent() }}, </span>
 <span><strong>Total returned:</strong> {{ $user->findReturned() }}, </span>
 @php $owing = $user->findOwing(); @endphp
@@ -22,7 +26,21 @@
         <div class="columns is-multiline">
             <div class="column">
                 <div class="box">
-                    <h4 class="title has-text-weight-bold is-4">Order History</h4>
+                    <div class="columns">
+                        <div class="column">
+                            <h4 class="title has-text-weight-bold is-4">Orders</h4>
+                        </div>
+                        <div class="column">
+                            @if(hasPermission($is_self ? \App\Helpers\Permission::CASHIER_SELF_PURCHASES : \App\Helpers\Permission::CASHIER_CREATE))
+                                <a class="button is-success is-pulled-right is-small" href="{{ route('orders_create', $user) }}">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-plus"></i>
+                                    </span>
+                                    <span>Create</span>
+                                </a>
+                            @endif
+                        </div>
+                    </div>
                     <table id="order_list">
                         <thead>
                             <th>Time</th>
@@ -122,6 +140,44 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="box">
+                    <h4 class="title has-text-weight-bold is-4">
+                        Credits
+                    </h4>
+                    <table id="credit_list">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Reason</th>
+    {{--                            <th>Issuer</th>--}}
+                                <th>Amount</th>
+                                <th>Amount Used</th>
+                                <th>Amount Available</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($credits as $credit)
+                            <tr>
+                                <td>
+                                    <div>{{ $credit->created_at->format('M jS Y h:ia') }}</div>
+                                </td>
+                                <td>
+                                    <div><code>{{ $credit->reason }}</code></div>
+                                </td>
+                                <td>
+                                    <div>{{ $credit->amount }}</div>
+                                </td>
+                                <td>
+                                    <div>{{ $credit->amount_used }}</div>
+                                </td>
+                                <td>
+                                    <div>{{ $credit->amountAvailable() }}</div>
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -203,7 +259,7 @@
                         </div>
                         <div class="column">
                             @if(hasPermission(\App\Helpers\Permission::USERS_PAYOUTS_CREATE))
-                                <a class="button is-success is-pulled-right" href="{{ route('users_payout_create', $user) }}">
+                                <a class="button is-success is-pulled-right is-small" href="{{ route('users_payout_create', $user) }}">
                                     <span class="icon is-small">
                                         <i class="fas fa-file-invoice-dollar"></i>
                                     </span>
@@ -395,6 +451,19 @@
             }]
         });
         $('#activity_list').DataTable({
+            "order": [],
+            "paging": false,
+            "searching": false,
+            "scrollY": "33vh",
+            "scrollCollapse": true,
+            "bInfo": false,
+            "columnDefs": [{
+                "orderable": false,
+                "searchable": false,
+                "targets": 4
+            }]
+        });
+        $('#credit_list').DataTable({
             "order": [],
             "paging": false,
             "searching": false,

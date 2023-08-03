@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Transaction;
 
+use App\Models\GiftCard;
+use Cknow\Money\Money;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
@@ -189,12 +191,46 @@ class TransactionReturnServiceTest extends TestCase
         $this->assertSame($start_stock + $hat_count, $hat->refresh()->stock);
     }
 
+    public function testCreditIsNotMadeForGiftCardAmountIfZeroOnFullReturn(): void
+    {
+        [$user, $transaction] = $this->createFakeRecords();
+
+        $this->assertCount(0, $user->credits);
+
+        $transactionService = (new TransactionReturnService($transaction))->return();
+        $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
+        $this->assertEquals(Money::parse(0), $transactionService->getTransaction()->gift_card_amount);
+        $this->assertCount(0, $user->credits);
+    }
+
+    public function testCreditIsMadeForGiftCardAmountIfPositiveOnFullReturn(): void
+    {
+        $giftCard = GiftCard::factory()->create([
+            'original_balance' => $giftCardAmount = Money::parse(1_00),
+            'remaining_balance' => $giftCardAmount,
+            'issuer_id' => User::factory()->create([
+                'role_id' => Role::factory()->create(['name' => 'Admin'])->id,
+            ])->id,
+        ]);
+        [$user, $transaction] = $this->createFakeRecords(gift_card_code: $giftCard->code);
+
+        $this->assertCount(0, $user->credits);
+
+        $transactionService = (new TransactionReturnService($transaction))->return();
+        $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
+        $user = $user->refresh();
+        $this->assertCount(1, $user->credits);
+        $this->assertEquals($giftCardAmount, $user->credits->first()->amount);
+        $this->assertEquals($giftCardAmount, $transactionService->getTransaction()->gift_card_amount);
+        $this->assertEquals($transaction->id, $user->credits->first()->transaction_id);
+    }
+
     /**
      * @param int $hat_count
      *
      * @return array<User, Transaction, Product>
      */
-    private function createFakeRecords(int $hat_count = 2): array
+    private function createFakeRecords(int $hat_count = 2, string $gift_card_code = null): array
     {
         app(RotationSeeder::class)->run();
 
@@ -238,6 +274,7 @@ class TransactionReturnServiceTest extends TestCase
                         'quantity' => $hat_count,
                     ],
                 ]),
+                'gift_card_code' => $gift_card_code,
                 'purchaser_id' => $user->id
             ]
         ), $user))->getTransaction(); // $26.8576 -> $3.1424

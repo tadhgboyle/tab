@@ -2,10 +2,25 @@
 
 namespace App\Helpers;
 
+use App\Models\TransactionProduct;
 use Cknow\Money\Money;
 
 class TaxHelper
 {
+    // TODO add test
+    public static function forTransactionProduct(TransactionProduct $product): Money
+    {
+        return self::calculateFor(
+            $product->price,
+            $product->quantity - $product->returned,
+            $product->pst !== null,
+            [
+                'pst' => $product->pst,
+                'gst' => $product->gst,
+            ]
+        );
+    }
+
     /**
      * Calculate the tax for a given price and quantity.
      *

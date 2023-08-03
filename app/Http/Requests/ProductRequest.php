@@ -19,7 +19,7 @@ class ProductRequest extends FormRequest implements FormRequestContract
             ],
             'price' => [
                 'required',
-                'integer',
+                'numeric',
             ],
             'category_id' => [
                 'required',

@@ -7,8 +7,10 @@ use App\Services\Service;
 use App\Helpers\TaxHelper;
 use App\Models\Transaction;
 use App\Models\TransactionProduct;
+use Cknow\Money\Money;
 use Illuminate\Http\RedirectResponse;
 
+// todo split into two services, one for returning an order and one for returning an item
 class TransactionReturnService extends Service
 {
     use TransactionService;
@@ -43,12 +45,20 @@ class TransactionReturnService extends Service
         });
 
         $purchaser = $this->_transaction->purchaser;
-        $purchaser->balance = $purchaser->balance->add($this->_transaction->total_price);
-        $purchaser->save();
+        // TODO add test
+        if ($this->_transaction->gift_card_amount->isPositive()) {
+            $purchaser->credits()->create([
+                'transaction_id' => $this->_transaction->id,
+                'amount' => $this->_transaction->gift_card_amount,
+            ]);
+        }
+
+        $purchaser->update(['balance' => $purchaser->balance->add($this->_transaction->purchaser_amount)]); // TODO add test
 
         $this->_transaction->update(['returned' => true]);
 
         $this->_result = self::RESULT_SUCCESS;
+        // todo update message to reflect if a credit was made
         $this->_message = 'Successfully returned order #' . $this->_transaction->id . ' for ' . $purchaser->full_name;
         return $this;
     }
@@ -89,21 +99,42 @@ class TransactionReturnService extends Service
             $transaction_product->product->adjustStock(1);
         }
 
-        $product_total = TaxHelper::calculateFor(
-            $transaction_product->price,
-            $transaction_product->quantity - $transaction_product->returned,
-            $transaction_product->pst !== null,
-            [
-                'pst' => $transaction_product->pst,
-                'gst' => $transaction_product->gst,
-            ]
-        );
-
+        $product_total = TaxHelper::forTransactionProduct($transaction_product);
         $purchaser = $this->_transaction->purchaser;
-        $purchaser->balance = $purchaser->balance->add($product_total);
-        $purchaser->save();
+
+        // check if there is any gift card used
+        if ($this->_transaction->gift_card_amount->isPositive()) {
+            // check if we have credited the same amount as the gift card yet
+            $transaction_credits_amount = Money::sum($this->_transaction->credits->map->amount);
+
+            // if yes, return in cash
+            if ($transaction_credits_amount->equals($this->_transaction->gift_card_amount)) {
+                $purchaser->update(['balance' => $purchaser->balance->add($product_total)]);
+            } elseif ($transaction_credits_amount->add($product_total)->greaterThan($this->_transaction->gift_card_amount)) {
+                // if crediting this product exceeds the GC amount, only credit the difference and return the rest in cash
+                // available credit = $5
+                // product is $10
+                // give them $5 credit and $5 cash
+                $amount_to_credit = $this->_transaction->gift_card_amount->subtract($transaction_credits_amount);
+                $purchaser->credits()->create([
+                    'transaction_id' => $this->_transaction->id,
+                    'amount' => $amount_to_credit,
+                ]);
+                $purchaser->update(['balance' => $purchaser->balance->add($product_total->subtract($amount_to_credit))]);
+            } else {
+                // if no, credit the amount of the product
+                $purchaser->credits()->create([
+                    'transaction_id' => $this->_transaction->id,
+                    'amount' => $product_total,
+                ]);
+            }
+        } else {
+            // if no, return in cash
+            $purchaser->update(['balance' => $purchaser->balance->add($product_total)]);
+        }
 
         $this->_result = self::RESULT_SUCCESS;
+        // todo update message to reflect if it was a credit or cash refund
         $this->_message = 'Successfully returned x1 ' . $transaction_product->product->name . ' for order #' . $this->_transaction->id . '.';
         return $this;
     }

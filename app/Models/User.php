@@ -57,6 +57,11 @@ class User extends Authenticatable
         return $this->hasMany(Payout::class);
     }
 
+    public function credits(): HasMany
+    {
+        return $this->hasMany(Credit::class);
+    }
+
     public function hasPermission($permission): bool
     {
         return $this->role->hasPermission($permission);
@@ -113,5 +118,14 @@ class User extends Authenticatable
         return $this->findSpent()
             ->subtract($this->findReturned())
             ->subtract(...$this->payouts->map->amount);
+    }
+
+    public function availableCredit(): Money
+    {
+        return $this->credits->reject(function (Credit $credit) {
+            return $credit->fullyUsed();
+        })->reduce(function (Money $carry, Credit $credit) {
+            return $carry->add($credit->amountAvailable());
+        }, Money::parse(0));
     }
 }

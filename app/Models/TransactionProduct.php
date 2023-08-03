@@ -10,8 +10,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TransactionProduct extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'product_id',
         'category_id',

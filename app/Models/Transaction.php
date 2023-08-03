@@ -58,6 +58,11 @@ class Transaction extends Model
         return $this->belongsTo(GiftCard::class);
     }
 
+    public function credits(): HasMany
+    {
+        return $this->hasMany(Credit::class, 'transaction_id');
+    }
+
     public function getReturnedTotal(): Money
     {
         if ($this->isReturned()) {

@@ -39,7 +39,7 @@ class RoleController extends Controller
     public function edit(PermissionHelper $permissionHelper, Role $role)
     {
         if (!auth()->user()->role->canInteract($role)) {
-            return redirect()->route('settings')->with('error', 'You cannot interact with that role.')->send();
+            return redirect()->route('settings')->with('error', 'You cannot interact with that role.');
         }
 
         return view('pages.settings.roles.form', [
@@ -53,7 +53,7 @@ class RoleController extends Controller
     public function update(RoleRequest $request, Role $role): RedirectResponse
     {
         if (!auth()->user()->role->canInteract($role)) {
-            return redirect()->route('settings')->with('error', 'You cannot interact with that role.')->send();
+            return redirect()->route('settings')->with('error', 'You cannot interact with that role.');
         }
 
         // TODO: what do we do when they make a role staff which has users in it already
