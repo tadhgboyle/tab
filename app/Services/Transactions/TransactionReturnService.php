@@ -2,6 +2,7 @@
 
 namespace App\Services\Transactions;
 
+use App\Models\Credit;
 use App\Models\Product;
 use App\Services\Service;
 use App\Helpers\TaxHelper;
@@ -11,6 +12,7 @@ use Cknow\Money\Money;
 use Illuminate\Http\RedirectResponse;
 
 // todo split into two services, one for returning an order and one for returning an item
+// todo test credit reasons
 class TransactionReturnService extends Service
 {
     use TransactionService;
@@ -45,10 +47,12 @@ class TransactionReturnService extends Service
         });
 
         $purchaser = $this->_transaction->purchaser;
-        if ($this->_transaction->gift_card_amount->isPositive()) {
+        $creditable_amount = $this->_transaction->creditableAmount();
+        if ($creditable_amount->isPositive()) {
             $purchaser->credits()->create([
                 'transaction_id' => $this->_transaction->id,
-                'amount' => $this->_transaction->gift_card_amount,
+                'amount' => $creditable_amount,
+                'reason' => 'Refund for order #' . $this->_transaction->id,
             ]);
         }
 
@@ -94,30 +98,30 @@ class TransactionReturnService extends Service
 
         $transaction_product->increment('returned');
 
-        if ($transaction_product->product->restore_stock_on_return) {
-            $transaction_product->product->adjustStock(1);
-        }
-
         $product_total = TaxHelper::forTransactionProduct($transaction_product);
         $purchaser = $this->_transaction->purchaser;
 
         // check if there is any gift card used
-        if ($this->_transaction->gift_card_amount->isPositive()) {
-            // check if we have credited the same amount as the gift card yet
-            $transaction_credits_amount = Money::sum($this->_transaction->credits->map->amount);
+        $creditable_amount = $this->_transaction->creditableAmount();
+        if ($creditable_amount->isPositive()) {
+            // check if we have credited the same amount as the creditable amount yet
+            $transaction_credits_amount = $this->_transaction->credits->reduce(function (Money $carry, Credit $credit) {
+                return $carry->add($credit->amount);
+            }, Money::parse(0));
 
             // if yes, return in cash
-            if ($transaction_credits_amount->equals($this->_transaction->gift_card_amount)) {
+            if ($transaction_credits_amount->equals($creditable_amount)) {
                 $purchaser->update(['balance' => $purchaser->balance->add($product_total)]);
-            } elseif ($transaction_credits_amount->add($product_total)->greaterThan($this->_transaction->gift_card_amount)) {
-                // if crediting this product exceeds the GC amount, only credit the difference and return the rest in cash
+            } elseif ($transaction_credits_amount->add($product_total)->greaterThan($creditable_amount)) {
+                // if crediting this product exceeds the creditable amount, only credit the difference and return the rest in cash
                 // available credit = $5
                 // product is $10
                 // give them $5 credit and $5 cash
-                $amount_to_credit = $this->_transaction->gift_card_amount->subtract($transaction_credits_amount);
+                $amount_to_credit = $creditable_amount->subtract($transaction_credits_amount);
                 $purchaser->credits()->create([
                     'transaction_id' => $this->_transaction->id,
                     'amount' => $amount_to_credit,
+                    'reason' => 'Partial refund of ' . $transaction_product->product->name . ' for order #' . $this->_transaction->id,
                 ]);
                 $purchaser->update(['balance' => $purchaser->balance->add($product_total->subtract($amount_to_credit))]);
             } else {
@@ -125,11 +129,21 @@ class TransactionReturnService extends Service
                 $purchaser->credits()->create([
                     'transaction_id' => $this->_transaction->id,
                     'amount' => $product_total,
+                    'reason' => 'Refund of ' . $transaction_product->product->name . ' for order #' . $this->_transaction->id,
                 ]);
             }
         } else {
             // if no, return in cash
             $purchaser->update(['balance' => $purchaser->balance->add($product_total)]);
+        }
+
+        if ($transaction_product->product->restore_stock_on_return) {
+            $transaction_product->product->adjustStock(1);
+        }
+
+        // set transaction to returned if all items have been returned
+        if ($this->_transaction->products->sum->returned >= $this->_transaction->products->sum->quantity) {
+            $this->_transaction->update(['returned' => true]);
         }
 
         $this->_result = self::RESULT_SUCCESS;

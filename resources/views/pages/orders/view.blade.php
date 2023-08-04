@@ -10,17 +10,18 @@
         <p><strong>Purchaser:</strong> @permission(\App\Helpers\Permission::USERS_VIEW) <a href="{{ route('users_view', $transaction->purchaser_id) }}">{{ $transaction->purchaser->full_name }}</a> @else {{ $transaction->purchaser->full_name }} @endpermission</p>
         <p><strong>Cashier:</strong> @permission(\App\Helpers\Permission::USERS_VIEW) <a href="{{ route('users_view', $transaction->cashier_id) }}">{{ $transaction->cashier->full_name }}</a> @else {{ $transaction->cashier->full_name }} @endpermission</p>
         <p><strong>Total Price:</strong> {{ $transaction->total_price }}</p>
-        <p><strong>Gift card amount:</strong> {{ $transaction->gift_card_amount }}</p>
         <p><strong>Purchaser amount:</strong> {{ $transaction->purchaser_amount }}</p>
+        <p><strong>Gift card amount:</strong> {{ $transaction->gift_card_amount }}</p>
+        <p><strong>Credit amount:</strong> {{ $transaction->credit_amount }}</p>
         <p><strong>Status:</strong> @switch($transaction->getReturnStatus()) @case(0) Not Returned @break @case(1) Returned @break @case(2) Semi Returned @break @endswitch</p>
         <br>
         @if($transaction->getReturnStatus() !== 1 && hasPermission(\App\Helpers\Permission::ORDERS_RETURN))
-        <button class="button is-danger is-outlined" type="button" onclick="openModal();">
-            <span>Return</span>
-            <span class="icon is-small">
-                <i class="fas fa-undo"></i>
-            </span>
-        </button>
+            <button class="button is-danger is-outlined" type="button" onclick="openModal();">
+                <span>Return</span>
+                <span class="icon is-small">
+                    <i class="fas fa-undo"></i>
+                </span>
+            </button>
         @endif
     </div>
     <div class="column">

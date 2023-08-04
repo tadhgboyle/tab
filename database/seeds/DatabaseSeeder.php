@@ -63,6 +63,9 @@ class DatabaseSeeder extends Seeder
         $this->command->info('Seeding Rotations...');
         $this->resolve(RotationSeeder::class)->run();
 
+        $this->command->info('Seeding Gift Cards...');
+        $this->resolve(GiftCardSeeder::class)->run();
+
         $this->command->info('Seeding Transactions...');
         $this->resolve(TransactionSeeder::class)->run();
 
@@ -71,8 +74,5 @@ class DatabaseSeeder extends Seeder
 
         $this->command->info('Seeding User Payouts...');
         $this->resolve(PayoutSeeder::class)->run();
-
-        $this->command->info('Seeding Gift Cards...');
-        $this->resolve(GiftCardSeeder::class)->run();
     }
 }

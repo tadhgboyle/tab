@@ -2,10 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\GiftCard;
 use Auth;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Rotation;
+use Cknow\Money\Money;
 use Illuminate\Http\Request;
 use Illuminate\Database\Seeder;
 use App\Services\Transactions\TransactionReturnService;
@@ -47,12 +49,20 @@ class TransactionSeeder extends Seeder
                 /** @var Rotation $rotation */
                 $rotation = $user->rotations->random();
 
+                if (random_int(0, 10) === 0) {
+                    $giftCard = GiftCard::all()->random();
+                    if (random_int(0, 5)) {
+                        $giftCard->remaining_balance = Money::parse(random_int(0, 100_00));
+                    }
+                }
+
                 $service = new TransactionCreationService(new Request([
                     'purchaser_id' => $user->id,
                     'cashier_id' => $cashier->id,
                     'rotation_id' => $rotation->id,
                     'products' => json_encode($products),
                     'created_at' => $rotation->start->addDays(random_int(1, 6))->addMillis(random_int(-99999, 99999)),
+                    'gift_card_code' => $giftCard->code ?? null,
                 ]), $user);
 
                 if ($service->getResult() !== TransactionCreationService::RESULT_SUCCESS) {

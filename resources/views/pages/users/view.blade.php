@@ -4,7 +4,8 @@
 <h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if($user->trashed()) <strong>(Deleted)</strong> @endif @if(!$user->trashed() && hasPermission(\App\Helpers\Permission::USERS_MANAGE) && $can_interact)<a href="{{ route('users_edit', $user->id) }}">(Edit)</a>@endif</h4>
 <p><strong>Role:</strong> {{ $user->role->name }}</p>
 <span><strong>Balance:</strong> {{ $user->balance }}, </span>
-<span><strong>Available credit:</strong> {{ $user->availableCredit() }}</span>
+@php $availableCredit = $user->availableCredit(); @endphp
+<span><strong>Available credit:</strong> <span style="text-decoration: underline; cursor: help;" onclick="openCreditsModal();">{{ $availableCredit }}</span></span>
 
 <br>
 
@@ -302,8 +303,8 @@
     </div>
 </div>
 
-<div class="modal">
-    <div class="modal-background" onclick="closeModal();"></div>
+<div class="modal" id="owing_modal">
+    <div class="modal-background" onclick="closeOwingModal();"></div>
     <div class="modal-card">
         <header class="modal-card-head">
             <p class="modal-card-title">Owing</p>
@@ -415,20 +416,87 @@
             </table>
         </section>
         <footer class="modal-card-foot">
-            <button class="button" onclick="closeModal();">Close</button>
+            <button class="button" onclick="closeOwingModal();">Close</button>
+        </footer>
+    </div>
+</div>
+
+<div class="modal" id="credits_modal">
+    <div class="modal-background" onclick="closeCreditsModal();"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Credits</p>
+        </header>
+        <section class="modal-card-body">
+            <table class="table is-fullwidth">
+                <tbody>
+                <tr>
+                    <td colspan="2">
+                        <strong>Credits</strong>
+                    </td>
+                </tr>
+                @forelse($user->credits->sortByDesc('created_at') as $credit)
+                    <tr>
+                        <td>
+                            <div>#{{ $credit->id }} - {{ $credit->reason }}</div>
+                        </td>
+                        <td>
+                            <div>+{{ $credit->amount }}</div>
+                        </td>
+                    </tr>
+                    @if($credit->amount_used->isPositive())
+                        <tr>
+                            <td>
+                                <div>Used #{{ $credit->id }})</div>
+                            </td>
+                            <td>
+                                <div>-{{ $credit->amount->subtract($credit->amount_used) }}</div>
+                            </td>
+                        </tr>
+                    @endif
+                @empty
+                    <tr>
+                        <td>
+                            <div><i>No Credits</i></div>
+                        </td>
+                        <td>
+                            <div></div>
+                        </td>
+                    </tr>
+                @endforelse
+                <tr>
+                    <td></td>
+                    <td>
+                        <div><strong>&nbsp;&nbsp;{{ $availableCredit }}</strong></div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+        <footer class="modal-card-foot">
+            <button class="button" onclick="closeOwingModal();">Close</button>
         </footer>
     </div>
 </div>
 
 <script>
-    const modal = document.querySelector('.modal');
+    const owingModal = document.getElementById('owing_modal');
+    const creditsModal = document.getElementById('credits_modal');
 
     const openOwingModal = () => {
-        modal.classList.add('is-active');
+        owingModal.classList.add('is-active');
     }
 
-    const closeModal = () => {
-        modal.classList.remove('is-active');
+    const closeOwingModal = () => {
+        owingModal.classList.remove('is-active');
+    }
+
+    const openCreditsModal = () => {
+        creditsModal.classList.add('is-active');
+    }
+
+    const closeCreditsModal = () => {
+        creditsModal.classList.remove('is-active');
     }
 
     $(document).ready(function() {

@@ -19,8 +19,9 @@ return new class extends Migration
             $table->foreignId('transaction_id')->constrained();
             $table->integer('amount');
             $table->integer('amount_used')->default(0);
-            $table->string('reason')->default('GIFT_CARD_RETURN'); // TODO allow issuing credits by a staff member
-            //$table->string('issuer'); // TODO allow issuing credits by a staff member
+            $table->string('reason');
+            // TODO allow issuing credits by a staff member. would these have null transaction_id or should transactions use a pivot table for tracking credits...
+            //$table->string('issuer');
             $table->timestamps();
         });
     }

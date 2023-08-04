@@ -202,6 +202,21 @@ class TransactionCreationServiceTest extends TestCase
         $this->assertEquals($gift_card->id, $transactionService->getTransaction()->gift_card_id);
     }
 
+    public function testUsesCreditWhenUserHasCredit(): void
+    {
+
+    }
+
+    public function testUsesCreditBeforeUsingGiftCard(): void
+    {
+
+    }
+
+    public function testUsesCreditBeforeUsingBalance(): void
+    {
+
+    }
+
     /** @return User[] */
     private function createFakeRecords(): array
     {

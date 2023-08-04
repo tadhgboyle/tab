@@ -12,9 +12,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Transaction extends Model
 {
-    public const STATUS_NOT_RETURNED = 0;
-    public const STATUS_FULLY_RETURNED = 1;
-    public const STATUS_PARTIAL_RETURNED = 2;
+    public const STATUS_NOT_RETURNED = 'NOT_RETURNED';
+    public const STATUS_FULLY_RETURNED = 'FULLY_RETURNED';
+    public const STATUS_PARTIAL_RETURNED = 'PARTIAL_RETURNED';
 
     use HasFactory;
 
@@ -26,6 +26,7 @@ class Transaction extends Model
         'total_price' => MoneyIntegerCast::class,
         'purchaser_amount' => MoneyIntegerCast::class,
         'gift_card_amount' => MoneyIntegerCast::class,
+        'credit_amount' => MoneyIntegerCast::class,
         'returned' => 'boolean',
     ];
 
@@ -63,6 +64,13 @@ class Transaction extends Model
         return $this->hasMany(Credit::class, 'transaction_id');
     }
 
+    public function creditableAmount(): Money
+    {
+        return Money::parse(0_00)
+            ->add($this->gift_card_amount)
+            ->add($this->credit_amount);
+    }
+
     public function getReturnedTotal(): Money
     {
         if ($this->isReturned()) {
@@ -76,6 +84,7 @@ class Transaction extends Model
         return $this->products
             ->where('returned', '>=', 1)
             ->reduce(function (Money $carry, TransactionProduct $product) {
+                // todo use ::forTransactionProduct?
                 return $carry->add(TaxHelper::calculateFor($product->price, $product->returned, $product->pst !== null, [
                     'pst' => $product->pst,
                     'gst' => $product->gst,
@@ -88,34 +97,13 @@ class Transaction extends Model
         return $this->getReturnStatus() === self::STATUS_FULLY_RETURNED;
     }
 
-    public function getReturnStatus(): int
+    public function getReturnStatus(): string
     {
         if ($this->returned) {
             return self::STATUS_FULLY_RETURNED;
         }
 
-        $products_returned = 0;
-        $product_count = 0;
-
-        foreach ($this->products as $product) {
-            if ($product->returned >= $product->quantity) {
-                $products_returned++;
-            } else if ($product->returned > 0) {
-                // Semi returned if at least one product has a returned value
-                return self::STATUS_PARTIAL_RETURNED;
-            }
-
-            $product_count++;
-        }
-
-        if ($products_returned >= $product_count) {
-            // In case something went wrong and the status wasn't updated earlier, do it now
-            $this->update(['returned' => true]);
-            return self::STATUS_FULLY_RETURNED;
-        }
-
-        if ($products_returned > 0) {
-            // Will occur if two products are ordered with quantity of 1 and then 1 product is returned but not the other
+        if ($this->products->sum->returned > 0) {
             return self::STATUS_PARTIAL_RETURNED;
         }
 

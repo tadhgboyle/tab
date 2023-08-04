@@ -28,6 +28,7 @@
                         </button>
                     </div>
                 @endif
+{{--                TODO add helper to show how much they would be left owing with this amount subtracted from owing--}}
             </div>
             <div class="control pt-4">
                 <button class="button is-success" type="submit">

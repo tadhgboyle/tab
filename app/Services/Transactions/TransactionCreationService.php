@@ -2,6 +2,7 @@
 
 namespace App\Services\Transactions;
 
+use App\Models\Credit;
 use App\Models\GiftCard;
 use App\Models\User;
 use Cknow\Money\Money;
@@ -92,34 +93,46 @@ class TransactionCreationService extends Service
             $total_price = $total_price->add(TaxHelper::calculateFor($product->price, $quantity, $product->pst));
         }
 
-        $gift_card_code = $request->get('gift_card_code');
-        if ($gift_card_code) {
-            $gift_card = GiftCard::firstWhere('code', $gift_card_code);
-            if (!$gift_card) {
-                $this->_result = self::RESULT_INVALID_GIFT_CARD;
-                $this->_message = "Gift card with code {$gift_card_code} does not exist.";
-                return;
-            }
+        $charge_user_amount = $total_price;
 
-            $gift_card_balance = $gift_card->remaining_balance;
+        $available_credit = $purchaser->availableCredit();
+        $credit_amount = Money::min($available_credit, $total_price);
+        if ($credit_amount->isPositive()) {
+            $charge_user_amount = $total_price->subtract($credit_amount);
+        }
 
-            if ($gift_card_balance->isZero()) {
-                $this->_result = self::RESULT_INVALID_GIFT_CARD_BALANCE;
-                $this->_message = "Gift card with code {$gift_card_code} has a $0.00 balance.";
-                return;
-            }
+        if ($charge_user_amount->isPositive()) {
+            $gift_card_code = $request->get('gift_card_code');
+            if ($gift_card_code) {
+                $gift_card = GiftCard::firstWhere('code', $gift_card_code);
+                if (!$gift_card) {
+                    $this->_result = self::RESULT_INVALID_GIFT_CARD;
+                    $this->_message = "Gift card with code {$gift_card_code} does not exist.";
+                    return;
+                }
 
-            if ($gift_card_balance->greaterThanOrEqual($total_price)) {
-                $charge_user_amount = Money::parse(0);
-                $gift_card_amount = $total_price;
-                $gift_card_remaining_balance = $gift_card_balance->subtract($total_price);
+                $gift_card_balance = $gift_card->remaining_balance;
+
+                if ($gift_card_balance->isZero()) {
+                    $this->_result = self::RESULT_INVALID_GIFT_CARD_BALANCE;
+                    $this->_message = "Gift card with code {$gift_card_code} has a $0.00 balance.";
+                    return;
+                }
+
+                if ($gift_card_balance->greaterThanOrEqual($total_price)) {
+                    $charge_user_amount = Money::parse(0);
+                    $gift_card_amount = $total_price;
+                    $gift_card_remaining_balance = $gift_card_balance->subtract($total_price);
+                } else {
+                    $charge_user_amount = $total_price->subtract($gift_card_balance);
+                    $gift_card_amount = $gift_card_balance;
+                    $gift_card_remaining_balance = Money::parse(0);
+                }
             } else {
-                $charge_user_amount = $total_price->subtract($gift_card_balance);
-                $gift_card_amount = $gift_card_balance;
-                $gift_card_remaining_balance = Money::parse(0);
+                $charge_user_amount = $total_price;
+                $gift_card_amount = Money::parse(0);
             }
         } else {
-            $charge_user_amount = $total_price;
             $gift_card_amount = Money::parse(0);
         }
 
@@ -172,6 +185,9 @@ class TransactionCreationService extends Service
             $gift_card->remaining_balance = $gift_card_remaining_balance;
             $gift_card->save();
         }
+        if (isset($credit_amount)) {
+            $transaction->credit_amount = $credit_amount;
+        }
 
         if ($request->has('rotation_id')) {
             // For seeding random rotations
@@ -192,6 +208,29 @@ class TransactionCreationService extends Service
         });
 
         $purchaser->update(['balance' => $remaining_balance]);
+
+        // go through all their credits and use them up
+        if ($purchaser->availableCredit()->isPositive()) {
+            $credited_amount = Money::parse(0_00);
+            foreach ($purchaser->credits()->orderBy('amount')->get() as $credit) {
+                if ($credited_amount->equals($charge_user_amount)) {
+                    break;
+                }
+
+                $credit_remaining = $credit->amount->subtract($credit->amount_used);
+                if ($credited_amount->add($credit_remaining)->greaterThan($credited_amount)) {
+                    // only use the amount we need to use
+                    $credit_remaining = $charge_user_amount->subtract($credited_amount);
+                    $credit->amount_used = $credit->amount_used->add($credit_remaining);
+                } else {
+                    // use the whole credit
+                    $credit->amount_used = $credit->amount;
+                    $credited_amount = $credited_amount->add($credit_remaining);
+                }
+
+                $credit->save();
+            }
+        }
 
         $this->_result = self::RESULT_SUCCESS;
         $this->_message = 'Order #' . $transaction->id . '. ' . $purchaser->full_name . ' now has ' . $remaining_balance;

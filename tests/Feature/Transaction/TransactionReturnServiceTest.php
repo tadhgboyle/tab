@@ -191,7 +191,7 @@ class TransactionReturnServiceTest extends TestCase
         $this->assertSame($start_stock + $hat_count, $hat->refresh()->stock);
     }
 
-    public function testCreditIsNotMadeForGiftCardAmountIfZeroOnFullReturn(): void
+    public function testCreditIsNotMadeForCreditableAmountIfZeroOnFullReturn(): void
     {
         [$user, $transaction] = $this->createFakeRecords();
 
@@ -203,7 +203,7 @@ class TransactionReturnServiceTest extends TestCase
         $this->assertCount(0, $user->credits);
     }
 
-    public function testCreditIsMadeForGiftCardAmountIfPositiveOnFullReturn(): void
+    public function testCreditIsMadeForCreditableAmountIfPositiveOnFullReturn(): void
     {
         $giftCard = GiftCard::factory()->create([
             'original_balance' => $giftCardAmount = Money::parse(1_00),
@@ -216,6 +216,8 @@ class TransactionReturnServiceTest extends TestCase
         $charged_transaction_amount = $transaction->purchaser_amount;
         $balance_before = $user->balance;
 
+        // todo add credit to user and assert on credit_amount and transaction creditableAmount()
+
         $this->assertCount(0, $user->credits);
 
         $transactionService = (new TransactionReturnService($transaction))->return();
@@ -227,6 +229,21 @@ class TransactionReturnServiceTest extends TestCase
         $this->assertEquals($transaction->id, $user->credits->first()->transaction_id);
         $this->assertEquals($charged_transaction_amount->add($giftCardAmount), $transaction->total_price);
         $this->assertEquals($balance_before->add($charged_transaction_amount), $user->balance);
+    }
+
+    public function testNoCreditIsMadeWhenTransactionCreditsAlreadyEqualCreditableAmountOnPartialReturn(): void
+    {
+
+    }
+
+    public function testPartialCreditIsMadeWhenReturningAProductWouldExceedTheCreditableAmountOnPartialReturn(): void
+    {
+
+    }
+
+    public function testFullCreditIsMadeWhenReturningAProductWouldNotExceedTheCreditableAmountOnPartialReturn(): void
+    {
+
     }
 
     /**
