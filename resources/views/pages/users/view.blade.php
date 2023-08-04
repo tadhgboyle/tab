@@ -67,13 +67,13 @@
                                 <td>
                                     <div>
                                         @switch($transaction->getReturnStatus())
-                                            @case(0)
+                                            @case('NOT_RETURNED')
                                                 <span class="tag is-success is-medium">Normal</span>
                                             @break
-                                            @case(1)
+                                            @case('FULLY_RETURNED')
                                                 <span class="tag is-danger is-medium">Returned</span>
                                             @break
-                                            @case(2)
+                                            @case('PARTIAL_RETURNED')
                                                 <span class="tag is-warning is-medium">Semi Returned</span>
                                             @break
                                         @endswitch
@@ -474,7 +474,7 @@
             </table>
         </section>
         <footer class="modal-card-foot">
-            <button class="button" onclick="closeOwingModal();">Close</button>
+            <button class="button" onclick="closeCreditsModal();">Close</button>
         </footer>
     </div>
 </div>

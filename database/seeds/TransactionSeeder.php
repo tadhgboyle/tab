@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\GiftCard;
+use App\Services\Transactions\TransactionReturnProductService;
 use Auth;
 use App\Models\User;
 use App\Models\Product;
@@ -85,7 +86,8 @@ class TransactionSeeder extends Seeder
                         $returning = random_int(0, $max_to_return);
 
                         for ($j = 0; $j <= $returning; $j++) {
-                            (new TransactionReturnService($transaction))->returnItem(Product::find($product_id));
+                            $transactionProduct = $transaction->products->firstWhere('product_id', $product_id);
+                            (new TransactionReturnProductService($transaction, $transactionProduct))->return();
                         }
                     }
                 }

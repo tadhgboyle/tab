@@ -13,9 +13,9 @@
         <p><strong>Purchaser amount:</strong> {{ $transaction->purchaser_amount }}</p>
         <p><strong>Gift card amount:</strong> {{ $transaction->gift_card_amount }}</p>
         <p><strong>Credit amount:</strong> {{ $transaction->credit_amount }}</p>
-        <p><strong>Status:</strong> @switch($transaction->getReturnStatus()) @case(0) Not Returned @break @case(1) Returned @break @case(2) Semi Returned @break @endswitch</p>
+        <p><strong>Status:</strong> @switch($transaction->getReturnStatus()) @case('NOT_RETURNED') Not Returned @break @case('FULLY_RETURNED') Returned @break @case('PARTIAL_RETURNED') Semi Returned @break @endswitch</p>
         <br>
-        @if($transaction->getReturnStatus() !== 1 && hasPermission(\App\Helpers\Permission::ORDERS_RETURN))
+        @if($transaction->getReturnStatus() !== 'FULLY_RETURNED' && hasPermission(\App\Helpers\Permission::ORDERS_RETURN))
             <button class="button is-danger is-outlined" type="button" onclick="openModal();">
                 <span>Return</span>
                 <span class="icon is-small">
@@ -59,7 +59,7 @@
                         <td>
                             <div>
                                 @if(!$transaction->returned && $product->returned < $product->quantity)
-                                    <button class="button is-danger is-small"  onclick="openProductModal({{ $product['product_id'] }});">Return ({{ $product['quantity'] - $product['returned'] }})</button>
+                                    <button class="button is-danger is-small"  onclick="openProductModal({{ $product->id }});">Return ({{ $product->quantity - $product->returned }})</button>
                                 @else
                                     <div><i>Returned</i></div>
                                 @endif
@@ -145,23 +145,23 @@
             modal_order.classList.remove('is-active');
         }
 
-        let product = null;
+        let transactionProduct = null;
         const modal_product = document.querySelector('.modal-product');
 
         function openProductModal(return_product) {
-            product = return_product;
+            transactionProduct = return_product;
             modal_product.classList.add('is-active');
         }
 
         function closeProductModal() {
-            product = null;
+            transactionProduct = null;
             modal_product.classList.remove('is-active');
         }
 
         function returnProductData() {
-            let url = '{{ route("orders_return_item", [":order", ":product"]) }}';
+            let url = '{{ route("orders_return_item", [":order", ":transactionProduct"]) }}';
             url = url.replace(':order', {{ $transaction->id }});
-            url = url.replace(':product', product);
+            url = url.replace(':transactionProduct', transactionProduct);
             $("#returnItemForm").attr('action', url);
             $("#returnItemForm").submit();
         }

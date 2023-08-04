@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TransactionProduct;
 use App\Models\User;
 use App\Models\Product;
 use App\Helpers\Permission;
 use App\Models\Transaction;
+use App\Services\Transactions\TransactionReturnProductService;
 use Illuminate\Http\Request;
 use App\Helpers\SettingsHelper;
 use Illuminate\Http\RedirectResponse;
@@ -54,9 +56,8 @@ class TransactionController extends Controller
         return (new TransactionReturnService($transaction))->return()->redirect();
     }
 
-    // TODO: make TransactionProduct
-    public function returnProduct(Transaction $transaction, Product $product): RedirectResponse
+    public function returnProduct(Transaction $transaction, TransactionProduct $transactionProduct): RedirectResponse
     {
-        return (new TransactionReturnService($transaction))->returnItem($product)->redirect();
+        return (new TransactionReturnProductService($transaction, $transactionProduct))->return()->redirect();
     }
 }

@@ -16,11 +16,11 @@ class ActivityRegistrationCreationService extends Service
     use ActivityService;
     use ActivityRegistrationService;
 
-    public const RESULT_ALREADY_REGISTERED = 0;
-    public const RESULT_OUT_OF_SLOTS = 1;
-    public const RESULT_NO_BALANCE = 2;
-    public const RESULT_OVER_USER_LIMIT = 3;
-    public const RESULT_SUCCESS = 4;
+    public const RESULT_ALREADY_REGISTERED = 'ALREADY_REGISTERED';
+    public const RESULT_OUT_OF_SLOTS = 'OUT_OF_SLOTS';
+    public const RESULT_NO_BALANCE = 'NO_BALANCE';
+    public const RESULT_OVER_USER_LIMIT = 'OVER_USER_LIMIT';
+    public const RESULT_SUCCESS = 'SUCCESS';
 
     public function __construct(Activity $activity, User $user)
     {

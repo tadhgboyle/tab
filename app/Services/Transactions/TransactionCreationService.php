@@ -2,7 +2,6 @@
 
 namespace App\Services\Transactions;
 
-use App\Models\Credit;
 use App\Models\GiftCard;
 use App\Models\User;
 use Cknow\Money\Money;
@@ -24,16 +23,16 @@ class TransactionCreationService extends Service
 {
     use TransactionService;
 
-    public const RESULT_NO_SELF_PURCHASE = 0;
-    public const RESULT_NO_ITEMS_SELECTED = 1;
-    public const RESULT_NEGATIVE_QUANTITY = 2;
-    public const RESULT_NO_STOCK = 3;
-    public const RESULT_NOT_ENOUGH_BALANCE = 4;
-    public const RESULT_NOT_ENOUGH_CATEGORY_BALANCE = 5;
-    public const RESULT_NO_CURRENT_ROTATION = 6;
-    public const RESULT_INVALID_GIFT_CARD = 7;
-    public const RESULT_INVALID_GIFT_CARD_BALANCE = 8;
-    public const RESULT_SUCCESS = 9;
+    public const RESULT_NO_SELF_PURCHASE = 'NO_SELF_PURCHASE';
+    public const RESULT_NO_ITEMS_SELECTED = 'NO_ITEMS_SELECTED';
+    public const RESULT_NEGATIVE_QUANTITY = 'NEGATIVE_QUANTITY';
+    public const RESULT_NO_STOCK = 'NO_STOCK';
+    public const RESULT_NOT_ENOUGH_BALANCE = 'NOT_ENOUGH_BALANCE';
+    public const RESULT_NOT_ENOUGH_CATEGORY_BALANCE = 'NOT_ENOUGH_CATEGORY_BALANCE';
+    public const RESULT_NO_CURRENT_ROTATION = 'NO_CURRENT_ROTATION';
+    public const RESULT_INVALID_GIFT_CARD = 'INVALID_GIFT_CARD';
+    public const RESULT_INVALID_GIFT_CARD_BALANCE = 'INVALID_GIFT_CARD_BALANCE';
+    public const RESULT_SUCCESS = 'SUCCESS';
 
     public function __construct(Request $request, User $purchaser)
     {
@@ -124,12 +123,11 @@ class TransactionCreationService extends Service
                     $gift_card_amount = $total_price;
                     $gift_card_remaining_balance = $gift_card_balance->subtract($total_price);
                 } else {
-                    $charge_user_amount = $total_price->subtract($gift_card_balance);
+                    $charge_user_amount = $charge_user_amount->subtract($gift_card_balance);
                     $gift_card_amount = $gift_card_balance;
                     $gift_card_remaining_balance = Money::parse(0);
                 }
             } else {
-                $charge_user_amount = $total_price;
                 $gift_card_amount = Money::parse(0);
             }
         } else {
@@ -179,14 +177,12 @@ class TransactionCreationService extends Service
         $transaction->cashier_id = auth()->id();
         $transaction->total_price = $total_price;
         $transaction->purchaser_amount = $charge_user_amount;
+        $transaction->credit_amount = $credit_amount;
         $transaction->gift_card_amount = $gift_card_amount;
         $transaction->gift_card_id = isset($gift_card) ? $gift_card->id : null;
         if (isset($gift_card, $gift_card_remaining_balance)) {
             $gift_card->remaining_balance = $gift_card_remaining_balance;
             $gift_card->save();
-        }
-        if (isset($credit_amount)) {
-            $transaction->credit_amount = $credit_amount;
         }
 
         if ($request->has('rotation_id')) {
@@ -218,17 +214,18 @@ class TransactionCreationService extends Service
                 }
 
                 $credit_remaining = $credit->amount->subtract($credit->amount_used);
-                if ($credited_amount->add($credit_remaining)->greaterThan($credited_amount)) {
+                // if $10 + $5 > $12, only use $2
+                if ($credited_amount->add($credit_remaining)->greaterThan($charge_user_amount)) {
                     // only use the amount we need to use
-                    $credit_remaining = $charge_user_amount->subtract($credited_amount);
-                    $credit->amount_used = $credit->amount_used->add($credit_remaining);
+                    $credit->amount_used = $credit->amount_used->add($charge_user_amount->subtract($credited_amount));
                 } else {
                     // use the whole credit
                     $credit->amount_used = $credit->amount;
-                    $credited_amount = $credited_amount->add($credit_remaining);
                 }
 
+                $credited_amount = $credited_amount->add($credit_remaining);
                 $credit->save();
+
             }
         }
 

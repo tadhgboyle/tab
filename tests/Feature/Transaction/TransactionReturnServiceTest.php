@@ -3,6 +3,7 @@
 namespace Tests\Feature\Transaction;
 
 use App\Models\GiftCard;
+use App\Models\Rotation;
 use Cknow\Money\Money;
 use Tests\TestCase;
 use App\Models\Role;
@@ -32,37 +33,7 @@ class TransactionReturnServiceTest extends TestCase
         $this->assertTrue($transaction->isReturned());
     }
 
-    public function testUserBalanceAndTransactionTotalsUpdatedAfterItemReturn(): void
-    {
-        [$user, $transaction, $hat] = $this->createFakeRecords();
-        $balance_before = $user->balance;
-
-        $transactionService = (new TransactionReturnService($transaction))->returnItem($hat);
-        $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
-
-        $this->assertSame(Transaction::STATUS_PARTIAL_RETURNED, $transaction->getReturnStatus());
-
-        $this->assertEquals(
-            $balance_before->add($hat->getPriceAfterTax()),
-            $user->refresh()->balance
-        );
-        $this->assertEquals($hat->getPriceAfterTax(), $user->findReturned());
-
-        $this->assertEquals($hat->getPriceAfterTax(), $transaction->getReturnedTotal());
-    }
-
-    public function testProductReturnedValueUpdatedAfterItemReturn(): void
-    {
-        [, $transaction, $hat] = $this->createFakeRecords();
-
-        $transactionService = (new TransactionReturnService($transaction))->returnItem($hat);
-        $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
-
-        $hatTransactionProduct = $transaction->products->firstWhere('product_id', $hat->id);
-        $this->assertSame(1, $hatTransactionProduct->refresh()->returned);
-    }
-
-    public function testUserBalanceUpdatedAfterTransactionReturn(): void
+    public function testUserBalanceUpdated(): void
     {
         [$user, $transaction] = $this->createFakeRecords();
         $balance_before = $user->balance;
@@ -79,7 +50,7 @@ class TransactionReturnServiceTest extends TestCase
         $this->assertEquals($transaction->total_price, $user->findReturned());
     }
 
-    public function testProductReturnedValueUpdatedAfterTransactionReturn(): void
+    public function testProductReturnedValueUpdated(): void
     {
         [, $transaction, $hat] = $this->createFakeRecords();
 
@@ -88,19 +59,6 @@ class TransactionReturnServiceTest extends TestCase
 
         $hatTransactionProduct = $transaction->products->firstWhere('product_id', $hat->id);
         $this->assertSame(2, $hatTransactionProduct->refresh()->returned);
-    }
-
-    public function testCanReturnPartiallyReturnedItemInTransaction(): void
-    {
-        [$user, $transaction, $hat] = $this->createFakeRecords();
-
-        (new TransactionReturnService($transaction))->returnItem($hat);
-        $transactionService = (new TransactionReturnService($transaction))->returnItem($hat);
-        $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
-
-        $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->getReturnStatus());
-        $this->assertTrue($transaction->isReturned());
-        $this->assertEquals($transaction->total_price, $user->findReturned());
     }
 
     public function testCannotReturnFullyReturnedTransaction(): void
@@ -117,39 +75,7 @@ class TransactionReturnServiceTest extends TestCase
         $this->assertEquals($transaction->total_price, $user->findReturned());
     }
 
-    public function testCannotReturnFullyReturnedItemInTransaction(): void
-    {
-        [$user, , $hat] = $this->createFakeRecords();
-        $transaction_2_items = $this->createTwoItemTransaction($user, $hat);
-
-        $transactionService1 = (new TransactionReturnService($transaction_2_items))->returnItem($hat);
-        $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService1->getResult());
-
-        $transactionService2 = (new TransactionReturnService($transaction_2_items))->returnItem($hat);
-        $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService2->getResult());
-
-        $transactionService3 = (new TransactionReturnService($transaction_2_items))->returnItem($hat);
-        $this->assertSame(TransactionReturnService::RESULT_ITEM_RETURNED_MAX_TIMES, $transactionService3->getResult());
-
-        $this->assertSame(Transaction::STATUS_PARTIAL_RETURNED, $transaction_2_items->getReturnStatus());
-        $this->assertEquals($hat->getPriceAfterTax()->multiply(2), $user->findReturned());
-    }
-
-    public function testProductStockIsNotRestoredIfSettingDisabledOnPartialReturn(): void
-    {
-        [, $transaction, $hat] = $this->createFakeRecords(5);
-
-        $hat->update([
-            'restore_stock_on_return' => false,
-            'stock' => $start_stock = 12,
-        ]);
-
-        (new TransactionReturnService($transaction))->returnItem($hat);
-
-        $this->assertSame($start_stock, $hat->refresh()->stock);
-    }
-
-    public function testProductStockIsNotRestoredIfSettingDisabledOnFullReturn(): void
+    public function testProductStockIsNotRestoredIfSettingDisabled(): void
     {
         [, $transaction, $hat] = $this->createFakeRecords(5);
 
@@ -163,21 +89,7 @@ class TransactionReturnServiceTest extends TestCase
         $this->assertSame($start_stock, $hat->refresh()->stock);
     }
 
-    public function testProductStockIsRestoredIfSettingEnabledOnPartialReturn(): void
-    {
-        [, $transaction, $hat] = $this->createFakeRecords(5);
-
-        $hat->update([
-            'restore_stock_on_return' => true,
-            'stock' => $start_stock = 12,
-        ]);
-
-        (new TransactionReturnService($transaction))->returnItem($hat);
-
-        $this->assertEquals($start_stock + 1, $hat->refresh()->stock);
-    }
-
-    public function testProductStockIsRestoredIfSettingEnabledOnFullReturn(): void
+    public function testProductStockIsRestoredIfSettingEnabled(): void
     {
         [, $transaction, $hat] = $this->createFakeRecords($hat_count = 5);
 
@@ -191,7 +103,7 @@ class TransactionReturnServiceTest extends TestCase
         $this->assertSame($start_stock + $hat_count, $hat->refresh()->stock);
     }
 
-    public function testCreditIsNotMadeForCreditableAmountIfZeroOnFullReturn(): void
+    public function testCreditIsNotMadeForCreditableAmountIfZero(): void
     {
         [$user, $transaction] = $this->createFakeRecords();
 
@@ -203,7 +115,7 @@ class TransactionReturnServiceTest extends TestCase
         $this->assertCount(0, $user->credits);
     }
 
-    public function testCreditIsMadeForCreditableAmountIfPositiveOnFullReturn(): void
+    public function testCreditIsMadeForCreditableAmountIfPositive(): void
     {
         $giftCard = GiftCard::factory()->create([
             'original_balance' => $giftCardAmount = Money::parse(1_00),
@@ -212,46 +124,34 @@ class TransactionReturnServiceTest extends TestCase
                 'role_id' => Role::factory()->create(['name' => 'Admin'])->id,
             ])->id,
         ]);
-        [$user, $transaction] = $this->createFakeRecords(gift_card_code: $giftCard->code);
+        [$user, $transaction] = $this->createFakeRecords(gift_card_code: $giftCard->code, create_credit_amount: $creditAmount = Money::parse(4_00));
+
         $charged_transaction_amount = $transaction->purchaser_amount;
         $balance_before = $user->balance;
-
-        // todo add credit to user and assert on credit_amount and transaction creditableAmount()
-
-        $this->assertCount(0, $user->credits);
 
         $transactionService = (new TransactionReturnService($transaction))->return();
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
         $user = $user->refresh();
-        $this->assertCount(1, $user->credits);
-        $this->assertEquals($giftCardAmount, $user->credits->first()->amount);
+        $this->assertCount(2, $user->credits); // one made by passing create_credit_amount, one made by the return
+        $this->assertEquals($giftCardAmount->add($creditAmount), $user->credits->last()->amount);
+        $this->assertEquals("Refund for order #{$transaction->id}", $user->credits->last()->reason);
         $this->assertEquals($giftCardAmount, $transactionService->getTransaction()->gift_card_amount);
-        $this->assertEquals($transaction->id, $user->credits->first()->transaction_id);
-        $this->assertEquals($charged_transaction_amount->add($giftCardAmount), $transaction->total_price);
+        $this->assertEquals($transaction->id, $user->credits->last()->transaction_id);
+        $this->assertEquals($charged_transaction_amount->add($giftCardAmount)->add($creditAmount), $transaction->total_price);
         $this->assertEquals($balance_before->add($charged_transaction_amount), $user->balance);
-    }
-
-    public function testNoCreditIsMadeWhenTransactionCreditsAlreadyEqualCreditableAmountOnPartialReturn(): void
-    {
-
-    }
-
-    public function testPartialCreditIsMadeWhenReturningAProductWouldExceedTheCreditableAmountOnPartialReturn(): void
-    {
-
-    }
-
-    public function testFullCreditIsMadeWhenReturningAProductWouldNotExceedTheCreditableAmountOnPartialReturn(): void
-    {
-
+        $this->assertEquals($creditAmount, $transaction->credit_amount);
+        $this->assertEquals($giftCardAmount->add($creditAmount), $transaction->creditableAmount());
+        $this->assertEquals("Test Credit", $user->credits->first()->reason);
+        $this->assertEquals($creditAmount, $user->credits->first()->amount_used);
     }
 
     /**
      * @param int $hat_count
-     *
+     * @param string|null $gift_card_code
+     * @param Money|null $create_credit_amount
      * @return array<User, Transaction, Product>
      */
-    private function createFakeRecords(int $hat_count = 2, string $gift_card_code = null): array
+    private function createFakeRecords(int $hat_count = 2, string $gift_card_code = null, Money $create_credit_amount = null): array
     {
         app(RotationSeeder::class)->run();
 
@@ -262,6 +162,21 @@ class TransactionReturnServiceTest extends TestCase
             'role_id' => $role->id,
             'balance' => 300_00
         ]);
+
+        if ($create_credit_amount) {
+            $user->credits()->create([
+                'amount' => $create_credit_amount,
+                'transaction_id' => Transaction::factory()->create([
+                    'purchaser_id' => $user->id,
+                    'cashier_id' => $user->id,
+                    'purchaser_amount' => $create_credit_amount,
+                    'gift_card_amount' => $create_credit_amount,
+                    'total_price' => $create_credit_amount,
+                    'rotation_id' => Rotation::all()->random()->id,
+                ])->id,
+                'reason' => 'Test Credit',
+            ]);
+        }
 
         $this->actingAs($user);
 
@@ -287,18 +202,16 @@ class TransactionReturnServiceTest extends TestCase
             ]
         ]);
 
-        $transaction = (new TransactionCreationService(new Request(
-            [
-                'products' => json_encode([
-                    [
-                        'id' => $hat->id,
-                        'quantity' => $hat_count,
-                    ],
-                ]),
-                'gift_card_code' => $gift_card_code,
-                'purchaser_id' => $user->id
-            ]
-        ), $user))->getTransaction(); // $26.8576 -> $3.1424
+        $transaction = (new TransactionCreationService(new Request([
+            'products' => json_encode([
+                [
+                    'id' => $hat->id,
+                    'quantity' => $hat_count,
+                ],
+            ]),
+            'gift_card_code' => $gift_card_code,
+            'purchaser_id' => $user->id
+        ]), $user))->getTransaction(); // $26.8576 -> $3.1424
 
         return [$user, $transaction, $hat];
     }

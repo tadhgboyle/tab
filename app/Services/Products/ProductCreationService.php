@@ -11,7 +11,7 @@ class ProductCreationService extends Service
 {
     use ProductService;
 
-    public const RESULT_SUCCESS = 0;
+    public const RESULT_SUCCESS = 'SUCCESS';
 
     public function __construct(ProductRequest $request)
     {

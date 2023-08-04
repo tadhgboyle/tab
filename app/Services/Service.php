@@ -6,10 +6,10 @@ use Illuminate\Http\RedirectResponse;
 
 abstract class Service
 {
-    protected int $_result;
+    protected string $_result;
     protected string $_message;
 
-    final public function getResult(): int
+    final public function getResult(): string
     {
         return $this->_result;
     }

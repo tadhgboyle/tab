@@ -89,7 +89,7 @@ Route::middleware('auth')->group(function () {
 
         Route::group(['middleware' => 'permission:' . Permission::ORDERS_RETURN], static function () {
             Route::put('/{transaction}/return', [TransactionController::class, 'returnTransaction'])->name('orders_return');
-            Route::put('/{transaction}/return/{product}', [TransactionController::class, 'returnProduct'])->name('orders_return_item');
+            Route::put('/{transaction}/return/{transactionProduct}', [TransactionController::class, 'returnProduct'])->name('orders_return_item');
         });
     });
 
