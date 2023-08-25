@@ -55,7 +55,7 @@ class TransactionReturnService extends Service
 
     private function refundPurchaser(): void
     {
-        // todo what happens when returning an already partially returned order?
+        // TODO only credit the remaining amount - if the order was already partially returned, I think updating `creditableAmount` helps
         $purchaser = $this->_transaction->purchaser;
         $creditable_amount = $this->_transaction->creditableAmount();
 
@@ -64,6 +64,7 @@ class TransactionReturnService extends Service
             $purchaser->credits()->create([
                 'transaction_id' => $this->_transaction->id,
                 'amount' => $creditable_amount,
+                // TODO if order was previously partially returned, make this "complete refund ...
                 'reason' => 'Refund for order #' . $this->_transaction->id,
             ]);
         }

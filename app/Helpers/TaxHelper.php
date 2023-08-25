@@ -8,11 +8,11 @@ use Cknow\Money\Money;
 class TaxHelper
 {
     // TODO add test
-    public static function forTransactionProduct(TransactionProduct $product): Money
+    public static function forTransactionProduct(TransactionProduct $product, int $quantity): Money
     {
         return self::calculateFor(
             $product->price,
-            $product->quantity - $product->returned,
+            $quantity,
             $product->pst !== null,
             [
                 'pst' => $product->pst,

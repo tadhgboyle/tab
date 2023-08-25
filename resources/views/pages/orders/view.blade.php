@@ -35,7 +35,7 @@
                     <th>Name</th>
                     <th>Price</th>
                     <th>Quantity</th>
-                    <th>Item Price</th>
+                    <th>Item Subtotal</th>
                     @permission(\App\Helpers\Permission::ORDERS_RETURN)
                     <th></th>
                     @endpermission

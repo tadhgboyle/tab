@@ -94,8 +94,7 @@ class TransactionCreationService extends Service
 
         $charge_user_amount = $total_price;
 
-        $available_credit = $purchaser->availableCredit();
-        $credit_amount = Money::min($available_credit, $total_price);
+        $credit_amount = Money::min($purchaser->availableCredit(), $total_price);
         if ($credit_amount->isPositive()) {
             $charge_user_amount = $total_price->subtract($credit_amount);
         }
@@ -206,7 +205,7 @@ class TransactionCreationService extends Service
         $purchaser->update(['balance' => $remaining_balance]);
 
         // go through all their credits and use them up
-        if ($purchaser->availableCredit()->isPositive()) {
+        if ($credit_amount->isPositive()) {
             $credited_amount = Money::parse(0_00);
             foreach ($purchaser->credits()->orderBy('amount')->get() as $credit) {
                 if ($credited_amount->equals($charge_user_amount)) {
@@ -217,15 +216,16 @@ class TransactionCreationService extends Service
                 // if $10 + $5 > $12, only use $2
                 if ($credited_amount->add($credit_remaining)->greaterThan($charge_user_amount)) {
                     // only use the amount we need to use
-                    $credit->amount_used = $credit->amount_used->add($charge_user_amount->subtract($credited_amount));
+                    $credit_used = $charge_user_amount->subtract($credited_amount);
+                    $credit->amount_used = $credit->amount_used->add($credit_used);
                 } else {
                     // use the whole credit
-                    $credit->amount_used = $credit->amount;
+                    $credit_used = $credit->amount;
+                    $credit->amount_used = $credit_used;
                 }
 
-                $credited_amount = $credited_amount->add($credit_remaining);
+                $credited_amount = $credited_amount->add($credit_used);
                 $credit->save();
-
             }
         }
 

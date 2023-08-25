@@ -16,12 +16,11 @@ return new class extends Migration
         Schema::create('credits', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->foreignId('transaction_id')->constrained();
+            $table->foreignId('transaction_id')->nullable()->constrained();
             $table->integer('amount');
             $table->integer('amount_used')->default(0);
             $table->string('reason');
-            // TODO allow issuing credits by a staff member. would these have null transaction_id or should transactions use a pivot table for tracking credits...
-            //$table->string('issuer');
+            $table->foreignId('issuer_id')->default(null)->nullable()->references('id')->on('users');
             $table->timestamps();
         });
     }

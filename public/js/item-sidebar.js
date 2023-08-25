@@ -191,12 +191,16 @@ const render = () => {
     document.getElementById('purchaser-amount').innerText = `$${calculatePurchaserAmount().toFixed(2)}`;
     document.getElementById('remaining-balance').innerText = `$${remainingBalance.toFixed(2)}`;
 
-    if (remainingBalance < 0) {
-        document.getElementById('remaining-balance').classList.add('has-text-danger');
+    if (ITEMS.length === 0) {
         document.getElementById('submit-button').disabled = true;
     } else {
-        document.getElementById('remaining-balance').classList.remove('has-text-danger');
-        document.getElementById('submit-button').disabled = false;
+        if (remainingBalance < 0) {
+            document.getElementById('remaining-balance').classList.add('has-text-danger');
+            document.getElementById('submit-button').disabled = true;
+        } else {
+            document.getElementById('remaining-balance').classList.remove('has-text-danger');
+            document.getElementById('submit-button').disabled = false;
+        }
     }
 
     GIFT_CARD_CODE_INPUT.addEventListener('keyup', toggleGiftCardApplyButton);

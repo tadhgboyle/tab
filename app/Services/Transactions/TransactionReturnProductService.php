@@ -58,40 +58,47 @@ class TransactionReturnProductService extends Service
 
     private function refundPurchaser(): void
     {
-        $product_total = TaxHelper::forTransactionProduct($this->_transactionProduct);
+        $product_total = TaxHelper::forTransactionProduct($this->_transactionProduct, 1);
+        // TODO add test
+        if ($product_total->isZero()) {
+            return;
+        }
+
         $purchaser = $this->_transaction->purchaser;
 
         // check if there is any gift card used
         $creditable_amount = $this->_transaction->creditableAmount();
-        if ($creditable_amount->isPositive()) {
-            // check if we have credited the same amount as the creditable amount yet
-            $transaction_credits_amount = $this->_transaction->credits->reduce(function (Money $carry, Credit $credit) {
-                return $carry->add($credit->amount);
-            }, Money::parse(0));
-
-            // if yes, return in cash
-            if ($transaction_credits_amount->equals($creditable_amount)) {
-                $purchaser->update(['balance' => $purchaser->balance->add($product_total)]);
-            } elseif ($transaction_credits_amount->add($product_total)->greaterThan($creditable_amount)) {
-                // if crediting this product exceeds the creditable amount, only credit the difference and return the rest in cash
-                $amount_to_credit = $creditable_amount->subtract($transaction_credits_amount);
-                $purchaser->credits()->create([
-                    'transaction_id' => $this->_transaction->id,
-                    'amount' => $amount_to_credit,
-                    'reason' => 'Partial refund of ' . $this->_transactionProduct->product->name . ' for order #' . $this->_transaction->id,
-                ]);
-                $purchaser->update(['balance' => $purchaser->balance->add($product_total->subtract($amount_to_credit))]);
-            } else {
-                // if no, credit the amount of the product
-                $purchaser->credits()->create([
-                    'transaction_id' => $this->_transaction->id,
-                    'amount' => $product_total,
-                    'reason' => 'Refund of ' . $this->_transactionProduct->product->name . ' for order #' . $this->_transaction->id,
-                ]);
-            }
-        } else {
+        if (!$creditable_amount->isPositive()) {
             // if no, return in cash
             $purchaser->update(['balance' => $purchaser->balance->add($product_total)]);
+            return;
+        }
+
+        // check if we have credited the same amount as the creditable amount yet
+        $transaction_credits_amount = $this->_transaction->credits->reduce(function (Money $carry, Credit $credit) {
+            return $carry->add($credit->amount);
+        }, Money::parse(0));
+
+        // if yes, return in cash
+        if ($transaction_credits_amount->equals($creditable_amount)) {
+            $purchaser->update(['balance' => $purchaser->balance->add($product_total)]);
+        } elseif ($transaction_credits_amount->add($product_total)->greaterThan($creditable_amount)) {
+            // if crediting this product exceeds the creditable amount, only credit the difference and return the rest in cash
+            $amount_to_credit = $creditable_amount->subtract($transaction_credits_amount);
+            $purchaser->credits()->create([
+                'transaction_id' => $this->_transaction->id,
+                'amount' => $amount_to_credit,
+                // todo check if this is only product and only 1 quantity was bought and change message to "Refund for order #<>"
+                'reason' => 'Partial refund of ' . $this->_transactionProduct->product->name . ' for order #' . $this->_transaction->id,
+            ]);
+            $purchaser->update(['balance' => $purchaser->balance->add($product_total->subtract($amount_to_credit))]);
+        } else {
+            // if no, credit the amount of the product
+            $purchaser->credits()->create([
+                'transaction_id' => $this->_transaction->id,
+                'amount' => $product_total,
+                'reason' => 'Refund of ' . $this->_transactionProduct->product->name . ' for order #' . $this->_transaction->id,
+            ]);
         }
     }
 

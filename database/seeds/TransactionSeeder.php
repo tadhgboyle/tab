@@ -52,9 +52,6 @@ class TransactionSeeder extends Seeder
 
                 if (random_int(0, 10) === 0) {
                     $giftCard = GiftCard::all()->random();
-                    if (random_int(0, 5)) {
-                        $giftCard->remaining_balance = Money::parse(random_int(0, 100_00));
-                    }
                 }
 
                 $service = new TransactionCreationService(new Request([

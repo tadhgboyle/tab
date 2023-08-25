@@ -68,7 +68,8 @@ class Transaction extends Model
     {
         return Money::parse(0_00)
             ->add($this->gift_card_amount)
-            ->add($this->credit_amount);
+            ->add($this->credit_amount)
+            ->subtract(...$this->credits->map->amount);
     }
 
     public function getReturnedTotal(): Money

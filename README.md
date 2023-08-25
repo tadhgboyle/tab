@@ -136,6 +136,7 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
 - Tax-free products / users
 - User tags (tax free tagged, limit of xyz tag, etc)
 - Rename Transaction classes to Order
+- Allow categories to be PST and/or GST exempt
 
 ## Issues/Bugs
 - Add check balance modal for gift card (under a "tools" dropdown?)

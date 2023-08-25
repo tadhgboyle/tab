@@ -25,6 +25,12 @@ class Credit extends Model
         return $this->belongsTo(User::class);
     }
 
+    // TODO polymorphic issuer? User or Transaction?
+    public function issuer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'issuer_id');
+    }
+
     public function transaction(): BelongsTo
     {
         return $this->belongsTo(Transaction::class);

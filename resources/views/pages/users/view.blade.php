@@ -150,7 +150,7 @@
                             <tr>
                                 <th>Time</th>
                                 <th>Reason</th>
-    {{--                            <th>Issuer</th>--}}
+                                <th>Issuer</th>
                                 <th>Amount</th>
                                 <th>Amount Used</th>
                                 <th>Amount Available</th>
@@ -164,6 +164,9 @@
                                 </td>
                                 <td>
                                     <div><code>{{ $credit->reason }}</code></div>
+                                </td>
+                                <td>
+                                    <div><code>{{ $credit->issuer_id === 0 ? 'System' : $credit->isser->full_name }}</code></div>
                                 </td>
                                 <td>
                                     <div>{{ $credit->amount }}</div>
@@ -447,10 +450,10 @@
                     @if($credit->amount_used->isPositive())
                         <tr>
                             <td>
-                                <div>Used #{{ $credit->id }})</div>
+                                <div>Used #{{ $credit->id }}</div>
                             </td>
                             <td>
-                                <div>-{{ $credit->amount->subtract($credit->amount_used) }}</div>
+                                <div>-{{ $credit->amount_used }}</div>
                             </td>
                         </tr>
                     @endif

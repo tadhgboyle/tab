@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Transaction;
 
+use App\Models\Credit;
 use App\Models\GiftCard;
 use App\Models\Role;
 use App\Models\Rotation;
@@ -97,8 +98,13 @@ class TransactionTest extends TestCase
             'gift_card_amount' => 2_50,
             'credit_amount' => 5_50,
         ]);
+        $transaction->credits()->create([
+            'amount' => 3_50,
+            'reason' => 'test',
+        ]);
 
-        $this->assertEquals(8_00, $transaction->creditableAmount()->getAmount());
+        // $2.50 GC + $5.50 C - $3.50 C = $4.50
+        $this->assertEquals(4_50, $transaction->creditableAmount()->getAmount());
     }
 
     public function testGetReturnedTotalIsFullPriceIfFullyReturned(): void
