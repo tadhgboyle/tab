@@ -6,7 +6,7 @@ use App\Models\Role;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
 
-class PermissionHelper extends Helper
+class PermissionHelper
 {
     private array $_permissions = [];
 

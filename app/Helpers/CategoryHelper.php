@@ -6,7 +6,7 @@ use App\Models\Category;
 use App\Casts\CategoryType;
 use Illuminate\Support\Collection;
 
-class CategoryHelper extends Helper
+class CategoryHelper
 {
     private Collection $categories;
     private Collection $productCategories;

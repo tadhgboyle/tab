@@ -108,7 +108,7 @@ class TransactionCreationServiceTest extends TestCase
         $this->assertCount(1, $camper_user->refresh()->transactions);
         $this->assertEquals($camper_user->id, $transactionService->getTransaction()->purchaser->id);
         $this->assertEquals($staff_user->id, $transactionService->getTransaction()->cashier->id);
-        $this->assertEquals(RotationHelper::getInstance()->getCurrentRotation()->id, $transactionService->getTransaction()->rotation->id);
+        $this->assertEquals(resolve(RotationHelper::class)->getCurrentRotation()->id, $transactionService->getTransaction()->rotation->id);
         $this->assertEquals($transactionService->getTransaction()->total_price, $camper_user->findSpent());
         $this->assertEquals('Chips', $transactionService->getTransaction()->products->first()->product->name);
         $this->assertEquals($transactionService->getTransaction()->products->first()->transaction->id, $transactionService->getTransaction()->id);

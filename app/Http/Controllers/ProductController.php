@@ -25,7 +25,7 @@ class ProductController extends Controller
     public function create()
     {
         return view('pages.products.form', [
-            'categories' => CategoryHelper::getInstance()->getProductCategories(),
+            'categories' => resolve(CategoryHelper::class)->getProductCategories(),
         ]);
     }
 
@@ -38,7 +38,7 @@ class ProductController extends Controller
     {
         return view('pages.products.form', [
             'product' => $product,
-            'categories' => CategoryHelper::getInstance()->getProductCategories(),
+            'categories' => resolve(CategoryHelper::class)->getProductCategories(),
         ]);
     }
 

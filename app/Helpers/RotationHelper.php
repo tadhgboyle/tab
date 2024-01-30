@@ -7,7 +7,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Database\Eloquent\Collection;
 
-class RotationHelper extends Helper
+class RotationHelper
 {
     private Collection $rotations;
     private ?Rotation $currentRotation;

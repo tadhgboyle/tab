@@ -15,7 +15,7 @@ class GiftCardController extends Controller
     public function create()
     {
         return view('pages.settings.gift-cards.form', [
-            'categories' => CategoryHelper::getInstance()->getCategories(),
+            'categories' => resolve(CategoryHelper::class)->getCategories(),
         ]);
     }
 

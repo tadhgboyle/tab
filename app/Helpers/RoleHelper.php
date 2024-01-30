@@ -5,7 +5,7 @@ namespace App\Helpers;
 use App\Models\Role;
 use Illuminate\Database\Eloquent\Collection;
 
-class RoleHelper extends Helper
+class RoleHelper
 {
     private Collection $roles;
     private Collection $staffRoles;

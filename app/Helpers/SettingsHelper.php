@@ -4,7 +4,7 @@ namespace App\Helpers;
 
 use App\Models\Settings;
 
-class SettingsHelper extends Helper
+class SettingsHelper
 {
     private float $gst;
     private float $pst;
