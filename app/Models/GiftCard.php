@@ -28,4 +28,8 @@ class GiftCard extends Model
         return $this->hasMany(Transaction::class, 'gift_card_id', 'id')
             ->orderBy('created_at', 'DESC');
     }
+
+    public function fullyUsed(): bool {
+        return $this->remaining_balance->isZero();
+    }
 }

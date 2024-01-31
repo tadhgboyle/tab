@@ -77,10 +77,10 @@
 
         <div class="field has-addons">
             <div class="control is-expanded">
-                <input type="text" id="gift_card_code_input" name="gift_card_code_input" class="input" placeholder="Code">
+                <input type="text" id="gift_card_code_input" name="gift_card_code_input" class="input is-small" placeholder="Gift card code">
             </div>
             <div class="control">
-                <button class="button is-dark" id="apply_gift_card" disabled>
+                <button class="button is-dark is-small" id="apply_gift_card" disabled>
                     Apply
                 </button>
                 <button class="button is-outlined" id="remove_gift_card" style="display: none;">
@@ -104,6 +104,10 @@
                 <tr>
                     <td colspan="2">GST</td>
                     <td id="gst-total"></td>
+                </tr>
+                <tr>
+                    <td colspan="2"></td>
+                    <td></td>
                 </tr>
                 <tr>
                     <td colspan="2">Total Price</td>

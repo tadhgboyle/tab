@@ -166,7 +166,7 @@
                                     <div><code>{{ $credit->reason }}</code></div>
                                 </td>
                                 <td>
-                                    <div><code>{{ $credit->issuer_id === 0 ? 'System' : $credit->isser->full_name }}</code></div>
+                                    <div>{{ $credit->issuer_id === null ? 'System' : $credit->isser->full_name }}</div>
                                 </td>
                                 <td>
                                     <div>{{ $credit->amount }}</div>

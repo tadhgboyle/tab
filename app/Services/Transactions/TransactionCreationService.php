@@ -99,6 +99,8 @@ class TransactionCreationService extends Service
             $charge_user_amount = $total_price->subtract($credit_amount);
         }
 
+        $gift_card_amount = Money::parse(0);
+
         if ($charge_user_amount->isPositive()) {
             $gift_card_code = $request->get('gift_card_code');
             if ($gift_card_code) {
@@ -126,11 +128,7 @@ class TransactionCreationService extends Service
                     $gift_card_amount = $gift_card_balance;
                     $gift_card_remaining_balance = Money::parse(0);
                 }
-            } else {
-                $gift_card_amount = Money::parse(0);
             }
-        } else {
-            $gift_card_amount = Money::parse(0);
         }
 
         $remaining_balance = $purchaser->balance->subtract($charge_user_amount);
@@ -208,15 +206,15 @@ class TransactionCreationService extends Service
         if ($credit_amount->isPositive()) {
             $credited_amount = Money::parse(0_00);
             foreach ($purchaser->credits()->orderBy('amount')->get() as $credit) {
-                if ($credited_amount->equals($charge_user_amount)) {
+                if ($credited_amount->equals($credit_amount)) {
                     break;
                 }
 
                 $credit_remaining = $credit->amount->subtract($credit->amount_used);
                 // if $10 + $5 > $12, only use $2
-                if ($credited_amount->add($credit_remaining)->greaterThan($charge_user_amount)) {
+                if ($credited_amount->add($credit_remaining)->greaterThan($credit_amount)) {
                     // only use the amount we need to use
-                    $credit_used = $charge_user_amount->subtract($credited_amount);
+                    $credit_used = $credit_amount->subtract($credited_amount);
                     $credit->amount_used = $credit->amount_used->add($credit_used);
                 } else {
                     // use the whole credit

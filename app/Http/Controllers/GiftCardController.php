@@ -70,7 +70,7 @@ class GiftCardController extends Controller
             ]);
         }
 
-        if ($giftCard->remaining_balance->isZero()) {
+        if ($giftCard->fullyUsed()) {
             return response()->json([
                 'valid' => false,
                 'message' => 'Gift card has no remaining balance',

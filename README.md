@@ -124,6 +124,9 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
     - Role changes
     - New users
     - Price changes
+    - Stock changes
+    - Gift card/credit balance changes
+        - These + stock could be done by using a ledger data structure; append new row when data changes
     - Etc
 - Bulk change prices of items (Everything 10% *off* or everything 20% *more* etc)
 - Add PDF printing of all users transactions
@@ -137,6 +140,9 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
 - User tags (tax free tagged, limit of xyz tag, etc)
 - Rename Transaction classes to Order
 - Allow categories to be PST and/or GST exempt
+- Use npm for js packages
+- Move "ajax" routes to API controllers + paths
+- Rename adjust page to ledger
 
 ## Issues/Bugs
 - Add check balance modal for gift card (under a "tools" dropdown?)
