@@ -2,17 +2,16 @@
 
 namespace Database\Seeders;
 
-use App\Models\GiftCard;
-use App\Services\Transactions\TransactionReturnProductService;
 use Auth;
 use App\Models\User;
 use App\Models\Product;
+use App\Models\GiftCard;
 use App\Models\Rotation;
-use Cknow\Money\Money;
 use Illuminate\Http\Request;
 use Illuminate\Database\Seeder;
 use App\Services\Transactions\TransactionReturnService;
 use App\Services\Transactions\TransactionCreationService;
+use App\Services\Transactions\TransactionReturnProductService;
 
 class TransactionSeeder extends Seeder
 {

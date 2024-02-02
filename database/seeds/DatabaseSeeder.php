@@ -2,7 +2,6 @@
 
 use App\Models\Role;
 use App\Models\User;
-use Database\Seeders\GiftCardSeeder;
 use Illuminate\Database\Seeder;
 use Database\Seeders\RoleSeeder;
 use Database\Seeders\UserSeeder;
@@ -11,6 +10,7 @@ use Database\Seeders\ProductSeeder;
 use Illuminate\Support\Facades\App;
 use Database\Seeders\ActivitySeeder;
 use Database\Seeders\CategorySeeder;
+use Database\Seeders\GiftCardSeeder;
 use Database\Seeders\RotationSeeder;
 use Database\Seeders\SettingsSeeder;
 use Database\Seeders\UserLimitsSeeder;

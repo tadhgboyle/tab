@@ -2,8 +2,8 @@
 
 namespace App\Helpers;
 
-use App\Models\TransactionProduct;
 use Cknow\Money\Money;
+use App\Models\TransactionProduct;
 
 class TaxHelper
 {

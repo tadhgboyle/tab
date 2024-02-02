@@ -3,12 +3,13 @@
 namespace Database\Factories;
 
 use App\Models\User;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-class GiftCardFactory extends Factory {
-
-    public function definition(): array {
+class GiftCardFactory extends Factory
+{
+    public function definition(): array
+    {
         $original_balance = $this->faker->numberBetween(50, 500);
         // round to nearest $5
         $original_balance = round($original_balance / 5) * 5;

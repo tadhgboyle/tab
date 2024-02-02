@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\CategoryHelper;
-use App\Http\Requests\GiftCardRequest;
-use App\Models\GiftCard;
 use Cknow\Money\Money;
+use App\Models\GiftCard;
+use App\Helpers\CategoryHelper;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use App\Http\Requests\GiftCardRequest;
 
 class GiftCardController extends Controller
 {
-
     public function create()
     {
         return view('pages.settings.gift-cards.form', [

@@ -2,13 +2,13 @@
 
 namespace Tests\Feature\Transaction;
 
-use App\Models\GiftCard;
-use Cknow\Money\Money;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
+use Cknow\Money\Money;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\GiftCard;
 use App\Models\Settings;
 use App\Models\UserLimits;
 use App\Models\Transaction;
@@ -286,7 +286,6 @@ class TransactionCreationServiceTest extends TestCase
             if ($gift_card_code) {
                 $data['gift_card_code'] = $gift_card_code;
             }
-
         } else {
             $data = [
                 'products' => '{}',

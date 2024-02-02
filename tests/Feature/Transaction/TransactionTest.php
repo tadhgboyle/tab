@@ -2,13 +2,13 @@
 
 namespace Tests\Feature\Transaction;
 
-use App\Models\GiftCard;
+use Tests\TestCase;
 use App\Models\Role;
-use App\Models\Rotation;
-use App\Models\Transaction;
 use App\Models\User;
 use Cknow\Money\Money;
-use Tests\TestCase;
+use App\Models\GiftCard;
+use App\Models\Rotation;
+use App\Models\Transaction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TransactionTest extends TestCase
@@ -19,7 +19,8 @@ class TransactionTest extends TestCase
     private Transaction $transaction;
     private Rotation $rotation;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
 
         $role = Role::factory()->create();

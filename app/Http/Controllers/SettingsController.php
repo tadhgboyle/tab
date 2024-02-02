@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\Permission;
 use App\Models\GiftCard;
 use App\Models\Settings;
+use App\Helpers\Permission;
 use App\Helpers\RoleHelper;
 use App\Helpers\CategoryHelper;
 use App\Helpers\RotationHelper;

@@ -3,12 +3,11 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Http\Requests\FormRequest as FormRequestContract;
 use Illuminate\Validation\Rule as ValidationRule;
+use App\Http\Requests\FormRequest as FormRequestContract;
 
 class GiftCardRequest extends FormRequest implements FormRequestContract
 {
-
     public function rules(): array
     {
         return [
