@@ -65,7 +65,9 @@ class TransactionReturnProductService extends Service
 
     private function updateTransactionReturnedAttribute(): void
     {
-        // set transaction to returned if all items have been returned
+        // Reload the transactionProdicts to get the updated returned count
+        $this->_transaction->load('products');
+
         if ($this->_transaction->products->sum->returned === $this->_transaction->products->sum->quantity) {
             $this->_transaction->update(['returned' => true]);
         }

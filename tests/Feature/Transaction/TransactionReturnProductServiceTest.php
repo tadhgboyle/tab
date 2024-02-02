@@ -60,6 +60,7 @@ class TransactionReturnProductServiceTest extends TestCase
         $transactionService = (new TransactionReturnProductService($hatTransactionProduct))->return();
         $this->assertSame(TransactionReturnProductService::RESULT_SUCCESS, $transactionService->getResult());
 
+        $transaction = $transaction->refresh();
         $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->getReturnStatus());
         $this->assertTrue($transaction->isReturned());
         $this->assertEquals($transaction->total_price, $user->findReturned());
