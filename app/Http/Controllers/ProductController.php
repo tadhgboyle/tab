@@ -54,7 +54,7 @@ class ProductController extends Controller
 
     public function adjustList()
     {
-        return view('pages.products.adjust.list', [
+        return view('pages.products.ledger.list', [
             'products' => Product::all(),
         ]);
     }
@@ -78,7 +78,7 @@ class ProductController extends Controller
     public function ajaxGetPage(Product $product)
     {
         // TODO: Load same product back when adjust page is reloaded
-        return view('pages.products.adjust.form', [
+        return view('pages.products.ledger.form', [
             'product' => $product,
         ]);
     }

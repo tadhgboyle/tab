@@ -54,7 +54,7 @@
         @include('includes.messages')
         <div id="adjust_product">
             @if(session()->has('last_product'))
-                @include('pages.products.adjust.form', ['product' => session('last_product')])
+                @include('pages.products.ledger.form', ['product' => session('last_product')])
             @endif
         </div>
     </div>

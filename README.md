@@ -149,10 +149,10 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
 - Rename payouts to something better
 - Store credits (when a transaction with gift card is returned, give them store credit, etc)
 - "remaining owing" reactive subtext on payout creation page
-
-## Issues/Bugs
 - Add check balance modal for gift card (under a "tools" dropdown?)
 - Add way to "hide used gift cards" in gift card list
+
+## Issues/Bugs
 - When cashier page refreshed with gift card, ensure it still has balance + update balance in table row
 - Make settings boxes/columns more fluid, so it doesn't look odd when people have subnet of permissions
 - Make seeders only create past entities nothing in the future
