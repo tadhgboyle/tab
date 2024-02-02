@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Models\Activity;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Auth;
-use App\Services\Activities\ActivityRegistrationCreationService;
+use App\Services\Activities\ActivityRegistrationCreateService;
 
 class ActivityRegistrationSeeder extends Seeder
 {
@@ -31,7 +31,7 @@ class ActivityRegistrationSeeder extends Seeder
                 $cashier = $users->shuffle()->whereIn('role_id', [1, 2])->first();
                 Auth::login($cashier);
 
-                new ActivityRegistrationCreationService($activity, $user);
+                new ActivityRegistrationCreateService($activity, $user);
             }
         }
     }

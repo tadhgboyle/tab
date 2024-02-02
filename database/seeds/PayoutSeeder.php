@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use App\Http\Requests\PayoutRequest;
 use Illuminate\Support\Facades\Auth;
-use App\Services\Payouts\PayoutCreationService;
+use App\Services\Payouts\PayoutCreateService;
 
 class PayoutSeeder extends Seeder
 {
@@ -32,7 +32,7 @@ class PayoutSeeder extends Seeder
                 continue;
             }
 
-            new PayoutCreationService(new PayoutRequest([
+            new PayoutCreateService(new PayoutRequest([
                 'identifier' => random_int(0, 1) === 1 ? '#' . random_int(101010, 202020) : null,
                 'amount' => random_int(1, $amount->getAmount()),
             ]), $user);

@@ -11,10 +11,10 @@ use Cknow\Money\Money;
 use App\Models\Rotation;
 use App\Http\Requests\UserRequest;
 use Database\Seeders\RotationSeeder;
-use App\Services\Users\UserCreationService;
+use App\Services\Users\UserCreateService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class UserCreationServiceTest extends TestCase
+class UserCreateServiceTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -29,13 +29,13 @@ class UserCreationServiceTest extends TestCase
     {
         $role_id = Role::factory()->create()->id;
 
-        $userService = new UserCreationService($this->createRequest(
+        $userService = new UserCreateService($this->createRequest(
             full_name: 'Tadhg Boyle',
             role_id: $role_id
         ));
         $user = $userService->getUser();
 
-        $this->assertSame(UserCreationService::RESULT_SUCCESS, $userService->getResult());
+        $this->assertSame(UserCreateService::RESULT_SUCCESS, $userService->getResult());
         $this->assertEquals('tadhgboyle', $user->username);
     }
 
@@ -43,18 +43,18 @@ class UserCreationServiceTest extends TestCase
     {
         [, $camper_role] = $this->createRoles();
 
-        new UserCreationService($this->createRequest(
+        new UserCreateService($this->createRequest(
             full_name: 'Tadhg Boyle',
             role_id: $camper_role->id
         ));
 
-        $userService = new UserCreationService($this->createRequest(
+        $userService = new UserCreateService($this->createRequest(
             full_name: 'Tadhg Boyle',
             role_id: $camper_role->id
         ));
         $user = $userService->getUser();
 
-        $this->assertSame(UserCreationService::RESULT_SUCCESS, $userService->getResult());
+        $this->assertSame(UserCreateService::RESULT_SUCCESS, $userService->getResult());
         $this->assertMatchesRegularExpression('/^tadhgboyle(?:[0-9]\d?|100)$/', $user->username);
     }
 
@@ -62,14 +62,14 @@ class UserCreationServiceTest extends TestCase
     {
         [$superadmin_role] = $this->createRoles();
 
-        $userService = new UserCreationService($this->createRequest(
+        $userService = new UserCreateService($this->createRequest(
             full_name: 'Tadhg Boyle',
             role_id: $superadmin_role->id,
             password: 'password'
         ));
         $user = $userService->getUser();
 
-        $this->assertSame(UserCreationService::RESULT_SUCCESS, $userService->getResult());
+        $this->assertSame(UserCreateService::RESULT_SUCCESS, $userService->getResult());
         $this->assertNotEmpty($user->password);
         $this->assertTrue(Hash::check('password', $user->password));
     }
@@ -78,7 +78,7 @@ class UserCreationServiceTest extends TestCase
     {
         [, $camper_role] = $this->createRoles();
 
-        $user = (new UserCreationService($this->createRequest(
+        $user = (new UserCreateService($this->createRequest(
             full_name: 'Tadhg Boyle',
             role_id: $camper_role->id,
             password: 'password'
@@ -91,7 +91,7 @@ class UserCreationServiceTest extends TestCase
     {
         [, $camper_role] = $this->createRoles();
 
-        $user = (new UserCreationService($this->createRequest(
+        $user = (new UserCreateService($this->createRequest(
             full_name: 'Tadhg Boyle',
             role_id: $camper_role->id,
         )))->getUser();
@@ -108,7 +108,7 @@ class UserCreationServiceTest extends TestCase
             Rotation::skip(1)->first()->id,
         ];
 
-        $user = (new UserCreationService($this->createRequest(
+        $user = (new UserCreateService($this->createRequest(
             full_name: 'Tadhg Boyle',
             role_id: $camper_role->id,
             rotations: $rotations,
@@ -155,7 +155,7 @@ class UserCreationServiceTest extends TestCase
 
     private function createSuperadminUser(Role $superadmin_role): User
     {
-        return (new UserCreationService($this->createRequest(
+        return (new UserCreateService($this->createRequest(
             full_name: 'Tadhg Boyle',
             role_id: $superadmin_role->id
         )))->getUser();

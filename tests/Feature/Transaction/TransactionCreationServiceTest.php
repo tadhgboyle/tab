@@ -16,10 +16,10 @@ use Illuminate\Http\Request;
 use App\Helpers\RotationHelper;
 use Database\Seeders\RotationSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Services\Transactions\TransactionCreationService;
+use App\Services\Transactions\TransactionCreateService;
 
 // TODO: testCannotMakeTransactionWithNoCurrentRotation
-class TransactionCreationServiceTest extends TestCase
+class TransactionCreateServiceTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -27,9 +27,9 @@ class TransactionCreationServiceTest extends TestCase
     {
         [, $staff_user] = $this->createFakeRecords();
 
-        $transactionService = new TransactionCreationService($this->createFakeRequest($staff_user), $staff_user);
+        $transactionService = new TransactionCreateService($this->createFakeRequest($staff_user), $staff_user);
 
-        $this->assertSame(TransactionCreationService::RESULT_NO_SELF_PURCHASE, $transactionService->getResult());
+        $this->assertSame(TransactionCreateService::RESULT_NO_SELF_PURCHASE, $transactionService->getResult());
         $this->assertSame('You cannot make purchases for yourself.', $transactionService->getMessage());
     }
 
@@ -37,9 +37,9 @@ class TransactionCreationServiceTest extends TestCase
     {
         [$camper_user] = $this->createFakeRecords();
 
-        $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user, with_products: false), $camper_user);
+        $transactionService = new TransactionCreateService($this->createFakeRequest($camper_user, with_products: false), $camper_user);
 
-        $this->assertSame(TransactionCreationService::RESULT_NO_ITEMS_SELECTED, $transactionService->getResult());
+        $this->assertSame(TransactionCreateService::RESULT_NO_ITEMS_SELECTED, $transactionService->getResult());
         $this->assertSame('Please select at least one item.', $transactionService->getMessage());
     }
 
@@ -47,9 +47,9 @@ class TransactionCreationServiceTest extends TestCase
     {
         [$camper_user] = $this->createFakeRecords();
 
-        $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user, negative_product: true), $camper_user);
+        $transactionService = new TransactionCreateService($this->createFakeRequest($camper_user, negative_product: true), $camper_user);
 
-        $this->assertSame(TransactionCreationService::RESULT_NEGATIVE_QUANTITY, $transactionService->getResult());
+        $this->assertSame(TransactionCreateService::RESULT_NEGATIVE_QUANTITY, $transactionService->getResult());
         $this->assertSame('Quantity must be >= 1 for item Chips', $transactionService->getMessage());
     }
 
@@ -57,9 +57,9 @@ class TransactionCreationServiceTest extends TestCase
     {
         [$camper_user] = $this->createFakeRecords();
 
-        $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user, over_stock: true), $camper_user);
+        $transactionService = new TransactionCreateService($this->createFakeRequest($camper_user, over_stock: true), $camper_user);
 
-        $this->assertSame(TransactionCreationService::RESULT_NO_STOCK, $transactionService->getResult());
+        $this->assertSame(TransactionCreateService::RESULT_NO_STOCK, $transactionService->getResult());
         $this->assertSame('Not enough Chips in stock. Only 2 remaining.', $transactionService->getMessage());
     }
 
@@ -67,9 +67,9 @@ class TransactionCreationServiceTest extends TestCase
     {
         [$camper_user] = $this->createFakeRecords();
 
-        $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user, over_balance: true), $camper_user);
+        $transactionService = new TransactionCreateService($this->createFakeRequest($camper_user, over_balance: true), $camper_user);
 
-        $this->assertSame(TransactionCreationService::RESULT_NOT_ENOUGH_BALANCE, $transactionService->getResult());
+        $this->assertSame(TransactionCreateService::RESULT_NOT_ENOUGH_BALANCE, $transactionService->getResult());
         $this->assertStringContainsString('only has $999.99. Tried to spend $6,335.96.', $transactionService->getMessage());
     }
 
@@ -77,9 +77,9 @@ class TransactionCreationServiceTest extends TestCase
     {
         [$camper_user] = $this->createFakeRecords();
 
-        $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user, over_category_limit: true), $camper_user);
+        $transactionService = new TransactionCreateService($this->createFakeRequest($camper_user, over_category_limit: true), $camper_user);
 
-        $this->assertSame(TransactionCreationService::RESULT_NOT_ENOUGH_CATEGORY_BALANCE, $transactionService->getResult());
+        $this->assertSame(TransactionCreateService::RESULT_NOT_ENOUGH_CATEGORY_BALANCE, $transactionService->getResult());
         $this->assertSame('Not enough balance in the Food category. (Limit: $1.00, Remaining: $1.00). Tried to spend $6.05', $transactionService->getMessage());
     }
 
@@ -88,9 +88,9 @@ class TransactionCreationServiceTest extends TestCase
         [$camper_user] = $this->createFakeRecords();
 
         $balance_before = $camper_user->balance;
-        $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user), $camper_user);
+        $transactionService = new TransactionCreateService($this->createFakeRequest($camper_user), $camper_user);
 
-        $this->assertSame(TransactionCreationService::RESULT_SUCCESS, $transactionService->getResult());
+        $this->assertSame(TransactionCreateService::RESULT_SUCCESS, $transactionService->getResult());
         $this->assertStringContainsString('now has $962.44', $transactionService->getMessage());
         $this->assertEquals($balance_before->subtract($transactionService->getTransaction()->total_price), $camper_user->refresh()->balance);
         $this->assertEquals($transactionService->getTransaction()->total_price, $camper_user->findSpent());
@@ -100,9 +100,9 @@ class TransactionCreationServiceTest extends TestCase
     {
         [$camper_user, $staff_user] = $this->createFakeRecords();
 
-        $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user), $camper_user);
+        $transactionService = new TransactionCreateService($this->createFakeRequest($camper_user), $camper_user);
 
-        $this->assertSame(TransactionCreationService::RESULT_SUCCESS, $transactionService->getResult());
+        $this->assertSame(TransactionCreateService::RESULT_SUCCESS, $transactionService->getResult());
         $this->assertStringContainsString('now has $962.44', $transactionService->getMessage());
         $this->assertCount(1, Transaction::all());
         $this->assertCount(1, $camper_user->refresh()->transactions);
@@ -122,9 +122,9 @@ class TransactionCreationServiceTest extends TestCase
         [$camper_user] = $this->createFakeRecords();
         $gift_card_code = 'INVALIDCODE';
 
-        $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user, gift_card_code: $gift_card_code), $camper_user);
+        $transactionService = new TransactionCreateService($this->createFakeRequest($camper_user, gift_card_code: $gift_card_code), $camper_user);
 
-        $this->assertSame(TransactionCreationService::RESULT_INVALID_GIFT_CARD, $transactionService->getResult());
+        $this->assertSame(TransactionCreateService::RESULT_INVALID_GIFT_CARD, $transactionService->getResult());
         $this->assertSame("Gift card with code $gift_card_code does not exist.", $transactionService->getMessage());
     }
 
@@ -136,9 +136,9 @@ class TransactionCreationServiceTest extends TestCase
             'remaining_balance' => Money::parse(0),
         ])->code;
 
-        $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user, gift_card_code: $gift_card_code), $camper_user);
+        $transactionService = new TransactionCreateService($this->createFakeRequest($camper_user, gift_card_code: $gift_card_code), $camper_user);
 
-        $this->assertSame(TransactionCreationService::RESULT_INVALID_GIFT_CARD_BALANCE, $transactionService->getResult());
+        $this->assertSame(TransactionCreateService::RESULT_INVALID_GIFT_CARD_BALANCE, $transactionService->getResult());
         $this->assertSame("Gift card with code $gift_card_code has a $0.00 balance.", $transactionService->getMessage());
     }
 
@@ -152,9 +152,9 @@ class TransactionCreationServiceTest extends TestCase
         $gift_card_code = $gift_card->code;
 
         // Creates $37.55 transaction, all of which is paid by the gift card and none of which is paid by the camper
-        $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user, gift_card_code: $gift_card_code), $camper_user);
+        $transactionService = new TransactionCreateService($this->createFakeRequest($camper_user, gift_card_code: $gift_card_code), $camper_user);
 
-        $this->assertSame(TransactionCreationService::RESULT_SUCCESS, $transactionService->getResult());
+        $this->assertSame(TransactionCreateService::RESULT_SUCCESS, $transactionService->getResult());
         $this->assertEquals(Money::parse(37_55), $transactionService->getTransaction()->total_price);
         $this->assertEquals(Money::parse(37_55), $transactionService->getTransaction()->gift_card_amount);
         $this->assertEquals(Money::parse(0_00), $transactionService->getTransaction()->purchaser_amount);
@@ -172,9 +172,9 @@ class TransactionCreationServiceTest extends TestCase
         $gift_card_code = $gift_card->code;
 
         // Creates $37.55 transaction, all of which is paid by the gift card and none of which is paid by the camper
-        $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user, gift_card_code: $gift_card_code), $camper_user);
+        $transactionService = new TransactionCreateService($this->createFakeRequest($camper_user, gift_card_code: $gift_card_code), $camper_user);
 
-        $this->assertSame(TransactionCreationService::RESULT_SUCCESS, $transactionService->getResult());
+        $this->assertSame(TransactionCreateService::RESULT_SUCCESS, $transactionService->getResult());
         $this->assertEquals(Money::parse(37_55), $transactionService->getTransaction()->total_price);
         $this->assertEquals(Money::parse(37_55), $transactionService->getTransaction()->gift_card_amount);
         $this->assertEquals(Money::parse(0_00), $transactionService->getTransaction()->purchaser_amount);
@@ -192,9 +192,9 @@ class TransactionCreationServiceTest extends TestCase
         $gift_card_code = $gift_card->code;
 
         // Creates $37.55 transaction, $10.00 of which is paid by the gift card and $27.55 of which is paid by the camper
-        $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user, gift_card_code: $gift_card_code), $camper_user);
+        $transactionService = new TransactionCreateService($this->createFakeRequest($camper_user, gift_card_code: $gift_card_code), $camper_user);
 
-        $this->assertSame(TransactionCreationService::RESULT_SUCCESS, $transactionService->getResult());
+        $this->assertSame(TransactionCreateService::RESULT_SUCCESS, $transactionService->getResult());
         $this->assertEquals(Money::parse(37_55), $transactionService->getTransaction()->total_price);
         $this->assertEquals(Money::parse(10_00), $transactionService->getTransaction()->gift_card_amount);
         $this->assertEquals(Money::parse(27_55), $transactionService->getTransaction()->purchaser_amount);

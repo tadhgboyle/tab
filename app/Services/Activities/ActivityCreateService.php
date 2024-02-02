@@ -2,6 +2,6 @@
 
 namespace App\Services\Activities;
 
-class ActivityCreationService
+class ActivityCreateService
 {
 }

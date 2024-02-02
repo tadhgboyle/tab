@@ -9,7 +9,7 @@ use Illuminate\Support\Carbon;
 use App\Helpers\CategoryHelper;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\ActivityRequest;
-use App\Services\Activities\ActivityRegistrationCreationService;
+use App\Services\Activities\ActivityRegistrationCreateService;
 
 // TODO: add return/cancel functionality
 // TODO: fix - add pst check box
@@ -138,6 +138,6 @@ class ActivityController extends Controller
 
     public function registerUser(Activity $activity, User $user): RedirectResponse
     {
-        return (new ActivityRegistrationCreationService($activity, $user))->redirect();
+        return (new ActivityRegistrationCreateService($activity, $user))->redirect();
     }
 }

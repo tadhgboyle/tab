@@ -14,9 +14,9 @@ use App\Models\UserLimits;
 use Mockery\MockInterface;
 use App\Casts\CategoryType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Services\Activities\ActivityRegistrationCreationService;
+use App\Services\Activities\ActivityRegistrationCreateService;
 
-class ActivityRegistrationCreationServiceTest extends TestCase
+class ActivityRegistrationCreateServiceTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -68,9 +68,9 @@ class ActivityRegistrationCreationServiceTest extends TestCase
                 ->andReturnTrue();
         });
 
-        $service = (new ActivityRegistrationCreationService($activity, $this->_user));
+        $service = (new ActivityRegistrationCreateService($activity, $this->_user));
 
-        $this->assertEquals(ActivityRegistrationCreationService::RESULT_ALREADY_REGISTERED, $service->getResult());
+        $this->assertEquals(ActivityRegistrationCreateService::RESULT_ALREADY_REGISTERED, $service->getResult());
         $this->assertEquals("Could not register {$this->_user->full_name} for {$activity->name}, they are already attending this activity.", $service->getMessage());
     }
 
@@ -81,9 +81,9 @@ class ActivityRegistrationCreationServiceTest extends TestCase
                 ->andReturnFalse();
         });
 
-        $service = (new ActivityRegistrationCreationService($activity, $this->_user));
+        $service = (new ActivityRegistrationCreateService($activity, $this->_user));
 
-        $this->assertEquals(ActivityRegistrationCreationService::RESULT_OUT_OF_SLOTS, $service->getResult());
+        $this->assertEquals(ActivityRegistrationCreateService::RESULT_OUT_OF_SLOTS, $service->getResult());
         $this->assertEquals("Could not register {$this->_user->full_name} for {$activity->name}, this activity is out of slots.", $service->getMessage());
     }
 
@@ -93,9 +93,9 @@ class ActivityRegistrationCreationServiceTest extends TestCase
             'balance' => 0_00,
         ]);
 
-        $service = (new ActivityRegistrationCreationService($this->_activity, $this->_user));
+        $service = (new ActivityRegistrationCreateService($this->_activity, $this->_user));
 
-        $this->assertEquals(ActivityRegistrationCreationService::RESULT_NO_BALANCE, $service->getResult());
+        $this->assertEquals(ActivityRegistrationCreateService::RESULT_NO_BALANCE, $service->getResult());
         $this->assertEquals("Could not register {$this->_user->full_name} for {$this->_activity->name}, they do not have enough balance.", $service->getMessage());
     }
 
@@ -108,9 +108,9 @@ class ActivityRegistrationCreationServiceTest extends TestCase
             'duration' => UserLimits::LIMIT_WEEKLY,
         ]);
 
-        $service = (new ActivityRegistrationCreationService($this->_activity, $this->_user));
+        $service = (new ActivityRegistrationCreateService($this->_activity, $this->_user));
 
-        $this->assertEquals(ActivityRegistrationCreationService::RESULT_OVER_USER_LIMIT, $service->getResult());
+        $this->assertEquals(ActivityRegistrationCreateService::RESULT_OVER_USER_LIMIT, $service->getResult());
         $this->assertEquals("Could not register {$this->_user->full_name} for {$this->_activity->name}, they have reached their limit for the {$this->_activities_category->name} category.", $service->getMessage());
     }
 
@@ -121,9 +121,9 @@ class ActivityRegistrationCreationServiceTest extends TestCase
         ]);
         $balance_before = $this->_user->balance;
 
-        $service = (new ActivityRegistrationCreationService($this->_activity, $this->_user));
+        $service = (new ActivityRegistrationCreateService($this->_activity, $this->_user));
 
-        $this->assertEquals(ActivityRegistrationCreationService::RESULT_SUCCESS, $service->getResult());
+        $this->assertEquals(ActivityRegistrationCreateService::RESULT_SUCCESS, $service->getResult());
         $this->assertEquals("Successfully registered {$this->_user->full_name} for {$this->_activity->name}.", $service->getMessage());
 
         $registration = $service->getActivityRegistration();

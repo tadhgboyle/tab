@@ -11,7 +11,7 @@ use App\Helpers\UserLimitsHelper;
 use App\Models\ActivityRegistration;
 use Illuminate\Http\RedirectResponse;
 
-class ActivityRegistrationCreationService extends Service
+class ActivityRegistrationCreateService extends Service
 {
     use ActivityService;
     use ActivityRegistrationService;

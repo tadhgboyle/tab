@@ -7,7 +7,7 @@ use App\Services\Service;
 use App\Http\Requests\ProductRequest;
 use Illuminate\Http\RedirectResponse;
 
-class ProductCreationService extends Service
+class ProductCreateService extends Service
 {
     use ProductService;
 

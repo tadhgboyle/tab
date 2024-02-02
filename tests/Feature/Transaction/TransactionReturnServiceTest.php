@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use Database\Seeders\RotationSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Services\Transactions\TransactionReturnService;
-use App\Services\Transactions\TransactionCreationService;
+use App\Services\Transactions\TransactionCreateService;
 
 class TransactionReturnServiceTest extends TestCase
 {
@@ -142,7 +142,7 @@ class TransactionReturnServiceTest extends TestCase
             ]
         ]);
 
-        $transaction = (new TransactionCreationService(new Request([
+        $transaction = (new TransactionCreateService(new Request([
             'products' => json_encode([
                 [
                     'id' => $hat->id,
@@ -164,7 +164,7 @@ class TransactionReturnServiceTest extends TestCase
             'price' => 39_99
         ]);
 
-        return (new TransactionCreationService(new Request([
+        return (new TransactionCreateService(new Request([
             'products' => json_encode([
                 [
                     'id' => $hat->id,

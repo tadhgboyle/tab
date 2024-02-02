@@ -9,7 +9,7 @@ use App\Http\Requests\ProductRequest;
 use Illuminate\Http\RedirectResponse;
 use App\Services\Products\ProductEditService;
 use App\Services\Products\ProductDeleteService;
-use App\Services\Products\ProductCreationService;
+use App\Services\Products\ProductCreateService;
 use App\Http\Requests\ProductStockAdjustmentRequest;
 use App\Services\Products\ProductStockAdjustmentService;
 
@@ -31,7 +31,7 @@ class ProductController extends Controller
 
     public function store(ProductRequest $request): RedirectResponse
     {
-        return (new ProductCreationService($request))->redirect();
+        return (new ProductCreateService($request))->redirect();
     }
 
     public function edit(Product $product)

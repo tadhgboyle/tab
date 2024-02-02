@@ -12,7 +12,7 @@ use App\Models\Rotation;
 use App\Http\Requests\UserRequest;
 use Database\Seeders\RotationSeeder;
 use App\Services\Users\UserEditService;
-use App\Services\Users\UserCreationService;
+use App\Services\Users\UserCreateService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserEditServiceTest extends TestCase
@@ -127,7 +127,7 @@ class UserEditServiceTest extends TestCase
     {
         app(RotationSeeder::class)->run();
 
-        return (new UserCreationService(new UserRequest([
+        return (new UserCreateService(new UserRequest([
             'full_name' => 'Tadhg Boyle',
             'role_id' => $superadmin_role->id,
             'password' => 'password',
@@ -137,7 +137,7 @@ class UserEditServiceTest extends TestCase
 
     private function createCashierUser(Role $cashier_role): User
     {
-        return (new UserCreationService(new UserRequest([
+        return (new UserCreateService(new UserRequest([
             'full_name' => 'Ronan Boyle',
             'role_id' => $cashier_role->id,
             'password' => 'password',

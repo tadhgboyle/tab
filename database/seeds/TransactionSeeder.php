@@ -10,7 +10,7 @@ use App\Models\Rotation;
 use Illuminate\Http\Request;
 use Illuminate\Database\Seeder;
 use App\Services\Transactions\TransactionReturnService;
-use App\Services\Transactions\TransactionCreationService;
+use App\Services\Transactions\TransactionCreateService;
 use App\Services\Transactions\TransactionReturnProductService;
 
 class TransactionSeeder extends Seeder
@@ -53,7 +53,7 @@ class TransactionSeeder extends Seeder
                     $giftCard = GiftCard::all()->random();
                 }
 
-                $service = new TransactionCreationService(new Request([
+                $service = new TransactionCreateService(new Request([
                     'purchaser_id' => $user->id,
                     'cashier_id' => $cashier->id,
                     'rotation_id' => $rotation->id,
@@ -62,7 +62,7 @@ class TransactionSeeder extends Seeder
                     'gift_card_code' => $giftCard->code ?? null,
                 ]), $user);
 
-                if ($service->getResult() !== TransactionCreationService::RESULT_SUCCESS) {
+                if ($service->getResult() !== TransactionCreateService::RESULT_SUCCESS) {
                     continue;
                 }
 

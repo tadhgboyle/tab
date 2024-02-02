@@ -12,7 +12,7 @@ use App\Http\Requests\UserRequest;
 use App\Models\TransactionProduct;
 use App\Models\ActivityRegistration;
 use App\Services\Users\UserEditService;
-use App\Services\Users\UserCreationService;
+use App\Services\Users\UserCreateService;
 
 // TODO: Move these to user model. $user->canSpendInCategory($cat_id, 5.99)
 class UserLimitsHelper
@@ -36,8 +36,8 @@ class UserLimitsHelper
 
             if ($limit->lessThan(Money::parse(-1_00))) {
                 $message = 'Limit must be $-1.00 or above for ' . Category::find($category_id)->name . '. ($-1.00 means no limit)';
-                $result = ($class === UserCreationService::class)
-                            ? UserCreationService::RESULT_INVALID_LIMIT
+                $result = ($class === UserCreateService::class)
+                            ? UserCreateService::RESULT_INVALID_LIMIT
                             : UserEditService::RESULT_INVALID_LIMIT;
                 return [$message, $result];
             }

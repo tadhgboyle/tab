@@ -7,10 +7,10 @@ use App\Models\Role;
 use App\Models\User;
 use Cknow\Money\Money;
 use App\Http\Requests\PayoutRequest;
-use App\Services\Payouts\PayoutCreationService;
+use App\Services\Payouts\PayoutCreateService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class PayoutCreationServiceTest extends TestCase
+class PayoutCreateServiceTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -18,12 +18,12 @@ class PayoutCreationServiceTest extends TestCase
     {
         [$user, $admin] = $this->createData();
 
-        $payoutService = new PayoutCreationService(new PayoutRequest([
+        $payoutService = new PayoutCreateService(new PayoutRequest([
             'identifier' => '#1',
             'amount' => 10_00,
         ]), $user);
 
-        $this->assertSame(PayoutCreationService::RESULT_SUCCESS, $payoutService->getResult());
+        $this->assertSame(PayoutCreateService::RESULT_SUCCESS, $payoutService->getResult());
 
         $payout = $payoutService->getPayout();
 
@@ -40,12 +40,12 @@ class PayoutCreationServiceTest extends TestCase
 
         $owing_before_payout = $user->findOwing();
 
-        $payoutService = new PayoutCreationService(new PayoutRequest([
+        $payoutService = new PayoutCreateService(new PayoutRequest([
             'identifier' => '#1',
             'amount' => 10_00,
         ]), $user);
 
-        $this->assertSame(PayoutCreationService::RESULT_SUCCESS, $payoutService->getResult());
+        $this->assertSame(PayoutCreateService::RESULT_SUCCESS, $payoutService->getResult());
         $this->assertStringContainsString("Successfully created payout of $10.00 for {$user->full_name}", $payoutService->getMessage());
 
         $payout = $payoutService->getPayout();

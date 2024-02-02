@@ -11,7 +11,7 @@ use App\Helpers\SettingsHelper;
 use App\Models\TransactionProduct;
 use Illuminate\Http\RedirectResponse;
 use App\Services\Transactions\TransactionReturnService;
-use App\Services\Transactions\TransactionCreationService;
+use App\Services\Transactions\TransactionCreateService;
 use App\Services\Transactions\TransactionReturnProductService;
 
 class TransactionController extends Controller
@@ -48,7 +48,7 @@ class TransactionController extends Controller
 
     public function store(Request $request, User $user): RedirectResponse
     {
-        return (new TransactionCreationService($request, $user))->redirect();
+        return (new TransactionCreateService($request, $user))->redirect();
     }
 
     public function returnTransaction(Transaction $transaction): RedirectResponse

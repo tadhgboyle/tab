@@ -19,7 +19,7 @@ use App\Models\TransactionProduct;
 use Illuminate\Support\Collection;
 use Illuminate\Http\RedirectResponse;
 
-class TransactionCreationService extends Service
+class TransactionCreateService extends Service
 {
     use TransactionService;
 

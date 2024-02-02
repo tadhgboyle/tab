@@ -11,7 +11,7 @@ use App\Http\Requests\UserRequest;
 use Illuminate\Http\RedirectResponse;
 use App\Services\Users\UserEditService;
 use App\Services\Users\UserDeleteService;
-use App\Services\Users\UserCreationService;
+use App\Services\Users\UserCreateService;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 class UserController extends Controller
@@ -85,7 +85,7 @@ class UserController extends Controller
 
     public function store(UserRequest $request): RedirectResponse
     {
-        return (new UserCreationService($request))->redirect();
+        return (new UserCreateService($request))->redirect();
     }
 
     public function edit(CategoryHelper $categoryHelper, RotationHelper $rotationHelper, User $user)

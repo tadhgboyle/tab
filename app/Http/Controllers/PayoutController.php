@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Http\Requests\PayoutRequest;
 use Illuminate\Http\RedirectResponse;
-use App\Services\Payouts\PayoutCreationService;
+use App\Services\Payouts\PayoutCreateService;
 
 class PayoutController extends Controller
 {
@@ -20,6 +20,6 @@ class PayoutController extends Controller
 
     public function store(PayoutRequest $request, User $user): RedirectResponse
     {
-        return (new PayoutCreationService($request, $user))->redirect();
+        return (new PayoutCreateService($request, $user))->redirect();
     }
 }

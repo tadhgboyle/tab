@@ -6,17 +6,17 @@ use Tests\TestCase;
 use Cknow\Money\Money;
 use App\Models\Category;
 use App\Http\Requests\ProductRequest;
-use App\Services\Products\ProductCreationService;
+use App\Services\Products\ProductCreateService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class ProductCreationServiceTest extends TestCase
+class ProductCreateServiceTest extends TestCase
 {
     use RefreshDatabase;
 
     public function testCanCreateProductNormally(): void
     {
         $category = Category::factory()->create();
-        $productService = new ProductCreationService(new ProductRequest([
+        $productService = new ProductCreateService(new ProductRequest([
             'name' => 'Test Product',
             'price' => 10_50,
             'category_id' => $category->id,
@@ -26,7 +26,7 @@ class ProductCreationServiceTest extends TestCase
             'restore_stock_on_return' => true,
         ]));
 
-        $this->assertSame(ProductCreationService::RESULT_SUCCESS, $productService->getResult());
+        $this->assertSame(ProductCreateService::RESULT_SUCCESS, $productService->getResult());
 
         $product = $productService->getProduct();
         $this->assertModelExists($product);
@@ -43,7 +43,7 @@ class ProductCreationServiceTest extends TestCase
     public function testCanCreateProductWithoutPst(): void
     {
         $category = Category::factory()->create();
-        $productService = new ProductCreationService(new ProductRequest([
+        $productService = new ProductCreateService(new ProductRequest([
             'name' => 'Test Product',
             'price' => 10_50,
             'category_id' => $category->id,
@@ -52,7 +52,7 @@ class ProductCreationServiceTest extends TestCase
             'restore_stock_on_return' => true,
         ]));
 
-        $this->assertSame(ProductCreationService::RESULT_SUCCESS, $productService->getResult());
+        $this->assertSame(ProductCreateService::RESULT_SUCCESS, $productService->getResult());
 
         $product = $productService->getProduct();
         $this->assertModelExists($product);
@@ -68,7 +68,7 @@ class ProductCreationServiceTest extends TestCase
 
     public function testCanCreateProductWithNullStock(): void
     {
-        $productService = new ProductCreationService(new ProductRequest([
+        $productService = new ProductCreateService(new ProductRequest([
             'name' => 'Test Product',
             'price' => 10_50,
             'category_id' => Category::factory()->create()->id,
@@ -76,7 +76,7 @@ class ProductCreationServiceTest extends TestCase
             'restore_stock_on_return' => true,
         ]));
 
-        $this->assertSame(ProductCreationService::RESULT_SUCCESS, $productService->getResult());
+        $this->assertSame(ProductCreateService::RESULT_SUCCESS, $productService->getResult());
 
         $product = $productService->getProduct();
         $this->assertModelExists($product);
@@ -86,14 +86,14 @@ class ProductCreationServiceTest extends TestCase
 
     public function testCanCreateProductWithoutBoxSize(): void
     {
-        $productService = new ProductCreationService(new ProductRequest([
+        $productService = new ProductCreateService(new ProductRequest([
             'name' => 'Test Product',
             'price' => 10_50,
             'category_id' => Category::factory()->create()->id,
             'restore_stock_on_return' => true,
         ]));
 
-        $this->assertSame(ProductCreationService::RESULT_SUCCESS, $productService->getResult());
+        $this->assertSame(ProductCreateService::RESULT_SUCCESS, $productService->getResult());
 
         $product = $productService->getProduct();
         $this->assertModelExists($product);

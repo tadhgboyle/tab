@@ -17,9 +17,9 @@ use App\Helpers\UserLimitsHelper;
 use App\Http\Requests\UserRequest;
 use App\Models\TransactionProduct;
 use Database\Seeders\RotationSeeder;
-use App\Services\Users\UserCreationService;
+use App\Services\Users\UserCreateService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Services\Activities\ActivityRegistrationCreationService;
+use App\Services\Activities\ActivityRegistrationCreateService;
 
 // TODO: test with different limit durations (day/week)
 // TODO: test when categories are made after user is made
@@ -129,7 +129,7 @@ class UserLimitsHelperTest extends TestCase
                 $merch_category->id => UserLimits::LIMIT_DAILY,
                 $candy_category->id => UserLimits::LIMIT_WEEKLY
             ]
-        ]), $user, UserCreationService::class);
+        ]), $user, UserCreateService::class);
 
         $this->assertNull($message);
         $this->assertNull($result);
@@ -157,9 +157,9 @@ class UserLimitsHelperTest extends TestCase
             'limit' => [
                 $candy_category->id => -2_00
             ]
-        ]), $user, UserCreationService::class);
+        ]), $user, UserCreateService::class);
 
-        $this->assertSame(UserCreationService::RESULT_INVALID_LIMIT, $result);
+        $this->assertSame(UserCreateService::RESULT_INVALID_LIMIT, $result);
     }
 
     public function testLimitOfZeroIsAllowed(): void
@@ -178,7 +178,7 @@ class UserLimitsHelperTest extends TestCase
             'limit' => [
                 $candy_category->id => '0'
             ]
-        ]), $user, UserCreationService::class);
+        ]), $user, UserCreateService::class);
 
         $this->assertNull($message);
         $this->assertNull($result);
@@ -207,7 +207,7 @@ class UserLimitsHelperTest extends TestCase
                 $merch_category->id => 25_00,
                 $candy_category->id => null
             ]
-        ]), $user, UserCreationService::class);
+        ]), $user, UserCreateService::class);
 
         $this->assertNull($message);
         $this->assertNull($result);
@@ -231,7 +231,7 @@ class UserLimitsHelperTest extends TestCase
             'limit' => [
                 $merch_category->id => 25_00,
             ]
-        ]), $user, UserCreationService::class);
+        ]), $user, UserCreateService::class);
 
         $this->assertNull($message);
         $this->assertNull($result);
@@ -352,7 +352,7 @@ class UserLimitsHelperTest extends TestCase
         ]);
 
         $this->actingAs($user);
-        new ActivityRegistrationCreationService($widegame, $user);
+        new ActivityRegistrationCreateService($widegame, $user);
 
         // TODO: General category with hat and widegame on it
 

@@ -9,7 +9,7 @@ use App\Helpers\UserLimitsHelper;
 use App\Http\Requests\UserRequest;
 use Illuminate\Http\RedirectResponse;
 
-class UserCreationService extends Service
+class UserCreateService extends Service
 {
     use UserService;
 

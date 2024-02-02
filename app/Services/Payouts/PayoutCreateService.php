@@ -8,7 +8,7 @@ use App\Services\Service;
 use App\Http\Requests\PayoutRequest;
 use Illuminate\Http\RedirectResponse;
 
-class PayoutCreationService extends Service
+class PayoutCreateService extends Service
 {
     use PayoutService;
 
