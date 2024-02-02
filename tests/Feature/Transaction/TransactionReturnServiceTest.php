@@ -2,10 +2,6 @@
 
 namespace Tests\Feature\Transaction;
 
-use App\Models\GiftCard;
-use App\Models\Rotation;
-use App\Services\Transactions\TransactionReturnProductService;
-use Cknow\Money\Money;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
@@ -107,9 +103,10 @@ class TransactionReturnServiceTest extends TestCase
     /**
      * @param int $hat_count
      * @param string|null $gift_card_code
+     *
      * @return array<User, Transaction, Product>
      */
-    private function createFakeRecords(int $hat_count = 2, string $gift_card_code = null): array
+    private function createFakeRecords(int $hat_count = 2, ?string $gift_card_code = null): array
     {
         app(RotationSeeder::class)->run();
 

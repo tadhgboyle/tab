@@ -11,7 +11,6 @@
 |
 */
 
-use App\Http\Controllers\GiftCardController;
 use App\Models\User;
 use App\Helpers\Permission;
 use App\Helpers\RotationHelper;
@@ -23,6 +22,7 @@ use App\Http\Controllers\PayoutController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\GiftCardController;
 use App\Http\Controllers\RotationController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\StatisticsController;
