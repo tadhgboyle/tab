@@ -37,7 +37,7 @@
                 <div class="control">
                     <label class="checkbox label">
                         PST
-                        <input type="checkbox" class="js-switch" name="pst" {{ (isset($product->pst) && $product->pst) || old('pst') ? 'checked' : '' }}>
+                        <input type="checkbox" name="pst" {{ (isset($product->pst) && $product->pst) || old('pst') ? 'checked' : '' }}>
                     </label>
                 </div>
             </div>
@@ -65,7 +65,7 @@
                 <div class="control">
                     <label class="checkbox label">
                         Unlimited Stock
-                        <input type="checkbox" class="js-switch" name="unlimited_stock" {{ (isset($product->unlimited_stock) && $product->unlimited_stock) || old('unlimited_stock') ? 'checked' : '' }}>
+                        <input type="checkbox" name="unlimited_stock" {{ (isset($product->unlimited_stock) && $product->unlimited_stock) || old('unlimited_stock') ? 'checked' : '' }}>
                     </label>
                 </div>
             </div>
@@ -75,7 +75,7 @@
                     <div class="control">
                         <label class="checkbox label">
                             Stock Override
-                            <input type="checkbox" class="js-switch" name="stock_override" {{ (isset($product->stock_override) && $product->stock_override) || old('stock_override') ? 'checked' : '' }}>
+                            <input type="checkbox" name="stock_override" {{ (isset($product->stock_override) && $product->stock_override) || old('stock_override') ? 'checked' : '' }}>
                         </label>
                     </div>
                 </div>
@@ -105,7 +105,7 @@
                 <div class="control">
                     <label class="checkbox label">
                         Restore stock on return
-                        <input type="checkbox" class="js-switch" name="restore_stock_on_return" {{ (isset($product->restore_stock_on_return) && $product->restore_stock_on_return) || old('restore_stock_on_return') ? 'checked' : '' }}>
+                        <input type="checkbox" name="restore_stock_on_return" {{ (isset($product->restore_stock_on_return) && $product->restore_stock_on_return) || old('restore_stock_on_return') ? 'checked' : '' }}>
                     </label>
                 </div>
             </div>

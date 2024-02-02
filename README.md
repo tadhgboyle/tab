@@ -139,7 +139,6 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
 - User tags (tax free tagged, limit of xyz tag, etc)
 - Rename Transaction classes to Order
 - Allow categories to be PST and/or GST exempt
-- Use npm for js packages
 - Move "ajax" routes to API controllers + paths
 - Timeline on orders, gift cards, etc to see when they were made, used, refunded, etc
 - Update services to use enums for result statuses
@@ -151,6 +150,7 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
 - "remaining owing" reactive subtext on payout creation page
 - Add check balance modal for gift card (under a "tools" dropdown?)
 - Add way to "hide used gift cards" in gift card list
+- Convert jquery ajax requests to use axios
 
 ## Issues/Bugs
 - When cashier page refreshed with gift card, ensure it still has balance + update balance in table row

@@ -32,7 +32,7 @@
                     <div class="control">
                         <label class="checkbox label">
                             Staff
-                            <input type="checkbox" class="js-switch" name="staff" id="staff" @if(isset($role->staff) && $role->staff) checked @endif>
+                            <input type="checkbox" name="staff" id="staff" @if(isset($role->staff) && $role->staff) checked @endif>
                         </label>
                     </div>
                 </div>
@@ -40,7 +40,7 @@
                     <div class="control">
                         <label class="checkbox label">
                             Superuser
-                            <input type="checkbox" class="js-switch" name="superuser" id="superuser" @if(isset($role->superuser) && $role->superuser) checked @endif>
+                            <input type="checkbox" name="superuser" id="superuser" @if(isset($role->superuser) && $role->superuser) checked @endif>
                         </label>
                     </div>
                 </div>

@@ -52,7 +52,7 @@
                 <div class="control">
                     <label class="checkbox label">
                         Unlimited Slots
-                        <input type="checkbox" class="js-switch" name="unlimited_slots" {{ (isset($activity) && $activity->unlimited_slots) || old('unlimited_slots') ? 'checked' : '' }}>
+                        <input type="checkbox" name="unlimited_slots" {{ (isset($activity) && $activity->unlimited_slots) || old('unlimited_slots') ? 'checked' : '' }}>
                     </label>
                 </div>
             </div>
@@ -61,7 +61,7 @@
                 <div class="control">
                     <label class="checkbox label">
                         PST
-                        <input type="checkbox" class="js-switch" name="pst" {{ (isset($activity) && $activity->pst === true) || old('pst') ? 'checked' : '' }}>
+                        <input type="checkbox" name="pst" {{ (isset($activity) && $activity->pst === true) || old('pst') ? 'checked' : '' }}>
                     </label>
                 </div>
             </div>

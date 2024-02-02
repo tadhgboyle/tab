@@ -16,6 +16,16 @@
         "lodash": "^4.17.19",
         "resolve-url-loader": "^3.1.0",
         "sass": "^1.15.2",
-        "sass-loader": "^8.0.0"
+        "sass-loader": "^8.0.0",
+        "vue-template-compiler": "^2.7.16"
+    },
+    "dependencies": {
+        "@fortawesome/fontawesome-free": "^5.15.2",
+        "bulma": "^0.9.4",
+        "datatables.net": "^1.13.8",
+        "flatpickr": "^4.6.13",
+        "fullcalendar": "^6.1.10",
+        "jquery": "^3.7.1",
+        "jquery-ui": "^1.13.2"
     }
 }
