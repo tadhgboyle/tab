@@ -150,6 +150,7 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
     - Admin emails: New user made, settings changed, etc
 - Rename payouts to something better
 - Store credits (when a transaction with gift card is returned, give them store credit, etc)
+- "remaining owing" reactive subtext on payout creation page
 
 ## Issues/Bugs
 - Add check balance modal for gift card (under a "tools" dropdown?)
