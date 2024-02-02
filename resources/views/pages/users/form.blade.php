@@ -104,7 +104,7 @@
                             <span class="icon is-small is-left">
                                 <i class="fas fa-dollar-sign"></i>
                             </span>
-                            <input type="number" step="0.01" name="limit[{{ $category['id'] }}]" class="input money-input" placeholder="Limit" value="{{ isset($user) ? $category['info']->limit_per->formatForInput() : "0.00"}}">
+                            <input type="number" step="0.01" name="limit[{{ $category['id'] }}]" class="input money-input" placeholder="Limit" value="{{ isset($user) ? $category['info']->limit->formatForInput() : "0.00"}}">
                         </div>
                         <div class="control">
                             <label class="radio">

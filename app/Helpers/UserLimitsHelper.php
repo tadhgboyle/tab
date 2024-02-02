@@ -46,7 +46,7 @@ class UserLimitsHelper
                 'user_id' => $user->id,
                 'category_id' => $category_id,
             ], [
-                'limit_per' => $limit,
+                'limit' => $limit,
                 'duration' => $duration,
             ]);
         }
@@ -60,20 +60,20 @@ class UserLimitsHelper
             $info = self::getInfo($user, $category_id);
         }
 
-        if ($info->limit_per->equals(Money::parse(-1_00))) {
+        if ($info->limit->equals(Money::parse(-1_00))) {
             return true;
         }
 
         $spent = self::findSpent($user, $category_id, $info);
 
-        return $spent->add($spending)->lessThanOrEqual($info->limit_per);
+        return $spent->add($spending)->lessThanOrEqual($info->limit);
     }
 
     public static function getInfo(User $user, int $category_id): stdClass
     {
         $info = UserLimits::query()
             ->where([['user_id', $user->id], ['category_id', $category_id]])
-            ->select(['duration', 'limit_per'])
+            ->select(['duration', 'limit'])
             ->get();
 
         $limit_info = new stdClass();
@@ -82,11 +82,11 @@ class UserLimitsHelper
             $info = $info->first();
             $limit_info->duration = $info->duration === UserLimits::LIMIT_DAILY ? 'day' : 'week';
             $limit_info->duration_int = $info->duration;
-            $limit_info->limit_per = $info->limit_per;
+            $limit_info->limit = $info->limit;
         } else {
             $limit_info->duration = 'week';
             $limit_info->duration_int = UserLimits::LIMIT_WEEKLY;
-            $limit_info->limit_per = Money::parse(-1_00);
+            $limit_info->limit = Money::parse(-1_00);
         }
 
         return $limit_info;
@@ -97,7 +97,7 @@ class UserLimitsHelper
         // If they have unlimited money (no limit set) for this category,
         // get all their transactions, as they have no limit set we dont need to worry about
         // when the transaction was created_at.
-        if ($info->limit_per->equals(Money::parse(-1_00))) {
+        if ($info->limit->equals(Money::parse(-1_00))) {
             $transactions = $user->transactions
                 ->where('returned', false);
             $activity_registrations = $user->activityRegistrations

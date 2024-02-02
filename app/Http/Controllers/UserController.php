@@ -50,7 +50,7 @@ class UserController extends Controller
 
             $processed_categories[$category->id] = [
                 'name' => $category->name,
-                'limit' => $info->limit_per,
+                'limit' => $info->limit,
                 'duration' => $info->duration,
                 'spent' => UserLimitsHelper::findSpent($user, $category->id, $info),
             ];

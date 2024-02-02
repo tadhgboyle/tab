@@ -134,8 +134,8 @@ class UserLimitsHelperTest extends TestCase
         $this->assertNull($message);
         $this->assertNull($result);
 
-        $this->assertEquals(Money::parse(25_00), UserLimitsHelper::getInfo($user, $merch_category->id)->limit_per);
-        $this->assertEquals(Money::parse(15_00), UserLimitsHelper::getInfo($user, $candy_category->id)->limit_per);
+        $this->assertEquals(Money::parse(25_00), UserLimitsHelper::getInfo($user, $merch_category->id)->limit);
+        $this->assertEquals(Money::parse(15_00), UserLimitsHelper::getInfo($user, $candy_category->id)->limit);
 
         $this->assertSame(UserLimits::LIMIT_DAILY, UserLimitsHelper::getInfo($user, $merch_category->id)->duration_int);
         $this->assertSame(UserLimits::LIMIT_WEEKLY, UserLimitsHelper::getInfo($user, $candy_category->id)->duration_int);
@@ -183,7 +183,7 @@ class UserLimitsHelperTest extends TestCase
         $this->assertNull($message);
         $this->assertNull($result);
 
-        $this->assertEquals(Money::parse(0_00), UserLimitsHelper::getInfo($user, $candy_category->id)->limit_per);
+        $this->assertEquals(Money::parse(0_00), UserLimitsHelper::getInfo($user, $candy_category->id)->limit);
     }
 
     public function testNoLimitProvidedDefaultsToNegativeOneFromUserRequest(): void
@@ -212,7 +212,7 @@ class UserLimitsHelperTest extends TestCase
         $this->assertNull($message);
         $this->assertNull($result);
 
-        $this->assertEquals(Money::parse(-1_00), UserLimitsHelper::getInfo($user, $candy_category->id)->limit_per);
+        $this->assertEquals(Money::parse(-1_00), UserLimitsHelper::getInfo($user, $candy_category->id)->limit);
     }
 
     public function testNoDurationProvidedDefaultsToDailyFromUserRequest(): void
@@ -294,20 +294,20 @@ class UserLimitsHelperTest extends TestCase
         UserLimits::factory()->create([
             'user_id' => $user->id,
             'category_id' => $food_category->id,
-            'limit_per' => 15_00,
+            'limit' => 15_00,
             'duration' => UserLimits::LIMIT_DAILY
         ]);
 
         UserLimits::factory()->create([
             'user_id' => $user->id,
             'category_id' => $merch_category->id,
-            'limit_per' => -1_00
+            'limit' => -1_00
         ]);
 
         UserLimits::factory()->create([
             'user_id' => $user->id,
             'category_id' => $activities_category->id,
-            'limit_per' => 10_00
+            'limit' => 10_00
         ]);
 
         [$skittles, $sweater, $coffee, $hat] = $this->createFakeProducts($food_category->id, $merch_category->id);

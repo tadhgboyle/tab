@@ -137,7 +137,7 @@ class TransactionCreateService extends Service
         foreach ($transaction_products->map(fn (TransactionProduct $product) => $product->category_id)->unique() as $category_id) {
             $limit_info = UserLimitsHelper::getInfo($purchaser, $category_id);
             /** @var Money $category_limit */
-            $category_limit = $limit_info->limit_per;
+            $category_limit = $limit_info->limit;
 
             // Skip this category if they have unlimited. Saves time querying
             if ($category_limit->equals(Money::parse(-1_00))) {

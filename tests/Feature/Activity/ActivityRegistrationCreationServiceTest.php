@@ -104,7 +104,7 @@ class ActivityRegistrationCreateServiceTest extends TestCase
         UserLimits::factory()->create([
             'user_id' => $this->_user->id,
             'category_id' => $this->_activities_category->id,
-            'limit_per' => 0_00,
+            'limit' => 0_00,
             'duration' => UserLimits::LIMIT_WEEKLY,
         ]);
 

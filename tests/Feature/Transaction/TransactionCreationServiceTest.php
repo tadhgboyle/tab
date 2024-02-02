@@ -315,13 +315,13 @@ class TransactionCreateServiceTest extends TestCase
         UserLimits::factory()->create([
             'user_id' => $user->id,
             'category_id' => $food_category->id,
-            'limit_per' => 1_00,
+            'limit' => 1_00,
         ]);
 
         UserLimits::factory()->create([
             'user_id' => $user->id,
             'category_id' => $merch_category->id,
-            'limit_per' => 1_00,
+            'limit' => 1_00,
         ]);
     }
 

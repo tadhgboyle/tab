@@ -20,12 +20,12 @@ class UserLimits extends Model
     protected $fillable = [
         'user_id',
         'category_id',
-        'limit_per',
+        'limit',
         'duration',
     ];
 
     protected $casts = [
-        'limit_per' => MoneyIntegerCast::class,
+        'limit' => MoneyIntegerCast::class,
         'category_id' => CategoryType::class,
     ];
 

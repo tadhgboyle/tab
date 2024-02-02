@@ -266,14 +266,14 @@ class ProductTest extends TestCase
         UserLimits::factory()->create([
             'user_id' => $user->id,
             'category_id' => $food_category->id,
-            'limit_per' => 15,
+            'limit' => 15,
             'duration' => UserLimits::LIMIT_DAILY
         ]);
 
         UserLimits::factory()->create([
             'user_id' => $user->id,
             'category_id' => $merch_category->id,
-            'limit_per' => -1
+            'limit' => -1
         ]);
 
         [$skittles, $sweater, $coffee, $hat] = $this->createFakeProducts($food_category->id, $merch_category->id);
