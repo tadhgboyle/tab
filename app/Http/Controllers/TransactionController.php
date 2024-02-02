@@ -56,8 +56,8 @@ class TransactionController extends Controller
         return (new TransactionReturnService($transaction))->return()->redirect();
     }
 
-    public function returnProduct(Transaction $transaction, TransactionProduct $transactionProduct): RedirectResponse
+    public function returnProduct(TransactionProduct $transactionProduct): RedirectResponse
     {
-        return (new TransactionReturnProductService($transaction, $transactionProduct))->return()->redirect();
+        return (new TransactionReturnProductService($transactionProduct))->return()->redirect();
     }
 }

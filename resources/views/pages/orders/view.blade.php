@@ -82,7 +82,7 @@
         </header>
         <section class="modal-card-body">
             <p>Are you sure you want to return this transaction?</p>
-            <form action="{{ route('orders_return', $transaction->id) }}" id="returnOrderForm" method="POST">
+            <form action="{{ route('transactions_return', $transaction->id) }}" id="returnOrderForm" method="POST">
                 @csrf
                 @method('PUT')
             </form>
@@ -158,8 +158,8 @@
         }
 
         function returnProductData() {
-            let url = '{{ route("orders_return_item", [":order", ":transactionProduct"]) }}';
-            url = url.replace(':order', {{ $transaction->id }});
+            let url = '{{ route("transaction_return_product", [":transaction", ":transactionProduct"]) }}';
+            url = url.replace(':transaction', {{ $transaction->id }});
             url = url.replace(':transactionProduct', transactionProduct);
             $("#returnItemForm").attr('action', url);
             $("#returnItemForm").submit();

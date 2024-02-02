@@ -83,7 +83,7 @@ class TransactionSeeder extends Seeder
 
                         for ($j = 0; $j <= $returning; $j++) {
                             $transactionProduct = $transaction->products->firstWhere('product_id', $product_id);
-                            (new TransactionReturnProductService($transaction, $transactionProduct))->return();
+                            (new TransactionReturnProductService($transactionProduct))->return();
                         }
                     }
                 }

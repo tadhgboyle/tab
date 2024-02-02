@@ -4,7 +4,6 @@ namespace App\Services\Transactions;
 
 use App\Services\Service;
 use App\Helpers\TaxHelper;
-use App\Models\Transaction;
 use App\Models\TransactionProduct;
 use Illuminate\Http\RedirectResponse;
 
@@ -18,9 +17,9 @@ class TransactionReturnProductService extends Service
 
     private TransactionProduct $_transactionProduct;
 
-    public function __construct(Transaction $transaction, TransactionProduct $transactionProduct)
+    public function __construct(TransactionProduct $transactionProduct)
     {
-        $this->_transaction = $transaction;
+        $this->_transaction = $transactionProduct->transaction;
         $this->_transactionProduct = $transactionProduct;
     }
 

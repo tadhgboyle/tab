@@ -9,7 +9,7 @@
 <div class="columns">
     <div class="column"></div>
     @if (!is_null($currentRotation))
-        <div class="column is-half box" id="user_container" style="visibility: hidden;">
+        <div class="column is-full box" id="user_container" style="visibility: hidden;">
             @include('includes.messages')
             <table id="user_list">
                 <thead>
