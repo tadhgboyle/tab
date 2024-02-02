@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Transaction;
 
-use App\Models\Credit;
 use App\Models\GiftCard;
 use App\Models\Role;
 use App\Models\Rotation;
@@ -66,6 +65,7 @@ class TransactionTest extends TestCase
 
     public function testHasProducts(): void
     {
+        $this->markTestIncomplete();
     }
 
     public function testBelongsToGiftCard(): void
@@ -85,53 +85,38 @@ class TransactionTest extends TestCase
         $this->assertEquals($gift_card->id, $transaction->giftCard->id);
     }
 
-    public function testCreditableAmount(): void
-    {
-        $gift_card = GiftCard::factory()->create();
-        $transaction = Transaction::factory()->create([
-            'gift_card_id' => $gift_card->id,
-            'purchaser_id' => $this->purchaser->id,
-            'cashier_id' => $this->purchaser->id,
-            'rotation_id' => $this->rotation->id,
-            'total_price' => 10_50,
-            'purchaser_amount' => 2_50,
-            'gift_card_amount' => 2_50,
-            'credit_amount' => 5_50,
-        ]);
-        $transaction->credits()->create([
-            'amount' => 3_50,
-            'reason' => 'test',
-        ]);
-
-        // $2.50 GC + $5.50 C - $3.50 C = $4.50
-        $this->assertEquals(4_50, $transaction->creditableAmount()->getAmount());
-    }
-
     public function testGetReturnedTotalIsFullPriceIfFullyReturned(): void
     {
+        $this->markTestIncomplete();
     }
 
     public function testGetReturnedTotalIsZeroIfNotReturned(): void
     {
+        $this->markTestIncomplete();
     }
 
     public function testGetReturnedTotalIsPartialPriceIfPartiallyReturned(): void
     {
+        $this->markTestIncomplete();
     }
 
     public function testIsReturnedIsTrueIfFullyReturned(): void
     {
+        $this->markTestIncomplete();
     }
 
     public function testGetReturnStatusIsFullyReturnedIfReturned(): void
     {
+        $this->markTestIncomplete();
     }
 
     public function testGetReturnStatusIsNotReturnedIfNotReturned(): void
     {
+        $this->markTestIncomplete();
     }
 
     public function testGetReturnStatusIsPartiallyReturnedIfPartiallyReturned(): void
     {
+        $this->markTestIncomplete();
     }
 }

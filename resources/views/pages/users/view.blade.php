@@ -4,8 +4,6 @@
 <h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if($user->trashed()) <strong>(Deleted)</strong> @endif @if(!$user->trashed() && hasPermission(\App\Helpers\Permission::USERS_MANAGE) && $can_interact)<a href="{{ route('users_edit', $user->id) }}">(Edit)</a>@endif</h4>
 <p><strong>Role:</strong> {{ $user->role->name }}</p>
 <span><strong>Balance:</strong> {{ $user->balance }}, </span>
-@php $availableCredit = $user->availableCredit(); @endphp
-<span><strong>Available credit:</strong> <span style="text-decoration: underline; cursor: help;" onclick="openCreditsModal();">{{ $availableCredit }}</span></span>
 
 <br>
 
@@ -138,47 +136,6 @@
                                 </td>
                             </tr>
                             @endforeach
-                        </tbody>
-                    </table>
-                </div>
-                <div class="box">
-                    <h4 class="title has-text-weight-bold is-4">
-                        Credits
-                    </h4>
-                    <table id="credit_list">
-                        <thead>
-                            <tr>
-                                <th>Time</th>
-                                <th>Reason</th>
-                                <th>Issuer</th>
-                                <th>Amount</th>
-                                <th>Amount Used</th>
-                                <th>Amount Available</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($credits as $credit)
-                            <tr>
-                                <td>
-                                    <div>{{ $credit->created_at->format('M jS Y h:ia') }}</div>
-                                </td>
-                                <td>
-                                    <div><code>{{ $credit->reason }}</code></div>
-                                </td>
-                                <td>
-                                    <div>{{ $credit->issuer_id === null ? 'System' : $credit->isser->full_name }}</div>
-                                </td>
-                                <td>
-                                    <div>{{ $credit->amount }}</div>
-                                </td>
-                                <td>
-                                    <div>{{ $credit->amount_used }}</div>
-                                </td>
-                                <td>
-                                    <div>{{ $credit->amountAvailable() }}</div>
-                                </td>
-                            </tr>
-                        @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -424,67 +381,8 @@
     </div>
 </div>
 
-<div class="modal" id="credits_modal">
-    <div class="modal-background" onclick="closeCreditsModal();"></div>
-    <div class="modal-card">
-        <header class="modal-card-head">
-            <p class="modal-card-title">Credits</p>
-        </header>
-        <section class="modal-card-body">
-            <table class="table is-fullwidth">
-                <tbody>
-                <tr>
-                    <td colspan="2">
-                        <strong>Credits</strong>
-                    </td>
-                </tr>
-                @forelse($user->credits->sortByDesc('created_at') as $credit)
-                    <tr>
-                        <td>
-                            <div>#{{ $credit->id }} - {{ $credit->reason }}</div>
-                        </td>
-                        <td>
-                            <div>+{{ $credit->amount }}</div>
-                        </td>
-                    </tr>
-                    @if($credit->amount_used->isPositive())
-                        <tr>
-                            <td>
-                                <div>Used #{{ $credit->id }}</div>
-                            </td>
-                            <td>
-                                <div>-{{ $credit->amount_used }}</div>
-                            </td>
-                        </tr>
-                    @endif
-                @empty
-                    <tr>
-                        <td>
-                            <div><i>No Credits</i></div>
-                        </td>
-                        <td>
-                            <div></div>
-                        </td>
-                    </tr>
-                @endforelse
-                <tr>
-                    <td></td>
-                    <td>
-                        <div><strong>&nbsp;&nbsp;{{ $availableCredit }}</strong></div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </section>
-        <footer class="modal-card-foot">
-            <button class="button" onclick="closeCreditsModal();">Close</button>
-        </footer>
-    </div>
-</div>
-
 <script>
     const owingModal = document.getElementById('owing_modal');
-    const creditsModal = document.getElementById('credits_modal');
 
     const openOwingModal = () => {
         owingModal.classList.add('is-active');
@@ -492,14 +390,6 @@
 
     const closeOwingModal = () => {
         owingModal.classList.remove('is-active');
-    }
-
-    const openCreditsModal = () => {
-        creditsModal.classList.add('is-active');
-    }
-
-    const closeCreditsModal = () => {
-        creditsModal.classList.remove('is-active');
     }
 
     $(document).ready(function() {
@@ -522,19 +412,6 @@
             }]
         });
         $('#activity_list').DataTable({
-            "order": [],
-            "paging": false,
-            "searching": false,
-            "scrollY": "33vh",
-            "scrollCollapse": true,
-            "bInfo": false,
-            "columnDefs": [{
-                "orderable": false,
-                "searchable": false,
-                "targets": 4
-            }]
-        });
-        $('#credit_list').DataTable({
             "order": [],
             "paging": false,
             "searching": false,

@@ -2,7 +2,6 @@ let ITEMS = [];
 const PST_AMOUNT = document.getElementById('current_pst').value;
 const GST_AMOUNT = document.getElementById('current_gst').value;
 const PURCHASER_ID = document.getElementById('purchaser_id').value;
-const PURCHASER_AVAILABLE_CREDIT = document.getElementById('purchaser_available_credit').value;
 
 const APPLY_GIFT_CARD_BUTTON = document.getElementById('apply_gift_card');
 const REMOVE_GIFT_CARD_BUTTON = document.getElementById('remove_gift_card');
@@ -20,11 +19,6 @@ window.onload = () => {
         GIFT_CARD = JSON.parse(storedGiftCard);
         GIFT_CARD_CODE_INPUT.value = GIFT_CARD.code;
         giftCardHelpNotice(true);
-    }
-
-    if (PURCHASER_AVAILABLE_CREDIT > 0) {
-        document.getElementById('credit-row').style.display = 'table-row';
-        document.getElementById('credit-amount').innerText = `-$${PURCHASER_AVAILABLE_CREDIT}`;
     }
 
     render();
@@ -258,18 +252,15 @@ const calculateTotalPrice = () => {
 
 const calculatePurchaserAmount = () => {
     const total = calculateTotalPrice();
-    let totalAfterAppliedCredit = total - PURCHASER_AVAILABLE_CREDIT;
-    if (totalAfterAppliedCredit < 0) {
-        totalAfterAppliedCredit = 0;
-    }
+
     const giftCardTotal = calculateGiftCardTotal();
 
     if (giftCardTotal > total) {
         return 0;
     } else if (giftCardTotal > 0) {
-        return totalAfterAppliedCredit - giftCardTotal;
+        return total - giftCardTotal;
     } else {
-        return totalAfterAppliedCredit;
+        return total;
     }
 };
 

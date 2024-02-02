@@ -4,6 +4,7 @@ namespace Tests\Feature\Transaction;
 
 use App\Models\GiftCard;
 use App\Models\Rotation;
+use App\Services\Transactions\TransactionReturnProductService;
 use Cknow\Money\Money;
 use Tests\TestCase;
 use App\Models\Role;
@@ -103,55 +104,12 @@ class TransactionReturnServiceTest extends TestCase
         $this->assertSame($start_stock + $hat_count, $hat->refresh()->stock);
     }
 
-    public function testCreditIsNotMadeForCreditableAmountIfZero(): void
-    {
-        [$user, $transaction] = $this->createFakeRecords();
-
-        $this->assertCount(0, $user->credits);
-
-        $transactionService = (new TransactionReturnService($transaction))->return();
-        $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
-        $this->assertEquals(Money::parse(0), $transactionService->getTransaction()->gift_card_amount);
-        $this->assertCount(0, $user->credits);
-    }
-
-    public function testCreditIsMadeForCreditableAmountIfPositive(): void
-    {
-        $giftCard = GiftCard::factory()->create([
-            'original_balance' => $giftCardAmount = Money::parse(1_00),
-            'remaining_balance' => $giftCardAmount,
-            'issuer_id' => User::factory()->create([
-                'role_id' => Role::factory()->create(['name' => 'Admin'])->id,
-            ])->id,
-        ]);
-        [$user, $transaction] = $this->createFakeRecords(gift_card_code: $giftCard->code, create_credit_amount: $creditAmount = Money::parse(4_00));
-
-        $charged_transaction_amount = $transaction->purchaser_amount;
-        $balance_before = $user->balance;
-
-        $transactionService = (new TransactionReturnService($transaction))->return();
-        $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
-        $user = $user->refresh();
-        $this->assertCount(2, $user->credits); // one made by passing create_credit_amount, one made by the return
-        $this->assertEquals($giftCardAmount->add($creditAmount), $user->credits->last()->amount);
-        $this->assertEquals("Refund for order #{$transaction->id}", $user->credits->last()->reason);
-        $this->assertEquals($giftCardAmount, $transactionService->getTransaction()->gift_card_amount);
-        $this->assertEquals($transaction->id, $user->credits->last()->transaction_id);
-        $this->assertEquals($charged_transaction_amount->add($giftCardAmount)->add($creditAmount), $transaction->total_price);
-        $this->assertEquals($balance_before->add($charged_transaction_amount), $user->balance);
-        $this->assertEquals($creditAmount, $transaction->credit_amount);
-        $this->assertEquals($giftCardAmount->add($creditAmount), $transaction->creditableAmount());
-        $this->assertEquals("Test Credit", $user->credits->first()->reason);
-        $this->assertEquals($creditAmount, $user->credits->first()->amount_used);
-    }
-
     /**
      * @param int $hat_count
      * @param string|null $gift_card_code
-     * @param Money|null $create_credit_amount
      * @return array<User, Transaction, Product>
      */
-    private function createFakeRecords(int $hat_count = 2, string $gift_card_code = null, Money $create_credit_amount = null): array
+    private function createFakeRecords(int $hat_count = 2, string $gift_card_code = null): array
     {
         app(RotationSeeder::class)->run();
 
@@ -162,21 +120,6 @@ class TransactionReturnServiceTest extends TestCase
             'role_id' => $role->id,
             'balance' => 300_00
         ]);
-
-        if ($create_credit_amount) {
-            $user->credits()->create([
-                'amount' => $create_credit_amount,
-                'transaction_id' => Transaction::factory()->create([
-                    'purchaser_id' => $user->id,
-                    'cashier_id' => $user->id,
-                    'purchaser_amount' => $create_credit_amount,
-                    'gift_card_amount' => $create_credit_amount,
-                    'total_price' => $create_credit_amount,
-                    'rotation_id' => Rotation::all()->random()->id,
-                ])->id,
-                'reason' => 'Test Credit',
-            ]);
-        }
 
         $this->actingAs($user);
 

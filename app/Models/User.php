@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
-use JetBrains\PhpStorm\Pure;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -44,22 +43,19 @@ class User extends Authenticatable
 
     public function activityRegistrations(): HasMany
     {
+        // TODO why do we need to specify the foreign key here?
         return $this->hasMany(ActivityRegistration::class, 'user_id', 'id');
     }
 
     public function rotations(): BelongsToMany
     {
+        // TODO why is this distinct?
         return $this->belongsToMany(Rotation::class)->distinct();
     }
 
     public function payouts(): HasMany
     {
         return $this->hasMany(Payout::class);
-    }
-
-    public function credits(): HasMany
-    {
-        return $this->hasMany(Credit::class);
     }
 
     public function hasPermission($permission): bool
@@ -87,12 +83,12 @@ class User extends Authenticatable
         $returned = Money::parse(0);
 
         $this->transactions->each(function (Transaction $transaction) use (&$returned) {
-            if ($transaction->returned) {
+            if ($transaction->isReturned()) {
                 $returned = $returned->add($transaction->total_price);
                 return;
             }
 
-            foreach ($transaction->products->filter(fn (TransactionProduct $product) => $product->returned > 0) as $product) {
+            foreach ($transaction->products->where('returned', '>', 0) as $product) {
                 $returned = $returned->add(TaxHelper::calculateFor($product->price, $product->returned, $product->pst !== null, [
                     'gst' => $product->gst,
                     'pst' => $product->pst,
@@ -102,8 +98,8 @@ class User extends Authenticatable
 
         $returned = $returned->add(
             ...$this->activityRegistrations
-            ->where('returned', true)
-            ->map->total_price
+                ->where('returned', true)
+                ->map->total_price
         );
 
         return $returned;
@@ -118,14 +114,5 @@ class User extends Authenticatable
         return $this->findSpent()
             ->subtract($this->findReturned())
             ->subtract(...$this->payouts->map->amount);
-    }
-
-    public function availableCredit(): Money
-    {
-        return $this->credits->reject(function (Credit $credit) {
-            return $credit->fullyUsed();
-        })->reduce(function (Money $carry, Credit $credit) {
-            return $carry->add($credit->amountAvailable());
-        }, Money::parse(0));
     }
 }

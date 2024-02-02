@@ -26,7 +26,6 @@ class Transaction extends Model
         'total_price' => MoneyIntegerCast::class,
         'purchaser_amount' => MoneyIntegerCast::class,
         'gift_card_amount' => MoneyIntegerCast::class,
-        'credit_amount' => MoneyIntegerCast::class,
         'returned' => 'boolean',
     ];
 
@@ -59,19 +58,6 @@ class Transaction extends Model
         return $this->belongsTo(GiftCard::class);
     }
 
-    public function credits(): HasMany
-    {
-        return $this->hasMany(Credit::class, 'transaction_id');
-    }
-
-    public function creditableAmount(): Money
-    {
-        return Money::parse(0_00)
-            ->add($this->gift_card_amount)
-            ->add($this->credit_amount)
-            ->subtract(...$this->credits->map->amount);
-    }
-
     public function getReturnedTotal(): Money
     {
         if ($this->isReturned()) {
@@ -85,7 +71,7 @@ class Transaction extends Model
         return $this->products
             ->where('returned', '>=', 1)
             ->reduce(function (Money $carry, TransactionProduct $product) {
-                // todo use ::forTransactionProduct?
+                // TODO use ::forTransactionProduct?
                 return $carry->add(TaxHelper::calculateFor($product->price, $product->returned, $product->pst !== null, [
                     'pst' => $product->pst,
                     'gst' => $product->gst,

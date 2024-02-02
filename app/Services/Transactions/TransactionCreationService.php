@@ -94,11 +94,6 @@ class TransactionCreationService extends Service
 
         $charge_user_amount = $total_price;
 
-        $credit_amount = Money::min($purchaser->availableCredit(), $total_price);
-        if ($credit_amount->isPositive()) {
-            $charge_user_amount = $total_price->subtract($credit_amount);
-        }
-
         $gift_card_amount = Money::parse(0);
 
         if ($charge_user_amount->isPositive()) {
@@ -174,7 +169,6 @@ class TransactionCreationService extends Service
         $transaction->cashier_id = auth()->id();
         $transaction->total_price = $total_price;
         $transaction->purchaser_amount = $charge_user_amount;
-        $transaction->credit_amount = $credit_amount;
         $transaction->gift_card_amount = $gift_card_amount;
         $transaction->gift_card_id = isset($gift_card) ? $gift_card->id : null;
         if (isset($gift_card, $gift_card_remaining_balance)) {
@@ -201,31 +195,6 @@ class TransactionCreationService extends Service
         });
 
         $purchaser->update(['balance' => $remaining_balance]);
-
-        // go through all their credits and use them up
-        if ($credit_amount->isPositive()) {
-            $credited_amount = Money::parse(0_00);
-            foreach ($purchaser->credits()->orderBy('amount')->get() as $credit) {
-                if ($credited_amount->equals($credit_amount)) {
-                    break;
-                }
-
-                $credit_remaining = $credit->amount->subtract($credit->amount_used);
-                // if $10 + $5 > $12, only use $2
-                if ($credited_amount->add($credit_remaining)->greaterThan($credit_amount)) {
-                    // only use the amount we need to use
-                    $credit_used = $credit_amount->subtract($credited_amount);
-                    $credit->amount_used = $credit->amount_used->add($credit_used);
-                } else {
-                    // use the whole credit
-                    $credit_used = $credit->amount;
-                    $credit->amount_used = $credit_used;
-                }
-
-                $credited_amount = $credited_amount->add($credit_used);
-                $credit->save();
-            }
-        }
 
         $this->_result = self::RESULT_SUCCESS;
         $this->_message = 'Order #' . $transaction->id . '. ' . $purchaser->full_name . ' now has ' . $remaining_balance;

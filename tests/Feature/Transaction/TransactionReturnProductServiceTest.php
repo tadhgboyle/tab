@@ -117,27 +117,12 @@ class TransactionReturnProductServiceTest extends TestCase
         $this->assertEquals($start_stock + 1, $hat->refresh()->stock);
     }
 
-    public function testNoCreditIsMadeWhenTransactionCreditsAlreadyEqualCreditableAmount(): void
-    {
-
-    }
-
-    public function testPartialCreditIsMadeWhenReturningAProductWouldExceedTheCreditableAmount(): void
-    {
-
-    }
-
-    public function testFullCreditIsMadeWhenReturningAProductWouldNotExceedTheCreditableAmount(): void
-    {
-
-    }
-
     /**
      * @param int $hat_count
      *
      * @return array<User, Transaction, Product>
      */
-    private function createFakeRecords(int $hat_count = 2, string $gift_card_code = null, Money $create_credit_amount = null): array
+    private function createFakeRecords(int $hat_count = 2, string $gift_card_code = null): array
     {
         app(RotationSeeder::class)->run();
 
@@ -148,21 +133,6 @@ class TransactionReturnProductServiceTest extends TestCase
             'role_id' => $role->id,
             'balance' => 300_00
         ]);
-
-        if ($create_credit_amount) {
-            $user->credits()->create([
-                'amount' => $create_credit_amount,
-                'transaction_id' => Transaction::factory()->create([
-                    'purchaser_id' => $user->id,
-                    'cashier_id' => $user->id,
-                    'purchaser_amount' => $create_credit_amount,
-                    'gift_card_amount' => $create_credit_amount,
-                    'total_price' => $create_credit_amount,
-                    'rotation_id' => Rotation::all()->random()->id,
-                ])->id,
-                'reason' => 'Test Credit',
-            ]);
-        }
 
         $this->actingAs($user);
 

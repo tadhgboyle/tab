@@ -11,21 +11,26 @@ class TransactionProductTest extends TestCase
 
     public function testPriceIsCastedToMoneyObject(): void
     {
+        $this->markTestIncomplete();
     }
 
     public function testHasTransaction(): void
     {
+        $this->markTestIncomplete();
     }
 
     public function testHasProduct(): void
     {
+        $this->markTestIncomplete();
     }
 
     public function testHasCategory(): void
     {
+        $this->markTestIncomplete();
     }
 
     public function testCanCreateFromProduct(): void
     {
+        $this->markTestIncomplete();
     }
 }

@@ -15,7 +15,6 @@ class TransactionFactory extends Factory
     {
         return [
             'gift_card_amount' => 0_00,
-            'credit_amount' => 0_00,
             'returned' => false,
             'created_at' => now()
         ];

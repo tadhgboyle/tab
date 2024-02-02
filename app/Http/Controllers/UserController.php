@@ -63,7 +63,6 @@ class UserController extends Controller
             'activity_registrations' => $user->activityRegistrations,
             'categories' => $processed_categories,
             'rotations' => $user->rotations,
-            'credits' => $user->credits,
         ]);
     }
 

@@ -115,7 +115,6 @@ class TransactionCreationServiceTest extends TestCase
         $this->assertEquals(1, Product::firstWhere('name', 'Chips')->stock);
         $this->assertEquals(null, $transactionService->getTransaction()->gift_card_id);
         $this->assertEquals(Money::parse(0), $transactionService->getTransaction()->gift_card_amount);
-        $this->assertEquals(Money::parse(0), $transactionService->getTransaction()->credit_amount);
     }
 
     public function testInvalidGiftCardCodeError(): void
@@ -201,21 +200,6 @@ class TransactionCreationServiceTest extends TestCase
         $this->assertEquals(Money::parse(27_55), $transactionService->getTransaction()->purchaser_amount);
         $this->assertEquals(Money::parse(0), $gift_card->refresh()->remaining_balance);
         $this->assertEquals($gift_card->id, $transactionService->getTransaction()->gift_card_id);
-    }
-
-    public function testUsesCreditWhenUserHasCredit(): void
-    {
-
-    }
-
-    public function testUsesCreditBeforeUsingGiftCard(): void
-    {
-
-    }
-
-    public function testUsesCreditBeforeUsingBalance(): void
-    {
-
     }
 
     /** @return User[] */

@@ -125,7 +125,7 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
     - New users
     - Price changes
     - Stock changes
-    - Gift card/credit balance changes
+    - Gift card balance changes
         - These + stock could be done by using a ledger data structure; append new row when data changes
     - Etc
 - Bulk change prices of items (Everything 10% *off* or everything 20% *more* etc)
@@ -143,6 +143,13 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
 - Use npm for js packages
 - Move "ajax" routes to API controllers + paths
 - Rename adjust page to ledger
+- Timeline on orders, gift cards, etc to see when they were made, used, refunded, etc
+- Update services to use enums for result statuses
+- Emails for a bunch of stuff:
+    - Gift card given (would need to let gift cards optionally have an assigned user, but should prolly still be able to be used by anyone)
+    - Admin emails: New user made, settings changed, etc
+- Rename payouts to something better
+- Store credits (when a transaction with gift card is returned, give them store credit, etc)
 
 ## Issues/Bugs
 - Add check balance modal for gift card (under a "tools" dropdown?)
