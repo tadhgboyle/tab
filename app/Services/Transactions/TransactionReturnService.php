@@ -17,15 +17,12 @@ class TransactionReturnService extends Service
     public function __construct(Transaction $transaction)
     {
         $this->_transaction = $transaction;
-    }
 
-    public function return(): TransactionReturnService
-    {
         // This should never happen, but a good security measure
         if ($this->_transaction->isReturned()) {
             $this->_result = self::RESULT_ALREADY_RETURNED;
             $this->_message = 'That order has already been fully returned.';
-            return $this;
+            return;
         }
 
         $this->updateTransactionProductAttributes();
@@ -35,7 +32,6 @@ class TransactionReturnService extends Service
 
         $this->_result = self::RESULT_SUCCESS;
         $this->_message = 'Successfully returned order #' . $this->_transaction->id . ' for ' . $this->_transaction->purchaser->full_name;
-        return $this;
     }
 
     private function updateTransactionProductAttributes(): void

@@ -70,7 +70,7 @@ class TransactionSeeder extends Seeder
 
                 if (random_int(0, 3) === 3) {
                     if (random_int(0, 1) === 1) {
-                        (new TransactionReturnService($transaction))->return();
+                        (new TransactionReturnService($transaction));
                     } else {
                         $product_id = $product_ids->random();
                         $max_to_return = 0;
@@ -83,7 +83,7 @@ class TransactionSeeder extends Seeder
 
                         for ($j = 0; $j <= $returning; $j++) {
                             $transactionProduct = $transaction->products->firstWhere('product_id', $product_id);
-                            (new TransactionReturnProductService($transactionProduct))->return();
+                            (new TransactionReturnProductService($transactionProduct));
                         }
                     }
                 }

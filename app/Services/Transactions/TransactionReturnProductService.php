@@ -21,21 +21,18 @@ class TransactionReturnProductService extends Service
     {
         $this->_transaction = $transactionProduct->transaction;
         $this->_transactionProduct = $transactionProduct;
-    }
 
-    public function return(): TransactionReturnProductService
-    {
         if ($this->_transaction->isReturned()) {
             $this->_result = self::RESULT_ALREADY_RETURNED;
             $this->_message = 'That order has already been returned, so you cannot return an item from it.';
-            return $this;
+            return;
         }
 
         // If it has not been returned more times than it was purchased, then ++ the returned count and refund the original cost + taxes
         if ($this->_transactionProduct->returned >= $this->_transactionProduct->quantity) {
             $this->_result = self::RESULT_ITEM_RETURNED_MAX_TIMES;
             $this->_message = 'That item has already been returned the maximum amount of times for that order.';
-            return $this;
+            return;
         }
 
         $this->_transactionProduct->increment('returned');
@@ -46,7 +43,7 @@ class TransactionReturnProductService extends Service
 
         $this->_result = self::RESULT_SUCCESS;
         $this->_message = 'Successfully returned x1 ' . $this->_transactionProduct->product->name . ' for order #' . $this->_transaction->id . '.';
-        return $this;
+        return;
     }
 
     private function refundPurchaser(): void

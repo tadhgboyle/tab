@@ -25,7 +25,7 @@ class TransactionReturnProductServiceTest extends TestCase
         $balance_before = $user->balance;
 
         $hatTransactionProduct = $transaction->products->firstWhere('product_id', $hat->id);
-        $transactionService = (new TransactionReturnProductService($hatTransactionProduct))->return();
+        $transactionService = (new TransactionReturnProductService($hatTransactionProduct));
         $this->assertSame(TransactionReturnProductService::RESULT_SUCCESS, $transactionService->getResult());
 
         $this->assertSame(Transaction::STATUS_PARTIAL_RETURNED, $transaction->getReturnStatus());
@@ -44,7 +44,7 @@ class TransactionReturnProductServiceTest extends TestCase
         [, $transaction, $hat] = $this->createFakeRecords();
 
         $hatTransactionProduct = $transaction->products->firstWhere('product_id', $hat->id);
-        $transactionService = (new TransactionReturnProductService($hatTransactionProduct))->return();
+        $transactionService = (new TransactionReturnProductService($hatTransactionProduct));
         $this->assertSame(TransactionReturnProductService::RESULT_SUCCESS, $transactionService->getResult());
 
         $hatTransactionProduct = $transaction->products->firstWhere('product_id', $hat->id);
@@ -56,8 +56,8 @@ class TransactionReturnProductServiceTest extends TestCase
         [$user, $transaction, $hat] = $this->createFakeRecords();
 
         $hatTransactionProduct = $transaction->products->firstWhere('product_id', $hat->id);
-        (new TransactionReturnProductService($hatTransactionProduct))->return();
-        $transactionService = (new TransactionReturnProductService($hatTransactionProduct))->return();
+        (new TransactionReturnProductService($hatTransactionProduct));
+        $transactionService = (new TransactionReturnProductService($hatTransactionProduct));
         $this->assertSame(TransactionReturnProductService::RESULT_SUCCESS, $transactionService->getResult());
 
         $transaction = $transaction->refresh();
@@ -72,13 +72,13 @@ class TransactionReturnProductServiceTest extends TestCase
 
         $transaction_2_items = $this->createTwoItemTransaction($user, $hat);
         $hatTransactionProduct = $transaction_2_items->products->firstWhere('product_id', $hat->id);
-        $transactionService1 = (new TransactionReturnProductService($hatTransactionProduct))->return();
+        $transactionService1 = (new TransactionReturnProductService($hatTransactionProduct));
         $this->assertSame(TransactionReturnProductService::RESULT_SUCCESS, $transactionService1->getResult());
 
-        $transactionService2 = (new TransactionReturnProductService($hatTransactionProduct))->return();
+        $transactionService2 = (new TransactionReturnProductService($hatTransactionProduct));
         $this->assertSame(TransactionReturnProductService::RESULT_SUCCESS, $transactionService2->getResult());
 
-        $transactionService3 = (new TransactionReturnProductService($hatTransactionProduct))->return();
+        $transactionService3 = (new TransactionReturnProductService($hatTransactionProduct));
         $this->assertSame(TransactionReturnProductService::RESULT_ITEM_RETURNED_MAX_TIMES, $transactionService3->getResult());
 
         $this->assertSame(Transaction::STATUS_PARTIAL_RETURNED, $transaction_2_items->getReturnStatus());
@@ -95,7 +95,7 @@ class TransactionReturnProductServiceTest extends TestCase
         ]);
 
         $hatTransactionProduct = $transaction->products->firstWhere('product_id', $hat->id);
-        (new TransactionReturnProductService($hatTransactionProduct))->return();
+        (new TransactionReturnProductService($hatTransactionProduct));
 
         $this->assertSame($start_stock, $hat->refresh()->stock);
     }
@@ -110,7 +110,7 @@ class TransactionReturnProductServiceTest extends TestCase
         ]);
 
         $hatTransactionProduct = $transaction->products->firstWhere('product_id', $hat->id);
-        (new TransactionReturnProductService($hatTransactionProduct))->return();
+        (new TransactionReturnProductService($hatTransactionProduct));
 
         $this->assertEquals($start_stock + 1, $hat->refresh()->stock);
     }

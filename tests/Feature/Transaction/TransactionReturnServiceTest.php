@@ -23,7 +23,7 @@ class TransactionReturnServiceTest extends TestCase
     {
         [, $transaction] = $this->createFakeRecords();
 
-        $transactionService = (new TransactionReturnService($transaction))->return();
+        $transactionService = (new TransactionReturnService($transaction));
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
 
         $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->getReturnStatus());
@@ -35,7 +35,7 @@ class TransactionReturnServiceTest extends TestCase
         [$user, $transaction] = $this->createFakeRecords();
         $balance_before = $user->balance;
 
-        $transactionService = (new TransactionReturnService($transaction))->return();
+        $transactionService = (new TransactionReturnService($transaction));
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
 
         $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->getReturnStatus());
@@ -51,7 +51,7 @@ class TransactionReturnServiceTest extends TestCase
     {
         [, $transaction, $hat] = $this->createFakeRecords();
 
-        $transactionService = (new TransactionReturnService($transaction))->return();
+        $transactionService = (new TransactionReturnService($transaction));
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
 
         $hatTransactionProduct = $transaction->products->firstWhere('product_id', $hat->id);
@@ -62,10 +62,10 @@ class TransactionReturnServiceTest extends TestCase
     {
         [$user, $transaction] = $this->createFakeRecords();
 
-        $transactionService1 = (new TransactionReturnService($transaction))->return();
+        $transactionService1 = (new TransactionReturnService($transaction));
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService1->getResult());
 
-        $transactionService2 = (new TransactionReturnService($transaction))->return();
+        $transactionService2 = (new TransactionReturnService($transaction));
         $this->assertSame(TransactionReturnService::RESULT_ALREADY_RETURNED, $transactionService2->getResult());
 
         $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->getReturnStatus());
@@ -81,7 +81,7 @@ class TransactionReturnServiceTest extends TestCase
             'stock' => $start_stock = 12,
         ]);
 
-        (new TransactionReturnService($transaction))->return();
+        (new TransactionReturnService($transaction));
 
         $this->assertSame($start_stock, $hat->refresh()->stock);
     }
@@ -95,7 +95,7 @@ class TransactionReturnServiceTest extends TestCase
             'stock' => $start_stock = 12,
         ]);
 
-        (new TransactionReturnService($transaction))->return();
+        (new TransactionReturnService($transaction));
 
         $this->assertSame($start_stock + $hat_count, $hat->refresh()->stock);
     }
