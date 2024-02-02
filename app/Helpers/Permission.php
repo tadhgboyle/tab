@@ -21,7 +21,7 @@ class Permission
     public const PRODUCTS_LIST = 'products_list';
     public const PRODUCTS_VIEW_DELETED = 'products_view_deleted'; // TODO
     public const PRODUCTS_MANAGE = 'products_manage';
-    public const PRODUCTS_ADJUST = 'products_adjust';
+    public const PRODUCTS_LEDGER = 'products_ledger';
 
     public const ACTIVITIES = 'activities';
     public const ACTIVITIES_LIST = 'activities_list';

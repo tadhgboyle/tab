@@ -1,11 +1,11 @@
 <div align="center">
-    <h4 class="title has-text-weight-bold is-4">Adjust</h4>
+    <h4 class="title has-text-weight-bold is-4">Ledger</h4>
     <p><strong>Product:</strong> {{ $product->name }} @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)<a href="{{ route('products_edit', $product->id) }}">(Edit)</a>@endpermission</p>
     <hr>
     @if($product->unlimited_stock)
         <i>No available options</i>
     @else
-        <form action="{{ route('products_adjust_form', $product->id) }}" method="POST">
+        <form action="{{ route('products_ledger_form', $product->id) }}" method="POST">
             @csrf
             @method('PATCH')
 

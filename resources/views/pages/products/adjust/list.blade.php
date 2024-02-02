@@ -1,6 +1,6 @@
 @extends('layouts.default', ['page' => 'products'])
 @section('content')
-<h2 class="title has-text-weight-bold">Stock Adjustment</h2>
+<h2 class="title has-text-weight-bold">Stock Ledger</h2>
 <div id="loading" align="center">
     <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
 </div>
@@ -78,7 +78,7 @@
     });
 
    $(document).on("click", "#adjust_select", function() {
-        let url = "{{ route('products_adjust_ajax', ":id") }}";
+        let url = "{{ route('products_ledger_ajax', ":id") }}";
         url = url.replace(':id', $(this).attr('value'));
 
         $.ajax({

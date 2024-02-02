@@ -9,7 +9,7 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
         - Some permissions include: 
             - `users_list`: This role can view the user list.
             - `users_manage`: This role can edit/create users (but only edit users which have a role lower than theirs in terms of hierarchy).
-            - `products_adjust`: This role can adjust product stock, but they will need `products_list` and `products_manage` in order to list or create products.
+            - `products_ledger`: This role can adjust product stock, but they will need `products_list` and `products_manage` in order to list or create products.
             - `settings_categories_manage`: This role can create/edit product categories in the Settings page.
             - And many more! I try to add as much customizability as possible for permissions.
     - Users can be edited anytime, with an easy-to-use interface.
@@ -141,7 +141,6 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
 - Allow categories to be PST and/or GST exempt
 - Use npm for js packages
 - Move "ajax" routes to API controllers + paths
-- Rename adjust page to ledger
 - Timeline on orders, gift cards, etc to see when they were made, used, refunded, etc
 - Update services to use enums for result statuses
 - Emails for a bunch of stuff:

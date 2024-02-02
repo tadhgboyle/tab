@@ -49,8 +49,8 @@ class ProductStockAdjustmentService extends Service
     public function redirect(): RedirectResponse
     {
         return match ($this->getResult()) {
-            self::RESULT_SUCCESS => redirect()->route('products_adjust')->with('success', $this->getMessage()),
-            default => redirect()->route('products_adjust')->with('error', $this->getMessage()),
+            self::RESULT_SUCCESS => redirect()->route('products_ledger')->with('success', $this->getMessage()),
+            default => redirect()->route('products_ledger')->with('error', $this->getMessage()),
         };
     }
 }

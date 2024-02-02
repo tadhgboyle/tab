@@ -46,9 +46,9 @@
                                         Create
                                     </a>
                                 @endpermission
-                                @permission(\App\Helpers\Permission::PRODUCTS_ADJUST)
-                                    <a class="navbar-item" href="{{ route('products_adjust') }}">
-                                        Adjust
+                                @permission(\App\Helpers\Permission::PRODUCTS_LEDGER)
+                                    <a class="navbar-item" href="{{ route('products_ledger') }}">
+                                        Ledger
                                     </a>
                                 @endpermission
                             </div>

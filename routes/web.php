@@ -135,10 +135,10 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{product}', [ProductController::class, 'delete'])->name('products_delete');
         });
 
-        Route::group(['middleware' => 'permission:' . Permission::PRODUCTS_ADJUST], static function () {
-            Route::get('/adjust', [ProductController::class, 'adjustList'])->name('products_adjust');
-            Route::get('/adjust/{product}', [ProductController::class, 'ajaxGetPage'])->name('products_adjust_ajax');
-            Route::patch('/adjust/{product}', [ProductController::class, 'adjustStock'])->name('products_adjust_form');
+        Route::group(['middleware' => 'permission:' . Permission::PRODUCTS_LEDGER], static function () {
+            Route::get('/ledger', [ProductController::class, 'adjustList'])->name('products_ledger');
+            Route::get('/ledger/{product}', [ProductController::class, 'ajaxGetPage'])->name('products_ledger_ajax');
+            Route::patch('/ledger/{product}', [ProductController::class, 'adjustStock'])->name('products_ledger_form');
         });
     });
 
