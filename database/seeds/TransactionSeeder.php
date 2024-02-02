@@ -5,11 +5,13 @@ namespace Database\Seeders;
 use Auth;
 use App\Models\User;
 use App\Models\Product;
+use App\Models\GiftCard;
 use App\Models\Rotation;
 use Illuminate\Http\Request;
 use Illuminate\Database\Seeder;
 use App\Services\Transactions\TransactionReturnService;
 use App\Services\Transactions\TransactionCreationService;
+use App\Services\Transactions\TransactionReturnProductService;
 
 class TransactionSeeder extends Seeder
 {
@@ -47,12 +49,17 @@ class TransactionSeeder extends Seeder
                 /** @var Rotation $rotation */
                 $rotation = $user->rotations->random();
 
+                if (random_int(0, 10) === 0) {
+                    $giftCard = GiftCard::all()->random();
+                }
+
                 $service = new TransactionCreationService(new Request([
                     'purchaser_id' => $user->id,
                     'cashier_id' => $cashier->id,
                     'rotation_id' => $rotation->id,
                     'products' => json_encode($products),
                     'created_at' => $rotation->start->addDays(random_int(1, 6))->addMillis(random_int(-99999, 99999)),
+                    'gift_card_code' => $giftCard->code ?? null,
                 ]), $user);
 
                 if ($service->getResult() !== TransactionCreationService::RESULT_SUCCESS) {
@@ -75,7 +82,8 @@ class TransactionSeeder extends Seeder
                         $returning = random_int(0, $max_to_return);
 
                         for ($j = 0; $j <= $returning; $j++) {
-                            (new TransactionReturnService($transaction))->returnItem(Product::find($product_id));
+                            $transactionProduct = $transaction->products->firstWhere('product_id', $product_id);
+                            (new TransactionReturnProductService($transaction, $transactionProduct))->return();
                         }
                     }
                 }

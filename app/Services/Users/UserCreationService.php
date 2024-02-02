@@ -13,8 +13,8 @@ class UserCreationService extends Service
 {
     use UserService;
 
-    public const RESULT_INVALID_LIMIT = 0;
-    public const RESULT_SUCCESS = 1;
+    public const RESULT_INVALID_LIMIT = 'INVALID_LIMIT';
+    public const RESULT_SUCCESS = 'SUCCESS';
 
     public function __construct(UserRequest $request)
     {

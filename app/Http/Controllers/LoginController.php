@@ -19,7 +19,7 @@ class LoginController extends Controller
             'username' => $request->username,
             'password' => $request->password,
         ], $request->has('remember'))) {
-            return redirect()->route('index');
+            return redirect()->intended();
         }
 
         return redirect()->route('login')->with('error', 'Invalid credentials. Please try again.');

@@ -14,10 +14,10 @@ class UserEditService extends Service
 {
     use UserService;
 
-    public const RESULT_CANT_MANAGE_THAT_ROLE = 0;
-    public const RESULT_INVALID_LIMIT = 1;
-    public const RESULT_SUCCESS_IGNORED_PASSWORD = 2;
-    public const RESULT_SUCCESS_APPLIED_PASSWORD = 3;
+    public const RESULT_CANT_MANAGE_THAT_ROLE = 'CANT_MANAGE_THAT_ROLE';
+    public const RESULT_INVALID_LIMIT = 'INVALID_LIMIT';
+    public const RESULT_SUCCESS_IGNORED_PASSWORD = 'SUCCESS_IGNORED_PASSWORD';
+    public const RESULT_SUCCESS_APPLIED_PASSWORD = 'SUCCESS_APPLIED_PASSWORD';
 
     private UserRequest $_request;
 

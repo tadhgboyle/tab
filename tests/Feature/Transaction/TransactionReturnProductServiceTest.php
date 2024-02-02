@@ -12,64 +12,76 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Database\Seeders\RotationSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Services\Transactions\TransactionReturnService;
 use App\Services\Transactions\TransactionCreationService;
+use App\Services\Transactions\TransactionReturnProductService;
 
-class TransactionReturnServiceTest extends TestCase
+class TransactionReturnProductServiceTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testCanReturnTransaction(): void
+    public function testUserBalanceAndTransactionTotalsUpdated(): void
     {
-        [, $transaction] = $this->createFakeRecords();
-
-        $transactionService = (new TransactionReturnService($transaction))->return();
-        $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
-
-        $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->getReturnStatus());
-        $this->assertTrue($transaction->isReturned());
-    }
-
-    public function testUserBalanceUpdated(): void
-    {
-        [$user, $transaction] = $this->createFakeRecords();
+        [$user, $transaction, $hat] = $this->createFakeRecords();
         $balance_before = $user->balance;
 
-        $transactionService = (new TransactionReturnService($transaction))->return();
-        $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
+        $hatTransactionProduct = $transaction->products->firstWhere('product_id', $hat->id);
+        $transactionService = (new TransactionReturnProductService($transaction, $hatTransactionProduct))->return();
+        $this->assertSame(TransactionReturnProductService::RESULT_SUCCESS, $transactionService->getResult());
 
-        $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->getReturnStatus());
-        $this->assertTrue($transaction->isReturned());
+        $this->assertSame(Transaction::STATUS_PARTIAL_RETURNED, $transaction->getReturnStatus());
+
         $this->assertEquals(
-            $balance_before->add($transaction->total_price),
+            $balance_before->add($hat->getPriceAfterTax()),
             $user->refresh()->balance
         );
-        $this->assertEquals($transaction->total_price, $user->findReturned());
+        $this->assertEquals($hat->getPriceAfterTax(), $user->findReturned());
+
+        $this->assertEquals($hat->getPriceAfterTax(), $transaction->getReturnedTotal());
     }
 
     public function testProductReturnedValueUpdated(): void
     {
         [, $transaction, $hat] = $this->createFakeRecords();
 
-        $transactionService = (new TransactionReturnService($transaction))->return();
-        $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
+        $hatTransactionProduct = $transaction->products->firstWhere('product_id', $hat->id);
+        $transactionService = (new TransactionReturnProductService($transaction, $hatTransactionProduct))->return();
+        $this->assertSame(TransactionReturnProductService::RESULT_SUCCESS, $transactionService->getResult());
 
         $hatTransactionProduct = $transaction->products->firstWhere('product_id', $hat->id);
-        $this->assertSame(2, $hatTransactionProduct->refresh()->returned);
+        $this->assertSame(1, $hatTransactionProduct->refresh()->returned);
     }
 
-    public function testCannotReturnFullyReturnedTransaction(): void
+    public function testCanReturnPartiallyReturnedItemInTransaction(): void
     {
-        [$user, $transaction] = $this->createFakeRecords();
+        [$user, $transaction, $hat] = $this->createFakeRecords();
 
-        $transactionService1 = (new TransactionReturnService($transaction))->return();
-        $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService1->getResult());
-
-        $transactionService2 = (new TransactionReturnService($transaction))->return();
-        $this->assertSame(TransactionReturnService::RESULT_ALREADY_RETURNED, $transactionService2->getResult());
+        $hatTransactionProduct = $transaction->products->firstWhere('product_id', $hat->id);
+        (new TransactionReturnProductService($transaction, $hatTransactionProduct))->return();
+        $transactionService = (new TransactionReturnProductService($transaction, $hatTransactionProduct))->return();
+        $this->assertSame(TransactionReturnProductService::RESULT_SUCCESS, $transactionService->getResult());
 
         $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->getReturnStatus());
+        $this->assertTrue($transaction->isReturned());
         $this->assertEquals($transaction->total_price, $user->findReturned());
+    }
+
+    public function testCannotReturnFullyReturnedItemInTransaction(): void
+    {
+        [$user, , $hat] = $this->createFakeRecords();
+
+        $transaction_2_items = $this->createTwoItemTransaction($user, $hat);
+        $hatTransactionProduct = $transaction_2_items->products->firstWhere('product_id', $hat->id);
+        $transactionService1 = (new TransactionReturnProductService($transaction_2_items, $hatTransactionProduct))->return();
+        $this->assertSame(TransactionReturnProductService::RESULT_SUCCESS, $transactionService1->getResult());
+
+        $transactionService2 = (new TransactionReturnProductService($transaction_2_items, $hatTransactionProduct))->return();
+        $this->assertSame(TransactionReturnProductService::RESULT_SUCCESS, $transactionService2->getResult());
+
+        $transactionService3 = (new TransactionReturnProductService($transaction_2_items, $hatTransactionProduct))->return();
+        $this->assertSame(TransactionReturnProductService::RESULT_ITEM_RETURNED_MAX_TIMES, $transactionService3->getResult());
+
+        $this->assertSame(Transaction::STATUS_PARTIAL_RETURNED, $transaction_2_items->getReturnStatus());
+        $this->assertEquals($hat->getPriceAfterTax()->multiply(2), $user->findReturned());
     }
 
     public function testProductStockIsNotRestoredIfSettingDisabled(): void
@@ -81,28 +93,29 @@ class TransactionReturnServiceTest extends TestCase
             'stock' => $start_stock = 12,
         ]);
 
-        (new TransactionReturnService($transaction))->return();
+        $hatTransactionProduct = $transaction->products->firstWhere('product_id', $hat->id);
+        (new TransactionReturnProductService($transaction, $hatTransactionProduct))->return();
 
         $this->assertSame($start_stock, $hat->refresh()->stock);
     }
 
     public function testProductStockIsRestoredIfSettingEnabled(): void
     {
-        [, $transaction, $hat] = $this->createFakeRecords($hat_count = 5);
+        [, $transaction, $hat] = $this->createFakeRecords(5);
 
         $hat->update([
             'restore_stock_on_return' => true,
             'stock' => $start_stock = 12,
         ]);
 
-        (new TransactionReturnService($transaction))->return();
+        $hatTransactionProduct = $transaction->products->firstWhere('product_id', $hat->id);
+        (new TransactionReturnProductService($transaction, $hatTransactionProduct))->return();
 
-        $this->assertSame($start_stock + $hat_count, $hat->refresh()->stock);
+        $this->assertEquals($start_stock + 1, $hat->refresh()->stock);
     }
 
     /**
      * @param int $hat_count
-     * @param string|null $gift_card_code
      *
      * @return array<User, Transaction, Product>
      */

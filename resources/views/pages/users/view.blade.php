@@ -4,6 +4,9 @@
 <h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @if($user->trashed()) <strong>(Deleted)</strong> @endif @if(!$user->trashed() && hasPermission(\App\Helpers\Permission::USERS_MANAGE) && $can_interact)<a href="{{ route('users_edit', $user->id) }}">(Edit)</a>@endif</h4>
 <p><strong>Role:</strong> {{ $user->role->name }}</p>
 <span><strong>Balance:</strong> {{ $user->balance }}, </span>
+
+<br>
+
 <span><strong>Total spent:</strong> {{ $user->findSpent() }}, </span>
 <span><strong>Total returned:</strong> {{ $user->findReturned() }}, </span>
 @php $owing = $user->findOwing(); @endphp
@@ -22,7 +25,21 @@
         <div class="columns is-multiline">
             <div class="column">
                 <div class="box">
-                    <h4 class="title has-text-weight-bold is-4">Order History</h4>
+                    <div class="columns">
+                        <div class="column">
+                            <h4 class="title has-text-weight-bold is-4">Orders</h4>
+                        </div>
+                        <div class="column">
+                            @if(hasPermission($is_self ? \App\Helpers\Permission::CASHIER_SELF_PURCHASES : \App\Helpers\Permission::CASHIER_CREATE))
+                                <a class="button is-success is-pulled-right is-small" href="{{ route('orders_create', $user) }}">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-plus"></i>
+                                    </span>
+                                    <span>Create</span>
+                                </a>
+                            @endif
+                        </div>
+                    </div>
                     <table id="order_list">
                         <thead>
                             <th>Time</th>
@@ -48,13 +65,13 @@
                                 <td>
                                     <div>
                                         @switch($transaction->getReturnStatus())
-                                            @case(0)
+                                            @case('NOT_RETURNED')
                                                 <span class="tag is-success is-medium">Normal</span>
                                             @break
-                                            @case(1)
+                                            @case('FULLY_RETURNED')
                                                 <span class="tag is-danger is-medium">Returned</span>
                                             @break
-                                            @case(2)
+                                            @case('PARTIAL_RETURNED')
                                                 <span class="tag is-warning is-medium">Semi Returned</span>
                                             @break
                                         @endswitch
@@ -203,7 +220,7 @@
                         </div>
                         <div class="column">
                             @if(hasPermission(\App\Helpers\Permission::USERS_PAYOUTS_CREATE))
-                                <a class="button is-success is-pulled-right" href="{{ route('users_payout_create', $user) }}">
+                                <a class="button is-success is-pulled-right is-small" href="{{ route('users_payout_create', $user) }}">
                                     <span class="icon is-small">
                                         <i class="fas fa-file-invoice-dollar"></i>
                                     </span>
@@ -246,8 +263,8 @@
     </div>
 </div>
 
-<div class="modal">
-    <div class="modal-background" onclick="closeModal();"></div>
+<div class="modal" id="owing_modal">
+    <div class="modal-background" onclick="closeOwingModal();"></div>
     <div class="modal-card">
         <header class="modal-card-head">
             <p class="modal-card-title">Owing</p>
@@ -359,20 +376,20 @@
             </table>
         </section>
         <footer class="modal-card-foot">
-            <button class="button" onclick="closeModal();">Close</button>
+            <button class="button" onclick="closeOwingModal();">Close</button>
         </footer>
     </div>
 </div>
 
 <script>
-    const modal = document.querySelector('.modal');
+    const owingModal = document.getElementById('owing_modal');
 
     const openOwingModal = () => {
-        modal.classList.add('is-active');
+        owingModal.classList.add('is-active');
     }
 
-    const closeModal = () => {
-        modal.classList.remove('is-active');
+    const closeOwingModal = () => {
+        owingModal.classList.remove('is-active');
     }
 
     $(document).ready(function() {

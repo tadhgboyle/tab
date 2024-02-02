@@ -16,6 +16,7 @@
                 <input type="hidden" id="current_gst" value="{{ $current_gst }}">
                 <input type="hidden" id="purchaser_balance" value="{{ $user->balance->getAmount() / 100 }}">
                 <input type="hidden" id="products" name="products" value="{}">
+                <input type="hidden" id="gift_card_code" name="gift_card_code" value="">
 
                 <table id="product_list">
                     <thead>
@@ -72,7 +73,23 @@
                 </tr>
             </tbody>
         </table>
-        <br>
+
+        <div class="field has-addons">
+            <div class="control is-expanded">
+                <input type="text" id="gift_card_code_input" name="gift_card_code_input" class="input is-small" placeholder="Gift card code">
+            </div>
+            <div class="control">
+                <button class="button is-dark is-small" id="apply_gift_card" disabled>
+                    Apply
+                </button>
+                <button class="button is-outlined" id="remove_gift_card" style="display: none;">
+                        <span class="icon is-small">
+                          <i class="fas fa-times"></i>
+                        </span>
+                </button>
+            </div>
+        </div>
+
         <table class="table is-fullwidth">
             <tbody>
                 <tr>
@@ -88,8 +105,20 @@
                     <td id="gst-total"></td>
                 </tr>
                 <tr>
+                    <td colspan="2"></td>
+                    <td></td>
+                </tr>
+                <tr>
                     <td colspan="2">Total Price</td>
                     <td id="total-price"></td>
+                </tr>
+                <tr id="gift-card-row" style="display: none;">
+                    <td colspan="2">Gift Card</td>
+                    <td id="gift-card-balance"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">Purchaser Amount</td>
+                    <td id="purchaser-amount"></td>
                 </tr>
                 <tr>
                     <td colspan="2">Remaining Balance</td>

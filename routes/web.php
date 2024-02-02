@@ -22,6 +22,7 @@ use App\Http\Controllers\PayoutController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\GiftCardController;
 use App\Http\Controllers\RotationController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\StatisticsController;
@@ -63,12 +64,15 @@ Route::middleware('auth')->group(function () {
     /*
      * Cashier
      */
-    Route::group(['middleware' => 'permission:cashier'], static function () {
+    Route::group(['middleware' => 'permission:' . Permission::CASHIER], static function () {
         Route::get('/orders/create/{user}', [TransactionController::class, 'create'])->name('orders_create');
         Route::post('/orders/create/{user}', [TransactionController::class, 'store'])->name('orders_store');
 
         // Get product metadata via JS fetch
         Route::get('/products/{product}', [ProductController::class, 'ajaxGetInfo'])->whereNumber('product')->name('products_show');
+
+        // Get gift card validity via JS fetch
+        Route::get('/gift-cards/check-validity', [GiftCardController::class, 'ajaxCheckValidity'])->name('gift_cards_check_validity');
     });
 
     /*
@@ -85,7 +89,7 @@ Route::middleware('auth')->group(function () {
 
         Route::group(['middleware' => 'permission:' . Permission::ORDERS_RETURN], static function () {
             Route::put('/{transaction}/return', [TransactionController::class, 'returnTransaction'])->name('orders_return');
-            Route::put('/{transaction}/return/{product}', [TransactionController::class, 'returnProduct'])->name('orders_return_item');
+            Route::put('/{transaction}/return/{transactionProduct}', [TransactionController::class, 'returnProduct'])->name('orders_return_item');
         });
     });
 
@@ -218,6 +222,19 @@ Route::middleware('auth')->group(function () {
             Route::get('/{category}/edit', [CategoryController::class, 'edit'])->name('settings_categories_edit');
             Route::put('/{category}/edit', [CategoryController::class, 'update'])->name('settings_categories_update');
             Route::delete('/{category}', [CategoryController::class, 'delete'])->name('settings_categories_delete');
+        });
+
+        /*
+         * Gift cards
+         */
+        Route::group(['middleware' => 'permission:' . Permission::SETTINGS_GIFT_CARDS_MANAGE, 'prefix' => '/gift-cards'], static function () {
+            Route::get('/create', [GiftCardController::class, 'create'])->name('settings_gift-cards_create');
+            Route::post('/create', [GiftCardController::class, 'store'])->name('settings_gift-cards_store');
+            Route::get('/{giftCard}/edit', [GiftCardController::class, 'edit'])->name('settings_gift-cards_edit');
+            Route::put('/{giftCard}/edit', [GiftCardController::class, 'update'])->name('settings_gift-cards_update');
+            Route::delete('/{giftCard}', [GiftCardController::class, 'delete'])->name('settings_gift-cards_delete');
+
+            Route::get('/{giftCard}/uses', [GiftCardController::class, 'ajaxGetUses'])->name('settings_gift-cards_uses');
         });
     });
 });

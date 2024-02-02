@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+// TODO support gift cards, some sort of abstract transaction service maybe to de-dupe?
 class ActivityRegistration extends Model
 {
     use HasFactory;

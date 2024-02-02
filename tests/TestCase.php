@@ -2,8 +2,6 @@
 
 namespace Tests;
 
-use Closure;
-use App\Helpers\Helper;
 use Mockery\MockInterface;
 use App\Http\Middleware\HasPermission;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -15,8 +13,6 @@ abstract class TestCase extends BaseTestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        Helper::wipe();
     }
 //
 //    protected function assertChanges(Closure $callback, mixed $from, mixed $to, Closure $test): void

@@ -11,9 +11,9 @@ class ProductStockAdjustmentService extends Service
 {
     use ProductService;
 
-    public const RESULT_NO_BOX_INPUT = 1;
-    public const RESULT_BOTH_INPUT_ZERO = 2;
-    public const RESULT_SUCCESS = 3;
+    public const RESULT_NO_BOX_INPUT = 'NO_BOX_INPUT';
+    public const RESULT_BOTH_INPUT_ZERO = 'BOTH_INPUT_ZERO';
+    public const RESULT_SUCCESS = 'SUCCESS';
 
     public function __construct(ProductStockAdjustmentRequest $request, Product $product)
     {

@@ -317,7 +317,9 @@ class UserLimitsHelperTest extends TestCase
             'purchaser_id' => $user->id,
             'cashier_id' => $user->id,
             'rotation_id' => resolve(RotationHelper::class)->getCurrentRotation()->id,
-            'total_price' => 3_15 // TODO
+            'total_price' => 3_15, // TODO
+            'purchaser_amount' => 3_15,
+            'gift_card_amount' => 0_00,
         ]);
 
         $skittles_product = TransactionProduct::from($skittles, 2, 5);
@@ -334,7 +336,9 @@ class UserLimitsHelperTest extends TestCase
             'purchaser_id' => $user->id,
             'cashier_id' => $user->id,
             'rotation_id' => resolve(RotationHelper::class)->getCurrentRotation()->id,
-            'total_price' => 44_79 // TODO
+            'total_price' => 44_79, // TODO
+            'purchaser_amount' => 44_79,
+            'gift_card_amount' => 0_00,
         ]);
 
         $sweater_product = TransactionProduct::from($sweater, 1, 5, 7);

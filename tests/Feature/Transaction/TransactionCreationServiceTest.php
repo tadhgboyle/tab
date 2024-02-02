@@ -5,8 +5,10 @@ namespace Tests\Feature\Transaction;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
+use Cknow\Money\Money;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\GiftCard;
 use App\Models\Settings;
 use App\Models\UserLimits;
 use App\Models\Transaction;
@@ -106,11 +108,98 @@ class TransactionCreationServiceTest extends TestCase
         $this->assertCount(1, $camper_user->refresh()->transactions);
         $this->assertEquals($camper_user->id, $transactionService->getTransaction()->purchaser->id);
         $this->assertEquals($staff_user->id, $transactionService->getTransaction()->cashier->id);
-        $this->assertEquals(RotationHelper::getInstance()->getCurrentRotation()->id, $transactionService->getTransaction()->rotation->id);
+        $this->assertEquals(resolve(RotationHelper::class)->getCurrentRotation()->id, $transactionService->getTransaction()->rotation->id);
         $this->assertEquals($transactionService->getTransaction()->total_price, $camper_user->findSpent());
         $this->assertEquals('Chips', $transactionService->getTransaction()->products->first()->product->name);
         $this->assertEquals($transactionService->getTransaction()->products->first()->transaction->id, $transactionService->getTransaction()->id);
         $this->assertEquals(1, Product::firstWhere('name', 'Chips')->stock);
+        $this->assertEquals(null, $transactionService->getTransaction()->gift_card_id);
+        $this->assertEquals(Money::parse(0), $transactionService->getTransaction()->gift_card_amount);
+    }
+
+    public function testInvalidGiftCardCodeError(): void
+    {
+        [$camper_user] = $this->createFakeRecords();
+        $gift_card_code = 'INVALIDCODE';
+
+        $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user, gift_card_code: $gift_card_code), $camper_user);
+
+        $this->assertSame(TransactionCreationService::RESULT_INVALID_GIFT_CARD, $transactionService->getResult());
+        $this->assertSame("Gift card with code $gift_card_code does not exist.", $transactionService->getMessage());
+    }
+
+    public function testGiftCardZeroBalanceError(): void
+    {
+        [$camper_user] = $this->createFakeRecords();
+        $gift_card_code = GiftCard::factory()->create([
+            'code' => 'VALIDCODE',
+            'remaining_balance' => Money::parse(0),
+        ])->code;
+
+        $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user, gift_card_code: $gift_card_code), $camper_user);
+
+        $this->assertSame(TransactionCreationService::RESULT_INVALID_GIFT_CARD_BALANCE, $transactionService->getResult());
+        $this->assertSame("Gift card with code $gift_card_code has a $0.00 balance.", $transactionService->getMessage());
+    }
+
+    public function testProperlyCalculatesAmountsWhenGiftCardEqualsTotal(): void
+    {
+        [$camper_user] = $this->createFakeRecords();
+        $gift_card = GiftCard::factory()->create([
+            'code' => 'VALIDCODE',
+            'remaining_balance' => Money::parse(37_55),
+        ]);
+        $gift_card_code = $gift_card->code;
+
+        // Creates $37.55 transaction, all of which is paid by the gift card and none of which is paid by the camper
+        $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user, gift_card_code: $gift_card_code), $camper_user);
+
+        $this->assertSame(TransactionCreationService::RESULT_SUCCESS, $transactionService->getResult());
+        $this->assertEquals(Money::parse(37_55), $transactionService->getTransaction()->total_price);
+        $this->assertEquals(Money::parse(37_55), $transactionService->getTransaction()->gift_card_amount);
+        $this->assertEquals(Money::parse(0_00), $transactionService->getTransaction()->purchaser_amount);
+        $this->assertEquals(Money::parse(0_00), $gift_card->refresh()->remaining_balance);
+        $this->assertEquals($gift_card->id, $transactionService->getTransaction()->gift_card_id);
+    }
+
+    public function testProperlyCalculatesAmountsWhenGiftCardExceedsTotal(): void
+    {
+        [$camper_user] = $this->createFakeRecords();
+        $gift_card = GiftCard::factory()->create([
+            'code' => 'VALIDCODE',
+            'remaining_balance' => Money::parse(100_00),
+        ]);
+        $gift_card_code = $gift_card->code;
+
+        // Creates $37.55 transaction, all of which is paid by the gift card and none of which is paid by the camper
+        $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user, gift_card_code: $gift_card_code), $camper_user);
+
+        $this->assertSame(TransactionCreationService::RESULT_SUCCESS, $transactionService->getResult());
+        $this->assertEquals(Money::parse(37_55), $transactionService->getTransaction()->total_price);
+        $this->assertEquals(Money::parse(37_55), $transactionService->getTransaction()->gift_card_amount);
+        $this->assertEquals(Money::parse(0_00), $transactionService->getTransaction()->purchaser_amount);
+        $this->assertEquals(Money::parse(62_45), $gift_card->refresh()->remaining_balance);
+        $this->assertEquals($gift_card->id, $transactionService->getTransaction()->gift_card_id);
+    }
+
+    public function testProperlyCalculatesAmountsWhenGiftCardIsLessThanTotal(): void
+    {
+        [$camper_user] = $this->createFakeRecords();
+        $gift_card = GiftCard::factory()->create([
+            'code' => 'VALIDCODE',
+            'remaining_balance' => Money::parse(10_00),
+        ]);
+        $gift_card_code = $gift_card->code;
+
+        // Creates $37.55 transaction, $10.00 of which is paid by the gift card and $27.55 of which is paid by the camper
+        $transactionService = new TransactionCreationService($this->createFakeRequest($camper_user, gift_card_code: $gift_card_code), $camper_user);
+
+        $this->assertSame(TransactionCreationService::RESULT_SUCCESS, $transactionService->getResult());
+        $this->assertEquals(Money::parse(37_55), $transactionService->getTransaction()->total_price);
+        $this->assertEquals(Money::parse(10_00), $transactionService->getTransaction()->gift_card_amount);
+        $this->assertEquals(Money::parse(27_55), $transactionService->getTransaction()->purchaser_amount);
+        $this->assertEquals(Money::parse(0), $gift_card->refresh()->remaining_balance);
+        $this->assertEquals($gift_card->id, $transactionService->getTransaction()->gift_card_id);
     }
 
     /** @return User[] */
@@ -162,7 +251,8 @@ class TransactionCreationServiceTest extends TestCase
         bool $negative_product = false,
         bool $over_stock = false,
         bool $over_balance = false,
-        bool $over_category_limit = false
+        bool $over_category_limit = false,
+        string $gift_card_code = '',
     ): Request {
         app(RotationSeeder::class)->run();
 
@@ -192,6 +282,10 @@ class TransactionCreationServiceTest extends TestCase
                 ]),
                 'purchaser_id' => $purchaser->id,
             ];
+
+            if ($gift_card_code) {
+                $data['gift_card_code'] = $gift_card_code;
+            }
         } else {
             $data = [
                 'products' => '{}',

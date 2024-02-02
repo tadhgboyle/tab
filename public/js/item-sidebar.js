@@ -3,10 +3,22 @@ const PST_AMOUNT = document.getElementById('current_pst').value;
 const GST_AMOUNT = document.getElementById('current_gst').value;
 const PURCHASER_ID = document.getElementById('purchaser_id').value;
 
+const APPLY_GIFT_CARD_BUTTON = document.getElementById('apply_gift_card');
+const REMOVE_GIFT_CARD_BUTTON = document.getElementById('remove_gift_card');
+const GIFT_CARD_CODE_INPUT = document.getElementById('gift_card_code_input');
+let GIFT_CARD = null;
+
 window.onload = () => {
     const storedItems = localStorage.getItem(`items-${PURCHASER_ID}`);
     if (storedItems !== null) {
         ITEMS = JSON.parse(storedItems);
+    }
+
+    const storedGiftCard = localStorage.getItem(`gift-card-${PURCHASER_ID}`);
+    if (storedGiftCard !== null) {
+        GIFT_CARD = JSON.parse(storedGiftCard);
+        GIFT_CARD_CODE_INPUT.value = GIFT_CARD.code;
+        giftCardHelpNotice(true);
     }
 
     render();
@@ -88,12 +100,21 @@ const handleSubmit = () => {
             }
         }),
     );
+    document.getElementById('gift_card_code').value = GIFT_CARD ? GIFT_CARD.code : null;
 
     document.forms.namedItem('order').submit();
 };
 
 const cacheItems = () => {
     localStorage.setItem(`items-${PURCHASER_ID}`, JSON.stringify(ITEMS));
+};
+
+const cacheGiftCard = () => {
+    localStorage.setItem(`gift-card-${PURCHASER_ID}`, JSON.stringify(GIFT_CARD));
+};
+
+const removeCachedGiftCard = () => {
+    localStorage.removeItem(`gift-card-${PURCHASER_ID}`);
 };
 
 const render = () => {
@@ -152,24 +173,49 @@ const render = () => {
     const remainingBalance = calculateRemainingBalance();
 
     document.getElementById('subtotal-total').innerText = `$${calculateSubtotal().toFixed(2)}`;
-    document.getElementById('pst-total').innerText = `$${pstTotal.toFixed(2)}`;
     document.getElementById('gst-total').innerText = `$${gstTotal.toFixed(2)}`;
+    document.getElementById('pst-total').innerText = `$${pstTotal.toFixed(2)}`;
     document.getElementById('total-price').innerText = `$${calculateTotalPrice().toFixed(2)}`;
+    if (GIFT_CARD) {
+        document.getElementById('gift-card-row').style.display = 'table-row';
+        document.getElementById('gift-card-balance').innerText = `-$${GIFT_CARD.remaining_balance.toFixed(2)}`;
+    } else {
+        document.getElementById('gift-card-row').style.display = 'none';
+    }
+    document.getElementById('purchaser-amount').innerText = `$${calculatePurchaserAmount().toFixed(2)}`;
     document.getElementById('remaining-balance').innerText = `$${remainingBalance.toFixed(2)}`;
 
-    if (remainingBalance < 0) {
-        document.getElementById('remaining-balance').classList.add('has-text-danger');
+    if (ITEMS.length === 0) {
         document.getElementById('submit-button').disabled = true;
     } else {
-        document.getElementById('remaining-balance').classList.remove('has-text-danger');
-        document.getElementById('submit-button').disabled = false;
+        if (remainingBalance < 0) {
+            document.getElementById('remaining-balance').classList.add('has-text-danger');
+            document.getElementById('submit-button').disabled = true;
+        } else {
+            document.getElementById('remaining-balance').classList.remove('has-text-danger');
+            document.getElementById('submit-button').disabled = false;
+        }
     }
+
+    GIFT_CARD_CODE_INPUT.addEventListener('keyup', toggleGiftCardApplyButton);
+    APPLY_GIFT_CARD_BUTTON.addEventListener('click', addGiftCard);
+    REMOVE_GIFT_CARD_BUTTON.addEventListener('click', removeGiftCard);
+
+    toggleGiftCardApplyButton();
 };
 
 const calculateSubtotal = () => {
     return ITEMS.reduce((total, item) => {
         return total + (item.price * item.quantity);
     }, 0);
+};
+
+const calculateGiftCardTotal = () => {
+    if (!GIFT_CARD) {
+        return 0;
+    }
+
+    return GIFT_CARD.remaining_balance;
 };
 
 const calculateTaxTotals = () => {
@@ -204,6 +250,80 @@ const calculateTotalPrice = () => {
     return subtotal + taxTotal;
 };
 
-const calculateRemainingBalance = () => {
-    return document.getElementById('purchaser_balance').value - calculateTotalPrice();
+const calculatePurchaserAmount = () => {
+    const total = calculateTotalPrice();
+
+    const giftCardTotal = calculateGiftCardTotal();
+
+    if (giftCardTotal > total) {
+        return 0;
+    } else if (giftCardTotal > 0) {
+        return total - giftCardTotal;
+    } else {
+        return total;
+    }
 };
+
+const calculateRemainingBalance = () => {
+    return document.getElementById('purchaser_balance').value - calculatePurchaserAmount();
+};
+
+const toggleGiftCardApplyButton = () => {
+    APPLY_GIFT_CARD_BUTTON.disabled = GIFT_CARD || GIFT_CARD_CODE_INPUT.value.length === 0;
+
+    REMOVE_GIFT_CARD_BUTTON.style.display = GIFT_CARD ? 'block' : 'none'
+    APPLY_GIFT_CARD_BUTTON.style.display = GIFT_CARD ? 'none' : 'block'
+}
+
+const addGiftCard = async () => {
+    const giftCardCode = GIFT_CARD_CODE_INPUT.value;
+    const route = `/gift-cards/check-validity?code=${giftCardCode}`;
+
+    await fetch(route)
+        .then(response => response.json())
+        .then(data => {
+            if (data.valid) {
+                GIFT_CARD = {
+                    ...data, code: giftCardCode
+                };
+                cacheGiftCard();
+                render();
+            }
+            giftCardHelpNotice(data.valid, data.message);
+        });
+};
+
+const removeGiftCard = () => {
+    removeCachedGiftCard();
+    removeGiftCardHelpNotice();
+    GIFT_CARD = null;
+    GIFT_CARD_CODE_INPUT.value = '';
+    GIFT_CARD_CODE_INPUT.disabled = false;
+    render();
+};
+
+const giftCardHelpNotice = (success, message = null) => {
+    removeGiftCardHelpNotice();
+
+    GIFT_CARD_CODE_INPUT.classList.add(success ? 'is-success' : 'is-danger');
+
+    if (success) {
+        GIFT_CARD_CODE_INPUT.disabled = true;
+        APPLY_GIFT_CARD_BUTTON.disabled = true;
+    }
+
+    const help = document.createElement('p');
+    help.classList.add('help', success ? 'is-success' : 'is-danger');
+    help.classList.add('is-pulled-left');
+    help.innerText = success ? `${GIFT_CARD.name} gift card applied successfully` : message;
+    GIFT_CARD_CODE_INPUT.parentNode.appendChild(help);
+};
+
+const removeGiftCardHelpNotice = () => {
+    GIFT_CARD_CODE_INPUT.classList.remove('is-success', 'is-danger');
+
+    const existingHelp = document.querySelector('.help');
+    if (existingHelp) {
+        existingHelp.remove();
+    }
+}

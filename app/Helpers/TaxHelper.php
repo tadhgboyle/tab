@@ -3,9 +3,24 @@
 namespace App\Helpers;
 
 use Cknow\Money\Money;
+use App\Models\TransactionProduct;
 
 class TaxHelper
 {
+    // TODO add test
+    public static function forTransactionProduct(TransactionProduct $product, int $quantity): Money
+    {
+        return self::calculateFor(
+            $product->price,
+            $quantity,
+            $product->pst !== null,
+            [
+                'pst' => $product->pst,
+                'gst' => $product->gst,
+            ]
+        );
+    }
+
     /**
      * Calculate the tax for a given price and quantity.
      *
@@ -21,11 +36,10 @@ class TaxHelper
         $settingsHelper = resolve(SettingsHelper::class);
 
         $gst_percent = $rates['gst'] ?? $settingsHelper->getGst();
-        $pst_percent = $rates['pst'] ?? $settingsHelper->getPst();
 
         $tax = $gst_percent;
         if ($apply_pst) {
-            $tax += $pst_percent;
+            $tax += $rates['pst'] ?? $settingsHelper->getPst();
         }
 
         $tax_rate = $tax / 100;

@@ -10,6 +10,7 @@ use Database\Seeders\ProductSeeder;
 use Illuminate\Support\Facades\App;
 use Database\Seeders\ActivitySeeder;
 use Database\Seeders\CategorySeeder;
+use Database\Seeders\GiftCardSeeder;
 use Database\Seeders\RotationSeeder;
 use Database\Seeders\SettingsSeeder;
 use Database\Seeders\UserLimitsSeeder;
@@ -61,6 +62,9 @@ class DatabaseSeeder extends Seeder
 
         $this->command->info('Seeding Rotations...');
         $this->resolve(RotationSeeder::class)->run();
+
+        $this->command->info('Seeding Gift Cards...');
+        $this->resolve(GiftCardSeeder::class)->run();
 
         $this->command->info('Seeding Transactions...');
         $this->resolve(TransactionSeeder::class)->run();

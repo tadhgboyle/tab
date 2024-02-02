@@ -6,6 +6,7 @@ use App\Models\User;
 use Cknow\Money\Money;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\GiftCard;
 use App\Services\Service;
 use App\Helpers\TaxHelper;
 use App\Helpers\Permission;
@@ -22,14 +23,16 @@ class TransactionCreationService extends Service
 {
     use TransactionService;
 
-    public const RESULT_NO_SELF_PURCHASE = 0;
-    public const RESULT_NO_ITEMS_SELECTED = 1;
-    public const RESULT_NEGATIVE_QUANTITY = 2;
-    public const RESULT_NO_STOCK = 3;
-    public const RESULT_NOT_ENOUGH_BALANCE = 4;
-    public const RESULT_NOT_ENOUGH_CATEGORY_BALANCE = 5;
-    public const RESULT_NO_CURRENT_ROTATION = 6;
-    public const RESULT_SUCCESS = 7;
+    public const RESULT_NO_SELF_PURCHASE = 'NO_SELF_PURCHASE';
+    public const RESULT_NO_ITEMS_SELECTED = 'NO_ITEMS_SELECTED';
+    public const RESULT_NEGATIVE_QUANTITY = 'NEGATIVE_QUANTITY';
+    public const RESULT_NO_STOCK = 'NO_STOCK';
+    public const RESULT_NOT_ENOUGH_BALANCE = 'NOT_ENOUGH_BALANCE';
+    public const RESULT_NOT_ENOUGH_CATEGORY_BALANCE = 'NOT_ENOUGH_CATEGORY_BALANCE';
+    public const RESULT_NO_CURRENT_ROTATION = 'NO_CURRENT_ROTATION';
+    public const RESULT_INVALID_GIFT_CARD = 'INVALID_GIFT_CARD';
+    public const RESULT_INVALID_GIFT_CARD_BALANCE = 'INVALID_GIFT_CARD_BALANCE';
+    public const RESULT_SUCCESS = 'SUCCESS';
 
     public function __construct(Request $request, User $purchaser)
     {
@@ -89,7 +92,41 @@ class TransactionCreationService extends Service
             $total_price = $total_price->add(TaxHelper::calculateFor($product->price, $quantity, $product->pst));
         }
 
-        $remaining_balance = $purchaser->balance->subtract($total_price);
+        $charge_user_amount = $total_price;
+
+        $gift_card_amount = Money::parse(0);
+
+        if ($charge_user_amount->isPositive()) {
+            $gift_card_code = $request->get('gift_card_code');
+            if ($gift_card_code) {
+                $gift_card = GiftCard::firstWhere('code', $gift_card_code);
+                if (!$gift_card) {
+                    $this->_result = self::RESULT_INVALID_GIFT_CARD;
+                    $this->_message = "Gift card with code {$gift_card_code} does not exist.";
+                    return;
+                }
+
+                $gift_card_balance = $gift_card->remaining_balance;
+
+                if ($gift_card_balance->isZero()) {
+                    $this->_result = self::RESULT_INVALID_GIFT_CARD_BALANCE;
+                    $this->_message = "Gift card with code {$gift_card_code} has a $0.00 balance.";
+                    return;
+                }
+
+                if ($gift_card_balance->greaterThanOrEqual($total_price)) {
+                    $charge_user_amount = Money::parse(0);
+                    $gift_card_amount = $total_price;
+                    $gift_card_remaining_balance = $gift_card_balance->subtract($total_price);
+                } else {
+                    $charge_user_amount = $charge_user_amount->subtract($gift_card_balance);
+                    $gift_card_amount = $gift_card_balance;
+                    $gift_card_remaining_balance = Money::parse(0);
+                }
+            }
+        }
+
+        $remaining_balance = $purchaser->balance->subtract($charge_user_amount);
         if ($remaining_balance->isNegative()) {
             $this->_result = self::RESULT_NOT_ENOUGH_BALANCE;
             $this->_message = "Not enough balance. {$purchaser->full_name} only has {$purchaser->balance}. Tried to spend {$total_price}.";
@@ -131,6 +168,13 @@ class TransactionCreationService extends Service
         $transaction->purchaser_id = $purchaser->id;
         $transaction->cashier_id = auth()->id();
         $transaction->total_price = $total_price;
+        $transaction->purchaser_amount = $charge_user_amount;
+        $transaction->gift_card_amount = $gift_card_amount;
+        $transaction->gift_card_id = isset($gift_card) ? $gift_card->id : null;
+        if (isset($gift_card, $gift_card_remaining_balance)) {
+            $gift_card->remaining_balance = $gift_card_remaining_balance;
+            $gift_card->save();
+        }
 
         if ($request->has('rotation_id')) {
             // For seeding random rotations

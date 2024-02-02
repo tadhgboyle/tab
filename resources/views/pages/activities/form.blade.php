@@ -33,6 +33,7 @@
             <div class="field">
                 <label class="label">Description</label>
                 <div class="control">
+{{--                    TODO make textarea--}}
                     <input type="text" name="description" class="input" placeholder="Description" value="{{ $activity->description ?? old('description') }}">
                 </div>
             </div>

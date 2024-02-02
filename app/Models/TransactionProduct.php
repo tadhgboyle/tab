@@ -6,12 +6,9 @@ use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TransactionProduct extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'product_id',
         'category_id',

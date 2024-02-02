@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Helpers\RoleHelper;
 use Illuminate\Support\Arr;
-use JetBrains\PhpStorm\Pure;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -118,7 +117,6 @@ class Role extends Model
      *
      * @return bool Whether this Role has these permissions or not.
      */
-    #[Pure]
     public function hasPermission(string|array $permissions): bool
     {
         if ($this->superuser) {

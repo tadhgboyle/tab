@@ -8,9 +8,11 @@ use App\Helpers\Permission;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Helpers\SettingsHelper;
+use App\Models\TransactionProduct;
 use Illuminate\Http\RedirectResponse;
 use App\Services\Transactions\TransactionReturnService;
 use App\Services\Transactions\TransactionCreationService;
+use App\Services\Transactions\TransactionReturnProductService;
 
 class TransactionController extends Controller
 {
@@ -54,9 +56,8 @@ class TransactionController extends Controller
         return (new TransactionReturnService($transaction))->return()->redirect();
     }
 
-    // TODO: make TransactionProduct
-    public function returnProduct(Transaction $transaction, Product $product): RedirectResponse
+    public function returnProduct(Transaction $transaction, TransactionProduct $transactionProduct): RedirectResponse
     {
-        return (new TransactionReturnService($transaction))->returnItem($product)->redirect();
+        return (new TransactionReturnProductService($transaction, $transactionProduct))->return()->redirect();
     }
 }

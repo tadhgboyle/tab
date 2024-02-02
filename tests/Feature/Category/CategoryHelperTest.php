@@ -16,7 +16,7 @@ class CategoryHelperTest extends TestCase
     {
         Category::factory()->count(6)->create();
 
-        $this->assertCount(6, CategoryHelper::getInstance()->getCategories());
+        $this->assertCount(6, resolve(CategoryHelper::class)->getCategories());
     }
 
     public function testGetProductCategoriesWorksAsExpected(): void
