@@ -7,7 +7,7 @@ use Cknow\Money\Money;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\GiftCard;
-use App\Services\Service;
+use App\Services\HttpService;
 use App\Helpers\TaxHelper;
 use App\Helpers\Permission;
 use App\Models\Transaction;
@@ -19,7 +19,7 @@ use App\Models\TransactionProduct;
 use Illuminate\Support\Collection;
 use Illuminate\Http\RedirectResponse;
 
-class TransactionCreateService extends Service
+class TransactionCreateService extends HttpService
 {
     use TransactionService;
 

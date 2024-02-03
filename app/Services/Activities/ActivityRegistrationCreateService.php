@@ -4,14 +4,14 @@ namespace App\Services\Activities;
 
 use App\Models\User;
 use App\Models\Activity;
-use App\Services\Service;
+use App\Services\HttpService;
 use App\Helpers\RotationHelper;
 use App\Helpers\SettingsHelper;
 use App\Helpers\UserLimitsHelper;
 use App\Models\ActivityRegistration;
 use Illuminate\Http\RedirectResponse;
 
-class ActivityRegistrationCreateService extends Service
+class ActivityRegistrationCreateService extends HttpService
 {
     use ActivityService;
     use ActivityRegistrationService;

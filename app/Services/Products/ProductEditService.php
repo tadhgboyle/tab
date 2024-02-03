@@ -3,11 +3,11 @@
 namespace App\Services\Products;
 
 use App\Models\Product;
-use App\Services\Service;
+use App\Services\HttpService;
 use App\Http\Requests\ProductRequest;
 use Illuminate\Http\RedirectResponse;
 
-class ProductEditService extends Service
+class ProductEditService extends HttpService
 {
     use ProductService;
 

@@ -5,55 +5,14 @@ namespace App\Helpers;
 use stdClass;
 use App\Models\User;
 use Cknow\Money\Money;
-use App\Models\Category;
 use App\Models\UserLimits;
 use Illuminate\Support\Carbon;
-use App\Http\Requests\UserRequest;
 use App\Models\TransactionProduct;
 use App\Models\ActivityRegistration;
-use App\Services\Users\UserEditService;
-use App\Services\Users\UserCreateService;
 
-// TODO: Move these to user model. $user->canSpendInCategory($cat_id, 5.99)
+// TODO this class is disgusting, needs a refactor
 class UserLimitsHelper
 {
-    public static function createOrEditFromRequest(UserRequest $request, User $user, string $class): array
-    {
-        if ($request->limit === null) {
-            return [null, null];
-        }
-
-        foreach ($request->limit as $category_id => $limit) {
-            // Default to limit per day rather than week if not specified
-            $duration = $request->duration[$category_id] ?? UserLimits::LIMIT_DAILY;
-
-            // Default to $-1.00 if limit not typed in
-            if (empty($limit) && $limit !== '0') {
-                $limit = -1_00;
-            }
-
-            $limit = Money::parse($limit);
-
-            if ($limit->lessThan(Money::parse(-1_00))) {
-                $message = 'Limit must be $-1.00 or above for ' . Category::find($category_id)->name . '. ($-1.00 means no limit)';
-                $result = ($class === UserCreateService::class)
-                            ? UserCreateService::RESULT_INVALID_LIMIT
-                            : UserEditService::RESULT_INVALID_LIMIT;
-                return [$message, $result];
-            }
-
-            UserLimits::updateOrCreate([
-                'user_id' => $user->id,
-                'category_id' => $category_id,
-            ], [
-                'limit' => $limit,
-                'duration' => $duration,
-            ]);
-        }
-
-        return [null, null];
-    }
-
     public static function canSpend(User $user, Money $spending, int $category_id, ?object $info = null): bool
     {
         if ($info === null) {
@@ -71,6 +30,7 @@ class UserLimitsHelper
 
     public static function getInfo(User $user, int $category_id): stdClass
     {
+        // TODO why doesn't this return an instance of UserLimits...?
         $info = UserLimits::query()
             ->where([['user_id', $user->id], ['category_id', $category_id]])
             ->select(['duration', 'limit'])

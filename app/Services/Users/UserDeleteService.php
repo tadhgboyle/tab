@@ -3,10 +3,10 @@
 namespace App\Services\Users;
 
 use App\Models\User;
-use App\Services\Service;
+use App\Services\HttpService;
 use Illuminate\Http\RedirectResponse;
 
-class UserDeleteService extends Service
+class UserDeleteService extends HttpService
 {
     use UserService;
 

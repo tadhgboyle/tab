@@ -15,6 +15,7 @@ use App\Services\Users\UserEditService;
 use App\Services\Users\UserCreateService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+// TODO test that rotations are attached/detached properly
 class UserEditServiceTest extends TestCase
 {
     use RefreshDatabase;

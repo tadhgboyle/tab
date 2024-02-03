@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use Illuminate\Http\RedirectResponse;
-
 abstract class Service
 {
     protected string $_result;
@@ -18,6 +16,4 @@ abstract class Service
     {
         return $this->_message;
     }
-
-    abstract public function redirect(): RedirectResponse;
 }

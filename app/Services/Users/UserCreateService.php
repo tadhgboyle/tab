@@ -3,17 +3,16 @@
 namespace App\Services\Users;
 
 use App\Models\User;
-use App\Services\Service;
+use App\Services\HttpService;
 use App\Helpers\RoleHelper;
-use App\Helpers\UserLimitsHelper;
 use App\Http\Requests\UserRequest;
 use Illuminate\Http\RedirectResponse;
+use App\Services\Users\UserLimits\UserLimitUpsertService;
 
-class UserCreateService extends Service
+class UserCreateService extends HttpService
 {
     use UserService;
 
-    public const RESULT_INVALID_LIMIT = 'INVALID_LIMIT';
     public const RESULT_SUCCESS = 'SUCCESS';
 
     public function __construct(UserRequest $request)
@@ -41,17 +40,19 @@ class UserCreateService extends Service
         }
 
         $user->save();
+        $this->_user = $user;
 
         // has to be after save() so they have an id
         foreach ($request->rotations as $rotation_id) {
             $user->rotations()->attach($rotation_id);
         }
 
-        // Update their category limits
-        [$message, $result] = UserLimitsHelper::createOrEditFromRequest($request, $user, self::class);
-        if (!is_null($message) && !is_null($result)) {
-            $this->_message = $message;
-            $this->_result = $result;
+        // Set their category limits
+        $userLimitsUpsertService = new UserLimitUpsertService($user, $request);
+        // TODO make this a transaction so we can rollback if one of the limits fails
+        if (!in_array($userLimitsUpsertService->getResult(), [UserLimitUpsertService::RESULT_SUCCESS, UserLimitUpsertService::RESULT_SUCCESS_NULL_DATA])) {
+            $this->_result = $userLimitsUpsertService->getResult();
+            $this->_message = $userLimitsUpsertService->getMessage();
             return;
         }
 

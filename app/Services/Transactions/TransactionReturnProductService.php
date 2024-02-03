@@ -2,12 +2,12 @@
 
 namespace App\Services\Transactions;
 
-use App\Services\Service;
+use App\Services\HttpService;
 use App\Helpers\TaxHelper;
 use App\Models\TransactionProduct;
 use Illuminate\Http\RedirectResponse;
 
-class TransactionReturnProductService extends Service
+class TransactionReturnProductService extends HttpService
 {
     use TransactionService;
 
