@@ -6,6 +6,7 @@
         "php": "^8.2",
         "ext-intl": "*",
         "bahadorbzd/consoletvs-charts": "dev-main",
+        "barryvdh/laravel-dompdf": "^2.0",
         "cknow/laravel-money": "^7.0",
         "laravel/framework": "^9.0"
     },

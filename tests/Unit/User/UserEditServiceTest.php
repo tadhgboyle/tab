@@ -97,8 +97,8 @@ class UserEditServiceTest extends TestCase
             'balance' => $balance,
             'role_id' => $role_id,
             'password' => $password,
-            'limit' => $limit,
-            'duration' => $duration,
+            'limits' => $limit,
+            'durations' => $duration,
             'rotations' => [Arr::random(Rotation::all()->pluck('id')->all())]
         ]);
     }

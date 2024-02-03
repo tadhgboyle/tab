@@ -281,9 +281,8 @@ const toggleGiftCardApplyButton = () => {
 
 const addGiftCard = async () => {
     const giftCardCode = GIFT_CARD_CODE_INPUT.value;
-    const route = `/gift-cards/check-validity?code=${giftCardCode}`;
 
-    await fetch(route)
+    await fetch(`/gift-cards/check-validity?code=${giftCardCode}`)
         .then(response => response.json())
         .then(data => {
             if (data.valid) {

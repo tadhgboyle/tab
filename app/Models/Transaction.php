@@ -79,6 +79,11 @@ class Transaction extends Model
             }, Money::parse(0));
     }
 
+    public function getOwingTotal(): Money
+    {
+        return $this->total_price->subtract($this->getReturnedTotal());
+    }
+
     public function isReturned(): bool
     {
         return $this->getReturnStatus() === self::STATUS_FULLY_RETURNED;
@@ -90,6 +95,7 @@ class Transaction extends Model
             return self::STATUS_FULLY_RETURNED;
         }
 
+        // TODO store as a column to avoid this
         if ($this->products->sum->returned > 0) {
             return self::STATUS_PARTIAL_RETURNED;
         }

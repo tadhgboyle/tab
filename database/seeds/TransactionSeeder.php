@@ -26,7 +26,7 @@ class TransactionSeeder extends Seeder
         $products_all = Product::all();
 
         foreach ($users as $user) {
-            $transactions = random_int(0, 6);
+            $transactions = random_int(0, 25);
 
             for ($i = 0; $i <= $transactions; $i++) {
                 $cashier = $users->shuffle()->whereIn('role_id', [1, 2])->first();
@@ -50,7 +50,12 @@ class TransactionSeeder extends Seeder
                 $rotation = $user->rotations->random();
 
                 if (random_int(0, 10) === 0) {
-                    $giftCard = GiftCard::all()->random();
+                    $giftCards = GiftCard::where('remaining_balance', '>', 0)->get();
+                    if ($giftCards->count() === 0) {
+                        $giftCard = null;
+                    } else {
+                        $giftCard = $giftCards->random();
+                    }
                 }
 
                 $service = new TransactionCreateService(new Request([

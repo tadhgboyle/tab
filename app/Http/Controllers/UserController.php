@@ -8,6 +8,7 @@ use App\Helpers\CategoryHelper;
 use App\Helpers\RotationHelper;
 use App\Helpers\UserLimitsHelper;
 use App\Http\Requests\UserRequest;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use App\Services\Users\UserEditService;
 use App\Services\Users\UserDeleteService;
@@ -64,6 +65,15 @@ class UserController extends Controller
             'categories' => $processed_categories,
             'rotations' => $user->rotations,
         ]);
+    }
+
+    public function downloadPdf(User $user)
+    {
+        $timestamp = now()->timestamp;
+
+        return Pdf::loadView('pdfs.users.transactions', [
+            'user' => $user,
+        ])->stream("user-{$user->id}-{$timestamp}.pdf");
     }
 
     public function create(CategoryHelper $categoryHelper, RotationHelper $rotationHelper)

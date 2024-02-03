@@ -10,7 +10,7 @@ class GiftCardFactory extends Factory
 {
     public function definition(): array
     {
-        $original_balance = $this->faker->numberBetween(50, 500);
+        $original_balance = $this->faker->numberBetween(5, 250);
         // round to nearest $5
         $original_balance = round($original_balance / 5) * 5;
         $users = User::all();

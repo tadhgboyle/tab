@@ -377,6 +377,12 @@
         </section>
         <footer class="modal-card-foot">
             <button class="button" onclick="closeOwingModal();">Close</button>
+            <a class="button is-success" target="_blank" href="{{ route('users_pdf', $user) }}">
+                <span class="icon is-small">
+                    <i class="fas fa-file"></i>
+                </span>
+                <span>PDF</span>
+            </a>
         </footer>
     </div>
 </div>

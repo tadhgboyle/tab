@@ -113,6 +113,11 @@ class User extends Authenticatable
     {
         return $this->findSpent()
             ->subtract($this->findReturned())
-            ->subtract(...$this->payouts->map->amount);
+            ->subtract($this->findPaidOut());
+    }
+
+    public function findPaidOut(): Money
+    {
+        return Money::sum(Money::parse(0), ...$this->payouts->map->amount);
     }
 }

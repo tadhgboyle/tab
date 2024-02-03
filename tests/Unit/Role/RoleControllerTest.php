@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Role;
 
+use App\Helpers\Permission;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
@@ -67,7 +68,7 @@ class RoleControllerTest extends TestCase
             'role_id' => $this->_manager_role->id,
         ]);
 
-        $this->expectPermissionChecks(['settings', 'settings_roles_manage']);
+        $this->expectPermissionChecks([Permission::SETTINGS, Permission::SETTINGS_ROLES_MANAGE]);
     }
 
     public function testCanViewRoleCreatePage(): void

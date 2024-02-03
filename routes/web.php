@@ -103,6 +103,7 @@ Route::middleware('auth')->group(function () {
 
         Route::group(['middleware' => 'permission:' . Permission::USERS_VIEW], static function () {
             Route::get('/{user}', [UserController::class, 'show'])->whereNumber('user')->name('users_view');
+            Route::get('/{user}/pdf', [UserController::class, 'downloadPdf'])->name('users_pdf');
         });
 
         Route::group(['middleware' => 'permission:' . Permission::USERS_MANAGE], static function () {
