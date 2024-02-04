@@ -213,7 +213,6 @@
                 <table id="gift_cards_list">
                     <thead>
                         <tr>
-                            <th>Name</th>
                             <th>Code</th>
                             <th>Original Balance</th>
                             <th>Remaining Balance</th>
@@ -227,10 +226,7 @@
                     @foreach($giftCards as $giftCard)
                         <tr data-id="{{ $giftCard->id }}">
                             <td>
-                                <div>{{ $giftCard->name }}</div>
-                            </td>
-                            <td>
-                                <code>{{ $giftCard->code }}</code>
+                                <code>{{ $giftCard->code() }}</code>
                                 <i class="fas fa-copy copy" id="gift-card-copy-{{ $giftCard->id }}" onclick="copyCode({{ $giftCard->id }}, '{{ $giftCard->code }}')"></i>
                             </td>
                             <td>
@@ -393,7 +389,7 @@
                 "columnDefs": [{
                     "orderable": false,
                     "searchable": false,
-                    "targets": [6, 7]
+                    "targets": [5, 6]
                 }]
             });
 

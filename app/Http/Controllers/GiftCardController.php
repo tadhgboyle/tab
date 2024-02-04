@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Permission;
 use Cknow\Money\Money;
 use App\Models\GiftCard;
 use App\Helpers\CategoryHelper;
@@ -21,14 +22,13 @@ class GiftCardController extends Controller
     public function store(GiftCardRequest $request): RedirectResponse
     {
         $giftCard = new GiftCard();
-        $giftCard->name = $request->name;
         $giftCard->code = $request->code;
         $giftCard->original_balance = $request->balance;
         $giftCard->remaining_balance = $request->balance;
         $giftCard->issuer_id = auth()->id();
         $giftCard->save();
 
-        return redirect()->route('settings')->with('success', "Created new gift card $giftCard->name.");
+        return redirect()->route('settings')->with('success', "Created new gift card {$giftCard->code()}.");
     }
 
     public function edit(GiftCard $giftCard)
@@ -40,7 +40,6 @@ class GiftCardController extends Controller
 
     public function update(GiftCardRequest $request, GiftCard $giftCard): RedirectResponse
     {
-        $giftCard->name = $request->name;
         $giftCard->code = $request->code;
         if (Money::parse($request->balance)->greaterThan($giftCard->original_balance)) {
             $giftCard->original_balance = $request->balance;
@@ -48,14 +47,14 @@ class GiftCardController extends Controller
         $giftCard->remaining_balance = $request->balance;
         $giftCard->save();
 
-        return redirect()->route('settings')->with('success', "Edited gift card $giftCard->name.");
+        return redirect()->route('settings')->with('success', "Edited gift card {$giftCard->code()}.");
     }
 
     public function delete(GiftCard $giftCard): RedirectResponse
     {
         $giftCard->delete();
 
-        return redirect()->route('settings')->with('success', "Deleted gift card $giftCard->name.");
+        return redirect()->route('settings')->with('success', "Deleted gift card {$giftCard->code()}.");
     }
 
     public function ajaxCheckValidity(): JsonResponse
@@ -78,7 +77,6 @@ class GiftCardController extends Controller
 
         return response()->json([
             'valid' => true,
-            'name' => $giftCard->name,
             'remaining_balance' => $giftCard->remaining_balance->getAmount() / 100,
         ]);
     }
@@ -90,7 +88,7 @@ class GiftCardController extends Controller
         foreach ($giftCard->uses as $transaction) {
             $output .=
                 '<tr>' .
-                    '<td>' . $transaction->id . ' <a href="' . route('orders_view', $transaction) . '">(View)</a></td>' .
+                    '<td>' . $transaction->id . (hasPermission(Permission::ORDERS_VIEW) ? ' <a href="' . route('orders_view', $transaction) . '">(View)</a>' : '') . '</td>' .
                     '<td>' . $transaction->created_at->format('M jS Y h:ia') . '</td>' .
                     '<td>' . $transaction->gift_card_amount->format() . '</td>' .
                 '</tr>';

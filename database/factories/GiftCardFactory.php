@@ -17,7 +17,6 @@ class GiftCardFactory extends Factory
         $issuer = $users->shuffle()->whereIn('role_id', [1, 2])->first();
 
         return [
-            'name' => $this->faker->unique()->word,
             'code' => Str::upper(Str::random(10)),
             'original_balance' => $original_balance,
             'remaining_balance' => $original_balance,

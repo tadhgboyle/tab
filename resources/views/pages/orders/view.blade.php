@@ -11,7 +11,7 @@
         <p><strong>Cashier:</strong> @permission(\App\Helpers\Permission::USERS_VIEW) <a href="{{ route('users_view', $transaction->cashier_id) }}">{{ $transaction->cashier->full_name }}</a> @else {{ $transaction->cashier->full_name }} @endpermission</p>
         <p><strong>Total Price:</strong> {{ $transaction->total_price }}</p>
         <p><strong>Purchaser amount:</strong> {{ $transaction->purchaser_amount }}</p>
-        <p><strong>Gift card amount:</strong> {{ $transaction->gift_card_amount }}</p>
+        <p><strong>Gift card amount:</strong> {{ $transaction->gift_card_amount }} @if($transaction->giftCard) ({{ $transaction->giftCard->code() }}) @endif</p>
         <p><strong>Status:</strong> @switch($transaction->getReturnStatus()) @case('NOT_RETURNED') Not Returned @break @case('FULLY_RETURNED') Returned @break @case('PARTIAL_RETURNED') Semi Returned @break @endswitch</p>
         <br>
         @if($transaction->getReturnStatus() !== 'FULLY_RETURNED' && hasPermission(\App\Helpers\Permission::ORDERS_RETURN))

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\Permission;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -27,8 +28,19 @@ class GiftCard extends Model
 
     public function uses(): HasMany
     {
-        return $this->hasMany(Transaction::class, 'gift_card_id', 'id')
-            ->orderBy('created_at', 'DESC');
+        return $this->hasMany(Transaction::class)->orderBy('created_at', 'DESC');
+    }
+
+    public function code(): string
+    {
+        return hasPermission(Permission::SETTINGS_GIFT_CARDS_MANAGE)
+            ? $this->code
+            : '••••••' . $this->last4();
+    }
+
+    public function last4(): string
+    {
+        return substr($this->code, -4);
     }
 
     public function fullyUsed(): bool

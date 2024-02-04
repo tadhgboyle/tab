@@ -318,7 +318,7 @@ const giftCardHelpNotice = (success, message = null) => {
     const help = document.createElement('p');
     help.classList.add('help', success ? 'is-success' : 'is-danger');
     help.classList.add('is-pulled-left');
-    help.innerText = success ? `${GIFT_CARD.name} gift card applied successfully` : message;
+    help.innerText = success ? 'Gift card applied' : message;
     GIFT_CARD_CODE_INPUT.parentNode.appendChild(help);
 };
 

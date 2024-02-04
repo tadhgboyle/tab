@@ -11,11 +11,6 @@ class GiftCardRequest extends FormRequest implements FormRequestContract
     public function rules(): array
     {
         return [
-            'name' => [
-                'required',
-                'string',
-                ValidationRule::unique('gift_cards', 'name')->ignore($this->get('gift_card_id')),
-            ],
             'code' => [
                 'required',
                 'string',

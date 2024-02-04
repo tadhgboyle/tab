@@ -30,7 +30,7 @@
                         @foreach($products as $product)
                         <tr>
                             <td>
-                                @if($product->getStock() != 0)
+                                @if($product->getStock() > 0)
                                     <span class="button is-small" onclick="addProduct({{ $product->id }})">
                                         <span class="icon is-small">
                                             <i class="fas fa-plus"></i>
@@ -82,10 +82,10 @@
                 <button class="button is-dark is-small" id="apply_gift_card" disabled>
                     Apply
                 </button>
-                <button class="button is-outlined" id="remove_gift_card" style="display: none;">
-                        <span class="icon is-small">
-                          <i class="fas fa-times"></i>
-                        </span>
+                <button class="button is-outlined is-small" id="remove_gift_card" style="display: none;">
+                    <span class="icon is-small">
+                        <i class="fas fa-times"></i>
+                    </span>
                 </button>
             </div>
         </div>

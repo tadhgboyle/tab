@@ -43,8 +43,7 @@ class User extends Authenticatable
 
     public function activityRegistrations(): HasMany
     {
-        // TODO why do we need to specify the foreign key here?
-        return $this->hasMany(ActivityRegistration::class, 'user_id', 'id');
+        return $this->hasMany(ActivityRegistration::class);
     }
 
     public function rotations(): BelongsToMany

@@ -130,7 +130,7 @@
                             @endforeach
                             @if($transaction->giftCard)
                                 <tr>
-                                    <td colspan="7" class="has-text-italic column-25">Gift Card ({{ $transaction->giftCard->name }})</td>
+                                    <td colspan="7" class="has-text-italic column-25">Gift Card ending in {{ $transaction->giftCard->last4() }}</td>
                                     <td class="has-text-right column-20">{{ $transaction->gift_card_amount }}</td>
                                     <td class="column-5"></td>
                                 </tr>

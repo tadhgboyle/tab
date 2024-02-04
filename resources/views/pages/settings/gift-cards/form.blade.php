@@ -2,7 +2,7 @@
 @section('content')
 <h2 class="title has-text-weight-bold">{{ isset($giftCard) ? 'Edit' : 'Create' }} Gift Card</h2>
 @isset($giftCard)
-    <h4 class="subtitle"><strong>Gift Card:</strong> {{ $giftCard->name }}</h4>
+    <h4 class="subtitle"><strong>Gift Card:</strong> {{ $giftCard->code() }}</h4>
 @endisset
 <div class="columns">
     <div class="column"></div>
@@ -16,13 +16,6 @@
                 <input type="hidden" name="gift_card_id" value="{{ $giftCard->id }}">
                 <input type="hidden" name="remaining_balance" value="{{ $giftCard->remaining_balance->getAmount() / 100 }}">
             @endisset
-
-            <div class="field">
-                <label class="label">Name<sup style="color: red">*</sup></label>
-                <div class="control">
-                    <input type="text" name="name" id="name" class="input" placeholder="Name" value="{{ $giftCard->name ?? old('name') }}" required>
-                </div>
-            </div>
 
             <div class="field">
                 <label class="label">Balance<sup style="color: red">*</sup></label>

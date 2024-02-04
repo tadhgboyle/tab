@@ -31,11 +31,11 @@ class UserLimits extends Model
 
     public function user(): HasOne
     {
-        return $this->hasOne(User::class, 'id');
+        return $this->hasOne(User::class);
     }
 
     public function category(): HasOne
     {
-        return $this->hasOne(Category::class, 'id', 'category');
+        return $this->hasOne(Category::class);
     }
 }
