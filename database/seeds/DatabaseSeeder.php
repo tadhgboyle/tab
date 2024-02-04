@@ -13,7 +13,7 @@ use Database\Seeders\CategorySeeder;
 use Database\Seeders\GiftCardSeeder;
 use Database\Seeders\RotationSeeder;
 use Database\Seeders\SettingsSeeder;
-use Database\Seeders\UserLimitsSeeder;
+use Database\Seeders\UserLimitSeeder;
 use Database\Seeders\TransactionSeeder;
 use Database\Seeders\ActivityRegistrationSeeder;
 
@@ -58,7 +58,7 @@ class DatabaseSeeder extends Seeder
         $this->resolve(ActivitySeeder::class)->run($categories);
 
         $this->command->info('Seeding UserLimits...');
-        $this->resolve(UserLimitsSeeder::class)->run();
+        $this->resolve(UserLimitSeeder::class)->run();
 
         $this->command->info('Seeding Rotations...');
         $this->resolve(RotationSeeder::class)->run();

@@ -100,6 +100,7 @@ class UserLimitUpsertServiceTest extends TestCase
         $this->assertSame(UserLimitUpsertService::RESULT_SUCCESS, $userLimitUpsertService->getResult());
         $this->assertEquals(Money::parse(25_00), $user->limitFor($merch_category)->limit);
         $this->assertEquals(Money::parse(-1_00), $user->limitFor($candy_category)->limit);
+        $this->assertTrue($user->limitFor($candy_category)->isUnlimited());
     }
 
     public function testNoDurationProvidedDefaultsToDailyFromUserRequest(): void

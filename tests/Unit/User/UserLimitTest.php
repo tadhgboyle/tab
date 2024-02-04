@@ -25,6 +25,28 @@ class UserLimitsTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function testIsUnlimited(): void
+    {
+        $user = User::factory()->create([
+            'role_id' => Role::factory()->create()->id,
+        ]);
+        $category = Category::factory()->create();
+
+        $user_limit = UserLimit::factory()->create([
+            'user_id' => $user->id,
+            'category_id' => $category->id,
+            'limit' => -1_00
+        ]);
+
+        $this->assertTrue($user_limit->isUnlimited());
+
+        $user_limit->update([
+            'limit' => 15_00,
+        ]);
+
+        $this->assertFalse($user_limit->isUnlimited());
+    }
+
     public function testFindSpentCalculationIsCorrect(): void
     {
         [$user, $food_category, $merch_category, $activities_category, $waterfront_category] = $this->createFakeRecords();

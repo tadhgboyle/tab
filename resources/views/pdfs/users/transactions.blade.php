@@ -217,11 +217,11 @@
                         </tr>
                         <tr>
                             <td class="has-text-italic column-25">Total Returned</td>
-                            <td class="has-text-right has-text-weight-bold column-20">{{ $user->findReturned() }}</td>
+                            <td class="has-text-right has-text-weight-bold column-20">-{{ $user->findReturned() }}</td>
                         </tr>
                         <tr>
                             <td class="has-text-italic column-25">Total Payouts</td>
-                            <td class="has-text-right has-text-weight-bold column-20">{{ $user->findPaidOut() }}</td>
+                            <td class="has-text-right has-text-weight-bold column-20">-{{ $user->findPaidOut() }}</td>
                         </tr>
                         <tr>
                             <td class="has-text-italic column-25">Total Owed</td>

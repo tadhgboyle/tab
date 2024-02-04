@@ -17,7 +17,6 @@ class UserLimit extends Model
 
     use HasFactory;
 
-    protected $primaryKey = 'limit_id';
 
     protected $fillable = [
         'user_id',
@@ -45,9 +44,14 @@ class UserLimit extends Model
         return $this->duration === self::LIMIT_DAILY ? 'day' : 'week';
     }
 
+    public function isUnlimited(): bool
+    {
+        return $this->limit->equals(Money::parse(-1_00));
+    }
+
     public function canSpend(Money $spending): bool
     {
-        if ($this->limit->equals(Money::parse(-1_00))) {
+        if ($this->isUnlimited()) {
             return true;
         }
 
@@ -59,7 +63,7 @@ class UserLimit extends Model
         // If they have unlimited money (no limit set) for this category,
         // get all their transactions, as they have no limit set we dont need to worry about
         // when the transaction was created_at.
-        if ($this->limit->equals(Money::parse(-1_00))) {
+        if ($this->isUnlimited()) {
             $transactions = $this->user->transactions
                 ->where('returned', false);
             $activity_registrations = $this->user->activityRegistrations
