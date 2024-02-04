@@ -14,7 +14,7 @@ class UserSeeder extends Seeder
      */
     public function run(array $roles): void
     {
-        [$superuser_role, $cashier_role, $camper_role] = $roles;
+        [$superuser_role, $manager_role, $finance_manager_role, $cashier_role, $camper_role] = $roles;
 
         User::factory()->state([
             'full_name' => 'admin',
@@ -23,10 +23,13 @@ class UserSeeder extends Seeder
             'password' => bcrypt('123456')
         ])->create();
 
-        User::factory()->state([
-            'full_name' => 'cashier',
-            'username' => 'cashier',
-            'role_id' => $cashier_role->id,
+        User::factory()->count(5)->state([
+            'role_id' => $manager_role->id,
+            'password' => bcrypt('123456')
+        ])->create();
+
+        User::factory()->count(5)->state([
+            'role_id' => $finance_manager_role->id,
             'password' => bcrypt('123456')
         ])->create();
 

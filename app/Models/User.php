@@ -11,11 +11,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Lab404\Impersonate\Models\Impersonate;
 
 class User extends Authenticatable
 {
     use HasFactory;
     use SoftDeletes;
+    use Impersonate;
 
     protected $fillable = [
         'full_name',
@@ -138,5 +140,15 @@ class User extends Authenticatable
     public function findPaidOut(): Money
     {
         return Money::sum(Money::parse(0), ...$this->payouts->map->amount);
+    }
+
+    public function canImpersonate()
+    {
+        return $this->role->superuser;
+    }
+
+    public function canBeImpersonated()
+    {
+        return $this->role->staff;
     }
 }

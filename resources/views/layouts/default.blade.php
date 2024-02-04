@@ -16,7 +16,15 @@
 
 <body>
 
-    @include('includes.navbar')
+    @auth
+        @impersonating
+            <div class="has-text-centered has-background-light py-2">
+                <p>🕵 You are impersonating {{ auth()->user()->full_name }}, <a href="{{ route('impersonate.leave') }}">click here to exit</a></p>
+            </div>
+        @endImpersonating
+
+        @include('includes.navbar')
+    @endauth
 
     <div class="container">
 

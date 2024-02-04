@@ -23,7 +23,7 @@ class PayoutSeeder extends Seeder
             if ($user->findOwing()->isNegative() || random_int(0, 5) <= 3) {
                 continue;
             }
-            $cashier = $users->shuffle()->whereIn('role_id', [1, 2])->first();
+            $cashier = $users->shuffle()->whereIn('role_id', [1, 3])->first();
             Auth::login($cashier);
 
             // We shouldn't have to do this

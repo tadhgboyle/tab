@@ -238,4 +238,6 @@ Route::middleware('auth')->group(function () {
             Route::get('/{giftCard}/uses', [GiftCardController::class, 'ajaxGetUses'])->name('settings_gift-cards_uses');
         });
     });
+
+    Route::impersonate();
 });

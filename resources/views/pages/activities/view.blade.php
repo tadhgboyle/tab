@@ -13,18 +13,20 @@
         <p><strong>Slots:</strong> @if($activity->unlimited_slots) <i>Unlimited</i> @else {{ $activity->slots }} (Available: {{ $activity->slotsAvailable() }})@endif</p>
         <p><strong>Price:</strong> {!! $activity->price->isZero() ? '<i>Free</i>' : $activity->price . " (After tax: {$activity->getPriceAfterTax()})" !!}</p>
         <p><strong>Status:</strong> {!! $activity->getStatus() !!}</p>
-        <br>
-        @if($can_register)
-        <button class="button is-success" type="button" onclick="openModal();">
-            <span class="icon is-small">
-                <i class="fas fa-plus"></i>
-            </span>
-            <span>Add Attendee</span>
-        </button>
-        @endif
     </div>
     <div class="column">
-        <h4 class="title has-text-weight-bold is-4">Attendees</h4>
+        <div class="columns">
+            <div class="column">
+                <h4 class="title has-text-weight-bold is-4">Attendees</h4>
+            </div>
+            <div class="column">
+                @if($can_register)
+                    <button class="button is-light is-pulled-right is-small" onclick="openModal();">
+                        ➕ Add Attendee
+                    </button>
+                @endif
+            </div>
+        </div>
         <div id="loading" align="center">
             <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
         </div>

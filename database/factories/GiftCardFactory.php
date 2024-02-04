@@ -14,7 +14,7 @@ class GiftCardFactory extends Factory
         // round to nearest $5
         $original_balance = round($original_balance / 5) * 5;
         $users = User::all();
-        $issuer = $users->shuffle()->whereIn('role_id', [1, 2])->first();
+        $issuer = $users->shuffle()->whereIn('role_id', [1, 3])->first();
 
         return [
             'code' => Str::upper(Str::random(10)),

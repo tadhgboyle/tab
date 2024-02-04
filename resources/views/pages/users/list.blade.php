@@ -82,10 +82,10 @@
                                 @else
                                     <td>
                                         <div class="control">
-                                            <button class="button is-warning" disabled>
-                                            <span class="icon">
-                                                <i class="fas fa-lock"></i>
-                                            </span>
+                                            <button class="button is-light" disabled>
+                                                <span class="icon">
+                                                    🔒
+                                                </span>
                                             </button>
                                         </div>
                                     </td>

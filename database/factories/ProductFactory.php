@@ -13,9 +13,10 @@ class ProductFactory extends Factory
      */
     public function definition()
     {
-        $price = $this->faker->boolean(15) ? 0_00 : $this->faker->numberBetween(0, 50_00);
+        $price = $this->faker->boolean(15) ? 0_00 : $this->faker->numberBetween(0, 500_00);
         // round to nearest $0.25
         $price = round($price / 25) * 25;
+        $price = $price / 100;
         return [
             'name' => $this->faker->unique()->words($this->faker->numberBetween(1, 2), true),
             'price' => $price,

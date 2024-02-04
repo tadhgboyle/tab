@@ -29,7 +29,7 @@ class TransactionSeeder extends Seeder
             $transactions = random_int(0, 25);
 
             for ($i = 0; $i <= $transactions; $i++) {
-                $cashier = $users->shuffle()->whereIn('role_id', [1, 2])->first();
+                $cashier = $users->shuffle()->whereIn('role_id', [1, 2, 4])->first();
                 Auth::login($cashier);
 
                 if ($user->id === $cashier->id) {

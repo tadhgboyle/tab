@@ -8,6 +8,7 @@
         "bahadorbzd/consoletvs-charts": "dev-main",
         "barryvdh/laravel-dompdf": "^2.0",
         "cknow/laravel-money": "^7.0",
+        "lab404/laravel-impersonate": "^1.7",
         "laravel/framework": "^9.0"
     },
     "require-dev": {

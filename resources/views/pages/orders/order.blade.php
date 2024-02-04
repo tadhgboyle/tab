@@ -31,11 +31,13 @@
                         <tr>
                             <td>
                                 @if($product->getStock() > 0)
-                                    <span class="button is-small" onclick="addProduct({{ $product->id }})">
-                                        <span class="icon is-small">
-                                            <i class="fas fa-plus"></i>
+                                    <div class="control">
+                                        <span class="button is-small" onclick="addProduct({{ $product->id }})">
+                                            <span class="icon is-small">
+                                                <i class="fas fa-plus"></i>
+                                            </span>
                                         </span>
-                                    </span>
+                                    </div>
                                 @endif
                             </td>
                             <td>
