@@ -2,46 +2,41 @@
 
 namespace Tests\Unit\Settings;
 
-use App\Models\Activity;
-use App\Models\Category;
 use Tests\FormRequestTestCase;
-use App\Http\Requests\ActivityRequest;
+use App\Http\Requests\SettingsRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class SettingsRequestTest extends FormRequestTestCase
 {
     use RefreshDatabase;
 
-    public function testNameIsRequiredAndHasMinAndHasMaxAndIsUnique(): void
+    public function testGstIsRequiredAndNumeric(): void
     {
-        $this->assertHasErrors('name', new ActivityRequest([
-            'name' => '',
+        $this->assertHasErrors('gst', new SettingsRequest([
+            'gst' => null,
         ]));
 
-        $this->assertHasErrors('name', new ActivityRequest([
-            'name' => '1',
+        $this->assertHasErrors('gst', new SettingsRequest([
+            'gst' => 'string',
         ]));
 
-        $this->assertHasErrors('name', new ActivityRequest([
-            'name' => str_repeat('x', 257),
+        $this->assertNotHaveErrors('gst', new SettingsRequest([
+            'gst' => 1,
+        ]));
+    }
+
+    public function testPstIsRequiredAndNumeric(): void
+    {
+        $this->assertHasErrors('pst', new SettingsRequest([
+            'pst' => null,
         ]));
 
-        $this->assertNotHaveErrors('name', new ActivityRequest([
-            'name' => 'Activity',
+        $this->assertHasErrors('pst', new SettingsRequest([
+            'pst' => 'string',
         ]));
 
-        $category = Category::factory()->create();
-        $activity = Activity::factory()->create([
-            'category_id' => $category->id,
-        ]);
-
-        $this->assertHasErrors('name', new ActivityRequest([
-            'name' => $activity->name,
-        ]));
-
-        $this->assertNotHaveErrors('name', new ActivityRequest([
-            'name' => $activity->name,
-            'activity_id' => $activity->id,
+        $this->assertNotHaveErrors('pst', new SettingsRequest([
+            'pst' => 1,
         ]));
     }
 }

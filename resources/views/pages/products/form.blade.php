@@ -70,34 +70,12 @@
                 </div>
             </div>
 
-            <div id="stock_attr" style="display: none;">
-                <div class="field">
-                    <div class="control">
-                        <label class="checkbox label">
-                            Stock Override
-                            <input type="checkbox" name="stock_override" {{ (isset($product->stock_override) && $product->stock_override) || old('stock_override') ? 'checked' : '' }}>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="field">
-                    <label class="label">Stock</label>
-                    <div class="control has-icons-left">
-                        <span class="icon is-small is-left">
-                            <i class="fas fa-hashtag"></i>
-                        </span>
-                        <input type="number" step="1" name="stock" class="input" placeholder="Stock" value="{{ $product->stock ?? old('stock') }}">
-                    </div>
-                </div>
-
-                <div class="field">
-                    <label class="label">Box Size</label>
-                    <div class="control has-icons-left">
-                        <span class="icon is-small is-left">
-                            <i class="fas fa-hashtag"></i>
-                        </span>
-                        <input type="number" step="1" name="box_size" class="input" placeholder="Box Size" value="{{ $product->box_size ?? old('stock') }}">
-                    </div>
+            <div class="field">
+                <div class="control">
+                    <label class="checkbox label">
+                        Stock Override
+                        <input type="checkbox" name="stock_override" {{ (isset($product->stock_override) && $product->stock_override) || old('stock_override') ? 'checked' : '' }}>
+                    </label>
                 </div>
             </div>
 
@@ -107,6 +85,26 @@
                         Restore stock on return
                         <input type="checkbox" name="restore_stock_on_return" {{ (isset($product->restore_stock_on_return) && $product->restore_stock_on_return) || old('restore_stock_on_return') ? 'checked' : '' }}>
                     </label>
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">Stock<sup style="color: red">*</sup></label>
+                <div class="control has-icons-left">
+                    <span class="icon is-small is-left">
+                        <i class="fas fa-hashtag"></i>
+                    </span>
+                    <input type="number" step="1" name="stock" required class="input" placeholder="Stock" value="{{ $product->stock ?? old('stock') }}">
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">Box Size</label>
+                <div class="control has-icons-left">
+                    <span class="icon is-small is-left">
+                        <i class="fas fa-hashtag"></i>
+                    </span>
+                    <input type="number" step="1" name="box_size" class="input" placeholder="Box Size" value="{{ $product->box_size ?? old('stock') }}">
                 </div>
             </div>
         </div>
@@ -161,20 +159,6 @@
 @endisset
 
 <script type="text/javascript">
-    $(document).ready(function() {
-        updateUnlimitedAttr($('input[type=checkbox][name=unlimited_stock]').prop('checked'));
-    });
-
-    $('input[type=checkbox][name=unlimited_stock]').change(function() {
-        updateUnlimitedAttr($(this).prop('checked'))
-    });
-
-    function updateUnlimitedAttr(checked) {
-        let div = $('#stock_attr');
-        if (checked) div.fadeOut(200);
-        else div.fadeIn(200);
-    }
-
     @isset($product)
         const modal = document.querySelector('.modal');
 

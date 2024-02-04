@@ -13,14 +13,14 @@ class ProductRequestTest extends FormRequestTestCase
 {
     use RefreshDatabase;
 
-    public function testNameIsRequiredAndHasMinAndUnique(): void
+    public function testNameIsRequiredAndUnique(): void
     {
         $this->assertHasErrors('name', new ProductRequest([
             'name' => null
         ]));
 
-        $this->assertHasErrors('name', new ProductRequest([
-            'name' => '1'
+        $this->assertNotHaveErrors('name', new ProductRequest([
+            'name' => 'skittles'
         ]));
 
         $category = Category::factory()->create();
@@ -81,7 +81,7 @@ class ProductRequestTest extends FormRequestTestCase
 //        ]));
     }
 
-    public function testStockIsRequiredAndIsInteger(): void
+    public function testStockIsRequiredIfAndIsInteger(): void
     {
         $this->assertHasErrors('stock', new ProductRequest([
             'stock' => null

@@ -23,7 +23,7 @@ class UserRequestTest extends FormRequestTestCase
         $this->actingAs($admin);
     }
 
-    public function testFullNameIsRequiredAndHasMinAndIsUnique(): void
+    public function testFullNameIsRequiredAndIsUnique(): void
     {
         $role = Role::factory()->create([
             'name' => 'camper',
@@ -32,10 +32,6 @@ class UserRequestTest extends FormRequestTestCase
 
         $this->assertHasErrors('full_name', new UserRequest([
             'full_name' => null,
-        ]));
-
-        $this->assertHasErrors('full_name', new UserRequest([
-            'full_name' => 'a',
         ]));
 
         $this->assertNotHaveErrors('full_name', new UserRequest([
@@ -55,7 +51,7 @@ class UserRequestTest extends FormRequestTestCase
         ]));
     }
 
-    public function testUsernameIsNullableAndHasMinAndIsUnique(): void
+    public function testUsernameIsNullableAndIsUnique(): void
     {
         $role = Role::factory()->create([
             'name' => 'camper',
@@ -64,10 +60,6 @@ class UserRequestTest extends FormRequestTestCase
 
         $this->assertNotHaveErrors('username', new UserRequest([
             'username' => null,
-        ]));
-
-        $this->assertHasErrors('username', new UserRequest([
-            'username' => 'a',
         ]));
 
         $this->assertNotHaveErrors('username', new UserRequest([

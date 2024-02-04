@@ -14,7 +14,6 @@ class ProductRequest extends FormRequest implements FormRequestContract
         return [
             'name' => [
                 'required',
-                'min:3',
                 ValidationRule::unique('products')->ignore($this->get('product_id')),
             ],
             'price' => [

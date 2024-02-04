@@ -13,18 +13,10 @@ class ActivityRequestTest extends FormRequestTestCase
 {
     use RefreshDatabase;
 
-    public function testNameIsRequiredAndHasMinAndHasMaxAndIsUnique(): void
+    public function testNameIsRequiredAndIsUnique(): void
     {
         $this->assertHasErrors('name', new ActivityRequest([
             'name' => '',
-        ]));
-
-        $this->assertHasErrors('name', new ActivityRequest([
-            'name' => '1',
-        ]));
-
-        $this->assertHasErrors('name', new ActivityRequest([
-            'name' => str_repeat('x', 257),
         ]));
 
         $this->assertNotHaveErrors('name', new ActivityRequest([
@@ -46,18 +38,10 @@ class ActivityRequestTest extends FormRequestTestCase
         ]));
     }
 
-    public function testLocationIsNullableAndHasMinAndHasMax(): void
+    public function testLocationIsNullable(): void
     {
         $this->assertNotHaveErrors('location', new ActivityRequest([
             'location' => null,
-        ]));
-
-        $this->assertHasErrors('location', new ActivityRequest([
-            'location' => '1',
-        ]));
-
-        $this->assertHasErrors('location', new ActivityRequest([
-            'location' => str_repeat('x', 257),
         ]));
 
         $this->assertNotHaveErrors('location', new ActivityRequest([
@@ -65,18 +49,10 @@ class ActivityRequestTest extends FormRequestTestCase
         ]));
     }
 
-    public function testDescriptionIsNullableAndHasMinAndHasMax(): void
+    public function testDescriptionIsNullable(): void
     {
         $this->assertNotHaveErrors('description', new ActivityRequest([
             'description' => null,
-        ]));
-
-        $this->assertHasErrors('description', new ActivityRequest([
-            'description' => '1',
-        ]));
-
-        $this->assertHasErrors('description', new ActivityRequest([
-            'description' => str_repeat('x', 257),
         ]));
 
         $this->assertNotHaveErrors('description', new ActivityRequest([

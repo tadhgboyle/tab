@@ -13,7 +13,6 @@ class RoleRequest extends FormRequest implements FormRequestContract
         return [
             'name' => [
                 'required',
-                'min:2',
                 ValidationRule::unique('roles')->ignore($this->get('role_id')),
             ],
             'order' => [

@@ -14,19 +14,13 @@ class ActivityRequest extends FormRequest implements FormRequestContract
         return [
             'name' => [
                 'required',
-                'min:3',
-                'max:255',
                 ValidationRule::unique('activities')->ignore($this->get('activity_id')),
             ],
             'location' => [
                 'nullable',
-                'min:3',
-                'max:255',
             ],
             'description' => [
                 'nullable',
-                'min:3',
-                'max:255',
             ],
             'slots' => [
                 'nullable',

@@ -11,14 +11,10 @@ class RotationRequestTest extends FormRequestTestCase
 {
     use RefreshDatabase;
 
-    public function testNameIsRequiredAndHasMinAndUnique(): void
+    public function testNameIsRequiredAndUnique(): void
     {
         $this->assertHasErrors('name', new RotationRequest([
             'name' => null,
-        ]));
-
-        $this->assertHasErrors('name', new RotationRequest([
-            'name' => 'a',
         ]));
 
         $this->assertNotHaveErrors('name', new RotationRequest([

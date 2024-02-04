@@ -11,18 +11,10 @@ class CategoryRequestTest extends FormRequestTestCase
 {
     use RefreshDatabase;
 
-    public function testNameIsRequiredAndHasMinAndMaxAndUnique(): void
+    public function testNameIsRequiredAndUnique(): void
     {
         $this->assertHasErrors('name', new CategoryRequest([
             'name' => null,
-        ]));
-
-        $this->assertHasErrors('name', new CategoryRequest([
-            'name' => '1',
-        ]));
-
-        $this->assertHasErrors('name', new CategoryRequest([
-            'name' => 'looooooooooooooooooooooooooooong name',
         ]));
 
         $this->assertNotHaveErrors('name', new CategoryRequest([

@@ -15,7 +15,6 @@ class RotationRequest extends FormRequest implements FormRequestContract
         return [
             'name' => [
                 'required',
-                'min:2',
                 ValidationRule::unique('rotations')->ignore($this->get('rotation_id')),
             ],
             'start' => [

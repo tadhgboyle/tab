@@ -11,14 +11,10 @@ class RoleRequestTest extends FormRequestTestCase
 {
     use RefreshDatabase;
 
-    public function testNameIsRequiredAndHasMinAndIsUnique(): void
+    public function testNameIsRequiredAndIsUnique(): void
     {
         $this->assertHasErrors('name', new RoleRequest([
             'name' => null,
-        ]));
-
-        $this->assertHasErrors('name', new RoleRequest([
-            'name' => '1',
         ]));
 
         $this->assertNotHaveErrors('name', new RoleRequest([

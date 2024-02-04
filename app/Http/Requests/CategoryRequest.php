@@ -13,8 +13,6 @@ class CategoryRequest extends FormRequest implements FormRequestContract
         return [
             'name' => [
                 'required',
-                'min:3',
-                'max:36',
                 ValidationRule::unique('categories')->ignore($this->get('category_id')),
             ],
             'type' => [

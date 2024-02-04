@@ -14,12 +14,10 @@ class UserRequest extends FormRequest implements FormRequestContract
         return [
             'full_name' => [
                 'required',
-                'min:4',
                 ValidationRule::unique('users')->ignore($this->get('user_id')),
             ],
             'username' => [
                 'nullable',
-                'min:3',
                 ValidationRule::unique('users')->ignore($this->get('user_id')),
             ],
             'balance' => [
