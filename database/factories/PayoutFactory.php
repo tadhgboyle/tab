@@ -14,7 +14,7 @@ class PayoutFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'identifier' => $this->faker->unique()->randomNumber(8),
         ];
     }
 }

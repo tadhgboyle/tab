@@ -48,7 +48,7 @@ class TransactionSeeder extends Seeder
 
                 /** @var Rotation $rotation */
                 $rotation = $user->rotations->random();
-                if ($rotation->getStatus() === Rotation::STATUS_FUTURE) {
+                if ($rotation->isFuture()) {
                     continue;
                 }
                 $created_at = $rotation->start->addSeconds(random_int(0, $rotation->end->diffInSeconds($rotation->start)));

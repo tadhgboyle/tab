@@ -8,9 +8,9 @@
         <form action="{{ route('users_payout_store', $user) }}" method="POST">
             @csrf
             <div class="field">
-                <label class="label">Identifier</label>
+                <label class="label">Identifier<sup style="color: red">*</sup></label>
                 <div class="control">
-                    <input type="text" name="identifier" class="input" placeholder="Identifier" value="{{ old('identifier') }}">
+                    <input type="text" required name="identifier" class="input" placeholder="Identifier" value="{{ old('identifier') }}">
                 </div>
             </div>
             <label class="label">Amount<sup style="color: red">*</sup></label>

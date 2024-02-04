@@ -18,6 +18,13 @@ class Payout extends Model
         'amount' => MoneyIntegerCast::class,
     ];
 
+    protected $fillable = [
+        'identifier',
+        'amount',
+        'user_id',
+        'cashier_id',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

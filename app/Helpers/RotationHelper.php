@@ -13,9 +13,12 @@ class RotationHelper
     private ?Rotation $currentRotation;
 
     /** @return Collection<int, Rotation> */
-    public function getRotations(): Collection
+    public function getRotations(bool $with_users_count = false): Collection
     {
-        return $this->rotations ??= Rotation::query()->orderBy('start', 'ASC')->get();
+        return $this->rotations ??= Rotation::query()
+            ->when($with_users_count, fn($query) => $query->withCount('users'))
+            ->orderBy('start', 'ASC')
+            ->get();
     }
 
     public function getCurrentRotation(): ?Rotation

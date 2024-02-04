@@ -15,8 +15,8 @@
                         <select name="rotation" class="input" id="rotation">
                             <option value="*" @if ($stats_rotation_id === '*') selected @endif>All Rotations</option>
                             @foreach ($rotations as $rotation)
-                                <option value="{{ $rotation->id }}" @if ((int) $stats_rotation_id === $rotation->id) selected @endif>
-                                    {{ $rotation->name }} @if($rotation->isPresent()) (Present) @endif
+                                <option value="{{ $rotation->id }}" @if($rotation->isFuture()) disabled @endif @if($stats_rotation_id == $rotation->id) selected @endif>
+                                    {{ $rotation->name }} @if($rotation->isPresent()) (Present) @elseif($rotation->isFuture()) (Future) @endif
                                 </option>
                             @endforeach
                         </select>

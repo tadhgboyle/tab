@@ -45,7 +45,7 @@ class SettingsController extends Controller
         }
 
         if ($user->hasPermission(Permission::SETTINGS_ROTATIONS_MANAGE)) {
-            $vars['rotations'] = $rotationHelper->getRotations();
+            $vars['rotations'] = $rotationHelper->getRotations(true);
             $vars['currentRotation'] = $rotationHelper->getCurrentRotation()?->name;
         }
 

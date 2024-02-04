@@ -38,6 +38,11 @@ class Rotation extends Model
         return $this->getStatus() === self::STATUS_PRESENT;
     }
 
+    public function isFuture(): bool
+    {
+        return $this->getStatus() === self::STATUS_FUTURE;
+    }
+
     public function getStatus(): int
     {
         if (resolve(RotationHelper::class)->getCurrentRotation()?->id === $this->id) {

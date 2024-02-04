@@ -2,15 +2,36 @@
 
 namespace Tests\Unit\Payout;
 
+use App\Models\User;
+use App\Models\Role;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\FormRequestTestCase;
 use App\Http\Requests\PayoutRequest;
 
 class PayoutRequestTest extends FormRequestTestCase
 {
-    public function testIdentifierIsNullable(): void
+    use RefreshDatabase;
+
+    public function testIdentifierIsUnique(): void
     {
+        $role = Role::factory()->create([
+            'name' => 'camper',
+            'order' => 2,
+        ]);
+        $user = User::factory()->create([
+            'role_id' => $role->id,
+        ]);
+        $payout = $user->payouts()->create([
+            'identifier' => 'woooyeah',
+            'cashier_id' => $user->id,
+            'amount' => 10_00,
+        ]);
+
+        $this->assertHasErrors('identifier', new PayoutRequest([
+            'identifier' => $payout->identifier,
+        ]));
         $this->assertNotHaveErrors('identifier', new PayoutRequest([
-            'identifier' => null,
+            'identifier' => 'w000yeah',
         ]));
     }
 

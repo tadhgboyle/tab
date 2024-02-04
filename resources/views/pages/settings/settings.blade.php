@@ -158,6 +158,7 @@
                     <thead>
                         <tr>
                             <th>Name</th>
+                            <th>Users</th>
                             <th>Start</th>
                             <th>End</th>
                             <th>Status</th>
@@ -169,6 +170,9 @@
                         <tr data-id="{{ $rotation->id }}">
                             <td>
                                 <div>{{ $rotation->name }}</div>
+                            </td>
+                            <td>
+                                <div>{{ $rotation->users_count }}</div>
                             </td>
                             <td>
                                 <div>{{ $rotation->start->format('M jS Y h:ia') }}</div>
@@ -370,7 +374,7 @@
                 "columnDefs": [{
                     "orderable": false,
                     "searchable": false,
-                    "targets": [4]
+                    "targets": [5]
                 }]
             });
 

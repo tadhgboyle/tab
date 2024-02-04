@@ -242,7 +242,7 @@
                         @foreach($user->payouts->sortByDesc('created_at') as $payout)
                             <tr>
                                 <td>
-                                    <div>{!! $payout->identifier ?? "<i>None</i>" !!}</div>
+                                    <div>{{ $payout->identifier }}</div>
                                 </td>
                                 <td>
                                     <div>{{ $payout->amount }}</div>
@@ -350,7 +350,7 @@
                 @forelse($user->payouts->sortByDesc('created_at') as $payout)
                     <tr>
                         <td>
-                            <div>Payout @if($payout->identifier !== null) ({{ $payout->identifier }}) @endif</div>
+                            <div>Payout ({{ $payout->identifier }})</div>
                         </td>
                         <td>
                             <div>-{{ $payout->amount }}</div>

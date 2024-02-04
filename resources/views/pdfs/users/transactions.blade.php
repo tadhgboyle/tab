@@ -163,6 +163,7 @@
                             <th class="has-text-right column-8">PST %</th>
                             <th class="has-text-right column-8">GST %</th>
                             <th class="has-text-right column-20">Total</th>
+                            <!-- Better word for outstanding, something that means "price minus returned"? -->
                             <th class="has-text-right column-5">Outstanding</th>
                         </tr>
                     </thead>
@@ -197,7 +198,7 @@
                     <tbody>
                         @foreach($user->payouts as $payout)
                             <tr>
-                                <td class="has-text-left column-33">{{ $payout->identifier ?? 'N/A' }}</td>
+                                <td class="has-text-left column-33">{{ $payout->identifier }}</td>
                                 <td class="has-text-left column-33">{{ $payout->created_at->format('M jS Y h:ia') }}</td>
                                 <td class="has-text-right column-33">{{ $payout->amount }}</td>
                             </tr>

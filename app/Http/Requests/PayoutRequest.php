@@ -10,7 +10,7 @@ class PayoutRequest extends FormRequest implements FormRequestContract
     public function rules(): array
     {
         return [
-            'identifier' => 'string|nullable',
+            'identifier' => 'string|unique:payouts,identifier',
             'amount' => 'required|numeric|gt:0',
         ];
     }
