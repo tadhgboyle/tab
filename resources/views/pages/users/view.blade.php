@@ -7,7 +7,9 @@
 
 @canImpersonate
     @canBeImpersonated($user)
-        <a href="{{ route('impersonate', $user) }}">(Impersonate)</a>
+        <a href="{{ route('impersonate', $user) }}" class="button is-light">
+            🕵 Impersonate
+        </a>
     @endCanBeImpersonated
 @endCanImpersonate
 

@@ -84,21 +84,13 @@
                 <div class="navbar-item">
                     <div class="field is-grouped">
                         @permission(\App\Helpers\Permission::SETTINGS)
-                            <div class="control">
-                                <a class="button is-light" href="{{ route('settings') }}">
-                                    <span class="icon">
-                                        ⚙️
-                                    </span>
-                                </a>
-                            </div>
+                        <a class="navbar-item {{ page('settings', @$page) }}" href="{{ route('settings') }}">
+                        ⚙️ Settings
+                    </a>
                         @endpermission
-                        <div class="control">
-                            <a class="button is-light" href="{{ route('logout') }}">
-                                <span class="icon">
-                                    🚪
-                                </span>
-                            </a>
-                        </div>
+                        <a class="navbar-item" href="{{ route('logout') }}">
+                        🚪 Logout
+                    </a>
                     </div>
                 </div>
             </div>

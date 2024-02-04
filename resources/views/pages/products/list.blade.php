@@ -15,8 +15,6 @@
                     <th>Price</th>
                     <th>Stock</th>
                     <th>Stock Override</th>
-                    <th>Box Size</th>
-                    <th>Restore stock on return</th>
                     <th>PST</th>
                     @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)
                     <th></th>
@@ -40,12 +38,6 @@
                     </td>
                     <td>
                         <div>{{ $product->stock_override ? "✅" : "❌" }}</div>
-                    </td>
-                    <td>
-                        <div>{!! $product->box_size === -1 ? '<i>N/A</i>' : $product->box_size !!}</div>
-                    </td>
-                    <td>
-                        <div>{{ $product->restore_stock_on_return ? "✅" : "❌" }}</div>
                     </td>
                     <td>
                         <div>{{ $product->pst ? "✅" : "❌" }}</div>
@@ -72,9 +64,9 @@
                 "searchable": false,
                 "targets": [
                     4,
-                    6,
+                    5,
                     @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)
-                    7
+                    6,
                     @endpermission
                 ]
             }]

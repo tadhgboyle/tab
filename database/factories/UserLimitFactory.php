@@ -19,8 +19,13 @@ class UserLimitFactory extends Factory
      */
     public function definition()
     {
+        $limit = $this->faker->boolean(15) ? -1_00 : $this->faker->numberBetween(0, 200_00);
+        // round to nearest $5.00
+        $limit = round($limit / 500) * 500;
+        $limit = $limit / 100;
+
         return [
-            'limit' => $this->faker->boolean(25) ? -1_00 : $this->faker->numberBetween(5_00, 150_00),
+            'limit' => $limit,
             'duration' => $this->faker->randomElement(self::$durations),
         ];
     }

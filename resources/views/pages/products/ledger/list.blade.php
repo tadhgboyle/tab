@@ -30,7 +30,7 @@
                         <div>{!! $product->getStock() !!}</div>
                     </td>
                     <td>
-                        <div>{{ $product->stock_override ? 'True' : 'False' }}</div>
+                        <div>{{ $product->stock_override ? "✅" : "❌" }}</div>
                     </td>
                     <td>
                         <div>{!! $product->box_size === -1 ? '<i>N/A</i>' : $product->box_size !!}</div>

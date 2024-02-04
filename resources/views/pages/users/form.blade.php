@@ -59,7 +59,7 @@
                     <label class="label">Role<sup style="color: red">*</sup></label>
                     <!-- TODO: some sort of blocking of changing their own role -->
                     <div class="control">
-                        <div class="select" id="role_id">
+                        <div class="select is-fullwidth" id="role_id">
                             <select name="role_id" class="input" required>
                                 @foreach($available_roles as $role)
                                     <option value="{{ $role->id }}" data-staff="{{ $role->staff ? 1 : 0 }}" {{ (isset($user->role) && $user->role->id === $role->id) || old('role') === $role->id ? "selected" : "" }}>
@@ -73,7 +73,7 @@
 
                 <div id="password_hideable" style="display: none;">
                     <div class="field">
-                        <label class="label">{{ isset($user) ? 'Change ' : '' }}Password</label>
+                        <label class="label">{{ isset($user) ? 'Change ' : '' }}Password<sup style="color: red">*</sup></label>
                         <div class="control has-icons-left">
                             <span class="icon is-small is-left">
                                 <i class="fas fa-lock"></i>
@@ -108,11 +108,11 @@
                         </div>
                         <div class="control">
                             <label class="radio">
-                                <input type="radio" name="durations[{{ $category['id'] }}]" value="0" @if((isset($user) && $category['limit']->duration === "day") || !isset($user)) checked @endif>
+                                <input type="radio" name="durations[{{ $category['id'] }}]" value="0" @if((isset($user) && $category['limit']->duration() === "day") || !isset($user)) checked @endif>
                                 Day
                             </label>
                             <label class="radio">
-                                <input type="radio" name="durations[{{ $category['id'] }}]" value="1" @if(isset($user) && $category['limit']->duration === "week") checked @endif>
+                                <input type="radio" name="durations[{{ $category['id'] }}]" value="1" @if(isset($user) && $category['limit']->duration() === "week") checked @endif>
                                 Week
                             </label>
                         </div>

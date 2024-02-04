@@ -42,7 +42,6 @@ class RoleSeeder extends Seeder
                 Permission::ORDERS_VIEW,
                 Permission::SETTINGS,
                 Permission::SETTINGS_CATEGORIES_MANAGE,
-                Permission::SETTINGS_GIFT_CARDS_MANAGE,
                 Permission::SETTINGS_ROTATIONS_MANAGE,
             ]
         ]);
@@ -97,7 +96,7 @@ class RoleSeeder extends Seeder
             'name' => 'Camper',
             'staff' => false,
             'superuser' => false,
-            'order' => 3,
+            'order' => 5,
             'permissions' => []
         ]);
 

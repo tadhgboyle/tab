@@ -101,7 +101,6 @@
                     </a>
                 </div>
             </div>
-            <h4 class="title has-text-weight-bold is-4">Roles</h4>
             <div id="role_loading" align="center">
                 <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
             </div>
@@ -121,7 +120,7 @@
                                 <div>{{ $role->name }}</div>
                             </td>
                             <td>
-                                <div><span class="tag is-medium">{{ $role->staff ? "Yes" : "No" }}</div>
+                                <div>{{ $role->staff ? "✅" : "❌" }}</div>
                             </td>
                             <td>
                                 <div>

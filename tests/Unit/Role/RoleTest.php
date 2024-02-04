@@ -23,19 +23,19 @@ class RoleTest extends TestCase
         parent::setUp();
 
         $this->_superadmin_role = Role::factory()->create([
-            'order' => 6
+            'order' => 1,
         ]);
         $this->_admin_role = Role::factory()->create([
             'name' => 'Admin',
             'superuser' => true,
             'staff' => true,
-            'order' => 5
+            'order' => 2,
         ]);
         $this->_manager_role = Role::factory()->create([
             'name' => 'Manager',
             'superuser' => false,
             'staff' => true,
-            'order' => 4,
+            'order' => 3,
             'permissions' => [
                 'permission_node1',
                 'permission_node2'
@@ -45,19 +45,19 @@ class RoleTest extends TestCase
             'name' => 'Cashier',
             'superuser' => false,
             'staff' => true,
-            'order' => 3
+            'order' => 4,
         ]);
         $this->_camper_parent_role = Role::factory()->create([
             'name' => 'Camper (Parent)',
             'superuser' => false,
             'staff' => false,
-            'order' => 2
+            'order' => 5,
         ]);
         $this->_camper_role = Role::factory()->create([
             'name' => 'Camper',
             'superuser' => false,
             'staff' => false,
-            'order' => 1
+            'order' => 6,
         ]);
     }
 
