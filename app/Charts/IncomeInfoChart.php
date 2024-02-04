@@ -22,10 +22,10 @@ class IncomeInfoChart extends BaseChart
     public function handler(Request $request): Chartisan
     {
         $normal_data = $this->createBuilder()
-            ->where('returned', false)
+            ->whereNot('status', Transaction::STATUS_FULLY_RETURNED)
             ->get();
         $returned_data = $this->createBuilder()
-            ->where('returned', true)
+            ->where('status', Transaction::STATUS_FULLY_RETURNED)
             ->get();
 
         $normal_orders = $returned_orders = $labels = [];

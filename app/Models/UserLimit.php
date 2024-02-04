@@ -65,7 +65,7 @@ class UserLimit extends Model
         // when the transaction was created_at.
         if ($this->isUnlimited()) {
             $transactions = $this->user->transactions
-                ->where('returned', false);
+                ->where('status', '!=', Transaction::STATUS_FULLY_RETURNED);
             $activity_registrations = $this->user->activityRegistrations
                 ->where('returned', false);
         } else {
@@ -73,7 +73,7 @@ class UserLimit extends Model
 
             $transactions = $this->user->transactions
                 ->where('created_at', '>=', $carbon_string)
-                ->where('returned', false);
+                ->where('status', '!=', Transaction::STATUS_FULLY_RETURNED);
 
             $activity_registrations = $this->user->activityRegistrations
                 ->where('created_at', '>=', $carbon_string)
@@ -86,12 +86,7 @@ class UserLimit extends Model
             // Loop transaction products. Determine if the product's category is the one we are looking at,
             // if so, add its ((value * (quantity - returned)) * tax) to the end result
             foreach ($transaction->products->filter(fn (TransactionProduct $product) => $product->category_id === $this->category->id) as $product) {
-                $quantity_available = $product->quantity - $product->returned;
-
-                $spent = $spent->add(TaxHelper::calculateFor($product->price, $quantity_available, $product->pst !== null, [
-                    'gst' => $product->gst,
-                    'pst' => $product->pst,
-                ]));
+                $spent = $spent->add(TaxHelper::forTransactionProduct($product, $product->quantity - $product->returned));
             }
         }
 

@@ -28,7 +28,7 @@ class TransactionReturnService extends HttpService
         $this->updateTransactionProductAttributes();
         $this->refundPurchaser();
 
-        $this->_transaction->update(['returned' => true]);
+        $this->_transaction->update(['status' => Transaction::STATUS_FULLY_RETURNED]);
 
         $this->_result = self::RESULT_SUCCESS;
         $this->_message = 'Successfully returned order #' . $this->_transaction->id . ' for ' . $this->_transaction->purchaser->full_name;

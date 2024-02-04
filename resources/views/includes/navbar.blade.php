@@ -74,9 +74,17 @@
                 @endpermission
 
                 @permission(\App\Helpers\Permission::STATISTICS)
-                    <a class="navbar-item {{ page('statistics', @$page) }}" href="{{ route('statistics') }}">
-                        📊 Statistics
-                    </a>
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <p class="navbar-link is-arrowless {{ page('statistics', @$page) }}">📊 Statistics</p>
+                        <div class="navbar-dropdown is-boxed">
+                            <a class="navbar-item" href="{{ route('statistics') }}">
+                                Charts
+                            </a>
+                            <a class="navbar-item" href="{{ route('statistics') }}">
+                                Reports
+                            </a>
+                        </div>
+                    </div>
                 @endpermission
             </div>
 

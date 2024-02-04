@@ -12,9 +12,9 @@
         <p><strong>Total Price:</strong> {{ $transaction->total_price }}</p>
         <p><strong>Purchaser amount:</strong> {{ $transaction->purchaser_amount }}</p>
         <p><strong>Gift card amount:</strong> {{ $transaction->gift_card_amount }} @if($transaction->giftCard) <code>{{ $transaction->giftCard->code() }}</code> @endif</p>
-        <p><strong>Status:</strong> @switch($transaction->getReturnStatus()) @case('NOT_RETURNED') Not Returned @break @case('FULLY_RETURNED') Returned @break @case('PARTIAL_RETURNED') Semi Returned @break @endswitch</p>
+        <p><strong>Status:</strong> {!! $transaction->getStatusHtml() !!}</p>
         <br>
-        @if($transaction->getReturnStatus() !== 'FULLY_RETURNED' && hasPermission(\App\Helpers\Permission::ORDERS_RETURN))
+        @if($transaction->status !== \App\Models\Transaction::STATUS_FULLY_RETURNED && hasPermission(\App\Helpers\Permission::ORDERS_RETURN))
             <button class="button is-danger is-outlined" type="button" onclick="openModal();">
                 <span>Return</span>
                 <span class="icon is-small">

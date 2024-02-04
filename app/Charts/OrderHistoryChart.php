@@ -22,8 +22,8 @@ class OrderHistoryChart extends BaseChart
     // TODO: How should we display semi-Returned orders?
     public function handler(Request $request): Chartisan
     {
-        $normal_data = $this->createBuilder()->where('returned', false)->get();
-        $returned_data = $this->createBuilder()->where('returned', true)->get();
+        $normal_data = $this->createBuilder()->whereNot('status', Transaction::STATUS_FULLY_RETURNED)->get();
+        $returned_data = $this->createBuilder()->where('status', Transaction::STATUS_FULLY_RETURNED)->get();
 
         $normal_orders = $returned_orders = $labels = [];
 

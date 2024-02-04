@@ -5,26 +5,25 @@
     <strong>User:</strong> {{ $user->full_name }} @if($user->trashed()) <strong>(Deleted)</strong> @endif @if(!$user->trashed() && hasPermission(\App\Helpers\Permission::USERS_MANAGE) && $can_interact)<a href="{{ route('users_edit', $user->id) }}">(Edit)</a>@endif
 </h4>
 
-@canImpersonate
-    @canBeImpersonated($user)
-        <a href="{{ route('impersonate', $user) }}" class="button is-light">
-            🕵 Impersonate
-        </a>
-    @endCanBeImpersonated
-@endCanImpersonate
-
-<p><strong>Role:</strong> {{ $user->role->name }}</p>
-<span><strong>Balance:</strong> {{ $user->balance }}, </span>
-
-<br>
-
-<span><strong>Total spent:</strong> {{ $user->findSpent() }}, </span>
-<span><strong>Total returned:</strong> {{ $user->findReturned() }}, </span>
-@php $owing = $user->findOwing(); @endphp
-<span><strong>Total owing:</strong> <span style="text-decoration: underline; cursor: help;" onclick="openOwingModal();">{{ $owing }}</span></span>
-
-<br>
-<br>
+<div class="columns">
+    <div class="column">
+        <p><strong>Role:</strong> {{ $user->role->name }}</p>
+        <p><strong>Balance:</strong> {{ $user->balance }}, </p>
+        <span><strong>Total spent:</strong> {{ $user->findSpent() }}, </span>
+        <span><strong>Total returned:</strong> {{ $user->findReturned() }}, </span>
+        @php $owing = $user->findOwing(); @endphp
+        <span><strong>Total owing:</strong> <span style="text-decoration: underline; cursor: help;" onclick="openOwingModal();">{{ $owing }}</span></span>
+    </div>
+    <div class="column">
+        @canImpersonate
+            @canBeImpersonated($user)
+                <a href="{{ route('impersonate', $user) }}" class="button is-light is-pulled-right">
+                    🕵 Impersonate
+                </a>
+            @endCanBeImpersonated
+        @endCanImpersonate
+    </div>
+</div>
 
 <div id="loading" align="center">
     <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
@@ -71,19 +70,7 @@
                                     <div>{{ $transaction->total_price }}</div>
                                 </td>
                                 <td>
-                                    <div>
-                                        @switch($transaction->getReturnStatus())
-                                            @case('NOT_RETURNED')
-                                                <span class="tag is-success is-medium">Normal</span>
-                                            @break
-                                            @case('FULLY_RETURNED')
-                                                <span class="tag is-danger is-medium">Returned</span>
-                                            @break
-                                            @case('PARTIAL_RETURNED')
-                                                <span class="tag is-warning is-medium">Semi Returned</span>
-                                            @break
-                                        @endswitch
-                                    </div>
+                                    <div>{!! $transaction->getStatusHtml() !!}</div>
                                 </td>
                                 @permission(\App\Helpers\Permission::ORDERS_VIEW)
                                 <td>
@@ -291,7 +278,7 @@
                             <div>+{{ $transaction->total_price }}</div>
                         </td>
                     </tr>
-                    @switch($transaction->getReturnStatus())
+                    @switch($transaction->status)
                         @case(\App\Models\Transaction::STATUS_FULLY_RETURNED)
                             <tr>
                                 <td>

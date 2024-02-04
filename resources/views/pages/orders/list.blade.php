@@ -42,19 +42,7 @@
                         <div>{{ $transaction->total_price }}</div>
                     </td>
                     <td>
-                        <div>
-                            @switch($transaction->getReturnStatus())
-                                @case('NOT_RETURNED')
-                                    <span class="tag is-success is-medium">Normal</span>
-                                @break
-                                @case('FULLY_RETURNED')
-                                    <span class="tag is-danger is-medium">Returned</span>
-                                @break
-                                @case('PARTIAL_RETURNED')
-                                    <span class="tag is-warning is-medium">Semi Returned</span>
-                                @break
-                            @endswitch
-                        </div>
+                        <div>{!! $transaction->getStatusHtml() !!}</div>
                     </td>
                     @permission(\App\Helpers\Permission::ORDERS_VIEW)
                     <td>

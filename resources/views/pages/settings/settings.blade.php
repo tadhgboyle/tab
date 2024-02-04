@@ -152,6 +152,7 @@
             <div class="columns">
                 <div class="column">
                     <h4 class="title has-text-weight-bold is-4">Rotations</h4>
+                    <h6 class="subtitle"><strong>Current Rotation:</strong> {!! $currentRotation ?? '<i>None</i>' !!}</h6>
                 </div>
                 <div class="column">
                     <a class="button is-light  is-pulled-right is-small" href="{{ route('settings_rotations_create') }}">
@@ -159,7 +160,6 @@
                     </a>
                 </div>
             </div>
-            <h6 class="subtitle"><strong>Current Rotation:</strong> {!! $currentRotation ?? '<i>None</i>' !!}</h6>
             <div id="rotation_loading" align="center">
                 <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
             </div>

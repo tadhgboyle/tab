@@ -63,9 +63,9 @@ class Rotation extends Model
     public function getStatusHtml(): string
     {
         return match ($this->getStatus()) {
-            self::STATUS_PRESENT => '<span class="tag is-success is-medium">Present</span>',
-            self::STATUS_FUTURE => '<span class="tag is-warning is-medium">Future</span>',
-            self::STATUS_PAST => '<span class="tag is-warning is-medium">Past</span>',
+            self::STATUS_PRESENT => '<span class="tag is-medium">✅ Present</span>',
+            self::STATUS_FUTURE => '<span class="tag is-medium">🔮 Future</span>',
+            self::STATUS_PAST => '<span class="tag is-medium">🕐 Past</span>',
             default => "Unknown Status: {$this->getStatus()}",
         };
     }

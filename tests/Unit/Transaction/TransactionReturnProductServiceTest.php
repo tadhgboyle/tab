@@ -28,7 +28,8 @@ class TransactionReturnProductServiceTest extends TestCase
         $transactionService = (new TransactionReturnProductService($hatTransactionProduct));
         $this->assertSame(TransactionReturnProductService::RESULT_SUCCESS, $transactionService->getResult());
 
-        $this->assertSame(Transaction::STATUS_PARTIAL_RETURNED, $transaction->getReturnStatus());
+        $transaction = $transaction->refresh();
+        $this->assertSame(Transaction::STATUS_PARTIAL_RETURNED, $transaction->status);
 
         $this->assertEquals(
             $balance_before->add($hat->getPriceAfterTax()),
@@ -61,7 +62,7 @@ class TransactionReturnProductServiceTest extends TestCase
         $this->assertSame(TransactionReturnProductService::RESULT_SUCCESS, $transactionService->getResult());
 
         $transaction = $transaction->refresh();
-        $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->getReturnStatus());
+        $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->status);
         $this->assertTrue($transaction->isReturned());
         $this->assertEquals($transaction->total_price, $user->findReturned());
     }
@@ -81,7 +82,8 @@ class TransactionReturnProductServiceTest extends TestCase
         $transactionService3 = (new TransactionReturnProductService($hatTransactionProduct));
         $this->assertSame(TransactionReturnProductService::RESULT_ITEM_RETURNED_MAX_TIMES, $transactionService3->getResult());
 
-        $this->assertSame(Transaction::STATUS_PARTIAL_RETURNED, $transaction_2_items->getReturnStatus());
+        $transaction_2_items = $transaction_2_items->refresh();
+        $this->assertSame(Transaction::STATUS_PARTIAL_RETURNED, $transaction_2_items->status);
         $this->assertEquals($hat->getPriceAfterTax()->multiply(2), $user->findReturned());
     }
 

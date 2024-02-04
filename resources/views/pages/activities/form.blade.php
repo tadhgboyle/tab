@@ -51,15 +51,6 @@
             <div class="field">
                 <div class="control">
                     <label class="checkbox label">
-                        Unlimited Slots
-                        <input type="checkbox" name="unlimited_slots" {{ (isset($activity) && $activity->unlimited_slots) || old('unlimited_slots') ? 'checked' : '' }}>
-                    </label>
-                </div>
-            </div>
-
-            <div class="field">
-                <div class="control">
-                    <label class="checkbox label">
                         PST
                         <input type="checkbox" name="pst" {{ (isset($activity) && $activity->pst === true) || old('pst') ? 'checked' : '' }}>
                     </label>
@@ -81,6 +72,15 @@
                 </div>
             </div>
 
+            <div class="field">
+                <div class="control">
+                    <label class="checkbox label">
+                        Unlimited Slots
+                        <input type="checkbox" name="unlimited_slots" {{ (isset($activity) && $activity->unlimited_slots) || old('unlimited_slots') ? 'checked' : '' }}>
+                    </label>
+                </div>
+            </div>
+
             <div class="field" id="slots_div" style="display: none;">
                 <label class="label">Slots</label>
                 <div class="control has-icons-left">
@@ -94,7 +94,7 @@
             <div class="field">
                 <label class="label">Category<sup style="color: red">*</sup></label>
                 <div class="control">
-                    <div class="select">
+                    <div class="select is-fullwidth">
                         <select name="category_id" required>
                             {!! !isset($activity) ? "<option value=\"\" disabled selected>Select Category...</option>" : '' !!}
                             @foreach($categories as $category)

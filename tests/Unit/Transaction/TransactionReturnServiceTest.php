@@ -26,7 +26,7 @@ class TransactionReturnServiceTest extends TestCase
         $transactionService = (new TransactionReturnService($transaction));
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
 
-        $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->getReturnStatus());
+        $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->status);
         $this->assertTrue($transaction->isReturned());
     }
 
@@ -38,7 +38,7 @@ class TransactionReturnServiceTest extends TestCase
         $transactionService = (new TransactionReturnService($transaction));
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
 
-        $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->getReturnStatus());
+        $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->status);
         $this->assertTrue($transaction->isReturned());
         $this->assertEquals(
             $balance_before->add($transaction->total_price),
@@ -68,7 +68,7 @@ class TransactionReturnServiceTest extends TestCase
         $transactionService2 = (new TransactionReturnService($transaction));
         $this->assertSame(TransactionReturnService::RESULT_ALREADY_RETURNED, $transactionService2->getResult());
 
-        $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->getReturnStatus());
+        $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->status);
         $this->assertEquals($transaction->total_price, $user->findReturned());
     }
 

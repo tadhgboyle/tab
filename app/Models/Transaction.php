@@ -12,25 +12,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Transaction extends Model
 {
-    public const STATUS_NOT_RETURNED = 'NOT_RETURNED';
-    public const STATUS_FULLY_RETURNED = 'FULLY_RETURNED';
-    public const STATUS_PARTIAL_RETURNED = 'PARTIAL_RETURNED';
+    public const STATUS_NOT_RETURNED = 0;
+
+    public const STATUS_PARTIAL_RETURNED = 1;
+
+    public const STATUS_FULLY_RETURNED = 2;
 
     use HasFactory;
 
     protected $fillable = [
-        'returned',
+        'status',
     ];
 
     protected $casts = [
         'total_price' => MoneyIntegerCast::class,
         'purchaser_amount' => MoneyIntegerCast::class,
         'gift_card_amount' => MoneyIntegerCast::class,
-        'returned' => 'boolean',
-    ];
-
-    protected $with = [
-        'products',
     ];
 
     public function purchaser(): BelongsTo
@@ -64,18 +61,14 @@ class Transaction extends Model
             return $this->total_price;
         }
 
-        if ($this->getReturnStatus() === self::STATUS_NOT_RETURNED) {
+        if ($this->status === self::STATUS_NOT_RETURNED) {
             return Money::parse(0);
         }
 
         return $this->products
             ->where('returned', '>=', 1)
             ->reduce(function (Money $carry, TransactionProduct $product) {
-                // TODO use ::forTransactionProduct?
-                return $carry->add(TaxHelper::calculateFor($product->price, $product->returned, $product->pst !== null, [
-                    'pst' => $product->pst,
-                    'gst' => $product->gst,
-                ]));
+                return $carry->add(TaxHelper::forTransactionProduct($product, $product->returned));
             }, Money::parse(0));
     }
 
@@ -86,20 +79,15 @@ class Transaction extends Model
 
     public function isReturned(): bool
     {
-        return $this->getReturnStatus() === self::STATUS_FULLY_RETURNED;
+        return $this->status === self::STATUS_FULLY_RETURNED;
     }
 
-    public function getReturnStatus(): string
+    public function getStatusHtml(): string
     {
-        if ($this->returned) {
-            return self::STATUS_FULLY_RETURNED;
-        }
-
-        // TODO store as a column to avoid this
-        if ($this->products->sum->returned > 0) {
-            return self::STATUS_PARTIAL_RETURNED;
-        }
-
-        return self::STATUS_NOT_RETURNED;
+        return match ($this->status) {
+            self::STATUS_FULLY_RETURNED => '<span class="tag is-medium">🚨 Returned</span>',
+            self::STATUS_PARTIAL_RETURNED => '<span class="tag is-medium">⚠️ Semi Returned</span>',
+            self::STATUS_NOT_RETURNED => '<span class="tag is-medium">👌 Normal</span>',
+        };
     }
 }

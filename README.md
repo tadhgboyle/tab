@@ -153,6 +153,7 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
 - Convert jquery ajax requests to use axios
 - Let transactions use multiple gift cards
 - When editing entities, correctly return back to the list/show page the user was previously on upon success
+- Add "cost" to products and display margins
 
 ## Issues/Bugs
 - When cashier page refreshed with gift card, ensure it still has balance + update balance in table row

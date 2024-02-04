@@ -45,7 +45,7 @@
             <div class="field">
                 <label class="label">Category<sup style="color: red">*</sup></label>
                 <div class="control">
-                    <div class="select">
+                    <div class="select is-fullwidth">
                         <select name="category_id" required>
                             {!! !isset($product) ? "<option value=\"\" disabled selected>Select Category...</option>" : '' !!}
                             @foreach($categories as $category)

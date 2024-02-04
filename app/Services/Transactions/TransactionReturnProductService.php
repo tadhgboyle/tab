@@ -6,6 +6,7 @@ use App\Services\HttpService;
 use App\Helpers\TaxHelper;
 use App\Models\TransactionProduct;
 use Illuminate\Http\RedirectResponse;
+use App\Models\Transaction;
 
 class TransactionReturnProductService extends HttpService
 {
@@ -65,9 +66,11 @@ class TransactionReturnProductService extends HttpService
         // Reload the transactionProdicts to get the updated returned count
         $this->_transaction->load('products');
 
-        if ($this->_transaction->products->sum->returned === $this->_transaction->products->sum->quantity) {
-            $this->_transaction->update(['returned' => true]);
-        }
+        $this->_transaction->update([
+            'status' => $this->_transaction->products->sum->returned === $this->_transaction->products->sum->quantity
+                ? Transaction::STATUS_FULLY_RETURNED
+                : Transaction::STATUS_PARTIAL_RETURNED,
+        ]);
     }
 
     public function redirect(): RedirectResponse

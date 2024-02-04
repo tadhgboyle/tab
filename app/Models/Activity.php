@@ -86,13 +86,13 @@ class Activity extends Model
     public function getStatus(): string
     {
         if ($this->end->isPast()) {
-            return '<span class="tag is-danger is-medium">Over</span>';
+            return '<span class="tag is-medium">🕐 Over</span>';
         }
 
         if ($this->start->isPast()) {
-            return '<span class="tag is-warning is-medium">In Progress</span>';
+            return '<span class="tag is-medium">✅ In Progress</span>';
         }
 
-        return '<span class="tag is-success is-medium">Waiting</span>';
+        return '<span class="tag is-medium">🔮 Waiting</span>';
     }
 }

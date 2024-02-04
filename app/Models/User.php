@@ -33,6 +33,10 @@ class User extends Authenticatable
         'balance' => MoneyIntegerCast::class,
     ];
 
+    protected $with = [
+        // 'userLimits',
+    ];
+
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
@@ -40,7 +44,7 @@ class User extends Authenticatable
 
     public function transactions(): HasMany
     {
-        return $this->hasMany(Transaction::class, 'purchaser_id');
+        return $this->hasMany(Transaction::class, 'purchaser_id')->with('products');
     }
 
     public function activityRegistrations(): HasMany
@@ -109,11 +113,12 @@ class User extends Authenticatable
                 return;
             }
 
+            if ($transaction->status === Transaction::STATUS_NOT_RETURNED) {
+                return;
+            }
+
             foreach ($transaction->products->where('returned', '>', 0) as $product) {
-                $returned = $returned->add(TaxHelper::calculateFor($product->price, $product->returned, $product->pst !== null, [
-                    'gst' => $product->gst,
-                    'pst' => $product->pst,
-                ]));
+                $returned = $returned->add(TaxHelper::forTransactionProduct($product, $product->returned));
             }
         });
 
