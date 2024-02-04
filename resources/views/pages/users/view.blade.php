@@ -31,11 +31,8 @@
                         </div>
                         <div class="column">
                             @if(hasPermission($is_self ? \App\Helpers\Permission::CASHIER_SELF_PURCHASES : \App\Helpers\Permission::CASHIER_CREATE))
-                                <a class="button is-success is-pulled-right is-small" href="{{ route('orders_create', $user) }}">
-                                    <span class="icon is-small">
-                                        <i class="fas fa-plus"></i>
-                                    </span>
-                                    <span>Create</span>
+                                <a class="button is-light is-pulled-right is-small" href="{{ route('orders_create', $user) }}">
+                                    ➕ Create
                                 </a>
                             @endif
                         </div>
@@ -220,11 +217,8 @@
                         </div>
                         <div class="column">
                             @if(hasPermission(\App\Helpers\Permission::USERS_PAYOUTS_CREATE))
-                                <a class="button is-success is-pulled-right is-small" href="{{ route('users_payout_create', $user) }}">
-                                    <span class="icon is-small">
-                                        <i class="fas fa-file-invoice-dollar"></i>
-                                    </span>
-                                    <span>Create</span>
+                                <a class="button is-light is-pulled-right is-small" href="{{ route('users_payout_create', $user) }}">
+                                    ➕ Create
                                 </a>
                             @endif
                         </div>

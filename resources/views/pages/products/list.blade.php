@@ -39,16 +39,16 @@
                         <div>{!! $product->getStock() !!}</div>
                     </td>
                     <td>
-                        <div><span class="tag is-medium">{{ $product->stock_override ? "Yes" : "No" }}</span></div>
+                        <div>{{ $product->stock_override ? "✅" : "❌" }}</div>
                     </td>
                     <td>
                         <div>{!! $product->box_size === -1 ? '<i>N/A</i>' : $product->box_size !!}</div>
                     </td>
                     <td>
-                        <div><span class="tag is-medium">{{ $product->restore_stock_on_return ? "Yes" : "No" }}</span></div>
+                        <div>{{ $product->restore_stock_on_return ? "✅" : "❌" }}</div>
                     </td>
                     <td>
-                        <div><span class="tag is-medium">{{ $product->pst ? "Yes" : "No" }}</div>
+                        <div>{{ $product->pst ? "✅" : "❌" }}</div>
                     </td>
                     @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)
                     <td>

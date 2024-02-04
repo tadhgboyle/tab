@@ -18,7 +18,7 @@ class LoginController extends Controller
         if (Auth::attempt([
             'username' => $request->username,
             'password' => $request->password,
-        ], $request->has('remember'))) {
+        ])) {
             return redirect()->intended();
         }
 

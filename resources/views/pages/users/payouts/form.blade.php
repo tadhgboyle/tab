@@ -31,11 +31,8 @@
 {{--                TODO add helper to show how much they would be left owing with this amount subtracted from owing--}}
             </div>
             <div class="control pt-4">
-                <button class="button is-success" type="submit">
-                    <span class="icon is-small">
-                        <i class="fas fa-save"></i>
-                    </span>
-                    <span>Save</span>
+                <button class="button is-light" type="submit">
+                    💾 Save
                 </button>
                 <a class="button is-outlined" href="{{ route('users_view', $user) }}">
                     <span>Cancel</span>

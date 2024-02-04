@@ -31,11 +31,8 @@
                 </div>
 
                 <div class="control">
-                    <button class="button is-success" type="submit">
-                        <span class="icon is-small">
-                            <i class="fas fa-save"></i>
-                        </span>
-                        <span>Save</span>
+                    <button class="button is-light" type="submit">
+                        💾 Save
                     </button>
                 </div>
             </form>
@@ -46,7 +43,16 @@
     @permission(\App\Helpers\Permission::SETTINGS_CATEGORIES_MANAGE)
     <div class="column">
         <div class="box">
-            <h4 class="title has-text-weight-bold is-4">Categories</h4>
+            <div class="columns">
+                <div class="column">
+                    <h4 class="title has-text-weight-bold is-4">Categories</h4>
+                </div>
+                <div class="column">
+                    <a class="button is-light  is-pulled-right is-small" href="{{ route('settings_categories_create') }}">
+                        ➕ Create
+                    </a>
+                </div>
+            </div>
             <div id="category_loading" align="center">
                 <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
             </div>
@@ -76,13 +82,6 @@
                     </tbody>
                 </table>
             </div>
-            <br>
-            <a class="button is-success" href="{{ route('settings_categories_create') }}">
-                <span class="icon is-small">
-                    <i class="fas fa-plus"></i>
-                </span>
-                <span>New</span>
-            </a>
         </div>
     </div>
     @endpermission
@@ -92,6 +91,16 @@
     @permission(\App\Helpers\Permission::SETTINGS_ROLES_MANAGE)
     <div class="column is-5">
         <div class="box">
+            <div class="columns">
+                <div class="column">
+                    <h4 class="title has-text-weight-bold is-4">Roles</h4>
+                </div>
+                <div class="column">
+                    <a class="button is-light  is-pulled-right is-small" href="{{ route('settings_roles_create') }}">
+                        ➕ Create
+                    </a>
+                </div>
+            </div>
             <h4 class="title has-text-weight-bold is-4">Roles</h4>
             <div id="role_loading" align="center">
                 <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
@@ -134,13 +143,6 @@
                     </tbody>
                 </table>
             </div>
-            <br>
-            <a class="button is-success" href="{{ route('settings_roles_create') }}">
-                <span class="icon is-small">
-                    <i class="fas fa-plus"></i>
-                </span>
-                <span>New</span>
-            </a>
         </div>
     </div>
     @endpermission
@@ -148,7 +150,16 @@
     @permission(\App\Helpers\Permission::SETTINGS_ROTATIONS_MANAGE)
     <div class="column">
         <div class="box">
-            <h4 class="title has-text-weight-bold is-4">Rotations</h4>
+            <div class="columns">
+                <div class="column">
+                    <h4 class="title has-text-weight-bold is-4">Rotations</h4>
+                </div>
+                <div class="column">
+                    <a class="button is-light  is-pulled-right is-small" href="{{ route('settings_rotations_create') }}">
+                        ➕ Create
+                    </a>
+                </div>
+            </div>
             <h6 class="subtitle"><strong>Current Rotation:</strong> {!! $currentRotation ?? '<i>None</i>' !!}</h6>
             <div id="rotation_loading" align="center">
                 <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
@@ -193,13 +204,6 @@
                     </tbody>
                 </table>
             </div>
-            <br>
-            <a class="button is-success" href="{{ route('settings_rotations_create') }}">
-                <span class="icon is-small">
-                    <i class="fas fa-plus"></i>
-                </span>
-                <span>New</span>
-            </a>
         </div>
     </div>
     @endpermission
@@ -209,7 +213,16 @@
     @permission(\App\Helpers\Permission::SETTINGS_GIFT_CARDS_MANAGE)
     <div class="column is-12">
         <div class="box">
-            <h4 class="title has-text-weight-bold is-4">Gift Cards</h4>
+            <div class="columns">
+                <div class="column">
+                    <h4 class="title has-text-weight-bold is-4">Gift Cards</h4>
+                </div>
+                <div class="column">
+                    <a class="button is-light  is-pulled-right is-small" href="{{ route('settings_gift-cards_create') }}">
+                        ➕ Create
+                    </a>
+                </div>
+            </div>
             <div id="gift_cards_loading" align="center">
                 <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
             </div>
@@ -258,13 +271,6 @@
                     </tbody>
                 </table>
             </div>
-            <br>
-            <a class="button is-success" href="{{ route('settings_gift-cards_create') }}">
-                <span class="icon is-small">
-                    <i class="fas fa-plus"></i>
-                </span>
-                <span>New</span>
-            </a>
         </div>
     </div>
     @endpermission

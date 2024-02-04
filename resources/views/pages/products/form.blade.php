@@ -111,11 +111,8 @@
         <div class="column is-2">
             <form>
                 <div class="control">
-                    <button class="button is-success" type="submit" form="product_form">
-                        <span class="icon is-small">
-                            <i class="fas fa-check"></i>
-                        </span>
-                        <span>Submit</span>
+                    <button class="button is-light" type="submit" form="product_form">
+                        💾 Submit
                     </button>
                 </div>
             </form>

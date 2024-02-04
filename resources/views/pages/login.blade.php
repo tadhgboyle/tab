@@ -10,25 +10,18 @@
             <div class="field">
                 <label class="label">Username</label>
                 <div class="control">
-                    <input type="text" name="username" class="input" placeholder="Username" value="{{ old('username') }}">
+                    <input type="text" name="username" required class="input" placeholder="Username" value="{{ old('username') }}">
                 </div>
             </div>
             <div class="field">
                 <label class="label">Password</label>
                 <div class="control">
-                    <input type="password" name="password" class="input" placeholder="Password">
+                    <input type="password" required name="password" class="input" placeholder="Password">
                 </div>
             </div>
-            <label class="checkbox">
-                <input type="checkbox" name="remember">
-                Remember me
-            </label>
             <div class="control">
-                <button class="button is-primary" type="submit">
-                    <span class="icon is-small">
-                        <i class="fas fa-sign-in-alt"></i>
-                    </span>
-                    <span>Login</span>
+                <button class="button is-light" type="submit">
+                    ✅ Login
                 </button>
             </div>
         </form>

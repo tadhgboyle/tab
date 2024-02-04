@@ -41,11 +41,8 @@ use App\Casts\CategoryType
                 </div>
             </div>
             <div class="control">
-                <button class="button is-success" type="submit">
-                    <span class="icon is-small">
-                        <i class="fas fa-save"></i>
-                    </span>
-                    <span>Save</span>
+                <button class="button is-light" type="submit">
+                    💾 Save
                 </button>
                 <a class="button is-outlined" href="{{ route('settings') }}">
                     <span>Cancel</span>
