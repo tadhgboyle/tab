@@ -10,7 +10,7 @@ use App\Models\Activity;
 use App\Models\Category;
 use App\Models\Rotation;
 use App\Models\Settings;
-use App\Models\UserLimits;
+use App\Models\UserLimit;
 use Mockery\MockInterface;
 use App\Casts\CategoryType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -101,11 +101,11 @@ class ActivityRegistrationCreateServiceTest extends TestCase
 
     public function testCannotRegisterUserIfTheyDontHaveEnoughCategoryLimitRemaining(): void
     {
-        UserLimits::factory()->create([
+        UserLimit::factory()->create([
             'user_id' => $this->_user->id,
             'category_id' => $this->_activities_category->id,
             'limit' => 0_00,
-            'duration' => UserLimits::LIMIT_WEEKLY,
+            'duration' => UserLimit::LIMIT_WEEKLY,
         ]);
 
         $service = (new ActivityRegistrationCreateService($this->_activity, $this->_user));

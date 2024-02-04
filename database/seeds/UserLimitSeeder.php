@@ -4,10 +4,10 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Category;
-use App\Models\UserLimits;
+use App\Models\UserLimit;
 use Illuminate\Database\Seeder;
 
-class UserLimitsSeeder extends Seeder
+class UserLimitSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -21,7 +21,7 @@ class UserLimitsSeeder extends Seeder
 
         foreach ($users as $user) {
             foreach ($categories as $category) {
-                UserLimits::factory()->state([
+                UserLimit::factory()->state([
                     'user_id' => $user->id,
                     'category_id' => $category->id
                 ])->create();

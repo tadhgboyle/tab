@@ -5,7 +5,6 @@ namespace App\Services\Transactions;
 use App\Models\User;
 use Cknow\Money\Money;
 use App\Models\Product;
-use App\Models\Category;
 use App\Models\GiftCard;
 use App\Services\HttpService;
 use App\Helpers\TaxHelper;
@@ -14,7 +13,6 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Helpers\RotationHelper;
 use App\Helpers\SettingsHelper;
-use App\Helpers\UserLimitsHelper;
 use App\Models\TransactionProduct;
 use Illuminate\Support\Collection;
 use Illuminate\Http\RedirectResponse;
@@ -134,28 +132,20 @@ class TransactionCreateService extends HttpService
         }
 
         // Loop categories within this transaction
-        foreach ($transaction_products->map(fn (TransactionProduct $product) => $product->category_id)->unique() as $category_id) {
-            $limit_info = UserLimitsHelper::getInfo($purchaser, $category_id);
-            /** @var Money $category_limit */
-            $category_limit = $limit_info->limit;
-
-            // Skip this category if they have unlimited. Saves time querying
-            if ($category_limit->equals(Money::parse(-1_00))) {
-                continue;
-            }
-
-            $category_spent = Money::parse(0);
-            $category_spent_orig = UserLimitsHelper::findSpent($purchaser, $category_id, $limit_info);
+        foreach ($transaction_products->map(fn (TransactionProduct $product) => $product->category)->unique() as $category) {
+            $user_limit = $purchaser->limitFor($category);
+            $category_spending = Money::parse(0);
+            $category_spent_orig = $user_limit->findSpent();
 
             // Loop all products in this transaction. If the product's category is the current one in the above loop, add its price to category spent
-            foreach ($transaction_products->filter(fn (TransactionProduct $product) => $product->category_id === $category_id) as $product) {
-                $category_spent = $category_spent->add(TaxHelper::calculateFor($product->price, $product->quantity, $product->pst !== null));
+            foreach ($transaction_products->filter(fn (TransactionProduct $product) => $product->category->id === $category->id) as $product) {
+                $category_spending = $category_spending->add(TaxHelper::calculateFor($product->price, $product->quantity, $product->pst !== null));
             }
 
             // Break loop if we exceed their limit
-            if (!UserLimitsHelper::canSpend($purchaser, $category_spent, $category_id, $limit_info)) {
+            if (!$user_limit->canSpend($category_spending)) {
                 $this->_result = self::RESULT_NOT_ENOUGH_CATEGORY_BALANCE;
-                $this->_message = 'Not enough balance in the ' . Category::find($category_id)->name . ' category. (Limit: ' . $category_limit . ', Remaining: ' . $category_limit->subtract($category_spent_orig) . '). Tried to spend ' . $category_spent;
+                $this->_message = 'Not enough balance in the ' . $category->name . ' category. (Limit: ' . $user_limit->limit . ', Remaining: ' . $user_limit->limit->subtract($category_spent_orig) . '). Tried to spend ' . $category_spending;
                 return;
             }
         }

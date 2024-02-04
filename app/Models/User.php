@@ -57,6 +57,26 @@ class User extends Authenticatable
         return $this->hasMany(Payout::class);
     }
 
+    public function userLimits(): HasMany
+    {
+        return $this->hasMany(UserLimit::class);
+    }
+
+    public function limitFor(Category $category): UserLimit
+    {
+        $userLimit = $this->userLimits->where('category_id', $category->id)->first();
+        if ($userLimit) {
+            return $userLimit;
+        }
+
+        return UserLimit::create([
+            'user_id' => $this->id,
+            'category_id' => $category->id,
+            'limit' => Money::parse(-1_00),
+            'duration' => UserLimit::LIMIT_DAILY,
+        ]);
+    }
+
     public function hasPermission($permission): bool
     {
         return $this->role->hasPermission($permission);
@@ -106,7 +126,7 @@ class User extends Authenticatable
 
     /**
      * Find how much money a user owes.
-     * Taking their amount spent and subtracting the amount they have returned.
+     * Taking their amount spent and subtracting the amount they have returned and sum of their payouts.
      */
     public function findOwing(): Money
     {

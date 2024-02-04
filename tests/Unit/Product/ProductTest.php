@@ -9,7 +9,7 @@ use Cknow\Money\Money;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Settings;
-use App\Models\UserLimits;
+use App\Models\UserLimit;
 use App\Models\Transaction;
 use App\Helpers\RotationHelper;
 use App\Models\TransactionProduct;
@@ -263,14 +263,14 @@ class ProductTest extends TestCase
 
         [$food_category, $merch_category] = $this->createFakeCategories();
 
-        UserLimits::factory()->create([
+        UserLimit::factory()->create([
             'user_id' => $user->id,
             'category_id' => $food_category->id,
             'limit' => 15,
-            'duration' => UserLimits::LIMIT_DAILY
+            'duration' => UserLimit::LIMIT_DAILY
         ]);
 
-        UserLimits::factory()->create([
+        UserLimit::factory()->create([
             'user_id' => $user->id,
             'category_id' => $merch_category->id,
             'limit' => -1

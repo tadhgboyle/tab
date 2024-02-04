@@ -16,13 +16,26 @@ class RotationSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i = 1; $i <= 5; $i++) {
-            Rotation::factory()->create([
-                'name' => "Week #{$i}",
-                'start' => Carbon::now()->addWeeks($i - 1)->subDay(),
-                'end' => Carbon::now()->addWeeks($i)->subDay()
-            ]);
-        }
+        // Past
+        Rotation::factory()->create([
+            'name' => "Week #1",
+            'start' => Carbon::now()->subWeek(),
+            'end' => Carbon::now()
+        ]);
+
+        // Present
+        Rotation::factory()->create([
+            'name' => "Week #2",
+            'start' => Carbon::now(),
+            'end' => Carbon::now()->addWeek()
+        ]);
+
+        // Future
+        Rotation::factory()->create([
+            'name' => "Week #3",
+            'start' => Carbon::now()->addWeek(),
+            'end' => Carbon::now()->addWeeks(2)
+        ]);
 
         $users = User::all();
 

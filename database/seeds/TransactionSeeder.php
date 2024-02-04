@@ -48,6 +48,13 @@ class TransactionSeeder extends Seeder
 
                 /** @var Rotation $rotation */
                 $rotation = $user->rotations->random();
+                if ($rotation->getStatus() === Rotation::STATUS_FUTURE) {
+                    continue;
+                }
+                $created_at = $rotation->start->addSeconds(random_int(0, $rotation->end->diffInSeconds($rotation->start)));
+                if ($created_at->isFuture()) {
+                    $created_at = $rotation->start->addSeconds(random_int(0, now()->diffInSeconds($rotation->start)));
+                }
 
                 if (random_int(0, 10) === 0) {
                     $giftCards = GiftCard::where('remaining_balance', '>', 0)->get();
@@ -63,7 +70,7 @@ class TransactionSeeder extends Seeder
                     'cashier_id' => $cashier->id,
                     'rotation_id' => $rotation->id,
                     'products' => json_encode($products),
-                    'created_at' => $rotation->start->addDays(random_int(1, 6))->addMillis(random_int(-99999, 99999)),
+                    'created_at' => $created_at,
                     'gift_card_code' => $giftCard->code ?? null,
                 ]), $user);
 

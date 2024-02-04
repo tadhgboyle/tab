@@ -21,7 +21,7 @@ class ActivityRegistrationSeeder extends Seeder
         $users = User::all();
 
         foreach ($users as $user) {
-            if (random_int(0, 5) === 3) {
+            if (random_int(0, 5) === 0) {
                 continue;
             }
 

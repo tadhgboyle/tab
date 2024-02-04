@@ -10,7 +10,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\GiftCard;
 use App\Models\Settings;
-use App\Models\UserLimits;
+use App\Models\UserLimit;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Helpers\RotationHelper;
@@ -312,13 +312,13 @@ class TransactionCreateServiceTest extends TestCase
 
     private function createFakeCategoryLimits(User $user, Category $food_category, Category $merch_category): void
     {
-        UserLimits::factory()->create([
+        UserLimit::factory()->create([
             'user_id' => $user->id,
             'category_id' => $food_category->id,
             'limit' => 1_00,
         ]);
 
-        UserLimits::factory()->create([
+        UserLimit::factory()->create([
             'user_id' => $user->id,
             'category_id' => $merch_category->id,
             'limit' => 1_00,

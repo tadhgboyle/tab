@@ -9,9 +9,8 @@ use App\Services\Users\UserLimits\UserLimitUpsertService;
 use App\Models\User;
 use App\Models\Role;
 use App\Http\Requests\UserRequest;
-use App\Helpers\UserLimitsHelper;
 use Cknow\Money\Money;
-use App\Models\UserLimits;
+use App\Models\UserLimit;
 
 class UserLimitUpsertServiceTest extends TestCase
 {
@@ -72,7 +71,7 @@ class UserLimitUpsertServiceTest extends TestCase
         ]));
 
         $this->assertSame(UserLimitUpsertService::RESULT_SUCCESS, $userLimitUpsertService->getResult());
-        $this->assertEquals(Money::parse(0_00), UserLimitsHelper::getInfo($user, $candy_category->id)->limit);
+        $this->assertEquals(Money::parse(0_00), $user->limitFor($candy_category)->limit);
     }
 
     public function testNoLimitProvidedDefaultsToNegativeOneFromUserRequest(): void
@@ -99,8 +98,8 @@ class UserLimitUpsertServiceTest extends TestCase
         ]));
 
         $this->assertSame(UserLimitUpsertService::RESULT_SUCCESS, $userLimitUpsertService->getResult());
-        $this->assertEquals(Money::parse(25_00), UserLimitsHelper::getInfo($user, $merch_category->id)->limit);
-        $this->assertEquals(Money::parse(-1_00), UserLimitsHelper::getInfo($user, $candy_category->id)->limit);
+        $this->assertEquals(Money::parse(25_00), $user->limitFor($merch_category)->limit);
+        $this->assertEquals(Money::parse(-1_00), $user->limitFor($candy_category)->limit);
     }
 
     public function testNoDurationProvidedDefaultsToDailyFromUserRequest(): void
@@ -122,7 +121,8 @@ class UserLimitUpsertServiceTest extends TestCase
         ]));
 
         $this->assertSame(UserLimitUpsertService::RESULT_SUCCESS, $userLimitUpsertService->getResult());
-        $this->assertSame(UserLimits::LIMIT_DAILY, UserLimitsHelper::getInfo($user, $merch_category->id)->duration_int);
+        $this->assertSame(UserLimit::LIMIT_DAILY, $user->limitFor($merch_category)->duration);
+        $this->assertSame('day', $user->limitFor($merch_category)->duration());
     }
 
     public function testDurationIsUsedIfPassed(): void
@@ -147,14 +147,16 @@ class UserLimitUpsertServiceTest extends TestCase
                 $candy_category->id => 10_00
             ],
             'durations' => [
-                $merch_category->id => UserLimits::LIMIT_WEEKLY,
-                $candy_category->id => UserLimits::LIMIT_DAILY
+                $merch_category->id => UserLimit::LIMIT_WEEKLY,
+                $candy_category->id => UserLimit::LIMIT_DAILY
             ]
         ]));
 
         $this->assertSame(UserLimitUpsertService::RESULT_SUCCESS, $userLimitUpsertService->getResult());
-        $this->assertSame(UserLimits::LIMIT_WEEKLY, UserLimitsHelper::getInfo($user, $merch_category->id)->duration_int);
-        $this->assertSame(UserLimits::LIMIT_DAILY, UserLimitsHelper::getInfo($user, $candy_category->id)->duration_int);
+        $this->assertSame(UserLimit::LIMIT_WEEKLY, $user->limitFor($merch_category)->duration);
+        $this->assertSame('week', $user->limitFor($merch_category)->duration());
+        $this->assertSame(UserLimit::LIMIT_DAILY, $user->limitFor($candy_category)->duration);
+        $this->assertSame('day', $user->limitFor($candy_category)->duration());
     }
 
     /** @return Role[] */

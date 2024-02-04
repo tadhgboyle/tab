@@ -7,7 +7,6 @@ use App\Models\Activity;
 use App\Services\HttpService;
 use App\Helpers\RotationHelper;
 use App\Helpers\SettingsHelper;
-use App\Helpers\UserLimitsHelper;
 use App\Models\ActivityRegistration;
 use Illuminate\Http\RedirectResponse;
 
@@ -42,7 +41,7 @@ class ActivityRegistrationCreateService extends HttpService
             return;
         }
 
-        if (!UserLimitsHelper::canSpend($user, $activity->getPriceAfterTax(), $activity->category->id)) {
+        if (!$user->limitFor($activity->category)->canSpend($activity->getPriceAfterTax())) {
             $this->_result = self::RESULT_OVER_USER_LIMIT;
             $this->_message = "Could not register {$user->full_name} for {$activity->name}, they have reached their limit for the {$activity->category->name} category.";
             return;

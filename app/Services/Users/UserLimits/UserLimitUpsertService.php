@@ -6,7 +6,7 @@ use App\Http\Requests\UserRequest;
 use App\Models\User;
 use App\Services\Service;
 use App\Services\Users\UserService;
-use App\Models\UserLimits;
+use App\Models\UserLimit;
 use Cknow\Money\Money;
 use App\Models\Category;
 
@@ -26,8 +26,8 @@ class UserLimitUpsertService extends Service
         //     'category_id_2' => 5_00,
         //   ],
         //   'durations' => [
-        //     'category_id_1' => UserLimits::LIMIT_DAILY,
-        //     'category_id_2' => UserLimits::LIMIT_WEEKLY,
+        //     'category_id_1' => UserLimit::LIMIT_DAILY,
+        //     'category_id_2' => UserLimit::LIMIT_WEEKLY,
         //   ]
         // ]
 
@@ -42,7 +42,7 @@ class UserLimitUpsertService extends Service
 
         foreach ($limits_data as $category_id => $limit) {
             // Default to limit per day rather than week if not specified
-            $duration = $durations_data[$category_id] ?? UserLimits::LIMIT_DAILY;
+            $duration = $durations_data[$category_id] ?? UserLimit::LIMIT_DAILY;
 
             // Default to $-1.00 if limit not typed in
             if (empty($limit) && $limit !== '0') {
@@ -58,7 +58,7 @@ class UserLimitUpsertService extends Service
                 return;
             }
 
-            UserLimits::updateOrCreate([
+            UserLimit::updateOrCreate([
                 'user_id' => $user->id,
                 'category_id' => $category_id,
             ], [

@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Models\Category;
 use App\Helpers\CategoryHelper;
 use App\Helpers\RotationHelper;
-use App\Helpers\UserLimitsHelper;
 use App\Http\Requests\UserRequest;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
@@ -44,16 +43,16 @@ class UserController extends Controller
 
     public function show(CategoryHelper $categoryHelper, User $user)
     {
-        $processed_categories = [];
+        $categories = $categoryHelper->getCategories()->mapWithKeys(function ($category) use ($user) {
+            $userLimit = $user->limitFor($category);
 
-        $categoryHelper->getCategories()->each(function ($category) use ($user, &$processed_categories) {
-            $info = UserLimitsHelper::getInfo($user, $category->id);
-
-            $processed_categories[$category->id] = [
-                'name' => $category->name,
-                'limit' => $info->limit,
-                'duration' => $info->duration,
-                'spent' => UserLimitsHelper::findSpent($user, $category->id, $info),
+            return [
+                $category->id => [
+                    'name' => $category->name,
+                    'limit' => $userLimit->limit,
+                    'duration' => $userLimit->duration(),
+                    'spent' => $userLimit->findSpent(),
+                ],
             ];
         });
 
@@ -62,7 +61,7 @@ class UserController extends Controller
             'is_self' => $user->id === auth()->id(),
             'can_interact' => auth()->user()->role->canInteract($user->role),
             'activity_registrations' => $user->activityRegistrations,
-            'categories' => $processed_categories,
+            'categories' => $categories,
             'rotations' => $user->rotations,
         ]);
     }
@@ -78,17 +77,17 @@ class UserController extends Controller
 
     public function create(CategoryHelper $categoryHelper, RotationHelper $rotationHelper)
     {
-        $processed_categories = $categoryHelper->getCategories()->map(function (Category $category) {
+        $categories = $categoryHelper->getCategories()->map(function (Category $category) {
             return [
                 'id' => $category->id,
                 'name' => $category->name,
-                'info' => [],
+                'limit' => [],
             ];
         });
 
         return view('pages.users.form', [
             'available_roles' => auth()->user()->role->getRolesAvailable()->all(),
-            'categories' => $processed_categories->all(),
+            'categories' => $categories,
             'rotations' => $rotationHelper->getRotations(),
         ]);
     }
@@ -108,18 +107,18 @@ class UserController extends Controller
             return redirect()->route('users_list')->with('error', 'You cannot interact with that user.')->send();
         }
 
-        $processed_categories = $categoryHelper->getCategories()->map(function (Category $category) use ($user) {
+        $categories = $categoryHelper->getCategories()->map(function (Category $category) use ($user) {
             return [
                 'id' => $category->id,
                 'name' => $category->name,
-                'info' => UserLimitsHelper::getInfo($user, $category->id),
+                'limit' => $user->limitFor($category),
             ];
         });
 
         return view('pages.users.form', [
             'user' => $user,
             'available_roles' => auth()->user()->role->getRolesAvailable()->all(),
-            'categories' => $processed_categories->all(),
+            'categories' => $categories,
             'rotations' => $rotationHelper->getRotations(),
         ]);
     }

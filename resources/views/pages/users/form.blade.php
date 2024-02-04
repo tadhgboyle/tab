@@ -104,15 +104,15 @@
                             <span class="icon is-small is-left">
                                 <i class="fas fa-dollar-sign"></i>
                             </span>
-                            <input type="number" step="0.01" name="limits[{{ $category['id'] }}]" class="input money-input" placeholder="Limit" value="{{ isset($user) ? $category['info']->limit->formatForInput() : "0.00"}}">
+                            <input type="number" step="0.01" name="limits[{{ $category['id'] }}]" class="input money-input" placeholder="Limit" value="{{ isset($user) ? $category['limit']->limit->formatForInput() : "0.00"}}">
                         </div>
                         <div class="control">
                             <label class="radio">
-                                <input type="radio" name="durations[{{ $category['id'] }}]" value="0" @if((isset($user) && $category['info']->duration === "day") || !isset($user)) checked @endif>
+                                <input type="radio" name="durations[{{ $category['id'] }}]" value="0" @if((isset($user) && $category['limit']->duration === "day") || !isset($user)) checked @endif>
                                 Day
                             </label>
                             <label class="radio">
-                                <input type="radio" name="durations[{{ $category['id'] }}]" value="1" @if(isset($user) && $category['info']->duration === "week") checked @endif>
+                                <input type="radio" name="durations[{{ $category['id'] }}]" value="1" @if(isset($user) && $category['limit']->duration === "week") checked @endif>
                                 Week
                             </label>
                         </div>

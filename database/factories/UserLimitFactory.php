@@ -2,14 +2,14 @@
 
 namespace Database\Factories;
 
-use App\Models\UserLimits;
+use App\Models\UserLimit;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class UserLimitsFactory extends Factory
+class UserLimitFactory extends Factory
 {
     private static array $durations = [
-        UserLimits::LIMIT_DAILY,
-        UserLimits::LIMIT_WEEKLY
+        UserLimit::LIMIT_DAILY,
+        UserLimit::LIMIT_WEEKLY
     ];
 
     /**

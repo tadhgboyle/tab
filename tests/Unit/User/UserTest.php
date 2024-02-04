@@ -39,6 +39,16 @@ class UserTest extends TestCase
         $this->markTestIncomplete();
     }
 
+    public function testHasUserLimits(): void
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function testLimitFor(): void
+    {
+        $this->markTestIncomplete();
+    }
+
     public function testHasPermission(): void
     {
         $this->markTestIncomplete();
@@ -65,6 +75,11 @@ class UserTest extends TestCase
     }
 
     public function testFindOwingUsesTotalSpentMinusReturnedMinusPayouts(): void
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function testFindPaidOutCalculatesFromPayouts(): void
     {
         $this->markTestIncomplete();
     }
