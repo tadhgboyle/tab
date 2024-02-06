@@ -26,17 +26,13 @@ class TransactionSeeder extends Seeder
         $products_all = Product::all();
 
         foreach ($users as $user) {
-            $transactions = random_int(0, 25);
+            $transactions = random_int(1, 25);
 
             for ($i = 0; $i <= $transactions; $i++) {
                 $cashier = $users->shuffle()->whereIn('role_id', [1, 2, 4])->first();
                 Auth::login($cashier);
 
-                if ($user->id === $cashier->id) {
-                    continue;
-                }
-
-                $product_ids = $products_all->random(random_int(1, 5))->pluck('id');
+                $product_ids = $products_all->random(random_int(1, 10))->pluck('id');
 
                 $products = [];
                 foreach ($product_ids as $product_id) {

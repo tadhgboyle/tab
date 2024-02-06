@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\TaxHelper;
 use App\Models\User;
 use App\Models\Product;
 use App\Helpers\Permission;
@@ -21,6 +22,7 @@ class TransactionController extends Controller
         return view('pages.orders.list', [
             'transactions' => Transaction::orderBy('created_at', 'DESC')
                 ->with('purchaser', 'cashier')
+                ->withSum('products', 'quantity')
                 ->get(),
         ]);
     }
@@ -59,5 +61,22 @@ class TransactionController extends Controller
     public function returnProduct(Transaction $transaction, TransactionProduct $transactionProduct): RedirectResponse
     {
         return (new TransactionReturnProductService($transactionProduct))->redirect();
+    }
+
+    public function ajaxGetProducts(Transaction $transaction): string
+    {
+        $output = '';
+
+        foreach ($transaction->products as $transactionProduct) {
+            $output .=
+                '<tr>' .
+                    '<td>' . $transactionProduct->product->name . '</td>' .
+                    '<td>' . $transactionProduct->category->name . '</td>' .
+                    '<td>' . $transactionProduct->price . '</td>' .
+                    '<td>' . $transactionProduct->quantity . '</td>' .
+                '</tr>';
+        }
+
+        return $output;
     }
 }

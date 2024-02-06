@@ -14,7 +14,7 @@ class ProductSeeder extends Seeder
         'Brownie', 'Pretzels', 'Trail Mix', 'Smoothie', 'Cupcake', 'Mango Slices',
         'Sushi Roll', 'Granola Bar', 'Cookie Dough', 'Pizza Slice', 'Protein Bar'
     ];
-    
+
     private static array $merchNames = [
         'Sweater', 'Hoodie', 'Hat', 'Pants', 'Fanny Pack', 'Sunglasses',
         'T Shirt', 'Skimboard', 'Waterbottle', 'Shorts', 'Long Sleeve Shirt',

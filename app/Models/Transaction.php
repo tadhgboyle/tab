@@ -87,7 +87,7 @@ class Transaction extends Model
         return match ($this->status) {
             self::STATUS_FULLY_RETURNED => '<span class="tag is-medium">🚨 Returned</span>',
             self::STATUS_PARTIAL_RETURNED => '<span class="tag is-medium">⚠️ Semi Returned</span>',
-            self::STATUS_NOT_RETURNED => '<span class="tag is-medium">👌 Normal</span>',
+            self::STATUS_NOT_RETURNED => '<span class="tag is-medium">👌 Not Returned</span>',
         };
     }
 }

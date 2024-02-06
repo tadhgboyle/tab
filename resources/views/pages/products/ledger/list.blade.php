@@ -6,7 +6,7 @@
 </div>
 <div class="columns box">
     <div class="column is-two-thirds" id="product_container" style="visibility: hidden;">
-        <table id="product_list">
+        <table id="product_list" class="hover">
             <thead>
                 <tr>
                     <th>Name</th>
@@ -14,12 +14,11 @@
                     <th>Stock</th>
                     <th>Stock Override</th>
                     <th>Box Size</th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($products as $product)
-                <tr>
+                <tr id="{{ $product->id }}">
                     <td>
                         <div>{{ $product->name }}</div>
                     </td>
@@ -34,16 +33,6 @@
                     </td>
                     <td>
                         <div>{!! $product->box_size === -1 ? '<i>N/A</i>' : $product->box_size !!}</div>
-                    </td>
-                    <td>
-                        <div class="control">
-                        <!-- TODO: Should we disable button if it has unlimited stock? Makes it harder to edit on the fly... -->
-                            <button class="button is-info" id="adjust_select" value="{{ $product->id }}">
-                                <span class="icon">
-                                    <i class="fas fa-edit"></i>
-                                </span>
-                            </button>
-                        </div>
                     </td>
                 </tr>
                 @endforeach
@@ -61,42 +50,35 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#product_list').DataTable({
+        const productList = $('#product_list').DataTable({
             "paging": false,
             "scrollY": "49vh",
             "scrollCollapse": true,
-            "columnDefs": [
-                {
-                    "orderable": false,
-                    "searchable": false,
-                    "targets": 5
-                }
-            ]
         });
+        $('#product_list').on('click', 'tbody tr', function() {
+            let url = "{{ route('products_ledger_ajax', ":id") }}";
+            url = url.replace(':id', productList.row(this).id());
+
+            $.ajax({
+                type : "GET",
+                url : url,
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
+                beforeSend : function() {
+                    $('#adjust_product').show().html("<center><img src='{{ url('img/loader.gif') }}' class='loading-spinner'></img></center>");
+                },
+                success : function(response) {
+                    $('#adjust_product').html(response);
+                },
+                error: function(xhr, status, error) {
+                    $('#adjust_product').show().html("<p style='color: red;'><b>ERROR: </b><br>" + xhr.responseText + "</p>");
+                }
+            });
+        });
+        $('tr').css('cursor','pointer');
         $('#loading').hide();
         $('#product_container').css('visibility', 'visible');
-    });
-
-   $(document).on("click", "#adjust_select", function() {
-        let url = "{{ route('products_ledger_ajax', ":id") }}";
-        url = url.replace(':id', $(this).attr('value'));
-
-        $.ajax({
-            type : "GET",
-            url : url,
-            data: {
-                "_token": "{{ csrf_token() }}",
-            },
-            beforeSend : function() {
-                $('#adjust_product').show().html("<center><img src='{{ url('img/loader.gif') }}' class='loading-spinner'></img></center>");
-            },
-            success : function(response) {
-                $('#adjust_product').html(response);
-            },
-            error: function(xhr, status, error) {
-                $('#adjust_product').show().html("<p style='color: red;'><b>ERROR: </b><br>" + xhr.responseText + "</p>");
-            }
-        });
     });
 </script>
 @stop

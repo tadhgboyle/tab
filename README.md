@@ -107,6 +107,7 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
     - If repeating activity, add a column (nullable), for root activity, the ID of the original activity it is duplicating
 - Disable submit button when anything goes wrong *(Remaining: Stock, Categories)* 
     - Then on the backend, if they somehow bypass the disabled submit button: on errors during order, return back with their input + quantities
+    - Maybe add an ajax call before actually submitting the form to make it less jarring
 - Complete inventory features
     - "Set stock" in adjust page as well as add/subtract.
 - Change user list to display deleted users (with toggle) & implement un-deleting (for products as well).
@@ -147,7 +148,6 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
     - Admin emails: New user made, settings changed, etc
 - Rename payouts to something better
 - Store credits (when a transaction with gift card is returned, give them store credit, etc)
-- "remaining owing" reactive subtext on payout creation page
 - Add check balance modal for gift card (under a "tools" dropdown?)
 - Add way to "hide used gift cards" in gift card list
 - Convert jquery ajax requests to use axios

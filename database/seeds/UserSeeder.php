@@ -17,8 +17,15 @@ class UserSeeder extends Seeder
         [$superuser_role, $manager_role, $finance_manager_role, $cashier_role, $camper_role] = $roles;
 
         User::factory()->state([
-            'full_name' => 'admin',
+            'full_name' => 'Tadhg Boyle',
             'username' => 'admin',
+            'role_id' => $superuser_role->id,
+            'password' => bcrypt('123456')
+        ])->create();
+
+        User::factory()->state([
+            'full_name' => 'Taryn Pivarnyik',
+            'username' => 'taryn',
             'role_id' => $superuser_role->id,
             'password' => bcrypt('123456')
         ])->create();
