@@ -1,69 +1,49 @@
 {
-    "name": "aberdeener/tab",
+    "name": "laravel/laravel",
     "type": "project",
+    "description": "The skeleton application for the Laravel framework.",
+    "keywords": [
+        "laravel",
+        "framework"
+    ],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
-        "ext-intl": "*",
-        "bahadorbzd/consoletvs-charts": "dev-main",
-        "barryvdh/laravel-dompdf": "^2.0",
-        "cknow/laravel-money": "^7.0",
-        "lab404/laravel-impersonate": "^1.7",
-        "laravel/framework": "^9.0"
+        "php": "^8.1",
+        "filament/filament": "^3.2",
+        "guzzlehttp/guzzle": "^7.2",
+        "laravel/framework": "^10.10",
+        "laravel/sanctum": "^3.3",
+        "laravel/tinker": "^2.8"
     },
     "require-dev": {
-        "roave/security-advisories": "dev-latest",
-        "barryvdh/laravel-debugbar": "^3.5",
-        "barryvdh/laravel-ide-helper": "^2.10",
-        "brianium/paratest": "^6.3",
-        "spatie/laravel-ignition": "^1.0",
-        "fzaninotto/faker": "^1.9.1",
-        "jetbrains/phpstorm-attributes": "^1.0",
-        "mockery/mockery": "^1.0",
-        "nunomaduro/collision": "^6.0",
-        "nunomaduro/phpinsights": "dev-master",
-        "phpunit/phpunit": "^9.0",
-        "symfony/var-dumper": "^6.0",
-        "laravel/tinker": "^2.0",
-        "nunomaduro/larastan": "^2.0"
-    },
-    "config": {
-        "optimize-autoloader": true,
-        "preferred-install": "dist",
-        "sort-packages": true,
-        "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true
-        }
-    },
-    "extra": {
-        "laravel": {
-            "dont-discover": []
-        }
+        "fakerphp/faker": "^1.9.1",
+        "laravel/pint": "^1.0",
+        "laravel/sail": "^1.18",
+        "mockery/mockery": "^1.4.4",
+        "nunomaduro/collision": "^7.0",
+        "phpunit/phpunit": "^10.1",
+        "spatie/laravel-ignition": "^2.0"
     },
     "autoload": {
-        "files": [
-            "app/Http/helpers.php"
-        ],
         "psr-4": {
             "App\\": "app/",
-            "Database\\Factories\\": "database/factories/"
-        },
-        "classmap": [
-            "database/seeds",
-            "database/factories"
-        ]
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        }
     },
     "autoload-dev": {
         "psr-4": {
             "Tests\\": "tests/"
         }
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@php artisan filament:upgrade"
+        ],
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
@@ -71,5 +51,21 @@
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
         ]
-    }
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": []
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }

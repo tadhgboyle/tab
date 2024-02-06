@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use Symfony\Component\HttpFoundation\Request;
 use Illuminate\Http\Middleware\TrustProxies as Middleware;
+use Illuminate\Http\Request;
 
 class TrustProxies extends Middleware
 {

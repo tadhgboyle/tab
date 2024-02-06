@@ -12,7 +12,6 @@ class EncryptCookies extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        'stats_rotation_id',
-        'user_list_rotation_id',
+        //
     ];
 }
