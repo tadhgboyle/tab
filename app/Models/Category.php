@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Models;
+
+use App\Casts\CategoryType;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+class Category extends Model
+{
+    use HasFactory;
+    use SoftDeletes;
+
+    protected $casts = [
+        'name' => 'string',
+        'type' => CategoryType::class, // $category->type->name (ie: "Products Only") + $category->type->id (ie: 2)
+    ];
+
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
+}

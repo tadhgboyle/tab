@@ -13,6 +13,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+# https://github.com/filamentphp/filament/discussions/5226
+Route::redirect('/laravel/login', '/login')->name('login');
