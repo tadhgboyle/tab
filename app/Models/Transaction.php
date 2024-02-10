@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\MoneyCast;
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
 use Cknow\Money\Casts\MoneyIntegerCast;
@@ -21,9 +22,9 @@ class Transaction extends Model
     use HasFactory;
 
     protected $casts = [
-        'total_price' => MoneyIntegerCast::class,
-        'purchaser_amount' => MoneyIntegerCast::class,
-        'gift_card_amount' => MoneyIntegerCast::class,
+        'total_price' => MoneyCast::class,
+        'purchaser_amount' => MoneyCast::class,
+        'gift_card_amount' => MoneyCast::class,
     ];
 
     public function purchaser(): BelongsTo
@@ -54,7 +55,7 @@ class Transaction extends Model
     public function getReturnedTotal(): Money
     {
         if ($this->isReturned()) {
-            return $this->total_price;
+            return Money::parse($this->total_price);
         }
 
         if ($this->status === self::STATUS_NOT_RETURNED) {
@@ -70,7 +71,7 @@ class Transaction extends Model
 
     public function getOwingTotal(): Money
     {
-        return $this->total_price->subtract($this->getReturnedTotal());
+        return Money::parse($this->total_price)->subtract($this->getReturnedTotal());
     }
 
     public function isReturned(): bool

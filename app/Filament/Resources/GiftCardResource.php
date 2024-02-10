@@ -21,18 +21,28 @@ class GiftCardResource extends Resource
 {
     protected static ?string $model = GiftCard::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-gift';
+    protected static ?string $navigationGroup = 'Settings';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 TextInput::make('code')
+                    ->hiddenOn('edit')
                     ->required()
                     ->maxLength(255),
                 TextInput::make('original_balance')
+                    ->prefix('$')
                     ->name('Balance')
                     ->required()
+                    ->hiddenOn('edit')
+                    ->numeric(),
+                TextInput::make('remaining_balance')
+                    ->prefix('$')
+                    ->name('Remaining Balance')
+                    ->required()
+                    ->hiddenOn('create')
                     ->numeric(),
             ]);
     }
@@ -47,11 +57,12 @@ class GiftCardResource extends Resource
                     ->copyMessage('Gift card code copied')
                     ->copyMessageDuration(1500)
                     ->searchable(),
+                TextColumn::make('issuer.name'),
                 TextColumn::make('original_balance')
-                    ->numeric()
+                    ->money()
                     ->sortable(),
                 TextColumn::make('remaining_balance')
-                    ->numeric()
+                    ->money()
                     ->sortable(),
                 TextColumn::make('uses_count')
                     ->counts('uses')
@@ -75,27 +86,10 @@ class GiftCardResource extends Resource
             ]);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListGiftCards::route('/'),
-            'create' => Pages\CreateGiftCard::route('/create'),
-            'edit' => Pages\EditGiftCard::route('/{record}/edit'),
+            'index' => Pages\ManageGiftCards::route('/'),
         ];
-    }
-
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]);
     }
 }

@@ -38,7 +38,7 @@ class ActivityFactory extends Factory
             'description' => $this->faker->text(75),
             'unlimited_slots' => random_int(0, 3) === 0,
             'slots' => $this->faker->numberBetween(3, 30),
-            'price' => $this->faker->numberBetween(0, 50_00),
+            'price' => $this->faker->numberBetween(0, 500),
             'pst' => $this->faker->boolean,
             'start' => $start_date,
             'end' => $end_date

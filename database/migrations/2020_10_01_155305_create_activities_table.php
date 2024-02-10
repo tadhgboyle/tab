@@ -20,7 +20,7 @@ class CreateActivitiesTable extends Migration
             $table->string('description', 255)->nullable();
             $table->boolean('unlimited_slots');
             $table->integer('slots');
-            $table->integer('price');
+            $table->bigInteger('price');
             $table->boolean('pst');
             $table->foreignId('category_id')->constrained();
             $table->dateTime('start');

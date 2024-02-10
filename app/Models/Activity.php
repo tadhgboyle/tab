@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\MoneyCast;
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
 use Cknow\Money\Casts\MoneyIntegerCast;
@@ -23,7 +24,7 @@ class Activity extends Model
         'description' => 'string',
         'unlimited_slots' => 'boolean',
         'slots' => 'integer',
-        'price' => MoneyIntegerCast::class,
+        'price' => MoneyCast::class,
         'pst' => 'boolean',
     ];
 
@@ -58,7 +59,7 @@ class Activity extends Model
 
     public function getPriceAfterTax(): Money
     {
-        return TaxHelper::calculateFor($this->price, 1, $this->pst);
+        return TaxHelper::calculateFor(Money::parse($this->price), 1, $this->pst);
     }
 
     public function attendants(): HasManyThrough

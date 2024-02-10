@@ -87,7 +87,7 @@ class TransactionCreateService extends HttpService
                 $product->pst ? $settingsHelper->getPst() : null
             ));
 
-            $total_price = $total_price->add(TaxHelper::calculateFor($product->price, $quantity, $product->pst));
+            $total_price = $total_price->add(TaxHelper::calculateFor(Money::parse($product->price), $quantity, $product->pst));
         }
 
         $charge_user_amount = $total_price;
@@ -104,7 +104,7 @@ class TransactionCreateService extends HttpService
                     return;
                 }
 
-                $gift_card_balance = $gift_card->remaining_balance;
+                $gift_card_balance = Money::parse($gift_card->remaining_balance);
 
                 if ($gift_card_balance->isZero()) {
                     $this->_result = self::RESULT_INVALID_GIFT_CARD_BALANCE;
@@ -124,7 +124,7 @@ class TransactionCreateService extends HttpService
             }
         }
 
-        $remaining_balance = $purchaser->balance->subtract($charge_user_amount);
+        $remaining_balance = Money::parse($purchaser->balance)->subtract($charge_user_amount);
         if ($remaining_balance->isNegative()) {
             $this->_result = self::RESULT_NOT_ENOUGH_BALANCE;
             $this->_message = "Not enough balance. {$purchaser->full_name} only has {$purchaser->balance}. Tried to spend {$total_price}.";
@@ -139,13 +139,13 @@ class TransactionCreateService extends HttpService
 
             // Loop all products in this transaction. If the product's category is the current one in the above loop, add its price to category spent
             foreach ($transaction_products->filter(fn (TransactionProduct $product) => $product->category->id === $category->id) as $product) {
-                $category_spending = $category_spending->add(TaxHelper::calculateFor($product->price, $product->quantity, $product->pst !== null));
+                $category_spending = $category_spending->add(TaxHelper::calculateFor(Money::parse($product->price), $product->quantity, $product->pst !== null));
             }
 
             // Break loop if we exceed their limit
             if (!$user_limit->canSpend($category_spending)) {
                 $this->_result = self::RESULT_NOT_ENOUGH_CATEGORY_BALANCE;
-                $this->_message = 'Not enough balance in the ' . $category->name . ' category. (Limit: ' . $user_limit->limit . ', Remaining: ' . $user_limit->limit->subtract($category_spent_orig) . '). Tried to spend ' . $category_spending;
+                $this->_message = 'Not enough balance in the ' . $category->name . ' category. (Limit: ' . $user_limit->limit . ', Remaining: ' . Money::parse($user_limit->limit)->subtract($category_spent_orig) . '). Tried to spend ' . $category_spending;
                 return;
             }
         }
@@ -157,12 +157,12 @@ class TransactionCreateService extends HttpService
         $transaction = new Transaction();
         $transaction->purchaser_id = $purchaser->id;
         $transaction->cashier_id = auth()->id();
-        $transaction->total_price = $total_price;
-        $transaction->purchaser_amount = $charge_user_amount;
-        $transaction->gift_card_amount = $gift_card_amount;
+        $transaction->total_price = $total_price->getAmount() / 100;
+        $transaction->purchaser_amount = $charge_user_amount->getAmount() / 100;
+        $transaction->gift_card_amount = $gift_card_amount->getAmount() / 100;
         $transaction->gift_card_id = isset($gift_card) ? $gift_card->id : null;
         if (isset($gift_card, $gift_card_remaining_balance)) {
-            $gift_card->remaining_balance = $gift_card_remaining_balance;
+            $gift_card->remaining_balance = $gift_card_remaining_balance->getAmount() / 100;
             $gift_card->save();
         }
 
@@ -184,7 +184,7 @@ class TransactionCreateService extends HttpService
             $product->save();
         });
 
-        $purchaser->update(['balance' => $remaining_balance]);
+        $purchaser->update(['balance' => $remaining_balance->getAmount() / 100]);
 
         $this->_result = self::RESULT_SUCCESS;
         $this->_message = 'Order #' . $transaction->id . '. ' . $purchaser->full_name . ' now has ' . $remaining_balance;

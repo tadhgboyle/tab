@@ -18,7 +18,7 @@ class UserFactory extends Factory
         return [
             'email' => $this->faker->unique()->safeEmail,
             'name' => $name,
-            'balance' => $this->faker->numberBetween(0, 1000_00)
+            'balance' => $this->faker->numberBetween(0, 1000)
         ];
     }
 }

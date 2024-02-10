@@ -15,16 +15,16 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Clusters\Settings;
 
 class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
 
     protected static ?string $recordTitleAttribute = 'name';
-    protected static ?string $cluster = Settings::class;
+    protected static ?string $navigationGroup = 'Product Management';
+    protected static bool $checkPolicyExistence = false;
 
     public static function form(Form $form): Form
     {
@@ -34,6 +34,7 @@ class CategoryResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Select::make('type')
+                    //->formatStateUsing(fn (?Category $category) => $category?->type?->id)
                     ->required()
                     ->options(CategoryType::TYPES),
             ]);
@@ -47,7 +48,8 @@ class CategoryResource extends Resource
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('type')
-                    ->formatStateUsing(fn ($record) => $record->type->name),
+                    ->formatStateUsing(fn ($record) => $record->type->name)
+                    ->badge()->color('gray'),
                 Tables\Columns\TextColumn::make('products_count')->counts('products')->sortable(),
             ])
             ->filters([

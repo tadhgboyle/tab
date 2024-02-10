@@ -11,7 +11,7 @@ class TaxHelper
     public static function forTransactionProduct(TransactionProduct $product, int $quantity): Money
     {
         return self::calculateFor(
-            $product->price,
+            Money::parse($product->price),
             $quantity,
             $product->pst !== null,
             [

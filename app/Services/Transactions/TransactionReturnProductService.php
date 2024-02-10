@@ -5,6 +5,7 @@ namespace App\Services\Transactions;
 use App\Services\HttpService;
 use App\Helpers\TaxHelper;
 use App\Models\TransactionProduct;
+use Cknow\Money\Money;
 use Illuminate\Http\RedirectResponse;
 use App\Models\Transaction;
 
@@ -51,7 +52,7 @@ class TransactionReturnProductService extends HttpService
     {
         $purchaser = $this->_transaction->purchaser;
         $product_total = TaxHelper::forTransactionProduct($this->_transactionProduct, 1);
-        $purchaser->update(['balance' => $purchaser->balance->add($product_total)]);
+        $purchaser->update(['balance' => Money::parse($purchaser->balance)->add($product_total)->getAmount() / 100]);
     }
 
     private function restoreStock(): void

@@ -13,16 +13,15 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Clusters\Settings;
 
 class RoleResource extends Resource
 {
     protected static ?string $model = Role::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-identification';
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static ?string $cluster = Settings::class;
+    protected static ?string $navigationGroup = 'User Management';
 
     public static function form(Form $form): Form
     {
@@ -31,16 +30,13 @@ class RoleResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required(),
                 Forms\Components\TextInput::make('order')
+                    ->default(Role::max('order') + 1)
                     ->required()
                     ->numeric(),
-                Forms\Components\Toggle::make('superuser')
-                    ->required(),
-                Forms\Components\Toggle::make('staff')
-                    ->required(),
-                Forms\Components\MultiSelect::make('permissions')
-                    ->required()
-                    ->options([Permission::ACTIVITIES])
-                    ->columnSpanFull(),
+                Forms\Components\Toggle::make('superuser'),
+                Forms\Components\Toggle::make('staff'),
+                Forms\Components\Section::make('Permissions')
+                    ->schema([Permission::createFilamentSchema()])
             ]);
     }
 
@@ -58,14 +54,6 @@ class RoleResource extends Resource
                 Tables\Columns\IconColumn::make('staff')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('users_count')->counts('users')->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
@@ -81,13 +69,6 @@ class RoleResource extends Resource
                 ]),
             ])
             ->reorderable('order');
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array

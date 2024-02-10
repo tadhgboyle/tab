@@ -9,7 +9,9 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -18,9 +20,10 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
 
     protected static ?string $recordTitleAttribute = 'name';
+    protected static ?string $navigationGroup = 'Product Management';
 
     public static function form(Form $form): Form
     {
@@ -59,10 +62,11 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('category.name')
+                    ->badge()->color('gray')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('price')
-                    // ->money()
+                    ->money()
                     ->sortable(),
                 Tables\Columns\IconColumn::make('pst')
                     ->label('PST')
@@ -74,10 +78,6 @@ class ProductResource extends Resource
                     ->boolean(),
                 Tables\Columns\IconColumn::make('stock_override')
                     ->boolean(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
@@ -86,6 +86,8 @@ class ProductResource extends Resource
                     ->multiple()
                     ->relationship('category', 'name')
                     ->preload(),
+                Filter::make('Free')
+                    ->query(fn (Builder $query): Builder => $query->where('price', 0))
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

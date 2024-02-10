@@ -1,0 +1,1 @@
+{{ $getRecord()->findSpent() }}

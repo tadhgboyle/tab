@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\OrderResource\Widgets;
 
+use App\Helpers\RotationHelper;
 use App\Models\Transaction;
 use Cknow\Money\Money;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
@@ -13,8 +14,8 @@ class OrderOverview extends BaseWidget
     {
         return [
             Stat::make('Total Orders', Transaction::count()),
-            Stat::make('Average Order Value', Money::parse(Transaction::average('total_price') / 100)),
-            //Stat::make('Average User Orders', Transaction::average('id')->average('id')),
+            Stat::make('Orders this Rotation', Transaction::where('rotation_id', app(RotationHelper::class)->getCurrentRotation()->id)->count()),
+            Stat::make('Average Order Value', Money::parse(Transaction::average('total_price'))->divide(100)),
         ];
     }
 }

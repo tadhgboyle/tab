@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\MoneyCast;
 use App\Helpers\Permission;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
@@ -16,8 +17,8 @@ class GiftCard extends Model
     use SoftDeletes;
 
     protected $casts = [
-        'original_balance' => MoneyIntegerCast::class,
-        'remaining_balance' => MoneyIntegerCast::class,
+        'original_balance' => MoneyCast::class,
+        'remaining_balance' => MoneyCast::class,
         // 'code' => 'encrypted', // this does not work in a `GiftCard::firstWhere('code', encrypt(request()->query('code')));` query
     ];
 

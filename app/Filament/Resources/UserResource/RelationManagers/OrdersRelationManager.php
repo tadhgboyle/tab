@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\UserResource\RelationManagers;
 
+use Filament\Tables\Actions\CreateAction;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -29,7 +30,7 @@ class OrdersRelationManager extends RelationManager
                     ->color('primary')
                     ->url(fn (Transaction $transaction): ?string => UserResource::getUrl('view', ['record' => $transaction->cashier])),
                 TextColumn::make('total_price')
-                    ->numeric()
+                    ->money()
                     ->sortable(),
                 TextColumn::make('status')->badge()->color(fn (int $state): string => match ($state) {
                     Transaction::STATUS_NOT_RETURNED => 'success',

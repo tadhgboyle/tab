@@ -34,7 +34,7 @@ class PayoutSeeder extends Seeder
 
             new PayoutCreateService(new PayoutRequest([
                 'identifier' => '#' . random_int(101010, 202020),
-                'amount' => random_int(1, $amount->getAmount()),
+                'amount' => random_int(1, $amount->getAmount() / 100),
             ]), $user);
         }
     }

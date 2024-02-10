@@ -16,7 +16,7 @@ class CreateProductsTable extends Migration
         Schema::create('products', static function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->integer('price');
+            $table->bigInteger('price');
             $table->foreignId('category_id')->constrained();
             $table->boolean('pst')->default(false);
             $table->integer('stock');

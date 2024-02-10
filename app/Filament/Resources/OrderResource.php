@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
+use App\Models\Rotation;
 use App\Models\Transaction;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -21,7 +22,7 @@ class OrderResource extends Resource
 
     protected static ?string $modelLabel = 'Order';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
 
     public static function form(Form $form): Form
     {
@@ -38,14 +39,16 @@ class OrderResource extends Resource
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable(),
+                TextColumn::make('rotation.name'),
                 TextColumn::make('purchaser.name')
+                    ->searchable()
                     ->color('primary')
                     ->url(fn (Transaction $transaction): ?string => UserResource::getUrl('view', ['record' => $transaction->purchaser])),
                 TextColumn::make('cashier.name')
                     ->color('primary')
                     ->url(fn (Transaction $transaction): ?string => UserResource::getUrl('view', ['record' => $transaction->cashier])),
                 TextColumn::make('total_price')
-                    ->numeric()
+                    ->money()
                     ->sortable()
                     ->summarize([
                         Tables\Columns\Summarizers\Sum::make()
@@ -75,11 +78,18 @@ class OrderResource extends Resource
                         Transaction::STATUS_FULLY_RETURNED => 'Returned',
                         Transaction::STATUS_PARTIAL_RETURNED => 'Partially Returned',
                     ]),
+                Tables\Filters\SelectFilter::make('rotation_id')
+                    ->name('Rotation')
+                    ->options(Rotation::pluck('name', 'id')->toArray()),
             ])
             ->groups([
                 Tables\Grouping\Group::make('created_at')
                     ->label('Order Date')
                     ->date()
+                    ->collapsible(),
+                Tables\Grouping\Group::make('rotation_id')
+                    ->label('Rotation')
+                    ->getTitleFromRecordUsing(fn (Transaction $transaction): string => $transaction->rotation->name)
                     ->collapsible(),
             ])
             ->actions([

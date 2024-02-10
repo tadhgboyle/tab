@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\MoneyCast;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Cknow\Money\Money;
 use Illuminate\Database\Eloquent\Model;
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Carbon\Carbon;
 use App\Helpers\TaxHelper;
+// use Illuminate\Database\Eloquent\SoftDeletes;
 
 class UserLimit extends Model
 {
@@ -16,10 +18,11 @@ class UserLimit extends Model
     public const LIMIT_WEEKLY = 1;
 
     use HasFactory;
+    //use SoftDeletes;
 
 
     protected $casts = [
-        'limit' => MoneyIntegerCast::class,
+        'limit' => MoneyCast::class,
     ];
 
     public function user(): BelongsTo
@@ -39,7 +42,7 @@ class UserLimit extends Model
 
     public function isUnlimited(): bool
     {
-        return $this->limit->equals(Money::parse(-1_00));
+        return Money::parse($this->limit)->equals(Money::parse(-1_00));
     }
 
     public function canSpend(Money $spending): bool
@@ -48,7 +51,7 @@ class UserLimit extends Model
             return true;
         }
 
-        return $this->findSpent()->add($spending)->lessThanOrEqual($this->limit);
+        return $this->findSpent()->add($spending)->lessThanOrEqual(Money::parse($this->limit));
     }
 
     public function findSpent(): Money
@@ -85,6 +88,8 @@ class UserLimit extends Model
 
         return $spent->add(...$activity_registrations->filter(function (ActivityRegistration $activityRegistration) {
             return $activityRegistration->category_id === $this->category->id;
-        })->map->total_price);
+        })->map->total_price->map(function ($price) {
+            return Money::parse($price);
+        }));
     }
 }

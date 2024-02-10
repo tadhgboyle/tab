@@ -16,8 +16,8 @@ return new class() extends Migration {
             $table->id();
             $table->string('name')->unique();
             $table->string('code')->unique();
-            $table->integer('original_balance');
-            $table->integer('remaining_balance');
+            $table->bigInteger('original_balance');
+            $table->bigInteger('remaining_balance');
             $table->unsignedBigInteger('issuer_id');
             $table->foreign('issuer_id')->references('id')->on('users');
             $table->timestamps();

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\MoneyCast;
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
 use Cknow\Money\Casts\MoneyIntegerCast;
@@ -34,7 +35,7 @@ class User extends Authenticatable implements FilamentUser
 
     protected $casts = [
         'name' => 'string',
-        'balance' => MoneyIntegerCast::class,
+        'balance' => MoneyCast::class,
     ];
 
     protected $with = [
@@ -98,9 +99,16 @@ class User extends Authenticatable implements FilamentUser
      */
     public function findSpent(): Money
     {
+        $transactionPrices = $this->transactions->map->total_price->map(function ($price) {
+            return Money::parse($price);
+        });
+        $activityRegistrationPrices = $this->activityRegistrations->map->total_price->map(function ($price) {
+            return Money::parse($price);
+        });
+
         return Money::parse(0)
-            ->add(...$this->transactions->map->total_price)
-            ->add(...$this->activityRegistrations->map->total_price);
+            ->add(...$transactionPrices)
+            ->add(...$activityRegistrationPrices);
     }
 
     /**
@@ -111,9 +119,10 @@ class User extends Authenticatable implements FilamentUser
     {
         $returned = Money::parse(0);
 
+        // TODO use $transaction->getOwingTotal() instead of this
         $this->transactions->each(function (Transaction $transaction) use (&$returned) {
             if ($transaction->isReturned()) {
-                $returned = $returned->add($transaction->total_price);
+                $returned = $returned->add(Money::parse($transaction->total_price));
                 return;
             }
 
@@ -122,7 +131,7 @@ class User extends Authenticatable implements FilamentUser
             }
 
             foreach ($transaction->products->where('returned', '>', 0) as $product) {
-                $returned = $returned->add(TaxHelper::forTransactionProduct($product, $product->returned));
+                $returned = $returned->add($transaction->getOwingTotal());
             }
         });
 
@@ -148,7 +157,9 @@ class User extends Authenticatable implements FilamentUser
 
     public function findPaidOut(): Money
     {
-        return Money::sum(Money::parse(0), ...$this->payouts->map->amount);
+        return Money::sum(Money::parse(0), ...$this->payouts->map->amount->map(function ($amount) {
+            return Money::parse($amount);
+        }));
     }
 
     public function canImpersonate()

@@ -2,8 +2,10 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\UserLimitsRelationManagerResource\RelationManagers\UserLimitsRelationManager;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
+use App\Filament\Resources\UserResource\RelationManagers\PayoutsRelationManager;
 use App\Filament\Resources\UserResource\RelationManagers\RotationsRelationManager;
 use App\Helpers\RoleHelper;
 use App\Models\Role;
@@ -16,6 +18,7 @@ use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -24,15 +27,30 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserResource\RelationManagers\OrdersRelationManager;
+use Filament\Infolists\Components\TextEntry;
 
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
     protected static ?string $recordTitleAttribute = 'name';
+    protected static ?string $navigationGroup = 'User Management';
+
+    public static function infolist(Infolist $infolist): Infolist
+{
+    return $infolist
+        ->schema([
+            TextEntry::make('name'),
+            TextEntry::make('email'),
+            TextEntry::make('balance')->money(),
+            TextEntry::make('role.name')->label('Role'),
+            TextEntry::make('rotations.name')->label('Rotations'),
+            TextEntry::make('created_at')->label('Created'),
+        ]);
+}
 
     public static function form(Form $form): Form
     {
@@ -78,13 +96,18 @@ class UserResource extends Resource
                                 ->label('Total Returned')
                                 ->content(fn (User $record): ?string => $record->findReturned()),
 
+                            Forms\Components\Placeholder::make('total_paid_out')
+                                ->label('Total Paid Out')
+                                ->content(fn (User $record): ?string => $record->findPaidOut()),
+
                             Forms\Components\Placeholder::make('total_owing')
                                 ->label('Total Owing')
                                 ->content(fn (User $record): ?string => $record->findOwing()),
                         ])
-                        ->columns(3),
+                        ->columns(4),
                     ])
                     ->columnSpan(['lg' => 1])
+                    // ->hiddenOn(['create', 'edit'])
                     ->hidden(fn (?User $record) => $record === null),
             ]);
     }
@@ -98,6 +121,7 @@ class UserResource extends Resource
                     ->searchable(),
                 // TextColumn::make('email'),
                 TextColumn::make('balance')
+                    ->money()
                     ->sortable(),
                 TextColumn::make('transactions_count')->counts('transactions')->sortable(),
                 TextColumn::make('role.name')->label('Role'),
@@ -133,6 +157,8 @@ class UserResource extends Resource
         return [
             OrdersRelationManager::class,
             RotationsRelationManager::class,
+            UserLimitsRelationManager::class,
+            PayoutsRelationManager::class,
         ];
     }
 
