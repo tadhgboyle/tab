@@ -52,7 +52,7 @@ class OrderResource extends Resource
                     ->sortable()
                     ->summarize([
                         Tables\Columns\Summarizers\Sum::make()
-                            ->money(),
+                            ->money(divideBy: 100),
                     ]),
                 TextColumn::make('status')->badge()->color(fn (int $state): string => match ($state) {
                     Transaction::STATUS_NOT_RETURNED => 'success',
@@ -67,9 +67,6 @@ class OrderResource extends Resource
                     Transaction::STATUS_PARTIAL_RETURNED => 'heroicon-o-exclamation-triangle',
                     Transaction::STATUS_FULLY_RETURNED => 'heroicon-o-x-circle',
                 }),
-                TextColumn::make('products_count')
-                    ->counts('products')
-                    ->sortable(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
@@ -94,7 +91,7 @@ class OrderResource extends Resource
             ])
             ->actions([
                 //
-            ]);
+            ])->defaultSort('created_at', 'desc');
     }
 
     public static function getRelations(): array

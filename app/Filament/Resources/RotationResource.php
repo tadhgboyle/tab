@@ -4,7 +4,10 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\RotationResource\Pages;
 use App\Filament\Resources\RotationResource\RelationManagers;
+use App\Helpers\RotationHelper;
 use App\Models\Rotation;
+use App\Rules\RotationDoesNotOverlap;
+use Closure;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -23,16 +26,32 @@ class RotationResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $record = $form->getRecord();
+
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true),
                 Forms\Components\DateTimePicker::make('start')
+                    ->before('end')
+                    ->rule(self::doesNotOverlapRule($record?->id))
                     ->required(),
                 Forms\Components\DateTimePicker::make('end')
+                    ->after('start')
+                    ->rule(self::doesNotOverlapRule($record?->id))
                     ->required(),
             ]);
+    }
+
+    private static function doesNotOverlapRule(?int $ignoreId): Closure
+    {
+        return fn () => function (string $attribute, $value, Closure $fail) use ($ignoreId) {
+            if (app(RotationHelper::class)->doesRotationOverlap(request()->input('start'), request()->input('end'), $ignoreId)) {
+                $fail('That would overlap with another rotation.');
+            }
+        };
     }
 
     public static function table(Table $table): Table
@@ -56,10 +75,6 @@ class RotationResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

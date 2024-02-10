@@ -29,29 +29,24 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('name')
+                    ->unique(ignoreRecord: true)
+                    ->required(),
                 Forms\Components\Select::make('category_id')
                     ->relationship('category', 'name')
-                    ->required(),
-                Forms\Components\TextInput::make('name')
                     ->required(),
                 Forms\Components\TextInput::make('price')
                     ->required()
                     ->numeric()
                     ->prefix('$'),
-                Forms\Components\Toggle::make('pst')
-                    ->required(),
+                Forms\Components\Toggle::make('pst'),
                 Forms\Components\TextInput::make('stock')
-                    ->required()
                     ->numeric(),
-                Forms\Components\Toggle::make('unlimited_stock')
-                    ->required(),
+                Forms\Components\Toggle::make('unlimited_stock'),
                 Forms\Components\TextInput::make('box_size')
-                    ->required()
                     ->numeric(),
-                Forms\Components\Toggle::make('stock_override')
-                    ->required(),
-                Forms\Components\Toggle::make('restore_stock_on_return')
-                    ->required(),
+                Forms\Components\Toggle::make('stock_override'),
+                Forms\Components\Toggle::make('restore_stock_on_return'),
             ]);
     }
 

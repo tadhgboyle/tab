@@ -24,17 +24,22 @@ class CategoryResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
     protected static ?string $navigationGroup = 'Product Management';
-    protected static bool $checkPolicyExistence = false;
 
     public static function form(Form $form): Form
     {
+        $record = $form->getRecord();
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
+                    ->unique(ignoreRecord: true)
+                    ->required(),
                 Select::make('type')
-                    //->formatStateUsing(fn (?Category $category) => $category?->type?->id)
+                    ->afterStateHydrated(function (Select $component) use ($record) {
+                        if ($record) {
+                            $component->state($record->type->id);
+                            return;
+                        }
+                    })
                     ->required()
                     ->options(CategoryType::TYPES),
             ]);
