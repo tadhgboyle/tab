@@ -45,7 +45,6 @@ class PayoutsRelationManager extends RelationManager
                     ->fontFamily(FontFamily::Mono)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('cashier.name')
-                    ->numeric()
                     ->color('primary')
                     ->url(fn (Payout $payout): ?string => UserResource::getUrl('view', ['record' => $payout->cashier])),
                 Tables\Columns\TextColumn::make('amount')

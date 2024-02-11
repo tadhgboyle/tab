@@ -26,11 +26,8 @@ class Activity extends Model
         'slots' => 'integer',
         'price' => MoneyCast::class,
         'pst' => 'boolean',
-    ];
-
-    protected $dates = [
-        'start',
-        'end',
+        'start' => 'datetime',
+        'end' => 'datetime',
     ];
 
     public function category(): BelongsTo

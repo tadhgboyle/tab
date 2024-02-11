@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserLimitsRelationManagerResource\RelationManagers\UserLimitsRelationManager;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
+use App\Filament\Resources\UserResource\RelationManagers\ActivityRegistrationRelationManager;
 use App\Filament\Resources\UserResource\RelationManagers\PayoutsRelationManager;
 use App\Filament\Resources\UserResource\RelationManagers\RotationsRelationManager;
 use App\Helpers\RoleHelper;
@@ -150,6 +151,7 @@ class UserResource extends Resource
     {
         return [
             OrdersRelationManager::class,
+            ActivityRegistrationRelationManager::class,
             RotationsRelationManager::class,
             UserLimitsRelationManager::class,
             PayoutsRelationManager::class,

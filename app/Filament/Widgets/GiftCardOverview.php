@@ -16,7 +16,8 @@ class GiftCardOverview extends BaseWidget
 {
     protected function getStats(): array
     {
-        $total_gift_card_usage = Money::parse(Transaction::query()->whereNot('gift_card_id', null)->sum('gift_card_amount'));
+        $gift_card_orders = Transaction::query()->whereNot('gift_card_id', null);
+        $total_gift_card_usage = Money::parse($gift_card_orders->sum('gift_card_amount'));
         $total_gift_card_original = Money::parse(GiftCard::query()->sum('original_balance'));
         $total_gift_card_remaining = Money::parse(GiftCard::query()->sum('remaining_balance'));
         $utilization_percent = $total_gift_card_usage->getAmount() / ($total_gift_card_usage->getAmount() + $total_gift_card_remaining->getAmount()) * 100;
@@ -31,7 +32,7 @@ class GiftCardOverview extends BaseWidget
                 ->description(
                     "{$total_gift_card_usage}/{$total_gift_card_original} used"
                 ),
-            Stat::make('Average Gift Card Usage', $total_gift_card_usage->divide(GiftCard::query()->count())),
+            Stat::make('Average Gift Card Usage', $total_gift_card_usage->divide($gift_card_orders->count())),
         ];
     }
 }
