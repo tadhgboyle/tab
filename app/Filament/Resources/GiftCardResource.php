@@ -60,10 +60,18 @@ class GiftCardResource extends Resource
                 TextColumn::make('issuer.name'),
                 TextColumn::make('original_balance')
                     ->money()
-                    ->sortable(),
+                    ->sortable()
+                    ->summarize([
+                        Tables\Columns\Summarizers\Sum::make()
+                            ->money(divideBy: 100),
+                    ]),
                 TextColumn::make('remaining_balance')
                     ->money()
-                    ->sortable(),
+                    ->sortable()
+                    ->summarize([
+                        Tables\Columns\Summarizers\Sum::make()
+                            ->money(divideBy: 100),
+                    ]),
                 TextColumn::make('uses_count')
                     ->counts('uses')
                     ->sortable(),

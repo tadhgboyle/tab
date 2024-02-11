@@ -7,9 +7,14 @@ use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Models\Rotation;
 use App\Models\Transaction;
 use Filament\Forms;
+use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -39,7 +44,6 @@ class OrderResource extends Resource
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable(),
-                TextColumn::make('rotation.name'),
                 TextColumn::make('purchaser.name')
                     ->searchable()
                     ->color('primary')
@@ -67,6 +71,7 @@ class OrderResource extends Resource
                     Transaction::STATUS_PARTIAL_RETURNED => 'heroicon-o-exclamation-triangle',
                     Transaction::STATUS_FULLY_RETURNED => 'heroicon-o-x-circle',
                 }),
+                TextColumn::make('rotation.name'),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
@@ -76,7 +81,7 @@ class OrderResource extends Resource
                         Transaction::STATUS_PARTIAL_RETURNED => 'Partially Returned',
                     ]),
                 Tables\Filters\SelectFilter::make('rotation_id')
-                    ->name('Rotation')
+                    ->label('Rotation')
                     ->options(Rotation::pluck('name', 'id')->toArray()),
             ])
             ->groups([
@@ -88,10 +93,9 @@ class OrderResource extends Resource
                     ->label('Rotation')
                     ->getTitleFromRecordUsing(fn (Transaction $transaction): string => $transaction->rotation->name)
                     ->collapsible(),
-            ])
-            ->actions([
-                //
-            ])->defaultSort('created_at', 'desc');
+            ])->defaultSort('created_at', 'desc')->actions([
+                Tables\Actions\ViewAction::make(),
+            ]);
     }
 
     public static function getRelations(): array
@@ -105,6 +109,7 @@ class OrderResource extends Resource
     {
         return [
             'index' => Pages\ListOrders::route('/'),
+            'view' => Pages\ViewOrder::route('/{record}'),
             'create' => Pages\CreateOrder::route('/create'),
         ];
     }

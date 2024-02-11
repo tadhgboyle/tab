@@ -14,6 +14,6 @@ class GiftCardSeeder extends Seeder
      */
     public function run(): void
     {
-        GiftCard::factory()->count(20)->create();
+        GiftCard::factory()->count(500)->create();
     }
 }

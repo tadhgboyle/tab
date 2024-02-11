@@ -63,7 +63,6 @@ class UserResource extends Resource
                             ->default(fn (): ?string => $user->findOwing()),
                     ])
                     ->columns(4),
-                TextEntry::make('name'),
                 TextEntry::make('email'),
                 TextEntry::make('balance')->money(),
                 TextEntry::make('role.name')->label('Role'),
