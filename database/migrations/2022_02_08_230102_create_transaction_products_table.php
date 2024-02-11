@@ -20,7 +20,7 @@ class CreateTransactionProductsTable extends Migration
             $table->foreignId('category_id')->constrained();
             $table->integer('quantity');
             $table->integer('returned')->default(0);
-            $table->integer('price');
+            $table->bigInteger('price');
             $table->float('gst');
             $table->float('pst')->nullable();
             $table->timestamps();

@@ -19,10 +19,10 @@ return new class() extends Migration {
             $table->foreign('cashier_id')->references('id')->on('users');
             $table->foreignId('activity_id')->constrained();
             $table->foreignId('category_id')->constrained();
-            $table->integer('activity_price');
+            $table->bigInteger('activity_price');
             $table->float('activity_gst');
             $table->float('activity_pst')->nullable();
-            $table->integer('total_price');
+            $table->bigInteger('total_price');
             $table->boolean('returned')->default(false);
             $table->foreignId('rotation_id')->constrained();
             $table->timestamps();

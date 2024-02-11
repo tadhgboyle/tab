@@ -8,6 +8,7 @@ use App\Services\HttpService;
 use App\Helpers\RotationHelper;
 use App\Helpers\SettingsHelper;
 use App\Models\ActivityRegistration;
+use Cknow\Money\Money;
 use Illuminate\Http\RedirectResponse;
 
 class ActivityRegistrationCreateService extends HttpService
@@ -35,7 +36,7 @@ class ActivityRegistrationCreateService extends HttpService
             return;
         }
 
-        if ($activity->getPriceAfterTax() > $user->balance) {
+        if ($activity->getPriceAfterTax()->greaterThan(Money::parse($user->balance))) {
             $this->_result = self::RESULT_NO_BALANCE;
             $this->_message = "Could not register {$user->full_name} for {$activity->name}, they do not have enough balance.";
             return;
@@ -55,11 +56,11 @@ class ActivityRegistrationCreateService extends HttpService
         $registration->category_id = $activity->category_id;
         $registration->activity_gst = resolve(SettingsHelper::class)->getGst();
         $registration->activity_pst = $activity->pst ? resolve(SettingsHelper::class)->getPst() : null;
-        $registration->total_price = $activity->getPriceAfterTax();
+        $registration->total_price = $activity->getPriceAfterTax()->getAmount() / 100;
         $registration->rotation_id = resolve(RotationHelper::class)->getCurrentRotation()->id;
         $registration->save();
 
-        $user->balance = $user->balance->subtract($activity->getPriceAfterTax());
+        $user->balance = Money::parse($user->balance)->subtract($activity->getPriceAfterTax())->getAmount() / 100;
 
         $this->_activity = $activity;
         $this->_activity_registration = $registration;

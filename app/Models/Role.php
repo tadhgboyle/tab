@@ -15,14 +15,6 @@ class Role extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = [
-        'name',
-        'order',
-        'staff',
-        'superuser',
-        'permissions',
-    ];
-
     protected $casts = [
         'name' => 'string',
         'superuser' => 'boolean',

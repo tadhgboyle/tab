@@ -13,6 +13,12 @@ class CategoryType implements CastsAttributes
     public const TYPE_PRODUCTS = 2;
     public const TYPE_ACTIVITIES = 3;
 
+    public const TYPES = [
+        self::TYPE_PRODUCTS_ACTIVITIES => 'Products & Activities',
+        self::TYPE_PRODUCTS => 'Products',
+        self::TYPE_ACTIVITIES => 'Activities',
+    ];
+
     /**
      * Cast the given value.
      *

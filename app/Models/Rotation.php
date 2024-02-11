@@ -17,12 +17,6 @@ class Rotation extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = [
-        'name',
-        'start',
-        'end',
-    ];
-
     protected $casts = [
         'start' => 'date',
         'end' => 'date',
@@ -66,7 +60,6 @@ class Rotation extends Model
             self::STATUS_PRESENT => '<span class="tag is-medium">✅ Present</span>',
             self::STATUS_FUTURE => '<span class="tag is-medium">🔮 Future</span>',
             self::STATUS_PAST => '<span class="tag is-medium">🕐 Past</span>',
-            default => "Unknown Status: {$this->getStatus()}",
         };
     }
     // cashier page:

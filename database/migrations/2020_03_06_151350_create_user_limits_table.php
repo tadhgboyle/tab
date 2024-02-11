@@ -14,12 +14,14 @@ class CreateUserLimitsTable extends Migration
     public function up(): void
     {
         Schema::create('user_limits', static function (Blueprint $table) {
-            $table->id('limit_id');
+            $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('category_id')->constrained();
             $table->integer('limit_per')->nullable();
             $table->integer('duration');
             $table->timestamps();
+
+            $table->unique(['user_id', 'category_id']);
         });
     }
 

@@ -5,6 +5,7 @@ namespace App\Services\Transactions;
 use App\Services\HttpService;
 use App\Models\Transaction;
 use App\Models\TransactionProduct;
+use Cknow\Money\Money;
 use Illuminate\Http\RedirectResponse;
 
 class TransactionReturnService extends HttpService
@@ -51,8 +52,10 @@ class TransactionReturnService extends HttpService
     {
         $purchaser = $this->_transaction->purchaser;
 
-        if ($this->_transaction->total_price->isPositive()) {
-            $purchaser->update(['balance' => $purchaser->balance->add($this->_transaction->total_price)]);
+        if (Money::parse($this->_transaction->total_price)->isPositive()) {
+            $purchaser->update(['balance' => Money::parse($purchaser->balance)->add(
+                Money::parse($this->_transaction->total_price)
+            )->getAmount() / 100]);
         }
     }
 

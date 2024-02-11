@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\MoneyCast;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -15,14 +16,7 @@ class Payout extends Model
 
     protected $casts = [
         'identifier' => 'string',
-        'amount' => MoneyIntegerCast::class,
-    ];
-
-    protected $fillable = [
-        'identifier',
-        'amount',
-        'user_id',
-        'cashier_id',
+        'amount' => MoneyCast::class,
     ];
 
     public function user(): BelongsTo

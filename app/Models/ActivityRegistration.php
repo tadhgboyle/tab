@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\MoneyCast;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,24 +14,11 @@ class ActivityRegistration extends Model
     use HasFactory;
 
     protected $casts = [
-        'activity_price' => MoneyIntegerCast::class,
+        'activity_price' => MoneyCast::class,
         'activity_gst' => 'float',
         'activity_pst' => 'float',
-        'total_price' => MoneyIntegerCast::class,
+        'total_price' => MoneyCast::class,
         'returned' => 'boolean',
-    ];
-
-    protected $fillable = [
-        'activity_id',
-        'user_id',
-        'cashier_id',
-        'category_id',
-        'activity_price',
-        'activity_gst',
-        'activity_pst',
-        'total_price',
-        'rotation_id',
-        'returned',
     ];
 
     public function activity(): BelongsTo
@@ -56,5 +44,13 @@ class ActivityRegistration extends Model
     public function rotation(): BelongsTo
     {
         return $this->belongsTo(Rotation::class);
+    }
+
+    public function getStatusHtml(): string
+    {
+        if ($this->returned) {
+            return '<span class="tag is-medium">🚨 Returned</span>';
+        }
+        return '<span class="tag is-medium">👌 Not Returned</span>';
     }
 }

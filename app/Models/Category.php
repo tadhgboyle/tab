@@ -13,11 +13,6 @@ class Category extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = [
-        'name',
-        'type',
-    ];
-
     protected $casts = [
         'name' => 'string',
         'type' => CategoryType::class, // $category->type->name (ie: "Products Only") + $category->type->id (ie: 2)

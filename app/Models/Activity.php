@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\MoneyCast;
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
 use Cknow\Money\Casts\MoneyIntegerCast;
@@ -10,24 +11,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Carbon\CarbonInterface;
 
 class Activity extends Model
 {
     use HasFactory;
     use SoftDeletes;
-
-    protected $fillable = [
-        'name',
-        'category_id',
-        'location',
-        'description',
-        'unlimited_slots',
-        'slots',
-        'price',
-        'pst',
-        'start',
-        'end',
-    ];
 
     protected $casts = [
         'name' => 'string',
@@ -35,13 +24,10 @@ class Activity extends Model
         'description' => 'string',
         'unlimited_slots' => 'boolean',
         'slots' => 'integer',
-        'price' => MoneyIntegerCast::class,
+        'price' => MoneyCast::class,
         'pst' => 'boolean',
-    ];
-
-    protected $dates = [
-        'start',
-        'end',
+        'start' => 'datetime',
+        'end' => 'datetime',
     ];
 
     public function category(): BelongsTo
@@ -55,7 +41,7 @@ class Activity extends Model
             return -1;
         }
 
-        return $this->slots - $this->attendants()->count();
+        return $this->slots - $this->attendants->count();
     }
 
     public function hasSlotsAvailable(int $count = 1): bool
@@ -64,13 +50,13 @@ class Activity extends Model
             return true;
         }
 
-        $current_attendees = $this->attendants()->count();
+        $current_attendees = $this->attendants->count();
         return ($this->slots - ($current_attendees + $count)) >= 0;
     }
 
     public function getPriceAfterTax(): Money
     {
-        return TaxHelper::calculateFor($this->price, 1, $this->pst);
+        return TaxHelper::calculateFor(Money::parse($this->price), 1, $this->pst);
     }
 
     public function attendants(): HasManyThrough
@@ -83,7 +69,7 @@ class Activity extends Model
         return $this->attendants->contains($user);
     }
 
-    public function getStatus(): string
+    public function getStatusHtml(): string
     {
         if ($this->end->isPast()) {
             return '<span class="tag is-medium">🕐 Over</span>';
@@ -93,6 +79,7 @@ class Activity extends Model
             return '<span class="tag is-medium">✅ In Progress</span>';
         }
 
-        return '<span class="tag is-medium">🔮 Waiting</span>';
+        $starts_in_words = $this->start->diffForHumans(now(), CarbonInterface::DIFF_ABSOLUTE, false, 3);
+        return '<span class="tag is-medium">🔮 Starts in ' . $starts_in_words . '</span>';
     }
 }

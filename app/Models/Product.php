@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\MoneyCast;
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
 use Cknow\Money\Casts\MoneyIntegerCast;
@@ -18,7 +19,7 @@ class Product extends Model
 
     protected $casts = [
         'name' => 'string',
-        'price' => MoneyIntegerCast::class,
+        'price' => MoneyCast::class,
         'pst' => 'boolean',
         'stock' => 'integer',
         'unlimited_stock' => 'boolean', // stock is never checked
@@ -29,18 +30,6 @@ class Product extends Model
 
     protected $with = [
         'category',
-    ];
-
-    protected $fillable = [
-        'name',
-        'price',
-        'category_id',
-        'stock',
-        'box_size',
-        'unlimited_stock',
-        'stock_override',
-        'pst',
-        'restore_stock_on_return',
     ];
 
     public function category(): BelongsTo
