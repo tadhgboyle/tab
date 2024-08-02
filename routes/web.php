@@ -232,11 +232,7 @@ Route::middleware('auth')->group(function () {
         Route::group(['middleware' => 'permission:' . Permission::SETTINGS_GIFT_CARDS_MANAGE, 'prefix' => '/gift-cards'], static function () {
             Route::get('/create', [GiftCardController::class, 'create'])->name('settings_gift-cards_create');
             Route::post('/create', [GiftCardController::class, 'store'])->name('settings_gift-cards_store');
-            Route::get('/{giftCard}/edit', [GiftCardController::class, 'edit'])->name('settings_gift-cards_edit');
-            Route::put('/{giftCard}/edit', [GiftCardController::class, 'update'])->name('settings_gift-cards_update');
-            Route::delete('/{giftCard}', [GiftCardController::class, 'delete'])->name('settings_gift-cards_delete');
-
-            Route::get('/{giftCard}/uses', [GiftCardController::class, 'ajaxGetUses'])->name('settings_gift-cards_uses');
+            Route::get('/{giftCard}', [GiftCardController::class, 'show'])->name('settings_gift-cards_view');
         });
     });
 

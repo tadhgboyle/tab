@@ -16,11 +16,11 @@ class ActivitySeeder extends Seeder
     {
         [, , $activities_category, $general_category] = $categories;
 
-        Activity::factory()->count(5)->state([
+        Activity::factory()->count(15)->state([
             'category_id' => $activities_category->id
         ])->create();
 
-        Activity::factory()->count(5)->state([
+        Activity::factory()->count(15)->state([
             'category_id' => $general_category->id
         ])->create();
     }

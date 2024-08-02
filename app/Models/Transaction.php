@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Concerns\Timeline\HasTimeline;
+use App\Concerns\Timeline\TimelineEntry;
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
 use Cknow\Money\Casts\MoneyIntegerCast;
@@ -10,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Transaction extends Model
+class Transaction extends Model implements HasTimeline
 {
     public const STATUS_NOT_RETURNED = 0;
 
@@ -89,5 +91,22 @@ class Transaction extends Model
             self::STATUS_PARTIAL_RETURNED => '<span class="tag is-medium">⚠️ Semi Returned</span>',
             self::STATUS_NOT_RETURNED => '<span class="tag is-medium">👌 Not Returned</span>',
         };
+    }
+
+    public function timeline(): array
+    {
+        $timeline = [
+            new TimelineEntry(
+                description: 'Created',
+                emoji: '🛒',
+                time: $this->created_at,
+                actor: $this->cashier,
+            ),
+        ];
+
+        // TODO: Product returns
+        // TODO: Full return
+
+        return $timeline;
     }
 }

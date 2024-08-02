@@ -5,24 +5,45 @@
     <strong>User:</strong> {{ $user->full_name }} @if($user->trashed()) <strong>(Deleted)</strong> @endif @if(!$user->trashed() && hasPermission(\App\Helpers\Permission::USERS_MANAGE) && $can_interact)<a href="{{ route('users_edit', $user->id) }}">(Edit)</a>@endif
 </h4>
 
-<div class="columns">
-    <div class="column">
-        <p><strong>Role:</strong> {{ $user->role->name }}</p>
-        <p><strong>Balance:</strong> {{ $user->balance }}, </p>
-        <span><strong>Total spent:</strong> {{ $user->findSpent() }}, </span>
-        <span><strong>Total returned:</strong> {{ $user->findReturned() }}, </span>
-        @php $owing = $user->findOwing(); @endphp
-        <span><strong>Total owing:</strong> <span style="text-decoration: underline; cursor: help;" onclick="openOwingModal();">{{ $owing }}</span></span>
-    </div>
-    <div class="column">
-        @canImpersonate
-            @canBeImpersonated($user)
-                <a href="{{ route('impersonate', $user) }}" class="button is-light is-pulled-right">
-                    🕵 Impersonate
-                </a>
-            @endCanBeImpersonated
-        @endCanImpersonate
-    </div>
+@canImpersonate
+    @canBeImpersonated($user)
+        <a href="{{ route('impersonate', $user) }}" class="button is-light">
+            🕵 Impersonate
+        </a>
+        <br />
+        <br />
+    @endCanBeImpersonated
+@endCanImpersonate
+
+@php $owing = $user->findOwing(); @endphp
+
+<div class="box">
+    <nav class="level">
+        <div class="level-item has-text-centered">
+            <div>
+            <p class="heading">Balance</p>
+            <p class="title">{{ $user->balance }}</p>
+            </div>
+        </div>
+        <div class="level-item has-text-centered">
+            <div>
+            <p class="heading">Total spent</p>
+            <p class="title">{{ $user->findSpent() }}</p>
+            </div>
+        </div>
+        <div class="level-item has-text-centered">
+            <div>
+            <p class="heading">Total returned</p>
+            <p class="title">{{ $user->findReturned() }}</p>
+            </div>
+        </div>
+        <div class="level-item has-text-centered">
+            <div>
+            <p class="heading">Total owing</p>
+            <p class="title" style="text-decoration: underline; cursor: help;"  onclick="openOwingModal();">{{ $owing }}</p>
+            </div>
+        </div>
+    </nav>
 </div>
 
 <div id="loading" align="center">
@@ -30,7 +51,6 @@
 </div>
 
 <div class="columns" id="table_container" style="visibility: hidden;">
-
     <div class="column">
         <div class="columns is-multiline">
             <div class="column">
@@ -83,7 +103,7 @@
                     </table>
                 </div>
             </div>
-            <div class="column">
+            <div class="column is-full">
                 <div class="box">
                     <h4 class="title has-text-weight-bold is-4">Activity Registrations</h4>
                     <table id="activity_list">
@@ -118,21 +138,18 @@
                                     <div>{!! $registration->total_price->isNegative() ? '<i>Free</i>' : $registration->total_price !!}</div>
                                 </td>
                                 <td>
-                                    <div>
-                                        @switch($registration->returned)
-                                            @case(0)
-                                                <span class="tag is-success is-medium">Normal</span>
-                                            @break
-                                            @case(1)
-                                                <span class="tag is-danger is-medium">Returned</span>
-                                            @break
-                                        @endswitch
-                                    </div>
+                                    <div>{!! $registration->getStatusHtml() !!}</div>
                                 </td>
                             </tr>
                             @endforeach
                         </tbody>
                     </table>
+                </div>
+            </div>
+            <div class="column">
+                <div class="box">
+                    <h4 class="title has-text-weight-bold is-4">Timeline</h4>
+                    <x-entity-timeline :timeline="$user->timeline()" />
                 </div>
             </div>
         </div>

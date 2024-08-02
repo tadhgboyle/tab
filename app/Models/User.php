@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Concerns\Timeline\HasTimeline;
+use App\Concerns\Timeline\TimelineEntry;
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
 use Cknow\Money\Casts\MoneyIntegerCast;
@@ -13,7 +15,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Lab404\Impersonate\Models\Impersonate;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasTimeline
 {
     use HasFactory;
     use SoftDeletes;
@@ -155,5 +157,48 @@ class User extends Authenticatable
     public function canBeImpersonated()
     {
         return $this->role->staff;
+    }
+
+    public function timeline(): array
+    {
+        $timeline = [
+            new TimelineEntry(
+                description: 'Created',
+                emoji: '👶',
+                time: $this->created_at,
+            ),
+        ];
+
+        $events = [];
+        foreach ($this->transactions as $transaction) {
+            $events[] = new TimelineEntry(
+                description: "Purchased {$transaction->total_price}",
+                emoji: '🛒',
+                time: $transaction->created_at,
+                actor: $transaction->cashier,
+            );
+        }
+
+        foreach ($this->activityRegistrations as $activityRegistration) {
+            $events[] = new TimelineEntry(
+                description: "Registered for {$activityRegistration->activity->name}",
+                emoji: '🎟️',
+                time: $activityRegistration->created_at,
+                actor: $activityRegistration->cashier,
+            );
+        }
+
+        foreach ($this->payouts as $payout) {
+            $events[] = new TimelineEntry(
+                description: "Paid out {$payout->amount}",
+                emoji: '💸',
+                time: $payout->created_at,
+                actor: $payout->cashier,
+            );
+        }
+
+        usort($events, fn ($a, $b) => $a->time->lt($b->time) ? -1 : 1);
+
+        return array_merge($timeline, $events);
     }
 }

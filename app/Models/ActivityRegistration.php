@@ -57,4 +57,12 @@ class ActivityRegistration extends Model
     {
         return $this->belongsTo(Rotation::class);
     }
+
+    public function getStatusHtml(): string
+    {
+        if ($this->returned) {
+            return '<span class="tag is-medium">🚨 Returned</span>';
+        }
+        return '<span class="tag is-medium">👌 Not Returned</span>';
+    }
 }

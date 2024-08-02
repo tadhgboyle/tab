@@ -1,76 +1,79 @@
 @extends('layouts.default', ['page' => 'orders'])
 @section('content')
 <h2 class="title has-text-weight-bold">View Order</h2>
-<div class="columns box">
-    <div class="column">
-        @include('includes.messages')
-        <p><strong>Order ID:</strong> {{ $transaction->id }}</p>
-        <p><strong>Date:</strong> {{ $transaction->created_at->format('M jS Y h:ia') }}</p>
-        <p><strong>Rotation:</strong> {{ $transaction->rotation->name }}</p>
-        <p><strong>Purchaser:</strong> @permission(\App\Helpers\Permission::USERS_VIEW) <a href="{{ route('users_view', $transaction->purchaser_id) }}">{{ $transaction->purchaser->full_name }}</a> @else {{ $transaction->purchaser->full_name }} @endpermission</p>
-        <p><strong>Cashier:</strong> @permission(\App\Helpers\Permission::USERS_VIEW) <a href="{{ route('users_view', $transaction->cashier_id) }}">{{ $transaction->cashier->full_name }}</a> @else {{ $transaction->cashier->full_name }} @endpermission</p>
-        <p><strong>Total Price:</strong> {{ $transaction->total_price }}</p>
-        <p><strong>Purchaser amount:</strong> {{ $transaction->purchaser_amount }}</p>
-        <p><strong>Gift card amount:</strong> {{ $transaction->gift_card_amount }} @if($transaction->giftCard) <code>{{ $transaction->giftCard->code() }}</code> @endif</p>
-        <p><strong>Status:</strong> {!! $transaction->getStatusHtml() !!}</p>
-        <br>
-        @if($transaction->status !== \App\Models\Transaction::STATUS_FULLY_RETURNED && hasPermission(\App\Helpers\Permission::ORDERS_RETURN))
-            <button class="button is-danger is-outlined" type="button" onclick="openModal();">
-                <span>Return</span>
-                <span class="icon is-small">
-                    <i class="fas fa-undo"></i>
-                </span>
-            </button>
-        @endif
-    </div>
-    <div class="column">
-        <h4 class="title has-text-weight-bold is-4">Items</h4>
-        <div id="loading" align="center">
-            <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
+<div class="box">
+    <div class="columns">
+        <div class="column">
+            @include('includes.messages')
+            <p><strong>Order ID:</strong> {{ $transaction->id }}</p>
+            <p><strong>Date:</strong> {{ $transaction->created_at->format('M jS Y h:ia') }}</p>
+            <p><strong>Rotation:</strong> {{ $transaction->rotation->name }}</p>
+            <p><strong>Purchaser:</strong> @permission(\App\Helpers\Permission::USERS_VIEW) <a href="{{ route('users_view', $transaction->purchaser_id) }}">{{ $transaction->purchaser->full_name }}</a> @else {{ $transaction->purchaser->full_name }} @endpermission</p>
+            <p><strong>Cashier:</strong> @permission(\App\Helpers\Permission::USERS_VIEW) <a href="{{ route('users_view', $transaction->cashier_id) }}">{{ $transaction->cashier->full_name }}</a> @else {{ $transaction->cashier->full_name }} @endpermission</p>
+            <p><strong>Total Price:</strong> {{ $transaction->total_price }}</p>
+            <p><strong>Purchaser amount:</strong> {{ $transaction->purchaser_amount }}</p>
+            <p><strong>Gift card amount:</strong> {{ $transaction->gift_card_amount }} @if($transaction->giftCard) <code>{{ $transaction->giftCard->code() }}</code> @endif</p>
+            <p><strong>Status:</strong> {!! $transaction->getStatusHtml() !!}</p>
+            <br>
+            @if($transaction->status !== \App\Models\Transaction::STATUS_FULLY_RETURNED && hasPermission(\App\Helpers\Permission::ORDERS_RETURN))
+                <button class="button is-danger is-outlined" type="button" onclick="openModal();">
+                    <span>Return</span>
+                    <span class="icon is-small">
+                        <i class="fas fa-undo"></i>
+                    </span>
+                </button>
+            @endif
         </div>
-        <div id="table_container" style="visibility: hidden;">
-            <table id="product_list">
-                <thead>
-                    <th>Name</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Item Subtotal</th>
-                    @permission(\App\Helpers\Permission::ORDERS_RETURN)
-                    <th></th>
-                    @endpermission
-                </thead>
-                <tbody>
-                    @foreach($transaction->products as $product)
-                    <tr>
-                        <td>
-                            <div>{{ $product->product->name }}</div>
-                        </td>
-                        <td>
-                            <div>{{ $product->price }}</div>
-                        </td>
-                        <td>
-                            <div>{{ $product->quantity }}</div>
-                        </td>
-                        <td>
-                            <div>{{ $product->price->multiply($product->quantity) }}</div>
-                        </td>
+        <div class="column">
+            <h4 class="title has-text-weight-bold is-4">Items</h4>
+            <div id="loading" align="center">
+                <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
+            </div>
+            <div id="table_container" style="visibility: hidden;">
+                <table id="product_list">
+                    <thead>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Item Subtotal</th>
                         @permission(\App\Helpers\Permission::ORDERS_RETURN)
-                        <td>
-                            <div>
-                                @if(!$transaction->returned && $product->returned < $product->quantity)
-                                    <button class="button is-danger is-small"  onclick="openProductModal({{ $product->id }});">Return ({{ $product->quantity - $product->returned }})</button>
-                                @else
-                                    <div><i>Returned</i></div>
-                                @endif
-                            </div>
-                        </td>
+                        <th></th>
                         @endpermission
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach($transaction->products as $product)
+                        <tr>
+                            <td>
+                                <div>{{ $product->product->name }}</div>
+                            </td>
+                            <td>
+                                <div>{{ $product->price }}</div>
+                            </td>
+                            <td>
+                                <div>{{ $product->quantity }}</div>
+                            </td>
+                            <td>
+                                <div>{{ $product->price->multiply($product->quantity) }}</div>
+                            </td>
+                            @permission(\App\Helpers\Permission::ORDERS_RETURN)
+                            <td>
+                                <div>
+                                    @if(!$transaction->returned && $product->returned < $product->quantity)
+                                        <button class="button is-danger is-small"  onclick="openProductModal({{ $product->id }});">Return ({{ $product->quantity - $product->returned }})</button>
+                                    @else
+                                        <div><i>Returned</i></div>
+                                    @endif
+                                </div>
+                            </td>
+                            @endpermission
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
+    <x-entity-timeline :timeline="$transaction->timeline()" />
 </div>
 
 @permission(\App\Helpers\Permission::ORDERS_RETURN)

@@ -154,6 +154,7 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
 - Let transactions use multiple gift cards
 - When editing entities, correctly return back to the list/show page the user was previously on upon success
 - Add "cost" to products and display margins
+- Allow gift card to be assigned to one or more users so only they can use it
 
 ## Issues/Bugs
 - When cashier page refreshed with gift card, ensure it still has balance + update balance in table row

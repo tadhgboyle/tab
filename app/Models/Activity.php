@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Carbon\CarbonInterface;
 
 class Activity extends Model
 {
@@ -55,7 +56,7 @@ class Activity extends Model
             return -1;
         }
 
-        return $this->slots - $this->attendants()->count();
+        return $this->slots - $this->attendants->count();
     }
 
     public function hasSlotsAvailable(int $count = 1): bool
@@ -64,7 +65,7 @@ class Activity extends Model
             return true;
         }
 
-        $current_attendees = $this->attendants()->count();
+        $current_attendees = $this->attendants->count();
         return ($this->slots - ($current_attendees + $count)) >= 0;
     }
 
@@ -83,7 +84,7 @@ class Activity extends Model
         return $this->attendants->contains($user);
     }
 
-    public function getStatus(): string
+    public function getStatusHtml(): string
     {
         if ($this->end->isPast()) {
             return '<span class="tag is-medium">🕐 Over</span>';
@@ -93,6 +94,7 @@ class Activity extends Model
             return '<span class="tag is-medium">✅ In Progress</span>';
         }
 
-        return '<span class="tag is-medium">🔮 Waiting</span>';
+        $starts_in_words = $this->start->diffForHumans(now(), CarbonInterface::DIFF_ABSOLUTE, false, 3);
+        return '<span class="tag is-medium">🔮 Starts in ' . $starts_in_words . '</span>';
     }
 }

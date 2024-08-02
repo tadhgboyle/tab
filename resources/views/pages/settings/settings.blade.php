@@ -235,7 +235,6 @@
                             <th>Issuer</th>
                             <th>Created</th>
                             <th></th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody id="sortable">
@@ -259,11 +258,8 @@
                             </td>
                             <td>
                                 <div>
-                                    <a onclick="openGiftCardUsesModal({{ $giftCard->id }})">Uses</a>
+                                    <a href="{{ route('settings_gift-cards_view', $giftCard->id) }}">View</a>
                                 </div>
-                            </td>
-                            <td>
-                                <div><a href="{{ route('settings_gift-cards_edit', $giftCard->id) }}">Edit</a></div>
                             </td>
                         </tr>
                     @endforeach
@@ -274,32 +270,6 @@
     </div>
     @endpermission
 </div>
-
-@permission(\App\Helpers\Permission::SETTINGS_GIFT_CARDS_MANAGE)
-    <div class="modal modal-gift-card-uses">
-        <div class="modal-background" onclick="closeGiftCardUsesModal();"></div>
-        <div class="modal-card">
-            <header class="modal-card-head">
-                <p class="modal-card-title">Gift card uses</p>
-            </header>
-            <section class="modal-card-body">
-                <table id="gift-cards-table">
-                    <thead>
-                        <tr>
-                            <th>Transaction ID</th>
-                            <th>Transaction Date</th>
-                            <th>Balance used</th>
-                        </tr>
-                    </thead>
-                    <tbody id="gift-card-uses-results"></tbody>
-                </table>
-            </section>
-            <footer class="modal-card-foot">
-                <button class="button" onclick="closeGiftCardUsesModal();">Close</button>
-            </footer>
-        </div>
-    </div>
-@endpermission
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -398,7 +368,7 @@
                 "columnDefs": [{
                     "orderable": false,
                     "searchable": false,
-                    "targets": [5, 6]
+                    "targets": [5]
                 }]
             });
 
@@ -429,28 +399,6 @@
                 e.style.color = 'black';
             }, 1000);
         }
-
-        const modal_gift_card_uses = document.querySelector('.modal-gift-card-uses');
-
-        async function openGiftCardUsesModal(id) {
-            await fetch(`/settings/gift-cards/${id}/uses`)
-                .then(response => response.text())
-                .then(data => document.getElementById('gift-card-uses-results').innerHTML = data);
-            modal_gift_card_uses.classList.add('is-active');
-        }
-
-        function closeGiftCardUsesModal() {
-            modal_gift_card_uses.classList.remove('is-active');
-        }
-
-        $('#gift-cards-table').DataTable({
-            "paging": false,
-            "searching": false,
-            "bInfo": false,
-            "language": {
-                "emptyTable": "No uses"
-            },
-        });
     @endpermission
 </script>
 
