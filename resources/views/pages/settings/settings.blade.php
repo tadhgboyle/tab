@@ -230,8 +230,11 @@
                     <thead>
                         <tr>
                             <th>Code</th>
+                            <th>Status</th>
                             <th>Original Balance</th>
                             <th>Remaining Balance</th>
+                            <th>Users</th>
+                            <th>Uses</th>
                             <th>Issuer</th>
                             <th>Created</th>
                             <th></th>
@@ -245,10 +248,19 @@
                                 <i class="fas fa-copy copy" id="gift-card-copy-{{ $giftCard->id }}" onclick="copyCode({{ $giftCard->id }}, '{{ $giftCard->code }}')"></i>
                             </td>
                             <td>
+                                <div>{!! $giftCard->getStatusHtml() !!}</div>
+                            </td>
+                            <td>
                                 <div>{{ $giftCard->original_balance }}</div>
                             </td>
                             <td>
                                 <div>{{ $giftCard->remaining_balance }}</div>
+                            </td>
+                            <td>
+                                <div>{{ $giftCard->users_count }}</div>
+                            </td>
+                            <td>
+                                <div>{{ $giftCard->uses_count }}</div>
                             </td>
                             <td>
                                 <div>{{ $giftCard->issuer->full_name }}</div>
@@ -368,7 +380,7 @@
                 "columnDefs": [{
                     "orderable": false,
                     "searchable": false,
-                    "targets": [5]
+                    "targets": [0, 8]
                 }]
             });
 

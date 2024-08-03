@@ -107,12 +107,12 @@
                     <td id="gst-total"></td>
                 </tr>
                 <tr>
-                    <td colspan="2"></td>
-                    <td></td>
-                </tr>
-                <tr>
                     <td colspan="2">Total Price</td>
                     <td id="total-price"></td>
+                </tr>
+                <tr>
+                    <td colspan="2"></td>
+                    <td></td>
                 </tr>
                 <tr id="gift-card-row" style="display: none;">
                     <td colspan="2">Gift Card</td>

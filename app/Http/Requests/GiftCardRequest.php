@@ -21,6 +21,11 @@ class GiftCardRequest extends FormRequest implements FormRequestContract
                 'numeric',
                 'min:0',
             ],
+            'expires_at' => [
+                'nullable',
+                'date',
+                'after:today',
+            ],
         ];
     }
 }

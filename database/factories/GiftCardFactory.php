@@ -22,6 +22,7 @@ class GiftCardFactory extends Factory
             'remaining_balance' => $original_balance,
             'issuer_id' => $issuer->id,
             'created_at' => $this->faker->dateTimeBetween($issuer->created_at),
+            'expires_at' => $this->faker->boolean(10) ? now() : $this->faker->optional()->dateTimeBetween('now', '+1 year'),
         ];
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\Permission;
+use App\Models\User;
 use App\Models\GiftCard;
 use App\Helpers\CategoryHelper;
 use Illuminate\Http\JsonResponse;
@@ -31,12 +31,14 @@ class GiftCardController extends Controller
         $giftCard->code = $request->code;
         $giftCard->original_balance = $request->balance;
         $giftCard->remaining_balance = $request->balance;
+        $giftCard->expires_at = $request->expires_at;
         $giftCard->issuer_id = auth()->id();
         $giftCard->save();
 
         return redirect()->route('settings')->with('success', "Created new gift card {$giftCard->code()}.");
     }
 
+    // TODO: Implement update method
     public function edit(GiftCard $giftCard)
     {
         return view('pages.settings.gift-cards.form', [
@@ -52,6 +54,20 @@ class GiftCardController extends Controller
             return response()->json([
                 'valid' => false,
                 'message' => 'Invalid gift card code',
+            ]);
+        }
+
+        if ($giftCard->expired()) {
+            return response()->json([
+                'valid' => false,
+                'message' => 'Gift card has expired',
+            ]);
+        }
+
+        if (!$giftCard->canBeUsedBy(User::find(request()->query('purchaser_id')))) {
+            return response()->json([
+                'valid' => false,
+                'message' => 'Gift card cannot be used by you',
             ]);
         }
 

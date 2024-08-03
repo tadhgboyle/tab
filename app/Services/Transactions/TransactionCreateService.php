@@ -30,6 +30,8 @@ class TransactionCreateService extends HttpService
     public const RESULT_NO_CURRENT_ROTATION = 'NO_CURRENT_ROTATION';
     public const RESULT_INVALID_GIFT_CARD = 'INVALID_GIFT_CARD';
     public const RESULT_INVALID_GIFT_CARD_BALANCE = 'INVALID_GIFT_CARD_BALANCE';
+    public const RESULT_GIFT_CARD_CANNOT_BE_USED = 'GIFT_CARD_CANNOT_BE_USED';
+
     public const RESULT_SUCCESS = 'SUCCESS';
 
     public function __construct(Request $request, User $purchaser)
@@ -101,6 +103,12 @@ class TransactionCreateService extends HttpService
                 if (!$gift_card) {
                     $this->_result = self::RESULT_INVALID_GIFT_CARD;
                     $this->_message = "Gift card with code {$gift_card_code} does not exist.";
+                    return;
+                }
+
+                if (!$gift_card->canBeUsedBy($purchaser)) {
+                    $this->_result = self::RESULT_GIFT_CARD_CANNOT_BE_USED;
+                    $this->_message = "Gift card with code {$gift_card_code} cannot be used by {$purchaser->full_name}.";
                     return;
                 }
 
