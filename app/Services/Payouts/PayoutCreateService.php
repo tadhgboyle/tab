@@ -12,10 +12,18 @@ class PayoutCreateService extends HttpService
 {
     use PayoutService;
 
+    public const RESULT_NOTHING_OWED = 'NOTHING_OWED';
+
     public const RESULT_SUCCESS = 'SUCCESS';
 
     public function __construct(PayoutRequest $request, User $user)
     {
+        if ($user->findOwing()->isZero()) {
+            $this->_message = 'User does not owe anything.';
+            $this->_result = self::RESULT_NOTHING_OWED;
+            return;
+        }
+
         $payout = new Payout();
 
         $payout->identifier = $request->identifier;
@@ -33,7 +41,8 @@ class PayoutCreateService extends HttpService
     public function redirect(): RedirectResponse
     {
         return match ($this->getResult()) {
-            default => redirect()->route('users_view', $this->getPayout()->user)->with('success', $this->getMessage()),
+            self::RESULT_SUCCESS => redirect()->route('users_view', $this->getPayout()->user)->with('success', $this->getMessage()),
+            default => redirect()->back()->with('error', $this->getMessage()),
         };
     }
 }

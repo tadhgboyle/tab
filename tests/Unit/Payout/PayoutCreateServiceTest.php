@@ -2,6 +2,10 @@
 
 namespace Tests\Unit\Payout;
 
+use App\Models\Category;
+use App\Models\Settings;
+use App\Services\Transactions\TransactionCreateService;
+use Database\Seeders\RotationSeeder;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
@@ -9,10 +13,25 @@ use Cknow\Money\Money;
 use App\Http\Requests\PayoutRequest;
 use App\Services\Payouts\PayoutCreateService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Request;
+use App\Models\Product;
 
 class PayoutCreateServiceTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function testCantMakePayoutIfNothingOwing(): void
+    {
+        [$user] = $this->createData(false);
+
+        $payoutService = new PayoutCreateService(new PayoutRequest([
+            'identifier' => '#1',
+            'amount' => 10_00,
+        ]), $user);
+
+        $this->assertSame(PayoutCreateService::RESULT_NOTHING_OWED, $payoutService->getResult());
+        $this->assertStringContainsString('User does not owe anything.', $payoutService->getMessage());
+    }
 
     public function testCanCreatePayout(): void
     {
@@ -28,7 +47,7 @@ class PayoutCreateServiceTest extends TestCase
         $payout = $payoutService->getPayout();
 
         $this->assertEquals(Money::parse(10_00), $payout->amount);
-        $this->assertEquals(Money::parse(-10_00), $user->findOwing());
+        $this->assertEquals(Money::parse(5_00), $user->findOwing());
         $this->assertSame('#1', $payout->identifier);
         $this->assertSame($admin->id, $payout->cashier->id);
         $this->assertSame($user->id, $payout->user->id);
@@ -53,8 +72,10 @@ class PayoutCreateServiceTest extends TestCase
     }
 
     /** @return User[] */
-    private function createData(): array
+    private function createData(bool $transaction = true): array
     {
+        app(RotationSeeder::class)->run();
+
         $role = Role::factory()->create();
         $user = User::factory()->create([
             'role_id' => $role->id,
@@ -65,6 +86,23 @@ class PayoutCreateServiceTest extends TestCase
         ]);
 
         $this->actingAs($admin);
+
+        if ($transaction) {
+            $category = Category::factory()->create();
+            $product = Product::factory()->create([
+                'category_id' => $category->id,
+                'pst' => 0,
+                'price' => 5_00,
+            ]);
+            Settings::insert([
+                'setting' => 'gst',
+                'value' => 0,
+            ]);
+    
+            (new TransactionCreateService(new Request([
+                'products' => json_encode([['id' => $product->id, 'quantity' => 1]]),
+            ]), $user));    
+        }
 
         return [$user, $admin];
     }

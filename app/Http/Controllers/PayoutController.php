@@ -11,10 +11,15 @@ class PayoutController extends Controller
 {
     public function create(User $user)
     {
-        // TODO: don't allow creation if they don't owe anything
+        $owing = $user->findOwing();
+
+        if ($owing->isZero()) {
+            return redirect()->route('users_view', $user)->with('error', 'User does not owe anything.');
+        }
+
         return view('pages.users.payouts.form', [
             'user' => $user,
-            'owing' => $user->findOwing()->getAmount() / 100,
+            'owing' => $owing->getAmount() / 100,
         ]);
     }
 

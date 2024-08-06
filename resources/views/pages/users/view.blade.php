@@ -17,6 +17,8 @@
 
 @php $owing = $user->findOwing(); @endphp
 
+@include('includes.messages')
+
 <div class="box">
     <nav class="level">
         <div class="level-item has-text-centered">
@@ -232,7 +234,7 @@
                         </div>
                         <div class="column">
                             @if(hasPermission(\App\Helpers\Permission::USERS_PAYOUTS_CREATE))
-                                <a class="button is-light is-pulled-right is-small" href="{{ route('users_payout_create', $user) }}">
+                                <a class="button is-light is-pulled-right is-small" href="{{ route('users_payout_create', $user) }}" @if($owing->isZero()) disabled @endif>
                                     ➕ Create
                                 </a>
                             @endif
