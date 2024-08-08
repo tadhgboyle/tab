@@ -54,6 +54,11 @@ class User extends Authenticatable implements HasTimeline
         return $this->hasMany(ActivityRegistration::class);
     }
 
+    public function giftCards(): BelongsToMany
+    {
+        return $this->belongsToMany(GiftCard::class);
+    }
+
     public function rotations(): BelongsToMany
     {
         // TODO why is this distinct?
@@ -119,9 +124,7 @@ class User extends Authenticatable implements HasTimeline
                 return;
             }
 
-            foreach ($transaction->products->where('returned', '>', 0) as $product) {
-                $returned = $returned->add(TaxHelper::forTransactionProduct($product, $product->returned));
-            }
+            $returned = $returned->add($transaction->getReturnedTotal());
         });
 
         $returned = $returned->add(

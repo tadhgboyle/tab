@@ -154,10 +154,10 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
 - Let transactions use multiple gift cards
 - When editing entities, correctly return back to the list/show page the user was previously on upon success
 - Add "cost" to products and display margins
-- Allow gift card to be assigned to one or more users so only they can use it
 
 ## Issues/Bugs
 - When cashier page refreshed with gift card, ensure it still has balance + update balance in table row
 - Make settings boxes/columns more fluid, so it doesn't look odd when people have subnet of permissions
 - Make seeders only create past entities nothing in the future
 - When don't have permission to view statistics/users/transactions from other rotations, still show the dropdown just have it disabled so they can see active rotation
+- Fix user owing (plus modal) to account for gift card returns when calculating owing

@@ -2,11 +2,13 @@
 
 namespace Database\Seeders;
 
+use App\Models\Transaction;
 use Auth;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\GiftCard;
 use App\Models\Rotation;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Database\Seeder;
 use App\Services\Transactions\TransactionReturnService;
@@ -32,7 +34,7 @@ class TransactionSeeder extends Seeder
                 $cashier = $users->shuffle()->whereIn('role_id', [1, 2, 4])->first();
                 Auth::login($cashier);
 
-                $product_ids = $products_all->random(random_int(1, 10))->pluck('id');
+                $product_ids = $products_all->random(random_int(1, 7))->pluck('id');
 
                 $products = [];
                 foreach ($product_ids as $product_id) {
@@ -52,16 +54,21 @@ class TransactionSeeder extends Seeder
                     $created_at = $rotation->start->addSeconds(random_int(0, now()->diffInSeconds($rotation->start)));
                 }
 
-                if (random_int(0, 10) === 0) {
-                    $giftCards = GiftCard::where('remaining_balance', '>', 0)->get();
+                if (random_int(0, 5) === 0) {
+                    $user->load('giftCards');
+
+                    $giftCards = random_int(0, 1) === 1 ? $user->giftCards->where('remaining_balance', '>', 0) : GiftCard::where('remaining_balance', '>', 0)->get();
                     if ($giftCards->count() === 0) {
                         $giftCard = null;
                     } else {
                         $giftCard = $giftCards->random();
+                        if ($giftCard->expired() || !$giftCard->canBeUsedBy($user)) {
+                            $giftCard = null;
+                        }
                     }
                 }
 
-                $service = new TransactionCreateService(new Request([
+                new TransactionCreateService(new Request([
                     'purchaser_id' => $user->id,
                     'cashier_id' => $cashier->id,
                     'rotation_id' => $rotation->id,
@@ -69,30 +76,23 @@ class TransactionSeeder extends Seeder
                     'created_at' => $created_at,
                     'gift_card_code' => $giftCard->code ?? null,
                 ]), $user);
+            }
+        }
 
-                if ($service->getResult() !== TransactionCreateService::RESULT_SUCCESS) {
-                    continue;
-                }
+        foreach (Transaction::all() as $transaction) {
+            if (random_int(0, 3) === 3) {
+                if (random_int(0, 1) === 1) {
+                    (new TransactionReturnService($transaction));
+                } else {
+                    $transactionProduct = $transaction->products->random();
+                    $max_to_return = $transactionProduct->quantity;
+                    $returning = random_int(1, $max_to_return);
 
-                $transaction = $service->getTransaction();
-
-                if (random_int(0, 3) === 3) {
+                    for ($j = 0; $j <= $returning; $j++) {
+                        (new TransactionReturnProductService($transactionProduct));
+                    }
                     if (random_int(0, 1) === 1) {
                         (new TransactionReturnService($transaction));
-                    } else {
-                        $product_id = $product_ids->random();
-                        $max_to_return = 0;
-                        foreach ($products as $product_info) {
-                            if ($product_info['id'] === $product_id) {
-                                $max_to_return = $product_info['quantity'];
-                            }
-                        }
-                        $returning = random_int(0, $max_to_return);
-
-                        for ($j = 0; $j <= $returning; $j++) {
-                            $transactionProduct = $transaction->products->firstWhere('product_id', $product_id);
-                            (new TransactionReturnProductService($transactionProduct));
-                        }
                     }
                 }
             }

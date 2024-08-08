@@ -41,6 +41,12 @@
         </div>
         <div class="level-item has-text-centered">
             <div>
+            <p class="heading">Total paid out</p>
+            <p class="title">{{ $user->findPaidOut() }}</p>
+            </div>
+        </div>
+        <div class="level-item has-text-centered">
+            <div>
             <p class="heading">Total owing</p>
             <p class="title" style="text-decoration: underline; cursor: help;"  onclick="openOwingModal();">{{ $owing }}</p>
             </div>

@@ -2,6 +2,9 @@
 
 namespace Tests\Unit\Transaction;
 
+use App\Helpers\TaxHelper;
+use App\Models\GiftCard;
+use App\Services\Transactions\TransactionReturnProductService;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
@@ -41,20 +44,94 @@ class TransactionReturnServiceTest extends TestCase
         $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->status);
         $this->assertTrue($transaction->isReturned());
         $this->assertEquals(
-            $balance_before->add($transaction->total_price),
+            $balance_before->add($transaction->purchaser_amount),
             $user->refresh()->balance
         );
-        $this->assertEquals($transaction->total_price, $user->findReturned());
+        $this->assertEquals($transaction->purchaser_amount, $user->findReturned());
+    }
+
+    public function testGiftCardBalanceUpdated(): void
+    {
+        $role = Role::factory()->create([
+            'name' => 'gift card issuer',
+        ]);
+        $user = User::factory()->create([
+            'role_id' => $role->id,
+        ]);
+        $giftCard = GiftCard::factory()->create([
+            'remaining_balance' => 100_00,
+            'issuer_id' => $user->id,
+        ]);
+
+        $balance_before_transaction = $giftCard->remaining_balance;
+        [,$transaction] = $this->createFakeRecords(gift_card_code: $giftCard->code);
+        $transactionService = new TransactionReturnService($transaction);
+
+        $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
+        $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->status);
+        $this->assertTrue($transaction->isReturned());
+
+        $this->assertEquals(
+            $balance_before_transaction,
+            $giftCard->refresh()->remaining_balance
+        );
+        $this->assertDatabaseHas('gift_card_adjustments', [
+            'gift_card_id' => $giftCard->id,
+            'transaction_id' => $transaction->id,
+            'amount' => $transaction->gift_card_amount->getAmount(),
+            'type' => 'refund',
+        ]);
+    }
+
+    public function testGiftCardBalanceUpdatedAfterProductReturn(): void
+    {
+        $role = Role::factory()->create([
+            'name' => 'gift card issuer',
+        ]);
+        $user = User::factory()->create([
+            'role_id' => $role->id,
+        ]);
+        $giftCard = GiftCard::factory()->create([
+            'remaining_balance' => 100_00,
+            'original_balance' => 100_00,
+            'issuer_id' => $user->id,
+        ]);
+
+        $balance_before_transaction = $giftCard->original_balance;
+        [,$transaction] = $this->createFakeRecords(gift_card_code: $giftCard->code);
+        $productReturning = $transaction->products->first();
+        new TransactionReturnProductService($productReturning);
+        $amountAlreadyRefundedToGiftCard = $productReturning->product->getPriceAfterTax();
+        $this->assertEquals($amountAlreadyRefundedToGiftCard, $transaction->getAmountRefundedToGiftCard());
+
+        $transactionService = new TransactionReturnService($transaction);
+
+        $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
+        $this->assertSame(Transaction::STATUS_FULLY_RETURNED, $transaction->status);
+        $this->assertTrue($transaction->isReturned());
+
+        $this->assertEquals(
+            $balance_before_transaction,
+            $giftCard->refresh()->remaining_balance
+        );
+        $this->assertDatabaseHas('gift_card_adjustments', [
+            'gift_card_id' => $giftCard->id,
+            'transaction_id' => $transaction->id,
+            'amount' => $transaction->gift_card_amount->subtract($amountAlreadyRefundedToGiftCard)->getAmount(),
+            'type' => 'refund',
+        ]);
     }
 
     public function testProductReturnedValueUpdated(): void
     {
         [, $transaction, $hat] = $this->createFakeRecords();
+        $hatTransactionProduct = $transaction->products->firstWhere('product_id', $hat->id);
+
+        $this->assertSame(0, $hatTransactionProduct->refresh()->returned);
 
         $transactionService = (new TransactionReturnService($transaction));
         $this->assertSame(TransactionReturnService::RESULT_SUCCESS, $transactionService->getResult());
 
-        $hatTransactionProduct = $transaction->products->firstWhere('product_id', $hat->id);
         $this->assertSame(2, $hatTransactionProduct->refresh()->returned);
     }
 

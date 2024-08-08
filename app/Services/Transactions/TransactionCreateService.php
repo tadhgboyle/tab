@@ -10,6 +10,7 @@ use App\Services\HttpService;
 use App\Helpers\TaxHelper;
 use App\Helpers\Permission;
 use App\Models\Transaction;
+use App\Services\GiftCards\GiftCardAdjustmentService;
 use Illuminate\Http\Request;
 use App\Helpers\RotationHelper;
 use App\Helpers\SettingsHelper;
@@ -107,6 +108,7 @@ class TransactionCreateService extends HttpService
                 }
 
                 if (!$gift_card->canBeUsedBy($purchaser)) {
+                    echo "{$gift_card->id} {$purchaser->id}\n";
                     $this->_result = self::RESULT_GIFT_CARD_CANNOT_BE_USED;
                     $this->_message = "Gift card with code {$gift_card_code} cannot be used by {$purchaser->full_name}.";
                     return;
@@ -186,6 +188,11 @@ class TransactionCreateService extends HttpService
             $transaction->created_at = $request->created_at;
         }
         $transaction->save();
+
+        if (isset($gift_card)) {
+            $giftCardAdjustmentService = new GiftCardAdjustmentService($gift_card, $transaction);
+            $giftCardAdjustmentService->charge($gift_card_amount);    
+        }
 
         $transaction_products->each(function (TransactionProduct $product) use ($transaction) {
             $product->transaction_id = $transaction->id;

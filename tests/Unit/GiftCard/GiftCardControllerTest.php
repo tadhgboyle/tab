@@ -118,7 +118,9 @@ class GiftCardControllerTest extends TestCase
     {
         $this->expectPermissionChecks([Permission::CASHIER]);
 
-        $giftCard = GiftCard::factory()->create();
+        $giftCard = GiftCard::factory()->create([
+            'expires_at' => null,
+        ]);
 
         $another_user = User::factory()->create([
             'role_id' => $this->_superadmin_role->id,
@@ -156,6 +158,7 @@ class GiftCardControllerTest extends TestCase
 
         $giftCard = GiftCard::factory()->create([
             'remaining_balance' => 100,
+            'expires_at' => null,
         ]);
 
         $this->actingAs($this->_superuser)

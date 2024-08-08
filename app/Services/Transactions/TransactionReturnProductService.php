@@ -2,9 +2,11 @@
 
 namespace App\Services\Transactions;
 
+use App\Services\GiftCards\GiftCardAdjustmentService;
 use App\Services\HttpService;
 use App\Helpers\TaxHelper;
 use App\Models\TransactionProduct;
+use Cknow\Money\Money;
 use Illuminate\Http\RedirectResponse;
 use App\Models\Transaction;
 
@@ -50,8 +52,44 @@ class TransactionReturnProductService extends HttpService
     private function refundPurchaser(): void
     {
         $purchaser = $this->_transaction->purchaser;
+
         $product_total = TaxHelper::forTransactionProduct($this->_transactionProduct, 1);
-        $purchaser->update(['balance' => $purchaser->balance->add($product_total)]);
+
+        $gift_card_refund_amount = $this->totalToRefundGiftCard($product_total);
+        $purchaser_refund_amount = $this->totalToRefundPurchaser($product_total, $gift_card_refund_amount);
+
+        if ($gift_card_refund_amount->isPositive()) {
+            $gift_card = $this->_transaction->giftCard;
+            $gift_card->update(['remaining_balance' => $gift_card->remaining_balance->add($gift_card_refund_amount)]);
+
+            $giftCardAdjustmentService = new GiftCardAdjustmentService($gift_card, $this->_transaction);
+            $giftCardAdjustmentService->refund($gift_card_refund_amount);
+        }
+
+        if ($purchaser_refund_amount->isPositive()) {
+            $purchaser->update(['balance' => $purchaser->balance->add($purchaser_refund_amount)]);
+        }
+    }
+
+    private function totalToRefundGiftCard(Money $productTotal): Money
+    {
+        if ($this->_transaction->gift_card_amount->isZero()) {
+            return Money::parse(0);
+        }
+
+        $amountRefundedToGiftCard = $this->_transaction->getAmountRefundedToGiftCard();
+        $amountLeftToRefundOnGiftCard = $this->_transaction->gift_card_amount->subtract($amountRefundedToGiftCard);
+
+        if ($amountLeftToRefundOnGiftCard->greaterThanOrEqual($productTotal)) {
+            return $productTotal;
+        }
+
+        return $amountLeftToRefundOnGiftCard;
+    }
+
+    private function totalToRefundPurchaser(Money $productTotal, Money $giftCardRefund): Money
+    {
+        return $productTotal->subtract($giftCardRefund);
     }
 
     private function restoreStock(): void

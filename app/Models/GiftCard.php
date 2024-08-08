@@ -24,9 +24,18 @@ class GiftCard extends Model implements HasTimeline
         'expires_at' => 'date',
     ];
 
+    protected $fillable = [
+        'remaining_balance',
+    ];
+
     public function issuer(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function adjustments(): HasMany
+    {
+        return $this->hasMany(GiftCardAdjustment::class);
     }
 
     public function uses(): HasMany
@@ -104,12 +113,14 @@ class GiftCard extends Model implements HasTimeline
 
         $events = [];
 
-        foreach ($this->uses as $transaction) {
+        foreach ($this->adjustments as $adjustment) {
             $events[] = new TimelineEntry(
-                description: "Used to purchase {$transaction->gift_card_amount} worth of items",
+                description: $adjustment->type === GiftCardAdjustment::TYPE_CHARGE
+                    ? "Used to purchase {$adjustment->amount} worth of items"
+                    : "Refunded {$adjustment->amount}",
                 emoji: '🧾',
-                time: $transaction->created_at,
-                actor: $transaction->purchaser,
+                time: $adjustment->created_at,
+                actor: $adjustment->transaction->purchaser,
             );
         }
 
@@ -119,6 +130,14 @@ class GiftCard extends Model implements HasTimeline
                 emoji: '👤',
                 time: $user->pivot->created_at,
                 actor: $user,
+            );
+        }
+
+        if ($this->expired()) {
+            $timeline[] = new TimelineEntry(
+                description: "Expired",
+                emoji: '🕐',
+                time: $this->expires_at,
             );
         }
 

@@ -79,6 +79,26 @@ class Transaction extends Model implements HasTimeline
         return $this->total_price->subtract($this->getReturnedTotal());
     }
 
+    public function getAmountRefundedToGiftCard(): Money
+    {
+        if ($this->gift_card_amount->isZero()) {
+            return Money::parse(0);
+        }
+
+        if ($this->isReturned()) {
+            return $this->gift_card_amount;
+        }
+
+        $this->giftCard->load('adjustments');
+        $amountRefundedToGiftCard = Money::sum(Money::parse(0), ...$this->giftCard->adjustments
+            ->where('transaction_id', $this->id)
+            ->where('type', GiftCardAdjustment::TYPE_REFUND)
+            ->map->amount
+        );
+
+        return $amountRefundedToGiftCard;
+    }
+
     public function isReturned(): bool
     {
         return $this->status === self::STATUS_FULLY_RETURNED;

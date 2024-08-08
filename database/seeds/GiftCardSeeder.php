@@ -16,11 +16,11 @@ class GiftCardSeeder extends Seeder
      */
     public function run(): void
     {
-        $giftCards = GiftCard::factory()->count(50)->create();
+        $giftCards = GiftCard::factory()->count(100)->create();
         $users = User::all();
 
         foreach ($giftCards as $giftCard) {
-            if (random_int(0, 1)) {
+            if (random_int(0, 3)) {
                 continue;
             }
 
