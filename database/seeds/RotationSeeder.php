@@ -18,21 +18,21 @@ class RotationSeeder extends Seeder
     {
         // Past
         Rotation::factory()->create([
-            'name' => "Week #1",
+            'name' => 'Week #1',
             'start' => Carbon::now()->subWeek(),
             'end' => Carbon::now()
         ]);
 
         // Present
         Rotation::factory()->create([
-            'name' => "Week #2",
+            'name' => 'Week #2',
             'start' => Carbon::now(),
             'end' => Carbon::now()->addWeek()
         ]);
 
         // Future
         Rotation::factory()->create([
-            'name' => "Week #3",
+            'name' => 'Week #3',
             'start' => Carbon::now()->addWeek(),
             'end' => Carbon::now()->addWeeks(2)
         ]);

@@ -9,14 +9,15 @@ class EntityTimeline extends Component
 {
     /**
      * Create a new component instance.
-     * 
+     *
      * @param TimelineEntry[] $timeline
      *
      * @return void
      */
     public function __construct(
         public array $timeline
-    ) {}
+    ) {
+    }
 
     public function timeline(): array
     {

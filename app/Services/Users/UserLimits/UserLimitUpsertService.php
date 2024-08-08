@@ -2,13 +2,13 @@
 
 namespace App\Services\Users\UserLimits;
 
-use App\Http\Requests\UserRequest;
 use App\Models\User;
-use App\Services\Service;
-use App\Services\Users\UserService;
-use App\Models\UserLimit;
 use Cknow\Money\Money;
 use App\Models\Category;
+use App\Models\UserLimit;
+use App\Services\Service;
+use App\Http\Requests\UserRequest;
+use App\Services\Users\UserService;
 
 class UserLimitUpsertService extends Service
 {

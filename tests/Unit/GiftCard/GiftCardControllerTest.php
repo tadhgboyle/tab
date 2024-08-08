@@ -2,12 +2,12 @@
 
 namespace Tests\Unit\GiftCard;
 
-use App\Helpers\Permission;
-use App\Models\User;
-use App\Models\Role;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\Role;
+use App\Models\User;
 use App\Models\GiftCard;
+use App\Helpers\Permission;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class GiftCardControllerTest extends TestCase
 {

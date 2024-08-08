@@ -22,7 +22,7 @@ class ProductSeeder extends Seeder
         'Keychain', 'Sticker Pack', 'Umbrella', 'Bandana', 'Socks', 'Drawstring Bag',
         'Wallet', 'Jacket', 'Gloves', 'Watch', 'Lanyard', 'Tumbler'
     ];
-    
+
     private static array $generalNames = [
         'Ceramic', 'Tube Ride', 'Sunscreen', 'Tooth Brush', 'Boat Rental',
         'Wakeboard (1 hour)', 'Floss', 'Tye Die Kit', 'Smores Kit',
@@ -31,7 +31,7 @@ class ProductSeeder extends Seeder
         'Board Game Set', 'Bluetooth Speaker', 'Candle Set', 'Luggage Tag', 'Plant',
         'Headphones', 'Portable Charger', 'Art Supplies', 'Fitness Tracker', 'Gift Card',
         'Travel Pillow', 'Cookbook'
-    ];    
+    ];
 
     /**
      * Run the database seeds.

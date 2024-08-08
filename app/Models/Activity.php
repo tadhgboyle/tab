@@ -4,13 +4,13 @@ namespace App\Models;
 
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
+use Carbon\CarbonInterface;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Carbon\CarbonInterface;
 
 class Activity extends Model
 {

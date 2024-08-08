@@ -2,16 +2,16 @@
 
 namespace Tests\Unit\Transaction;
 
-use App\Models\GiftCard;
-use App\Models\GiftCardAdjustment;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\GiftCard;
 use App\Models\Settings;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Models\GiftCardAdjustment;
 use Database\Seeders\RotationSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Services\Transactions\TransactionCreateService;
@@ -93,7 +93,7 @@ class TransactionReturnProductServiceTest extends TestCase
         $hatTransactionProduct = $transaction->products->firstWhere('product_id', $hat->id);
         $expected_gift_card_refund = $transaction->gift_card_amount->subtract($hat->getPriceAfterTax());
 
-        (new TransactionReturnProductService($hatTransactionProduct));
+        new TransactionReturnProductService($hatTransactionProduct);
         $transactionService = (new TransactionReturnProductService($hatTransactionProduct));
 
         $this->assertSame(TransactionReturnProductService::RESULT_SUCCESS, $transactionService->getResult());
@@ -126,7 +126,7 @@ class TransactionReturnProductServiceTest extends TestCase
         [$user, $transaction, $hat] = $this->createFakeRecords();
 
         $hatTransactionProduct = $transaction->products->firstWhere('product_id', $hat->id);
-        (new TransactionReturnProductService($hatTransactionProduct));
+        new TransactionReturnProductService($hatTransactionProduct);
         $transactionService = (new TransactionReturnProductService($hatTransactionProduct));
         $this->assertSame(TransactionReturnProductService::RESULT_SUCCESS, $transactionService->getResult());
 
@@ -166,7 +166,7 @@ class TransactionReturnProductServiceTest extends TestCase
         ]);
 
         $hatTransactionProduct = $transaction->products->firstWhere('product_id', $hat->id);
-        (new TransactionReturnProductService($hatTransactionProduct));
+        new TransactionReturnProductService($hatTransactionProduct);
 
         $this->assertSame($start_stock, $hat->refresh()->stock);
     }
@@ -181,7 +181,7 @@ class TransactionReturnProductServiceTest extends TestCase
         ]);
 
         $hatTransactionProduct = $transaction->products->firstWhere('product_id', $hat->id);
-        (new TransactionReturnProductService($hatTransactionProduct));
+        new TransactionReturnProductService($hatTransactionProduct);
 
         $this->assertEquals($start_stock + 1, $hat->refresh()->stock);
     }

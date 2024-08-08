@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Concerns\Timeline;
-use App\Models\User;
+
 use Carbon\Carbon;
+use App\Models\User;
 
 class TimelineEntry
 {

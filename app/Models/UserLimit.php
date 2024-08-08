@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use Cknow\Money\Casts\MoneyIntegerCast;
+use Carbon\Carbon;
 use Cknow\Money\Money;
+use App\Helpers\TaxHelper;
+use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Carbon\Carbon;
-use App\Helpers\TaxHelper;
 
 class UserLimit extends Model
 {
@@ -16,7 +16,6 @@ class UserLimit extends Model
     public const LIMIT_WEEKLY = 1;
 
     use HasFactory;
-
 
     protected $fillable = [
         'user_id',

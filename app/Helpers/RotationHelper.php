@@ -16,7 +16,7 @@ class RotationHelper
     public function getRotations(bool $with_users_count = false): Collection
     {
         return $this->rotations ??= Rotation::query()
-            ->when($with_users_count, fn($query) => $query->withCount('users'))
+            ->when($with_users_count, fn ($query) => $query->withCount('users'))
             ->orderBy('start', 'ASC')
             ->get();
     }

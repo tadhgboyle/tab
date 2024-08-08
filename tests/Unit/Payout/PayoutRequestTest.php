@@ -2,11 +2,11 @@
 
 namespace Tests\Unit\Payout;
 
-use App\Models\User;
 use App\Models\Role;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\User;
 use Tests\FormRequestTestCase;
 use App\Http\Requests\PayoutRequest;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class PayoutRequestTest extends FormRequestTestCase
 {

@@ -2,19 +2,19 @@
 
 namespace Tests\Unit\Payout;
 
-use App\Models\Category;
-use App\Models\Settings;
-use App\Services\Transactions\TransactionCreateService;
-use Database\Seeders\RotationSeeder;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
 use Cknow\Money\Money;
+use App\Models\Product;
+use App\Models\Category;
+use App\Models\Settings;
+use Illuminate\Http\Request;
 use App\Http\Requests\PayoutRequest;
+use Database\Seeders\RotationSeeder;
 use App\Services\Payouts\PayoutCreateService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\Request;
-use App\Models\Product;
+use App\Services\Transactions\TransactionCreateService;
 
 class PayoutCreateServiceTest extends TestCase
 {
@@ -98,10 +98,10 @@ class PayoutCreateServiceTest extends TestCase
                 'setting' => 'gst',
                 'value' => 0,
             ]);
-    
-            (new TransactionCreateService(new Request([
+
+            new TransactionCreateService(new Request([
                 'products' => json_encode([['id' => $product->id, 'quantity' => 1]]),
-            ]), $user));    
+            ]), $user);
         }
 
         return [$user, $admin];

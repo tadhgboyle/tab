@@ -2,17 +2,16 @@
 
 namespace Database\Seeders;
 
-use App\Models\Transaction;
 use Auth;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\GiftCard;
 use App\Models\Rotation;
-use Carbon\Carbon;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Database\Seeder;
-use App\Services\Transactions\TransactionReturnService;
 use App\Services\Transactions\TransactionCreateService;
+use App\Services\Transactions\TransactionReturnService;
 use App\Services\Transactions\TransactionReturnProductService;
 
 class TransactionSeeder extends Seeder
@@ -82,17 +81,17 @@ class TransactionSeeder extends Seeder
         foreach (Transaction::all() as $transaction) {
             if (random_int(0, 3) === 3) {
                 if (random_int(0, 1) === 1) {
-                    (new TransactionReturnService($transaction));
+                    new TransactionReturnService($transaction);
                 } else {
                     $transactionProduct = $transaction->products->random();
                     $max_to_return = $transactionProduct->quantity;
                     $returning = random_int(1, $max_to_return);
 
                     for ($j = 0; $j <= $returning; $j++) {
-                        (new TransactionReturnProductService($transactionProduct));
+                        new TransactionReturnProductService($transactionProduct);
                     }
                     if (random_int(0, 1) === 1) {
-                        (new TransactionReturnService($transaction));
+                        new TransactionReturnService($transaction);
                     }
                 }
             }

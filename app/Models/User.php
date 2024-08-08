@@ -2,18 +2,17 @@
 
 namespace App\Models;
 
-use App\Concerns\Timeline\HasTimeline;
-use App\Concerns\Timeline\TimelineEntry;
 use Cknow\Money\Money;
-use App\Helpers\TaxHelper;
+use App\Concerns\Timeline\HasTimeline;
 use Cknow\Money\Casts\MoneyIntegerCast;
+use App\Concerns\Timeline\TimelineEntry;
+use Lab404\Impersonate\Models\Impersonate;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Lab404\Impersonate\Models\Impersonate;
 
 class User extends Authenticatable implements HasTimeline
 {

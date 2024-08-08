@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
-use App\Concerns\Timeline\HasTimeline;
-use App\Concerns\Timeline\TimelineEntry;
-use App\Helpers\Permission;
-use Cknow\Money\Casts\MoneyIntegerCast;
 use Cknow\Money\Money;
+use App\Helpers\Permission;
+use App\Concerns\Timeline\HasTimeline;
+use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Concerns\Timeline\TimelineEntry;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class GiftCard extends Model implements HasTimeline
 {
@@ -79,7 +79,6 @@ class GiftCard extends Model implements HasTimeline
         return $this->original_balance->subtract($this->remaining_balance);
     }
 
-
     public function canBeUsedBy(User $user): bool
     {
         return $this->users->isEmpty() || $this->users->contains($user);
@@ -135,7 +134,7 @@ class GiftCard extends Model implements HasTimeline
 
         if ($this->expired()) {
             $timeline[] = new TimelineEntry(
-                description: "Expired",
+                description: 'Expired',
                 emoji: '🕐',
                 time: $this->expires_at,
             );

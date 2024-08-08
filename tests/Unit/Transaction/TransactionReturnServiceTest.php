@@ -2,21 +2,20 @@
 
 namespace Tests\Unit\Transaction;
 
-use App\Helpers\TaxHelper;
-use App\Models\GiftCard;
-use App\Services\Transactions\TransactionReturnProductService;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\GiftCard;
 use App\Models\Settings;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Database\Seeders\RotationSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Services\Transactions\TransactionReturnService;
 use App\Services\Transactions\TransactionCreateService;
+use App\Services\Transactions\TransactionReturnService;
+use App\Services\Transactions\TransactionReturnProductService;
 
 class TransactionReturnServiceTest extends TestCase
 {
@@ -158,7 +157,7 @@ class TransactionReturnServiceTest extends TestCase
             'stock' => $start_stock = 12,
         ]);
 
-        (new TransactionReturnService($transaction));
+        new TransactionReturnService($transaction);
 
         $this->assertSame($start_stock, $hat->refresh()->stock);
     }
@@ -172,7 +171,7 @@ class TransactionReturnServiceTest extends TestCase
             'stock' => $start_stock = 12,
         ]);
 
-        (new TransactionReturnService($transaction));
+        new TransactionReturnService($transaction);
 
         $this->assertSame($start_stock + $hat_count, $hat->refresh()->stock);
     }

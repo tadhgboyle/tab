@@ -1,15 +1,16 @@
 <?php
 
 namespace Tests\Unit\GiftCard;
-use App\Models\GiftCard;
+
+use Tests\TestCase;
 use App\Models\Role;
+use App\Models\User;
+use Cknow\Money\Money;
+use App\Models\GiftCard;
 use App\Models\Rotation;
 use App\Models\Transaction;
-use App\Models\User;
-use App\Services\GiftCards\GiftCardAdjustmentService;
-use Cknow\Money\Money;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use App\Services\GiftCards\GiftCardAdjustmentService;
 
 class GiftCardAdjustmentServiceTest extends TestCase
 {

@@ -2,10 +2,10 @@
 
 namespace Tests\Unit\Role;
 
-use App\Helpers\Permission;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
+use App\Helpers\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RoleControllerTest extends TestCase
