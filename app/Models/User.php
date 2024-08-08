@@ -147,16 +147,16 @@ class User extends Authenticatable implements HasTimeline
         $returned = Money::parse(0);
 
         $this->orders->each(function (order $order) use (&$returned) {
+            if ($order->status === order::STATUS_NOT_RETURNED) {
+                return;
+            }
+
             if ($order->isReturned()) {
                 $returned = $returned->add($order->purchaser_amount);
                 return;
             }
 
-            if ($order->status === order::STATUS_NOT_RETURNED) {
-                return;
-            }
-
-            $returned = $returned->add($order->getReturnedTotal()->subtract($order->getAmountRefundedToGiftCard()));
+            $returned = $returned->add($order->getReturnedTotalInCash());
         });
 
         $returned = $returned->add(

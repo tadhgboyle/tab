@@ -40,21 +40,22 @@ class OrderReturnProductService extends HttpService
 
         $this->_orderProduct->increment('returned');
 
-        $this->refundPurchaser();
+        [$purchaserAmount, $giftCardAmount] = $this->refundPurchaser();
         $this->restoreStock();
         $this->updateOrderReturnedAttribute();
+        $this->createOrderProductReturn($purchaserAmount, $giftCardAmount);
+        if ($this->_order->isReturned()) {
+            $this->createOrderReturn($purchaserAmount, $giftCardAmount);
+        }
 
         $this->_result = self::RESULT_SUCCESS;
         $this->_message = 'Successfully returned x1 ' . $this->_orderProduct->product->name . ' for order #' . $this->_order->id . '.';
 
     }
 
-    private function refundPurchaser(): void
+    private function refundPurchaser(): array
     {
-        $purchaser = $this->_order->purchaser;
-
         $product_total = TaxHelper::forOrderProduct($this->_orderProduct, 1);
-
         $gift_card_refund_amount = $this->totalToRefundGiftCard($product_total);
         $purchaser_refund_amount = $this->totalToRefundPurchaser($product_total, $gift_card_refund_amount);
 
@@ -67,8 +68,33 @@ class OrderReturnProductService extends HttpService
         }
 
         if ($purchaser_refund_amount->isPositive()) {
+            $purchaser = $this->_order->purchaser;
             $purchaser->update(['balance' => $purchaser->balance->add($purchaser_refund_amount)]);
         }
+
+        return [$purchaser_refund_amount, $gift_card_refund_amount];
+    }
+
+    private function createOrderProductReturn(Money $purchaserAmount, Money $giftCardAmount): void
+    {
+        $this->_order->productReturns()->create([
+            'returner_id' => auth()->id(),
+            'order_product_id' => $this->_orderProduct->id,
+            'total_return_amount' => $purchaserAmount->add($giftCardAmount),
+            'purchaser_amount' => $purchaserAmount,
+            'gift_card_amount' => $giftCardAmount,
+        ]);
+    }
+
+    private function createOrderReturn(Money $purchaserAmount, Money $giftCardAmount): void
+    {
+        $this->_order->return()->create([
+            'returner_id' => auth()->id(),
+            'total_return_amount' => $purchaserAmount->add($giftCardAmount),
+            'purchaser_amount' => $purchaserAmount,
+            'gift_card_amount' => $giftCardAmount,
+            'caused_by_product_return' => true,
+        ]);
     }
 
     private function totalToRefundGiftCard(Money $productTotal): Money
@@ -77,7 +103,9 @@ class OrderReturnProductService extends HttpService
             return Money::parse(0);
         }
 
-        $amountRefundedToGiftCard = $this->_order->getAmountRefundedToGiftCard();
+        $this->_order->load('productReturns');
+
+        $amountRefundedToGiftCard = $this->_order->getReturnedTotalToGiftCard();
         $amountLeftToRefundOnGiftCard = $this->_order->gift_card_amount->subtract($amountRefundedToGiftCard);
 
         if ($amountLeftToRefundOnGiftCard->greaterThanOrEqual($productTotal)) {
@@ -101,7 +129,7 @@ class OrderReturnProductService extends HttpService
 
     private function updateOrderReturnedAttribute(): void
     {
-        // Reload the orderProdicts to get the updated returned count
+        // Reload the orderProducts to get the updated returned count
         $this->_order->load('products');
 
         $this->_order->update([

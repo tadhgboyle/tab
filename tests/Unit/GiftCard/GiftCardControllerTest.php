@@ -142,6 +142,7 @@ class GiftCardControllerTest extends TestCase
 
         $giftCard = GiftCard::factory()->create([
             'remaining_balance' => 0,
+            'expires_at' => null,
         ]);
 
         $this->actingAs($this->_superuser)

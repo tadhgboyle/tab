@@ -40,7 +40,7 @@ class GiftCard extends Model implements HasTimeline
 
     public function uses(): HasMany
     {
-        return $this->hasMany(Order::class)->orderBy('created_at', 'DESC');
+        return $this->hasMany(Order::class);
     }
 
     public function users(): BelongsToMany

@@ -88,13 +88,14 @@ class OrderReturnProductServiceTest extends TestCase
         ]);
         $balance_before = $gift_card->original_balance;
 
-        [, $order, $hat] = $this->createFakeRecords(gift_card_code: $gift_card->code);
+        [$user, $order, $hat] = $this->createFakeRecords(gift_card_code: $gift_card->code);
 
         $hatOrderProduct = $order->products->firstWhere('product_id', $hat->id);
         $expected_gift_card_refund = $order->gift_card_amount->subtract($hat->getPriceAfterTax());
 
         new OrderReturnProductService($hatOrderProduct);
-        $orderService = (new OrderReturnProductService($hatOrderProduct));
+
+        $orderService = new OrderReturnProductService($hatOrderProduct);
 
         $this->assertSame(OrderReturnProductService::RESULT_SUCCESS, $orderService->getResult());
         $this->assertSame(Order::STATUS_FULLY_RETURNED, $order->refresh()->status);
@@ -102,11 +103,19 @@ class OrderReturnProductServiceTest extends TestCase
             $balance_before,
             $gift_card->refresh()->remaining_balance
         );
-        $this->assertDatabaseHas('gift_card_adjustments', [
-            'gift_card_id' => $gift_card->id,
-            'amount' => $expected_gift_card_refund->getAmount(),
-            'type' => GiftCardAdjustment::TYPE_REFUND
-        ]);
+
+        $giftCardAdjustment = $gift_card->adjustments->last();
+        $this->assertEquals($order->id, $giftCardAdjustment->order_id);
+        $this->assertEquals($expected_gift_card_refund, $giftCardAdjustment->amount);
+        $this->assertEquals(GiftCardAdjustment::TYPE_REFUND, $giftCardAdjustment->type);
+        $this->assertEquals($gift_card->id, $giftCardAdjustment->gift_card_id);
+
+        $orderReturn = $order->return;
+        $this->assertEquals($user->id, $orderReturn->returner_id);
+        $this->assertEquals($expected_gift_card_refund, $orderReturn->gift_card_amount);
+        $this->assertEquals($order->purchaser_amount, $orderReturn->purchaser_amount);
+        $this->assertEquals($order->purchaser_amount->add($expected_gift_card_refund), $orderReturn->total_return_amount);
+        $this->assertTrue($orderReturn->caused_by_product_return);
     }
 
     public function testProductReturnedValueUpdated(): void

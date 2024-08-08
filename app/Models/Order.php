@@ -11,6 +11,7 @@ use App\Concerns\Timeline\TimelineEntry;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Order extends Model implements HasTimeline
 {
@@ -57,6 +58,16 @@ class Order extends Model implements HasTimeline
         return $this->belongsTo(GiftCard::class);
     }
 
+    public function return(): HasOne
+    {
+        return $this->hasOne(OrderReturn::class);
+    }
+
+    public function productReturns(): HasMany
+    {
+        return $this->hasMany(OrderProductReturn::class);
+    }
+
     public function getReturnedTotal(): Money
     {
         if ($this->isReturned()) {
@@ -67,11 +78,7 @@ class Order extends Model implements HasTimeline
             return Money::parse(0);
         }
 
-        return $this->products
-            ->where('returned', '>=', 1)
-            ->reduce(function (Money $carry, OrderProduct $product) {
-                return $carry->add(TaxHelper::forOrderProduct($product, $product->returned));
-            }, Money::parse(0));
+        return Money::sum(Money::parse(0), ...$this->productReturns->map->total_return_amount);
     }
 
     public function getOwingTotal(): Money
@@ -79,26 +86,17 @@ class Order extends Model implements HasTimeline
         return $this->total_price->subtract($this->getReturnedTotal());
     }
 
-    public function getAmountRefundedToGiftCard(): Money
+    public function getReturnedTotalToGiftCard(): Money
     {
-        if ($this->gift_card_amount->isZero()) {
-            return Money::parse(0);
-        }
-
         if ($this->isReturned()) {
             return $this->gift_card_amount;
         }
 
-        $this->giftCard->load('adjustments');
-        $amountRefundedToGiftCard = Money::sum(
-            Money::parse(0),
-            ...$this->giftCard->adjustments
-            ->where('order_id', $this->id)
-            ->where('type', GiftCardAdjustment::TYPE_REFUND)
-            ->map->amount
-        );
+        if ($this->gift_card_amount->isZero()) {
+            return Money::parse(0);
+        }
 
-        return $amountRefundedToGiftCard;
+        return Money::sum(Money::parse(0), ...$this->productReturns->map->gift_card_amount);
     }
 
     public function getReturnedTotalInCash(): Money
@@ -111,7 +109,7 @@ class Order extends Model implements HasTimeline
             return Money::parse(0);
         }
 
-        return $this->getReturnedTotal()->subtract($this->getAmountRefundedToGiftCard());
+        return Money::sum(Money::parse(0), ...$this->productReturns->map->purchaser_amount);
     }
 
     public function isReturned(): bool
@@ -139,9 +137,39 @@ class Order extends Model implements HasTimeline
             ),
         ];
 
-        // TODO: Product returns
-        // TODO: Full return
+        $events = [];
+        foreach ($this->productReturns as $productReturn) {
+            $description = "Returned {$productReturn->orderProduct->product->name}";
+            if ($hasCashReturn = $productReturn->purchaser_amount->isPositive()) {
+                $description .= " in cash as {$productReturn->purchaser_amount}";
+            }
+            if ($productReturn->gift_card_amount->isPositive()) {
+                $description .= ($hasCashReturn ? " and " : "" ). " {$productReturn->gift_card_amount} to gift card";
+            }
+            $events[] = new TimelineEntry(
+                description: $description,
+                emoji: '🔄',
+                time: $productReturn->created_at,
+                actor: $productReturn->returner,
+            );
+        }
 
-        return $timeline;
+        if ($this->isReturned()) {
+            $description = 'Fully returned';
+            if ($this->return->caused_by_product_return) {
+                $description .= ' due to product return';
+            }
+
+            $events[] = new TimelineEntry(
+                description: $description,
+                emoji: '🔄',
+                time: $this->return->created_at,
+                actor: $this->return->returner,
+            );
+        }
+
+        usort($events, fn ($a, $b) => $a->time <=> $b->time);
+
+        return array_merge($timeline, $events);
     }
 }

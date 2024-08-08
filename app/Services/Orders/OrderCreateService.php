@@ -160,7 +160,7 @@ class OrderCreateService extends HttpService
         }
 
         $order_products->each(fn (OrderProduct $product) => $product->product->removeStock(
-            $order_products_from_request->firstWhere('id', $product->product_id)->quantity
+            $product->quantity
         ));
 
         $order = new Order();

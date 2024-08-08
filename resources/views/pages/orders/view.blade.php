@@ -18,8 +18,13 @@
             <p><strong>Status:</strong> {!! $order->getStatusHtml() !!}</p>
             @if($order->status !== \App\Models\Order::STATUS_NOT_RETURNED)
                 <p><strong>Returned:</strong> {{ $order->getReturnedTotal() }}</p>
-                <p><strong>Returned to gift card:</strong> {{ $order->getAmountRefundedToGiftCard() }}</p>
+                @if($order->gift_card_amount->isPositive())
+                    <p><strong>Returned to gift card:</strong> {{ $order->getReturnedTotalToGiftCard() }}</p>
+                @endif
                 <p><strong>Returned to purchaser balance:</strong> {{ $order->getReturnedTotalInCash() }}</p>
+                @if($order->gift_card_amount->isPositive())
+                    <p><strong>Amount left to return to gift card:</strong> {{ $order->gift_card_amount->subtract($order->getReturnedTotalToGiftCard()) }}</p>
+                @endif
                 <p><strong>Amount left to return:</strong> {{ $order->getOwingTotal() }}</p>
             @endif
             <br>

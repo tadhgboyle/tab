@@ -74,12 +74,11 @@ class OrderReturnServiceTest extends TestCase
             $balance_before_order,
             $giftCard->refresh()->remaining_balance
         );
-        $this->assertDatabaseHas('gift_card_adjustments', [
-            'gift_card_id' => $giftCard->id,
-            'order_id' => $order->id,
-            'amount' => $order->gift_card_amount->getAmount(),
-            'type' => 'refund',
-        ]);
+
+        $giftCardAdjustment = $giftCard->adjustments->last();
+        $this->assertEquals($order->gift_card_amount, $giftCardAdjustment->amount);
+        $this->assertEquals('refund', $giftCardAdjustment->type);
+        $this->assertEquals($order->id, $giftCardAdjustment->order_id);
     }
 
     public function testGiftCardBalanceUpdatedAfterProductReturn(): void
@@ -97,13 +96,13 @@ class OrderReturnServiceTest extends TestCase
         ]);
 
         $balance_before_order = $giftCard->original_balance;
-        [,$order] = $this->createFakeRecords(gift_card_code: $giftCard->code);
+        [$cashier, $order] = $this->createFakeRecords(gift_card_code: $giftCard->code);
         $productReturning = $order->products->first();
         new OrderReturnProductService($productReturning);
         $amountAlreadyRefundedToGiftCard = $productReturning->product->getPriceAfterTax();
-        $this->assertEquals($amountAlreadyRefundedToGiftCard, $order->getAmountRefundedToGiftCard());
+        $this->assertEquals($amountAlreadyRefundedToGiftCard, $order->getReturnedTotalToGiftCard());
 
-        $orderService = new OrderReturnService($order);
+        $orderService = new OrderReturnService($order->refresh());
 
         $this->assertSame(OrderReturnService::RESULT_SUCCESS, $orderService->getResult());
         $this->assertSame(Order::STATUS_FULLY_RETURNED, $order->status);
@@ -113,12 +112,19 @@ class OrderReturnServiceTest extends TestCase
             $balance_before_order,
             $giftCard->refresh()->remaining_balance
         );
-        $this->assertDatabaseHas('gift_card_adjustments', [
-            'gift_card_id' => $giftCard->id,
-            'order_id' => $order->id,
-            'amount' => $order->gift_card_amount->subtract($amountAlreadyRefundedToGiftCard)->getAmount(),
-            'type' => 'refund',
-        ]);
+        $giftCardAmountRefunded = $order->gift_card_amount->subtract($amountAlreadyRefundedToGiftCard);
+
+        $giftCardAdjustment = $giftCard->adjustments->last();
+        $this->assertEquals($giftCardAmountRefunded, $giftCardAdjustment->amount);
+        $this->assertEquals('refund', $giftCardAdjustment->type);
+        $this->assertEquals($order->id, $giftCardAdjustment->order_id);
+
+        $orderReturn = $order->return;
+        $this->assertEquals($cashier->id, $orderReturn->returner_id);
+        $this->assertEquals($giftCardAmountRefunded, $orderReturn->gift_card_amount);
+        $this->assertEquals($order->purchaser_amount, $orderReturn->purchaser_amount);
+        $this->assertEquals($order->purchaser_amount->add($giftCardAmountRefunded), $orderReturn->total_return_amount);
+        $this->assertFalse($orderReturn->caused_by_product_return);
     }
 
     public function testProductReturnedValueUpdated(): void
