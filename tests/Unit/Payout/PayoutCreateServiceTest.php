@@ -14,7 +14,7 @@ use App\Http\Requests\PayoutRequest;
 use Database\Seeders\RotationSeeder;
 use App\Services\Payouts\PayoutCreateService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Services\Transactions\TransactionCreateService;
+use App\Services\Orders\OrderCreateService;
 
 class PayoutCreateServiceTest extends TestCase
 {
@@ -72,7 +72,7 @@ class PayoutCreateServiceTest extends TestCase
     }
 
     /** @return User[] */
-    private function createData(bool $transaction = true): array
+    private function createData(bool $order = true): array
     {
         app(RotationSeeder::class)->run();
 
@@ -87,7 +87,7 @@ class PayoutCreateServiceTest extends TestCase
 
         $this->actingAs($admin);
 
-        if ($transaction) {
+        if ($order) {
             $category = Category::factory()->create();
             $product = Product::factory()->create([
                 'category_id' => $category->id,
@@ -99,7 +99,7 @@ class PayoutCreateServiceTest extends TestCase
                 'value' => 0,
             ]);
 
-            new TransactionCreateService(new Request([
+            new OrderCreateService(new Request([
                 'products' => json_encode([['id' => $product->id, 'quantity' => 1]]),
             ]), $user);
         }

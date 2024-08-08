@@ -5,17 +5,25 @@
     <div class="columns">
         <div class="column">
             @include('includes.messages')
-            <p><strong>Order ID:</strong> {{ $transaction->id }}</p>
-            <p><strong>Date:</strong> {{ $transaction->created_at->format('M jS Y h:ia') }}</p>
-            <p><strong>Rotation:</strong> {{ $transaction->rotation->name }}</p>
-            <p><strong>Purchaser:</strong> @permission(\App\Helpers\Permission::USERS_VIEW) <a href="{{ route('users_view', $transaction->purchaser_id) }}">{{ $transaction->purchaser->full_name }}</a> @else {{ $transaction->purchaser->full_name }} @endpermission</p>
-            <p><strong>Cashier:</strong> @permission(\App\Helpers\Permission::USERS_VIEW) <a href="{{ route('users_view', $transaction->cashier_id) }}">{{ $transaction->cashier->full_name }}</a> @else {{ $transaction->cashier->full_name }} @endpermission</p>
-            <p><strong>Total Price:</strong> {{ $transaction->total_price }}</p>
-            <p><strong>Purchaser amount:</strong> {{ $transaction->purchaser_amount }}</p>
-            <p><strong>Gift card amount:</strong> {{ $transaction->gift_card_amount }} @if($transaction->giftCard) <code>{{ $transaction->giftCard->code() }}</code> @endif</p>
-            <p><strong>Status:</strong> {!! $transaction->getStatusHtml() !!}</p>
+            <p><strong>Order ID:</strong> {{ $order->id }}</p>
+            <p><strong>Date:</strong> {{ $order->created_at->format('M jS Y h:ia') }}</p>
+            <p><strong>Rotation:</strong> {{ $order->rotation->name }}</p>
+            <p><strong>Purchaser:</strong> @permission(\App\Helpers\Permission::USERS_VIEW) <a href="{{ route('users_view', $order->purchaser_id) }}">{{ $order->purchaser->full_name }}</a> @else {{ $order->purchaser->full_name }} @endpermission</p>
+            <p><strong>Cashier:</strong> @permission(\App\Helpers\Permission::USERS_VIEW) <a href="{{ route('users_view', $order->cashier_id) }}">{{ $order->cashier->full_name }}</a> @else {{ $order->cashier->full_name }} @endpermission</p>
+            <p><strong>Total Price:</strong> {{ $order->total_price }}</p>
+            <p><strong>Purchaser amount:</strong> {{ $order->purchaser_amount }}</p>
+            @if($order->gift_card_amount->isPositive())
+                <p><strong>Gift card amount:</strong> {{ $order->gift_card_amount }} @if($order->giftCard) <code>{{ $order->giftCard->code() }}</code> @endif</p>
+            @endif
+            <p><strong>Status:</strong> {!! $order->getStatusHtml() !!}</p>
+            @if($order->status !== \App\Models\Order::STATUS_NOT_RETURNED)
+                <p><strong>Returned:</strong> {{ $order->getReturnedTotal() }}</p>
+                <p><strong>Returned to gift card:</strong> {{ $order->getAmountRefundedToGiftCard() }}</p>
+                <p><strong>Returned to purchaser balance:</strong> {{ $order->getReturnedTotalInCash() }}</p>
+                <p><strong>Amount left to return:</strong> {{ $order->getOwingTotal() }}</p>
+            @endif
             <br>
-            @if($transaction->status !== \App\Models\Transaction::STATUS_FULLY_RETURNED && hasPermission(\App\Helpers\Permission::ORDERS_RETURN))
+            @if($order->status !== \App\Models\Order::STATUS_FULLY_RETURNED && hasPermission(\App\Helpers\Permission::ORDERS_RETURN))
                 <button class="button is-danger is-outlined" type="button" onclick="openModal();">
                     <span>Return</span>
                     <span class="icon is-small">
@@ -41,7 +49,7 @@
                         @endpermission
                     </thead>
                     <tbody>
-                        @foreach($transaction->products as $product)
+                        @foreach($order->products as $product)
                         <tr>
                             <td>
                                 <div>{{ $product->product->name }}</div>
@@ -58,7 +66,7 @@
                             @permission(\App\Helpers\Permission::ORDERS_RETURN)
                             <td>
                                 <div>
-                                    @if(!$transaction->returned && $product->returned < $product->quantity)
+                                    @if(!$order->returned && $product->returned < $product->quantity)
                                         <button class="button is-danger is-small"  onclick="openProductModal({{ $product->id }});">Return ({{ $product->quantity - $product->returned }})</button>
                                     @else
                                         <div><i>Returned</i></div>
@@ -73,7 +81,7 @@
             </div>
         </div>
     </div>
-    <x-entity-timeline :timeline="$transaction->timeline()" />
+    <x-entity-timeline :timeline="$order->timeline()" />
 </div>
 
 @permission(\App\Helpers\Permission::ORDERS_RETURN)
@@ -84,8 +92,8 @@
             <p class="modal-card-title">Confirmation</p>
         </header>
         <section class="modal-card-body">
-            <p>Are you sure you want to return this transaction?</p>
-            <form action="{{ route('transactions_return', $transaction->id) }}" id="returnOrderForm" method="POST">
+            <p>Are you sure you want to return this order?</p>
+            <form action="{{ route('orders_return', $order->id) }}" id="returnOrderForm" method="POST">
                 @csrf
                 @method('PUT')
             </form>
@@ -147,23 +155,23 @@
             modal_order.classList.remove('is-active');
         }
 
-        let transactionProduct = null;
+        let orderProduct = null;
         const modal_product = document.querySelector('.modal-product');
 
         function openProductModal(return_product) {
-            transactionProduct = return_product;
+            orderProduct = return_product;
             modal_product.classList.add('is-active');
         }
 
         function closeProductModal() {
-            transactionProduct = null;
+            orderProduct = null;
             modal_product.classList.remove('is-active');
         }
 
         function returnProductData() {
-            let url = '{{ route("transaction_return_product", [":transaction", ":transactionProduct"]) }}';
-            url = url.replace(':transaction', {{ $transaction->id }});
-            url = url.replace(':transactionProduct', transactionProduct);
+            let url = '{{ route("order_return_product", [":order", ":orderProduct"]) }}';
+            url = url.replace(':order', {{ $order->id }});
+            url = url.replace(':orderProduct', orderProduct);
             $("#returnItemForm").attr('action', url);
             $("#returnItemForm").submit();
         }

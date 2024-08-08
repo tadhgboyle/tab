@@ -12,7 +12,7 @@ return new class() extends Migration {
      */
     public function up()
     {
-        Schema::table('transactions', function (Blueprint $table) {
+        Schema::table('orders', function (Blueprint $table) {
             $table->integer('purchaser_amount')->after('total_price');
             $table->integer('gift_card_amount')->after('purchaser_amount');
             $table->foreignId('gift_card_id')->after('gift_card_amount')->nullable()->constrained();
@@ -26,7 +26,7 @@ return new class() extends Migration {
      */
     public function down()
     {
-        Schema::table('transactions', function (Blueprint $table) {
+        Schema::table('orders', function (Blueprint $table) {
             //
         });
     }

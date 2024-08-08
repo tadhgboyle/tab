@@ -19,7 +19,7 @@ class UserTest extends TestCase
         $this->markTestIncomplete();
     }
 
-    public function testHasTransactions(): void
+    public function testHasOrders(): void
     {
         $this->markTestIncomplete();
     }
@@ -54,12 +54,12 @@ class UserTest extends TestCase
         $this->markTestIncomplete();
     }
 
-    public function testFindSpentCalculatesFromTransactionsAndActivityRegistrations(): void
+    public function testFindSpentCalculatesFromOrdersAndActivityRegistrations(): void
     {
         $this->markTestIncomplete();
     }
 
-    public function testFindReturnedCalculatesFromTransactionTotalPriceIfFullyReturned(): void
+    public function testFindReturnedCalculatesFromOrderTotalPriceIfFullyReturned(): void
     {
         $this->markTestIncomplete();
     }

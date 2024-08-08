@@ -43,9 +43,9 @@ class User extends Authenticatable implements HasTimeline
         return $this->belongsTo(Role::class);
     }
 
-    public function transactions(): HasMany
+    public function orders(): HasMany
     {
-        return $this->hasMany(Transaction::class, 'purchaser_id')->with('products');
+        return $this->hasMany(Order::class, 'purchaser_id')->with('products');
     }
 
     public function activityRegistrations(): HasMany
@@ -101,7 +101,14 @@ class User extends Authenticatable implements HasTimeline
     public function findSpent(): Money
     {
         return Money::parse(0)
-            ->add(...$this->transactions->map->total_price)
+            ->add(...$this->orders->map->total_price)
+            ->add(...$this->activityRegistrations->map->total_price);
+    }
+
+    public function findSpentInCash(): Money
+    {
+        return Money::parse(0)
+            ->add(...$this->orders->map->purchaser_amount)
             ->add(...$this->activityRegistrations->map->total_price);
     }
 
@@ -113,17 +120,43 @@ class User extends Authenticatable implements HasTimeline
     {
         $returned = Money::parse(0);
 
-        $this->transactions->each(function (Transaction $transaction) use (&$returned) {
-            if ($transaction->isReturned()) {
-                $returned = $returned->add($transaction->total_price);
+        $this->orders->each(function (order $order) use (&$returned) {
+            if ($order->isReturned()) {
+                $returned = $returned->add($order->total_price);
                 return;
             }
 
-            if ($transaction->status === Transaction::STATUS_NOT_RETURNED) {
+            if ($order->status === order::STATUS_NOT_RETURNED) {
                 return;
             }
 
-            $returned = $returned->add($transaction->getReturnedTotal());
+            $returned = $returned->add($order->getReturnedTotal());
+        });
+
+        $returned = $returned->add(
+            ...$this->activityRegistrations
+                ->where('returned', true)
+                ->map->total_price
+        );
+
+        return $returned;
+    }
+
+    public function findReturnedInCash(): Money
+    {
+        $returned = Money::parse(0);
+
+        $this->orders->each(function (order $order) use (&$returned) {
+            if ($order->isReturned()) {
+                $returned = $returned->add($order->purchaser_amount);
+                return;
+            }
+
+            if ($order->status === order::STATUS_NOT_RETURNED) {
+                return;
+            }
+
+            $returned = $returned->add($order->getReturnedTotal()->subtract($order->getAmountRefundedToGiftCard()));
         });
 
         $returned = $returned->add(
@@ -141,8 +174,8 @@ class User extends Authenticatable implements HasTimeline
      */
     public function findOwing(): Money
     {
-        return $this->findSpent()
-            ->subtract($this->findReturned())
+        return $this->findSpentInCash()
+            ->subtract($this->findReturnedInCash())
             ->subtract($this->findPaidOut());
     }
 
@@ -172,12 +205,12 @@ class User extends Authenticatable implements HasTimeline
         ];
 
         $events = [];
-        foreach ($this->transactions as $transaction) {
+        foreach ($this->orders as $order) {
             $events[] = new TimelineEntry(
-                description: "Purchased {$transaction->total_price}",
+                description: "Purchased {$order->total_price}",
                 emoji: '🛒',
-                time: $transaction->created_at,
-                actor: $transaction->cashier,
+                time: $order->created_at,
+                actor: $order->cashier,
             );
         }
 

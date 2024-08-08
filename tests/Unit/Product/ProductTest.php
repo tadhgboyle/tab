@@ -10,9 +10,9 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Settings;
 use App\Models\UserLimit;
-use App\Models\Transaction;
+use App\Models\Order;
 use App\Helpers\RotationHelper;
-use App\Models\TransactionProduct;
+use App\Models\OrderProduct;
 use Database\Seeders\RotationSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -280,7 +280,7 @@ class ProductTest extends TestCase
 
         $rotation = resolve(RotationHelper::class)->getRotations()->first()->id;
 
-        $transaction1 = Transaction::factory()->create([
+        $order1 = Order::factory()->create([
             'purchaser_id' => $user->id,
             'cashier_id' => $user->id,
             'rotation_id' => $rotation,
@@ -289,17 +289,17 @@ class ProductTest extends TestCase
             'gift_card_amount' => 0_00,
         ]);
 
-        $skittles_product = TransactionProduct::from($skittles, 2, 5);
-        $skittles_product->transaction_id = $transaction1->id;
-        $hat_product = TransactionProduct::from($hat, 1, 5);
-        $hat_product->transaction_id = $transaction1->id;
+        $skittles_product = OrderProduct::from($skittles, 2, 5);
+        $skittles_product->order_id = $order1->id;
+        $hat_product = OrderProduct::from($hat, 1, 5);
+        $hat_product->order_id = $order1->id;
 
-        $transaction1->products()->saveMany([
+        $order1->products()->saveMany([
             $skittles_product,
             $hat_product,
         ]);
 
-        $transaction2 = Transaction::factory()->create([
+        $order2 = Order::factory()->create([
             'purchaser_id' => $user->id,
             'cashier_id' => $user->id,
             'rotation_id' => $rotation,
@@ -308,19 +308,19 @@ class ProductTest extends TestCase
             'gift_card_amount' => 0_00,
         ]);
 
-        $sweater_product = TransactionProduct::from($sweater, 1, 5, 7);
-        $sweater_product->transaction_id = $transaction2->id;
-        $coffee_product = TransactionProduct::from($coffee, 2, 5, 7);
-        $coffee_product->transaction_id = $transaction2->id;
+        $sweater_product = OrderProduct::from($sweater, 1, 5, 7);
+        $sweater_product->order_id = $order2->id;
+        $coffee_product = OrderProduct::from($coffee, 2, 5, 7);
+        $coffee_product->order_id = $order2->id;
 
-        $transaction2->products()->saveMany([
+        $order2->products()->saveMany([
             $sweater_product,
             $coffee_product,
         ]);
 
         $rotation = resolve(RotationHelper::class)->getRotations()->last()->id;
 
-        $transaction3 = Transaction::factory()->create([
+        $order3 = Order::factory()->create([
             'purchaser_id' => $user->id,
             'cashier_id' => $user->id,
             'rotation_id' => $rotation,
@@ -329,17 +329,17 @@ class ProductTest extends TestCase
             'gift_card_amount' => 0_00,
         ]);
 
-        $skittles_product = TransactionProduct::from($skittles, 2, 5);
-        $skittles_product->transaction_id = $transaction1->id;
-        $hat_product = TransactionProduct::from($hat, 1, 5);
-        $hat_product->transaction_id = $transaction1->id;
+        $skittles_product = OrderProduct::from($skittles, 2, 5);
+        $skittles_product->order_id = $order1->id;
+        $hat_product = OrderProduct::from($hat, 1, 5);
+        $hat_product->order_id = $order1->id;
 
-        $transaction3->products()->saveMany([
+        $order3->products()->saveMany([
             $skittles_product,
             $hat_product,
         ]);
 
-        $transaction4 = Transaction::factory()->create([
+        $order4 = Order::factory()->create([
             'purchaser_id' => $user->id,
             'cashier_id' => $user->id,
             'rotation_id' => $rotation,
@@ -348,12 +348,12 @@ class ProductTest extends TestCase
             'gift_card_amount' => 0_00,
         ]);
 
-        $sweater_product = TransactionProduct::from($sweater, 1, 5, 7);
-        $sweater_product->transaction_id = $transaction2->id;
-        $coffee_product = TransactionProduct::from($coffee, 2, 5, 7);
-        $coffee_product->transaction_id = $transaction2->id;
+        $sweater_product = OrderProduct::from($sweater, 1, 5, 7);
+        $sweater_product->order_id = $order2->id;
+        $coffee_product = OrderProduct::from($coffee, 2, 5, 7);
+        $coffee_product->order_id = $order2->id;
 
-        $transaction4->products()->saveMany([
+        $order4->products()->saveMany([
             $sweater_product,
             $coffee_product,
         ]);

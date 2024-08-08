@@ -14,7 +14,7 @@ use Database\Seeders\GiftCardSeeder;
 use Database\Seeders\RotationSeeder;
 use Database\Seeders\SettingsSeeder;
 use Database\Seeders\UserLimitSeeder;
-use Database\Seeders\TransactionSeeder;
+use Database\Seeders\OrderSeeder;
 use Database\Seeders\ActivityRegistrationSeeder;
 
 class DatabaseSeeder extends Seeder
@@ -66,8 +66,8 @@ class DatabaseSeeder extends Seeder
         $this->command->info('Seeding Gift Cards...');
         $this->resolve(GiftCardSeeder::class)->run();
 
-        $this->command->info('Seeding Transactions...');
-        $this->resolve(TransactionSeeder::class)->run();
+        $this->command->info('Seeding Orders...');
+        $this->resolve(OrderSeeder::class)->run();
 
         $this->command->info('Seeding Activity Registrations...');
         $this->resolve(ActivityRegistrationSeeder::class)->run();

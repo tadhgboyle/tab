@@ -3,7 +3,7 @@
 namespace App\Charts;
 
 use App\Helpers\Permission;
-use App\Models\Transaction;
+use App\Models\Order;
 use Chartisan\PHP\Chartisan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -22,8 +22,8 @@ class OrderHistoryChart extends BaseChart
     // TODO: How should we display semi-Returned orders?
     public function handler(Request $request): Chartisan
     {
-        $normal_data = $this->createBuilder()->whereNot('status', Transaction::STATUS_FULLY_RETURNED)->get();
-        $returned_data = $this->createBuilder()->where('status', Transaction::STATUS_FULLY_RETURNED)->get();
+        $normal_data = $this->createBuilder()->whereNot('status', Order::STATUS_FULLY_RETURNED)->get();
+        $returned_data = $this->createBuilder()->where('status', Order::STATUS_FULLY_RETURNED)->get();
 
         $normal_orders = $returned_orders = $labels = [];
 
@@ -55,7 +55,7 @@ class OrderHistoryChart extends BaseChart
     {
         $stats_rotation_id = resolve(RotationHelper::class)->getStatisticsRotationId();
 
-        return Transaction::query()
+        return Order::query()
             ->when($stats_rotation_id !== '*', static function (Builder $builder) use ($stats_rotation_id) {
                 $builder->where('rotation_id', $stats_rotation_id);
             })

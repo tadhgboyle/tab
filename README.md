@@ -129,7 +129,7 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
         - These + stock could be done by using a ledger data structure; append new row when data changes
     - Etc
 - Bulk change prices of items (Everything 10% *off* or everything 20% *more* etc)
-- Add PDF printing of all users transactions
+- Add PDF printing of all users orders
     - In settings page, allow to upload a custom logo to be on invoice
 - Allow user to change light/dark mode
 - Staff Discount: check if purchaser is staff role and give % off (per item basis) 
@@ -138,7 +138,6 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
     - They should type a query first, or use some ajax to fetch data. or else it could take forever to load
 - Tax-free products / users
 - User tags (tax free tagged, limit of xyz tag, etc)
-- Rename Transaction classes to Order
 - Allow categories to be PST and/or GST exempt
 - Move "ajax" routes to API controllers + paths
 - Timeline on orders, gift cards, etc to see when they were made, used, refunded, etc
@@ -147,11 +146,11 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
     - Gift card given (would need to let gift cards optionally have an assigned user, but should prolly still be able to be used by anyone)
     - Admin emails: New user made, settings changed, etc
 - Rename payouts to something better
-- Store credits (when a transaction with gift card is returned, give them store credit, etc)
+- Store credits (when a order with gift card is returned, give them store credit, etc)
 - Add check balance modal for gift card (under a "tools" dropdown?)
 - Add way to "hide used gift cards" in gift card list
 - Convert jquery ajax requests to use axios
-- Let transactions use multiple gift cards
+- Let orders use multiple gift cards
 - When editing entities, correctly return back to the list/show page the user was previously on upon success
 - Add "cost" to products and display margins
 
@@ -159,5 +158,5 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
 - When cashier page refreshed with gift card, ensure it still has balance + update balance in table row
 - Make settings boxes/columns more fluid, so it doesn't look odd when people have subnet of permissions
 - Make seeders only create past entities nothing in the future
-- When don't have permission to view statistics/users/transactions from other rotations, still show the dropdown just have it disabled so they can see active rotation
+- When don't have permission to view statistics/users/orders from other rotations, still show the dropdown just have it disabled so they can see active rotation
 - Fix user owing (plus modal) to account for gift card returns when calculating owing

@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Unit\Transaction;
+namespace Tests\Unit\Order;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class TransactionProductTest extends TestCase
+class OrderProductTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -14,7 +14,7 @@ class TransactionProductTest extends TestCase
         $this->markTestIncomplete();
     }
 
-    public function testHasTransaction(): void
+    public function testHasOrder(): void
     {
         $this->markTestIncomplete();
     }

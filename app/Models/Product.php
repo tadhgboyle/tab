@@ -103,12 +103,12 @@ class Product extends Model
 
     public function findSold(string|int $rotation_id): int
     {
-        return TransactionProduct::when($rotation_id !== '*', static function (Builder $query) use ($rotation_id) {
-            $query->whereHas('transaction', function (Builder $query) use ($rotation_id) {
+        return OrderProduct::when($rotation_id !== '*', static function (Builder $query) use ($rotation_id) {
+            $query->whereHas('order', function (Builder $query) use ($rotation_id) {
                 $query->where('rotation_id', $rotation_id);
             });
-        })->where('product_id', $this->id)->chunkMap(static function (TransactionProduct $transactionProduct) {
-            return $transactionProduct->quantity - $transactionProduct->returned;
+        })->where('product_id', $this->id)->chunkMap(static function (OrderProduct $orderProduct) {
+            return $orderProduct->quantity - $orderProduct->returned;
         })->sum();
     }
 }

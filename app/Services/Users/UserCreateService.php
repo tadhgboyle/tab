@@ -49,7 +49,7 @@ class UserCreateService extends HttpService
 
         // Set their category limits
         $userLimitsUpsertService = new UserLimitUpsertService($user, $request);
-        // TODO make this a transaction so we can rollback if one of the limits fails
+        // TODO make this a order so we can rollback if one of the limits fails
         if (!in_array($userLimitsUpsertService->getResult(), [UserLimitUpsertService::RESULT_SUCCESS, UserLimitUpsertService::RESULT_SUCCESS_NULL_DATA])) {
             $this->_result = $userLimitsUpsertService->getResult();
             $this->_message = $userLimitsUpsertService->getMessage();

@@ -60,19 +60,19 @@ class UserLimit extends Model
     public function findSpent(): Money
     {
         // If they have unlimited money (no limit set) for this category,
-        // get all their transactions, as they have no limit set we dont need to worry about
-        // when the transaction was created_at.
+        // get all their orders, as they have no limit set we dont need to worry about
+        // when the order was created_at.
         if ($this->isUnlimited()) {
-            $transactions = $this->user->transactions
-                ->where('status', '!=', Transaction::STATUS_FULLY_RETURNED);
+            $orders = $this->user->orders
+                ->where('status', '!=', Order::STATUS_FULLY_RETURNED);
             $activity_registrations = $this->user->activityRegistrations
                 ->where('returned', false);
         } else {
             $carbon_string = Carbon::now()->subDays($this->duration === self::LIMIT_DAILY ? 1 : 7)->toDateTimeString();
 
-            $transactions = $this->user->transactions
+            $orders = $this->user->orders
                 ->where('created_at', '>=', $carbon_string)
-                ->where('status', '!=', Transaction::STATUS_FULLY_RETURNED);
+                ->where('status', '!=', Order::STATUS_FULLY_RETURNED);
 
             $activity_registrations = $this->user->activityRegistrations
                 ->where('created_at', '>=', $carbon_string)
@@ -81,11 +81,11 @@ class UserLimit extends Model
 
         $spent = Money::parse(0);
 
-        foreach ($transactions as $transaction) {
-            // Loop transaction products. Determine if the product's category is the one we are looking at,
+        foreach ($orders as $order) {
+            // Loop order products. Determine if the product's category is the one we are looking at,
             // if so, add its ((value * (quantity - returned)) * tax) to the end result
-            foreach ($transaction->products->filter(fn (TransactionProduct $product) => $product->category_id === $this->category->id) as $product) {
-                $spent = $spent->add(TaxHelper::forTransactionProduct($product, $product->quantity - $product->returned));
+            foreach ($order->products->filter(fn (OrderProduct $product) => $product->category_id === $this->category->id) as $product) {
+                $spent = $spent->add(TaxHelper::forOrderProduct($product, $product->quantity - $product->returned));
             }
         }
 

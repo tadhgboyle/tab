@@ -2,10 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Models\Transaction;
+use App\Models\Order;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class TransactionFactory extends Factory
+class OrderFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -16,7 +16,7 @@ class TransactionFactory extends Factory
     {
         return [
             'gift_card_amount' => 0_00,
-            'status' => Transaction::STATUS_NOT_RETURNED,
+            'status' => Order::STATUS_NOT_RETURNED,
             'created_at' => now()
         ];
     }

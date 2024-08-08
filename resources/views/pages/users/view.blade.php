@@ -23,26 +23,26 @@
     <nav class="level">
         <div class="level-item has-text-centered">
             <div>
-            <p class="heading">Balance</p>
-            <p class="title">{{ $user->balance }}</p>
+                <p class="heading">Balance</p>
+                <p class="title">{{ $user->balance }}</p>
             </div>
         </div>
         <div class="level-item has-text-centered">
             <div>
-            <p class="heading">Total spent</p>
-            <p class="title">{{ $user->findSpent() }}</p>
+                <p class="heading">Total spent</p>
+                <p class="title">{{ $user->findSpent() }}</p>
             </div>
         </div>
         <div class="level-item has-text-centered">
             <div>
-            <p class="heading">Total returned</p>
-            <p class="title">{{ $user->findReturned() }}</p>
+                <p class="heading">Total returned</p>
+                <p class="title">{{ $user->findReturned() }}</p>
             </div>
         </div>
         <div class="level-item has-text-centered">
             <div>
             <p class="heading">Total paid out</p>
-            <p class="title">{{ $user->findPaidOut() }}</p>
+                <p class="title">{{ $user->findPaidOut() }}</p>
             </div>
         </div>
         <div class="level-item has-text-centered">
@@ -86,23 +86,23 @@
                             @endpermission
                         </thead>
                         <tbody>
-                            @foreach($user->transactions->sortByDesc('created_at') as $transaction)
+                            @foreach($user->orders->sortByDesc('created_at') as $order)
                             <tr>
                                 <td>
-                                    <div>{{ $transaction->created_at->format('M jS Y h:ia') }}</div>
+                                    <div>{{ $order->created_at->format('M jS Y h:ia') }}</div>
                                 </td>
                                 <td>
-                                    <div>{{ $transaction->cashier->full_name }}</div>
+                                    <div>{{ $order->cashier->full_name }}</div>
                                 </td>
                                 <td>
-                                    <div>{{ $transaction->total_price }}</div>
+                                    <div>{{ $order->total_price }}</div>
                                 </td>
                                 <td>
-                                    <div>{!! $transaction->getStatusHtml() !!}</div>
+                                    <div>{!! $order->getStatusHtml() !!}</div>
                                 </td>
                                 @permission(\App\Helpers\Permission::ORDERS_VIEW)
                                 <td>
-                                    <div><a href="{{ route('orders_view', $transaction->id) }}">View</a></div>
+                                    <div><a href="{{ route('orders_view', $order->id) }}">View</a></div>
                                 </td>
                                 @endpermission
                             </tr>
@@ -291,44 +291,46 @@
                 <tbody>
                 <tr>
                     <td colspan="2">
-                        <strong>Transactions</strong>
+                        <strong>Orders</strong>
                     </td>
                 </tr>
-                @forelse($user->transactions->sortByDesc('created_at') as $transaction)
+                @forelse($user->orders->sortByDesc('created_at') as $order)
                     <tr>
                         <td>
-                            <div>Transaction (#{{ $transaction->id }})</div>
+                            <div>Order (#{{ $order->id }})</div>
                         </td>
                         <td>
-                            <div>+{{ $transaction->total_price }}</div>
+                            <div>+{{ $order->purchaser_amount }}</div>
                         </td>
                     </tr>
-                    @switch($transaction->status)
-                        @case(\App\Models\Transaction::STATUS_FULLY_RETURNED)
+                    @switch($order->status)
+                        @case(\App\Models\Order::STATUS_FULLY_RETURNED)
                             <tr>
                                 <td>
-                                    <div>Return (#{{ $transaction->id }})</div>
+                                    <div>Return (#{{ $order->id }})</div>
                                 </td>
                                 <td>
-                                    <div>-{{ $transaction->total_price }}</div>
+                                    <div>-{{ $order->purchaser_amount }}</div>
                                 </td>
                             </tr>
                             @break
-                        @case(\App\Models\Transaction::STATUS_PARTIAL_RETURNED)
-                            <tr>
-                                <td>
-                                    <div>Partial Return (#{{ $transaction->id }})</div>
-                                </td>
-                                <td>
-                                    <div>-{{ $transaction->getReturnedTotal() }}</div>
-                                </td>
-                            </tr>
+                        @case(\App\Models\Order::STATUS_PARTIAL_RETURNED)
+                                @if($order->getReturnedTotalInCash()->isPositive())
+                                    <tr>
+                                        <td>
+                                            <div>Partial Return (#{{ $order->id }})</div>
+                                        </td>
+                                        <td>
+                                            <div>-{{ $order->getReturnedTotalInCash() }}</div>
+                                        </td>
+                                    </tr>
+                                @endif
                             @break
                     @endswitch
                 @empty
                     <tr>
                         <td>
-                            <div><i>No Transactions</i></div>
+                            <div><i>No Orders</i></div>
                         </td>
                         <td>
                             <div></div>

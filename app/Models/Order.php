@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Transaction extends Model implements HasTimeline
+class Order extends Model implements HasTimeline
 {
     public const STATUS_NOT_RETURNED = 0;
 
@@ -49,7 +49,7 @@ class Transaction extends Model implements HasTimeline
 
     public function products(): HasMany
     {
-        return $this->hasMany(TransactionProduct::class);
+        return $this->hasMany(OrderProduct::class);
     }
 
     public function giftCard(): BelongsTo
@@ -69,8 +69,8 @@ class Transaction extends Model implements HasTimeline
 
         return $this->products
             ->where('returned', '>=', 1)
-            ->reduce(function (Money $carry, TransactionProduct $product) {
-                return $carry->add(TaxHelper::forTransactionProduct($product, $product->returned));
+            ->reduce(function (Money $carry, OrderProduct $product) {
+                return $carry->add(TaxHelper::forOrderProduct($product, $product->returned));
             }, Money::parse(0));
     }
 
@@ -93,12 +93,25 @@ class Transaction extends Model implements HasTimeline
         $amountRefundedToGiftCard = Money::sum(
             Money::parse(0),
             ...$this->giftCard->adjustments
-            ->where('transaction_id', $this->id)
+            ->where('order_id', $this->id)
             ->where('type', GiftCardAdjustment::TYPE_REFUND)
             ->map->amount
         );
 
         return $amountRefundedToGiftCard;
+    }
+
+    public function getReturnedTotalInCash(): Money
+    {
+        if ($this->isReturned()) {
+            return $this->purchaser_amount;
+        }
+
+        if ($this->status === self::STATUS_NOT_RETURNED) {
+            return Money::parse(0);
+        }
+
+        return $this->getReturnedTotal()->subtract($this->getAmountRefundedToGiftCard());
     }
 
     public function isReturned(): bool

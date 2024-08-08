@@ -1,49 +1,49 @@
 <?php
 
-namespace App\Services\Transactions;
+namespace App\Services\Orders;
 
 use Cknow\Money\Money;
-use App\Models\Transaction;
+use App\Models\Order;
 use App\Services\HttpService;
-use App\Models\TransactionProduct;
+use App\Models\OrderProduct;
 use Illuminate\Http\RedirectResponse;
 use App\Services\GiftCards\GiftCardAdjustmentService;
 
-class TransactionReturnService extends HttpService
+class OrderReturnService extends HttpService
 {
-    use TransactionService;
+    use OrderService;
 
     public const RESULT_ALREADY_RETURNED = 'ALREADY_RETURNED';
     public const RESULT_SUCCESS = 'SUCCESS';
 
-    public function __construct(Transaction $transaction)
+    public function __construct(Order $order)
     {
-        $this->_transaction = $transaction;
+        $this->_order = $order;
 
         // This should never happen, but a good security measure
-        if ($this->_transaction->isReturned()) {
+        if ($this->_order->isReturned()) {
             $this->_result = self::RESULT_ALREADY_RETURNED;
             $this->_message = 'That order has already been fully returned.';
             return;
         }
 
-        $this->updateTransactionProductAttributes();
+        $this->updateOrderProductAttributes();
         $this->refundPurchaser();
 
-        $this->_transaction->update(['status' => Transaction::STATUS_FULLY_RETURNED]);
+        $this->_order->update(['status' => Order::STATUS_FULLY_RETURNED]);
 
         $this->_result = self::RESULT_SUCCESS;
-        $this->_message = 'Successfully returned order #' . $this->_transaction->id . ' for ' . $this->_transaction->purchaser->full_name;
+        $this->_message = 'Successfully returned order #' . $this->_order->id . ' for ' . $this->_order->purchaser->full_name;
     }
 
-    private function updateTransactionProductAttributes(): void
+    private function updateOrderProductAttributes(): void
     {
-        $this->_transaction->products->each(function (TransactionProduct $transactionProduct) {
-            $returned = $transactionProduct->returned;
-            $transactionProduct->update(['returned' => $transactionProduct->quantity]);
-            if ($transactionProduct->product->restore_stock_on_return) {
-                $transactionProduct->product->adjustStock(
-                    $transactionProduct->quantity - $returned
+        $this->_order->products->each(function (OrderProduct $orderProduct) {
+            $returned = $orderProduct->returned;
+            $orderProduct->update(['returned' => $orderProduct->quantity]);
+            if ($orderProduct->product->restore_stock_on_return) {
+                $orderProduct->product->adjustStock(
+                    $orderProduct->quantity - $returned
                 );
             }
         });
@@ -51,15 +51,15 @@ class TransactionReturnService extends HttpService
 
     private function refundPurchaser(): void
     {
-        $purchaser = $this->_transaction->purchaser;
+        $purchaser = $this->_order->purchaser;
         $gift_card_amount = $this->totalToRefundGiftCard();
         $purchaser_amount = $this->totalToRefundPurchaser($gift_card_amount);
 
         if ($gift_card_amount->isPositive()) {
-            $gift_card = $this->_transaction->giftCard;
+            $gift_card = $this->_order->giftCard;
             $gift_card->update(['remaining_balance' => $gift_card->remaining_balance->add($gift_card_amount)]);
 
-            $giftCardAdjustmentService = new GiftCardAdjustmentService($gift_card, $this->_transaction);
+            $giftCardAdjustmentService = new GiftCardAdjustmentService($gift_card, $this->_order);
             $giftCardAdjustmentService->refund($gift_card_amount);
         }
 
@@ -70,18 +70,18 @@ class TransactionReturnService extends HttpService
 
     private function totalToRefundGiftCard(): Money
     {
-        if ($this->_transaction->gift_card_amount->isZero()) {
+        if ($this->_order->gift_card_amount->isZero()) {
             return Money::parse(0);
         }
 
-        return $this->_transaction->gift_card_amount->subtract(
-            $this->_transaction->getAmountRefundedToGiftCard()
+        return $this->_order->gift_card_amount->subtract(
+            $this->_order->getAmountRefundedToGiftCard()
         );
     }
 
     private function totalToRefundPurchaser(Money $giftCardRefund): Money
     {
-        return $this->_transaction->getOwingTotal()->subtract($giftCardRefund);
+        return $this->_order->getOwingTotal()->subtract($giftCardRefund);
     }
 
     public function redirect(): RedirectResponse

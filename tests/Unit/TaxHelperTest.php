@@ -86,7 +86,7 @@ class TaxHelperTest extends TestCase
         $this->assertEquals(Money::parse(19_37), TaxHelper::calculateFor($price, $quantity, $pst, $rates));
     }
 
-    public function testCanCalculateTaxForTransactionProduct(): void
+    public function testCanCalculateTaxForOrderProduct(): void
     {
         $this->markTestIncomplete();
     }

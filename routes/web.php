@@ -26,7 +26,7 @@ use App\Http\Controllers\GiftCardController;
 use App\Http\Controllers\RotationController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\StatisticsController;
-use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 Route::middleware('guest')->group(function () {
@@ -65,8 +65,8 @@ Route::middleware('auth')->group(function () {
      * Cashier
      */
     Route::group(['middleware' => 'permission:' . Permission::CASHIER], static function () {
-        Route::get('/orders/create/{user}', [TransactionController::class, 'create'])->name('orders_create');
-        Route::post('/orders/create/{user}', [TransactionController::class, 'store'])->name('orders_store');
+        Route::get('/orders/create/{user}', [OrderController::class, 'create'])->name('orders_create');
+        Route::post('/orders/create/{user}', [OrderController::class, 'store'])->name('orders_store');
 
         // Get product metadata via JS fetch
         Route::get('/products/{product}', [ProductController::class, 'ajaxGetInfo'])->whereNumber('product')->name('products_show');
@@ -80,17 +80,17 @@ Route::middleware('auth')->group(function () {
      */
     Route::group(['middleware' => 'permission:' . Permission::ORDERS, 'prefix' => '/orders'], static function () {
         Route::group(['middleware' => 'permission:' . Permission::ORDERS_LIST], static function () {
-            Route::get('/', [TransactionController::class, 'index'])->name('orders_list');
-            Route::get('/{transaction}/products', [TransactionController::class, 'ajaxGetProducts'])->name('orders_products');
+            Route::get('/', [OrderController::class, 'index'])->name('orders_list');
+            Route::get('/{order}/products', [OrderController::class, 'ajaxGetProducts'])->name('orders_products');
         });
 
         Route::group(['middleware' => 'permission:' . Permission::ORDERS_VIEW], static function () {
-            Route::get('/{transaction}', [TransactionController::class, 'show'])->name('orders_view');
+            Route::get('/{order}', [OrderController::class, 'show'])->name('orders_view');
         });
 
         Route::group(['middleware' => 'permission:' . Permission::ORDERS_RETURN], static function () {
-            Route::put('/{transaction}/return', [TransactionController::class, 'returnTransaction'])->name('transactions_return');
-            Route::put('/{transaction}/return/{transactionProduct}', [TransactionController::class, 'returnProduct'])->name('transaction_return_product');
+            Route::put('/{order}/return', [OrderController::class, 'returnOrder'])->name('orders_return');
+            Route::put('/{order}/return/{orderProduct}', [OrderController::class, 'returnProduct'])->name('order_return_product');
         });
     });
 

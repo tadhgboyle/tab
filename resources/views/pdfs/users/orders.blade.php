@@ -92,9 +92,9 @@
             <!-- Order Details Table -->
             <section>
                 <h3 class="section-header">Orders</h3>
-                @foreach($user->transactions as $transaction)
-                    <p>Order ID: {{ $transaction->id }}</p>
-                    <p>Date: {{ $transaction->created_at->format('M jS Y h:ia') }}</p>
+                @foreach($user->orders as $order)
+                    <p>Order ID: {{ $order->id }}</p>
+                    <p>Date: {{ $order->created_at->format('M jS Y h:ia') }}</p>
 
                     <table>
                         <thead>
@@ -111,39 +111,39 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($transaction->products as $transactionProduct)
+                            @foreach($order->products as $orderProduct)
                                 <tr>
-                                    <td class="has-text-left column-25">{{ $transactionProduct->product->name }}</td>
-                                    <td class="has-text-left column-25">{{ $transactionProduct->category->name }}</td>
-                                    <td class="has-text-left column-10">{{ $transactionProduct->quantity }}</td>
-                                    <td class="has-text-left column-10">{{ $transactionProduct->returned }}</td>
-                                    <td class="has-text-right column-15">{{ $transactionProduct->product->price }}</td>
-                                    <td class="has-text-right column-8">{{ number_format($transactionProduct->pst, 2) }}</td>
-                                    <td class="has-text-right column-8">{{ number_format($transactionProduct->gst, 2) }}</td>
+                                    <td class="has-text-left column-25">{{ $orderProduct->product->name }}</td>
+                                    <td class="has-text-left column-25">{{ $orderProduct->category->name }}</td>
+                                    <td class="has-text-left column-10">{{ $orderProduct->quantity }}</td>
+                                    <td class="has-text-left column-10">{{ $orderProduct->returned }}</td>
+                                    <td class="has-text-right column-15">{{ $orderProduct->product->price }}</td>
+                                    <td class="has-text-right column-8">{{ number_format($orderProduct->pst, 2) }}</td>
+                                    <td class="has-text-right column-8">{{ number_format($orderProduct->gst, 2) }}</td>
                                     <td class="has-text-right column-20">
-                                        {{ \App\Helpers\TaxHelper::forTransactionProduct($transactionProduct, $transactionProduct->quantity) }}
+                                        {{ \App\Helpers\TaxHelper::forOrderProduct($orderProduct, $orderProduct->quantity) }}
                                     </td>
                                     <td class="has-text-right column-5">
-                                        {{ \App\Helpers\TaxHelper::forTransactionProduct($transactionProduct, $transactionProduct->quantity - $transactionProduct->returned) }}
+                                        {{ \App\Helpers\TaxHelper::forOrderProduct($orderProduct, $orderProduct->quantity - $orderProduct->returned) }}
                                     </td>
                                 </tr>
                             @endforeach
-                            @if($transaction->giftCard)
+                            @if($order->giftCard)
                                 <tr>
-                                    <td colspan="7" class="has-text-italic column-25">Gift Card ending in {{ $transaction->giftCard->last4() }}</td>
-                                    <td class="has-text-right column-20">{{ $transaction->gift_card_amount }}</td>
+                                    <td colspan="7" class="has-text-italic column-25">Gift Card ending in {{ $order->giftCard->last4() }}</td>
+                                    <td class="has-text-right column-20">{{ $order->gift_card_amount }}</td>
                                     <td class="column-5"></td>
                                 </tr>
                             @endif
                             <tr>
                                 <td colspan="7" class="has-text-italic column-25">Cash</td>
-                                <td class="has-text-right column-20">{{ $transaction->purchaser_amount }}</td>
+                                <td class="has-text-right column-20">{{ $order->purchaser_amount }}</td>
                                 <td class="column-5"></td>
                             </tr>
                             <tr>
                                 <td colspan="7" class="has-text-italic column-25">Total</td>
-                                <td class="has-text-right column-20">{{ $transaction->total_price }}</td>
-                                <td class="has-text-right column-5 has-text-weight-bold">{{ $transaction->getOwingTotal() }}</td>
+                                <td class="has-text-right column-20">{{ $order->total_price }}</td>
+                                <td class="has-text-right column-5 has-text-weight-bold">{{ $order->getOwingTotal() }}</td>
                             </tr>
                         </tbody>
                     </table>

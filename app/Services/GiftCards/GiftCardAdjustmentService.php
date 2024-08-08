@@ -5,7 +5,7 @@ namespace App\Services\GiftCards;
 use Cknow\Money\Money;
 use App\Models\GiftCard;
 use App\Services\Service;
-use App\Models\Transaction;
+use App\Models\Order;
 use App\Models\GiftCardAdjustment;
 
 class GiftCardAdjustmentService extends Service
@@ -14,12 +14,12 @@ class GiftCardAdjustmentService extends Service
 
     public const RESULT_SUCCESS = 'SUCCESS';
 
-    private Transaction $_transaction;
+    private Order $_order;
 
-    public function __construct(GiftCard $giftCard, Transaction $transaction)
+    public function __construct(GiftCard $giftCard, Order $order)
     {
         $this->_gift_card = $giftCard;
-        $this->_transaction = $transaction;
+        $this->_order = $order;
     }
 
     public function charge(Money $amount): void
@@ -35,7 +35,7 @@ class GiftCardAdjustmentService extends Service
     private function createAdjustment(Money $amount, string $type): void
     {
         $this->_gift_card->adjustments()->create([
-            'transaction_id' => $this->_transaction->id,
+            'order_id' => $this->_order->id,
             'amount' => $amount,
             'type' => $type,
         ]);

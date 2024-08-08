@@ -7,14 +7,15 @@ use App\Models\User;
 use App\Models\Product;
 use App\Models\GiftCard;
 use App\Models\Rotation;
-use App\Models\Transaction;
+use App\Models\Order;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Database\Seeder;
-use App\Services\Transactions\TransactionCreateService;
-use App\Services\Transactions\TransactionReturnService;
-use App\Services\Transactions\TransactionReturnProductService;
+use App\Services\Orders\OrderCreateService;
+use App\Services\Orders\OrderReturnService;
+use App\Services\Orders\OrderReturnProductService;
 
-class TransactionSeeder extends Seeder
+class OrderSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -27,9 +28,9 @@ class TransactionSeeder extends Seeder
         $products_all = Product::all();
 
         foreach ($users as $user) {
-            $transactions = random_int(1, 25);
+            $orders = random_int(1, 25);
 
-            for ($i = 0; $i <= $transactions; $i++) {
+            for ($i = 0; $i <= $orders; $i++) {
                 $cashier = $users->shuffle()->whereIn('role_id', [1, 2, 4])->first();
                 Auth::login($cashier);
 
@@ -52,6 +53,7 @@ class TransactionSeeder extends Seeder
                 if ($created_at->isFuture()) {
                     $created_at = $rotation->start->addSeconds(random_int(0, now()->diffInSeconds($rotation->start)));
                 }
+                Carbon::setTestNow($created_at);
 
                 if (random_int(0, 5) === 0) {
                     $user->load('giftCards');
@@ -67,31 +69,32 @@ class TransactionSeeder extends Seeder
                     }
                 }
 
-                new TransactionCreateService(new Request([
+                new OrderCreateService(new Request([
                     'purchaser_id' => $user->id,
                     'cashier_id' => $cashier->id,
                     'rotation_id' => $rotation->id,
                     'products' => json_encode($products),
-                    'created_at' => $created_at,
                     'gift_card_code' => $giftCard->code ?? null,
                 ]), $user);
+
+                Carbon::setTestNow(null);
             }
         }
 
-        foreach (Transaction::all() as $transaction) {
+        foreach (Order::all() as $order) {
             if (random_int(0, 3) === 3) {
                 if (random_int(0, 1) === 1) {
-                    new TransactionReturnService($transaction);
+                    new OrderReturnService($order);
                 } else {
-                    $transactionProduct = $transaction->products->random();
-                    $max_to_return = $transactionProduct->quantity;
+                    $orderProduct = $order->products->random();
+                    $max_to_return = $orderProduct->quantity;
                     $returning = random_int(1, $max_to_return);
 
                     for ($j = 0; $j <= $returning; $j++) {
-                        new TransactionReturnProductService($transactionProduct);
+                        new OrderReturnProductService($orderProduct);
                     }
                     if (random_int(0, 1) === 1) {
-                        new TransactionReturnService($transaction);
+                        new OrderReturnService($order);
                     }
                 }
             }

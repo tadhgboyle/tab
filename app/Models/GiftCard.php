@@ -40,7 +40,7 @@ class GiftCard extends Model implements HasTimeline
 
     public function uses(): HasMany
     {
-        return $this->hasMany(Transaction::class)->orderBy('created_at', 'DESC');
+        return $this->hasMany(Order::class)->orderBy('created_at', 'DESC');
     }
 
     public function users(): BelongsToMany
@@ -87,7 +87,7 @@ class GiftCard extends Model implements HasTimeline
     public function usageBy(User $user): Money
     {
         // TODO: without('products')
-        return Money::sum(Money::parse(0), ...$user->transactions->where('gift_card_id', $this->id)->map->gift_card_amount);
+        return Money::sum(Money::parse(0), ...$user->orders->where('gift_card_id', $this->id)->map->gift_card_amount);
     }
 
     public function getStatusHtml(): string
@@ -119,7 +119,7 @@ class GiftCard extends Model implements HasTimeline
                     : "Refunded {$adjustment->amount}",
                 emoji: '🧾',
                 time: $adjustment->created_at,
-                actor: $adjustment->transaction->purchaser,
+                actor: $adjustment->order->purchaser,
             );
         }
 

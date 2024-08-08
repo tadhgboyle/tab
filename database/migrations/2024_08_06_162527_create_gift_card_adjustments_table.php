@@ -14,7 +14,7 @@ return new class() extends Migration {
     {
         Schema::create('gift_card_adjustments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('transaction_id')->constrained();
+            $table->foreignId('order_id')->constrained();
             $table->foreignId('gift_card_id')->constrained();
             $table->integer('amount');
             $table->string('type'); // 'refund' or 'charge'

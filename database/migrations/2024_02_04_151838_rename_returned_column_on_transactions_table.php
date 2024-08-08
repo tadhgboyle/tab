@@ -7,7 +7,7 @@ use Illuminate\Database\Migrations\Migration;
 return new class() extends Migration {
     public function up()
     {
-        Schema::table('transactions', function (Blueprint $table) {
+        Schema::table('orders', function (Blueprint $table) {
             $table->renameColumn('returned', 'status');
         });
     }

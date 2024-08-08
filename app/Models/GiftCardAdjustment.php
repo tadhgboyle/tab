@@ -16,7 +16,7 @@ class GiftCardAdjustment extends Model
 
     protected $fillable = [
         'gift_card_id',
-        'transaction_id',
+        'order_id',
         'amount',
         'type',
     ];
@@ -26,9 +26,9 @@ class GiftCardAdjustment extends Model
         return $this->belongsTo(GiftCard::class);
     }
 
-    public function transaction()
+    public function order()
     {
-        return $this->belongsTo(Transaction::class);
+        return $this->belongsTo(Order::class);
     }
 
     public function isCharge(): bool

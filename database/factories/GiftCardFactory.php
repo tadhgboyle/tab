@@ -16,13 +16,15 @@ class GiftCardFactory extends Factory
         $users = User::all();
         $issuer = $users->shuffle()->whereIn('role_id', [1, 3])->first();
 
+        $created_at = $this->faker->dateTimeBetween($issuer->created_at);
+
         return [
             'code' => Str::upper(Str::random(10)),
             'original_balance' => $original_balance,
             'remaining_balance' => $original_balance,
             'issuer_id' => $issuer->id,
-            'created_at' => $this->faker->dateTimeBetween($issuer->created_at),
-            'expires_at' => $this->faker->boolean(10) ? now() : $this->faker->optional()->dateTimeBetween('now', '+1 year'),
+            'created_at' => $created_at,
+            'expires_at' => $this->faker->optional()->dateTimeBetween($created_at, $this->faker->boolean(30) ? 'now' : '+1 year'),
         ];
     }
 }

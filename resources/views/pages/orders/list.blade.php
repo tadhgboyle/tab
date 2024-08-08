@@ -22,37 +22,37 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($transactions as $transaction)
+                @foreach($orders as $order)
                 <tr>
                     <td>
-                        <div>{{ $transaction->created_at->format('M jS Y h:ia') }}</div>
+                        <div>{{ $order->created_at->format('M jS Y h:ia') }}</div>
                     </td>
                     <td>
                         <div>
                             @permission(\App\Helpers\Permission::USERS_VIEW)
-                                <a href="{{ route('users_view', $transaction->purchaser) }}">{{ $transaction->purchaser->full_name }}</a>
+                                <a href="{{ route('users_view', $order->purchaser) }}">{{ $order->purchaser->full_name }}</a>
                             @else
-                                {{ $transaction->purchaser->full_name }}
+                                {{ $order->purchaser->full_name }}
                             @endpermission
                         </div>
                     </td>
                     <td>
-                        <div>{{ $transaction->cashier->full_name }}</div>
+                        <div>{{ $order->cashier->full_name }}</div>
                     </td>
                     <td>
-                        <div>{{ $transaction->total_price }}</div>
+                        <div>{{ $order->total_price }}</div>
                     </td>
                     <td>
-                        <div class="tag is-medium is-clickable" id="products-tooltip-{{ $transaction->id }}" onclick="openTransactionProductsModal({{ $transaction->id }})">
-                            {{ $transaction->products_sum_quantity }}
+                        <div class="tag is-medium is-clickable" id="products-tooltip-{{ $order->id }}" onclick="openOrderProductsModal({{ $order->id }})">
+                            {{ $order->products_sum_quantity }}
                         </div>
                     </td>
                     <td>
-                        <div>{!! $transaction->getStatusHtml() !!}</div>
+                        <div>{!! $order->getStatusHtml() !!}</div>
                     </td>
                     @permission(\App\Helpers\Permission::ORDERS_VIEW)
                     <td>
-                        <div><a href="{{ route('orders_view', $transaction->id) }}">View</a></div>
+                        <div><a href="{{ route('orders_view', $order->id) }}">View</a></div>
                     </td>
                     @endpermission
                 </tr>
@@ -62,14 +62,14 @@
     </div>
 </div>
 
-<div class="modal modal-transaction-products">
-    <div class="modal-background" onclick="closeTransactionProductsModal();"></div>
+<div class="modal modal-order-products">
+    <div class="modal-background" onclick="closeOrderProductsModal();"></div>
     <div class="modal-card">
         <header class="modal-card-head">
-            <p class="modal-card-title">Transaction Products</p>
+            <p class="modal-card-title">Order Products</p>
         </header>
         <section class="modal-card-body">
-            <table id="transaction-products-table">
+            <table id="order-products-table">
                 <thead>
                     <tr>
                         <th>Product</th>
@@ -78,11 +78,11 @@
                         <th>Quantity</th>
                     </tr>
                 </thead>
-                <tbody id="transaction-products-results"></tbody>
+                <tbody id="order-products-results"></tbody>
             </table>
         </section>
         <footer class="modal-card-foot">
-            <button class="button" onclick="closeTransactionProductsModal();">Close</button>
+            <button class="button" onclick="closeOrderProductsModal();">Close</button>
         </footer>
     </div>
 </div>
@@ -109,20 +109,20 @@
         $('#order_container').css('visibility', 'visible');
     });
 
-    const modal_transaction_products = document.querySelector('.modal-transaction-products');
+    const modal_order_products = document.querySelector('.modal-order-products');
 
-    async function openTransactionProductsModal(id) {
+    async function openOrderProductsModal(id) {
         await fetch(`/orders/${id}/products`)
             .then(response => response.text())
-            .then(data => document.getElementById('transaction-products-results').innerHTML = data);
-            modal_transaction_products.classList.add('is-active');
+            .then(data => document.getElementById('order-products-results').innerHTML = data);
+            modal_order_products.classList.add('is-active');
     }
 
-    function closeTransactionProductsModal() {
-        modal_transaction_products.classList.remove('is-active');
+    function closeOrderProductsModal() {
+        modal_order_products.classList.remove('is-active');
     }
 
-    $('#transaction-products-table').DataTable({
+    $('#order-products-table').DataTable({
         "paging": false,
         "searching": false,
         "bInfo": false,

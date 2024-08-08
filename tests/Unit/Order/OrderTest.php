@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Transaction;
+namespace Tests\Unit\Order;
 
 use Tests\TestCase;
 use App\Models\Role;
@@ -8,15 +8,15 @@ use App\Models\User;
 use Cknow\Money\Money;
 use App\Models\GiftCard;
 use App\Models\Rotation;
-use App\Models\Transaction;
+use App\Models\Order;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class TransactionTest extends TestCase
+class OrderTest extends TestCase
 {
     use RefreshDatabase;
 
     private User $purchaser;
-    private Transaction $transaction;
+    private Order $order;
     private Rotation $rotation;
 
     public function setUp(): void
@@ -31,7 +31,7 @@ class TransactionTest extends TestCase
 
         $this->rotation = Rotation::factory()->create();
 
-        $this->transaction = Transaction::factory()->create([
+        $this->order = Order::factory()->create([
             'purchaser_id' => $this->purchaser->id,
             'cashier_id' => $this->purchaser->id,
             'rotation_id' => $this->rotation->id,
@@ -42,26 +42,26 @@ class TransactionTest extends TestCase
 
     public function testTotalPriceCastedToMoneyObject(): void
     {
-        $this->assertInstanceOf(Money::class, $this->transaction->total_price);
-        $this->assertEquals(5_00, $this->transaction->total_price->getAmount());
+        $this->assertInstanceOf(Money::class, $this->order->total_price);
+        $this->assertEquals(5_00, $this->order->total_price->getAmount());
     }
 
     public function testHasPurchaser(): void
     {
-        $this->assertInstanceOf(User::class, $this->transaction->purchaser);
-        $this->assertEquals($this->purchaser->id, $this->transaction->purchaser->id);
+        $this->assertInstanceOf(User::class, $this->order->purchaser);
+        $this->assertEquals($this->purchaser->id, $this->order->purchaser->id);
     }
 
     public function testHasCashier(): void
     {
-        $this->assertInstanceOf(User::class, $this->transaction->cashier);
-        $this->assertEquals($this->purchaser->id, $this->transaction->cashier->id);
+        $this->assertInstanceOf(User::class, $this->order->cashier);
+        $this->assertEquals($this->purchaser->id, $this->order->cashier->id);
     }
 
     public function testHasRotation(): void
     {
-        $this->assertInstanceOf(Rotation::class, $this->transaction->rotation);
-        $this->assertEquals($this->rotation->id, $this->transaction->rotation->id);
+        $this->assertInstanceOf(Rotation::class, $this->order->rotation);
+        $this->assertEquals($this->rotation->id, $this->order->rotation->id);
     }
 
     public function testHasProducts(): void
@@ -72,7 +72,7 @@ class TransactionTest extends TestCase
     public function testBelongsToGiftCard(): void
     {
         $gift_card = GiftCard::factory()->create();
-        $transaction = Transaction::factory()->create([
+        $order = Order::factory()->create([
             'gift_card_id' => $gift_card->id,
             'purchaser_id' => $this->purchaser->id,
             'cashier_id' => $this->purchaser->id,
@@ -82,8 +82,8 @@ class TransactionTest extends TestCase
             'gift_card_amount' => 2_50,
         ]);
 
-        $this->assertInstanceOf(GiftCard::class, $transaction->giftCard);
-        $this->assertEquals($gift_card->id, $transaction->giftCard->id);
+        $this->assertInstanceOf(GiftCard::class, $order->giftCard);
+        $this->assertEquals($gift_card->id, $order->giftCard->id);
     }
 
     public function testGetReturnedTotalIsFullPriceIfFullyReturned(): void

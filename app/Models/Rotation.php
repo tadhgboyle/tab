@@ -71,9 +71,9 @@ class Rotation extends Model
     // cashier page:
     // -- dropdown selector if they have perm, otherwise current/alert if current is null
 
-    // transaction list
-    // - default: show transactions in RotationHelper->getCurrentRotation(). if current rotation is null, show all and disable dropdown (if they have permission to see dropdown)
-    // - extra permission: show only transactions in x rotation
+    // order list
+    // - default: show orders in RotationHelper->getCurrentRotation(). if current rotation is null, show all and disable dropdown (if they have permission to see dropdown)
+    // - extra permission: show only orders in x rotation
 
     // misc
     // - if no rotation is in action (ie: one ends on saturday morning and the next starts on sunday afternoon), dont allow staff to login without extra permission

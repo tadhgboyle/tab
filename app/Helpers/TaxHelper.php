@@ -3,12 +3,12 @@
 namespace App\Helpers;
 
 use Cknow\Money\Money;
-use App\Models\TransactionProduct;
+use App\Models\OrderProduct;
 
 class TaxHelper
 {
     // TODO add test
-    public static function forTransactionProduct(TransactionProduct $product, int $quantity): Money
+    public static function forOrderProduct(OrderProduct $product, int $quantity): Money
     {
         return self::calculateFor(
             $product->price,

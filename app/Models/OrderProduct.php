@@ -6,7 +6,7 @@ use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class TransactionProduct extends Model
+class OrderProduct extends Model
 {
     protected $fillable = [
         'product_id',
@@ -36,8 +36,8 @@ class TransactionProduct extends Model
         float $gst,
         ?float $pst = null,
         int $returned = 0
-    ): TransactionProduct {
-        return new TransactionProduct([
+    ): OrderProduct {
+        return new OrderProduct([
             'product_id' => $product->id,
             'category_id' => $product->category_id,
             'quantity' => $quantity,
@@ -48,9 +48,9 @@ class TransactionProduct extends Model
         ]);
     }
 
-    public function transaction(): BelongsTo
+    public function order(): BelongsTo
     {
-        return $this->belongsTo(Transaction::class);
+        return $this->belongsTo(Order::class);
     }
 
     public function product(): BelongsTo

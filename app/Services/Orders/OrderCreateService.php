@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Transactions;
+namespace App\Services\Orders;
 
 use App\Models\User;
 use Cknow\Money\Money;
@@ -8,19 +8,19 @@ use App\Models\Product;
 use App\Models\GiftCard;
 use App\Helpers\TaxHelper;
 use App\Helpers\Permission;
-use App\Models\Transaction;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Services\HttpService;
 use App\Helpers\RotationHelper;
 use App\Helpers\SettingsHelper;
-use App\Models\TransactionProduct;
+use App\Models\OrderProduct;
 use Illuminate\Support\Collection;
 use Illuminate\Http\RedirectResponse;
 use App\Services\GiftCards\GiftCardAdjustmentService;
 
-class TransactionCreateService extends HttpService
+class OrderCreateService extends HttpService
 {
-    use TransactionService;
+    use OrderService;
 
     public const RESULT_NO_SELF_PURCHASE = 'NO_SELF_PURCHASE';
     public const RESULT_NO_ITEMS_SELECTED = 'NO_ITEMS_SELECTED';
@@ -39,7 +39,7 @@ class TransactionCreateService extends HttpService
     {
         if (resolve(RotationHelper::class)->getCurrentRotation() === null) {
             $this->_result = self::RESULT_NO_CURRENT_ROTATION;
-            $this->_message = 'Cannot create transaction with no current rotation.';
+            $this->_message = 'Cannot create order with no current rotation.';
             return;
         }
 
@@ -49,9 +49,9 @@ class TransactionCreateService extends HttpService
             return;
         }
 
-        $order_products = collect(json_decode($request->get('products')));
+        $order_products_from_request = collect(json_decode($request->get('products')));
 
-        if (!$order_products->count()) {
+        if (!$order_products_from_request->count()) {
             $this->_result = self::RESULT_NO_ITEMS_SELECTED;
             $this->_message = 'Please select at least one item.';
             return;
@@ -59,12 +59,12 @@ class TransactionCreateService extends HttpService
 
         $settingsHelper = resolve(SettingsHelper::class);
 
-        /** @var Collection<TransactionProduct> */
-        $transaction_products = Collection::make();
+        /** @var Collection<OrderProduct> */
+        $order_products = Collection::make();
 
         $total_price = Money::parse(0);
 
-        foreach ($order_products->all() as $product_meta) {
+        foreach ($order_products_from_request->all() as $product_meta) {
             $id = $product_meta->id;
             $quantity = $product_meta->quantity;
 
@@ -83,7 +83,7 @@ class TransactionCreateService extends HttpService
                 return;
             }
 
-            $transaction_products->add(TransactionProduct::from(
+            $order_products->add(OrderProduct::from(
                 $product,
                 $quantity,
                 $settingsHelper->getGst(),
@@ -108,7 +108,6 @@ class TransactionCreateService extends HttpService
                 }
 
                 if (!$gift_card->canBeUsedBy($purchaser)) {
-                    echo "{$gift_card->id} {$purchaser->id}\n";
                     $this->_result = self::RESULT_GIFT_CARD_CANNOT_BE_USED;
                     $this->_message = "Gift card with code {$gift_card_code} cannot be used by {$purchaser->full_name}.";
                     return;
@@ -141,14 +140,14 @@ class TransactionCreateService extends HttpService
             return;
         }
 
-        // Loop categories within this transaction
-        foreach ($transaction_products->map(fn (TransactionProduct $product) => $product->category)->unique() as $category) {
+        // Loop categories within this order
+        foreach ($order_products->map(fn (OrderProduct $product) => $product->category)->unique() as $category) {
             $user_limit = $purchaser->limitFor($category);
             $category_spending = Money::parse(0);
             $category_spent_orig = $user_limit->findSpent();
 
-            // Loop all products in this transaction. If the product's category is the current one in the above loop, add its price to category spent
-            foreach ($transaction_products->filter(fn (TransactionProduct $product) => $product->category->id === $category->id) as $product) {
+            // Loop all products in this order. If the product's category is the current one in the above loop, add its price to category spent
+            foreach ($order_products->filter(fn (OrderProduct $product) => $product->category->id === $category->id) as $product) {
                 $category_spending = $category_spending->add(TaxHelper::calculateFor($product->price, $product->quantity, $product->pst !== null));
             }
 
@@ -160,50 +159,39 @@ class TransactionCreateService extends HttpService
             }
         }
 
-        $transaction_products->each(fn (TransactionProduct $product) => $product->product->removeStock(
-            $order_products->firstWhere('id', $product->product_id)->quantity
+        $order_products->each(fn (OrderProduct $product) => $product->product->removeStock(
+            $order_products_from_request->firstWhere('id', $product->product_id)->quantity
         ));
 
-        $transaction = new Transaction();
-        $transaction->purchaser_id = $purchaser->id;
-        $transaction->cashier_id = auth()->id();
-        $transaction->total_price = $total_price;
-        $transaction->purchaser_amount = $charge_user_amount;
-        $transaction->gift_card_amount = $gift_card_amount;
-        $transaction->gift_card_id = isset($gift_card) ? $gift_card->id : null;
+        $order = new Order();
+        $order->purchaser_id = $purchaser->id;
+        $order->cashier_id = auth()->id();
+        $order->total_price = $total_price;
+        $order->purchaser_amount = $charge_user_amount;
+        $order->gift_card_amount = $gift_card_amount;
+        $order->gift_card_id = isset($gift_card) ? $gift_card->id : null;
+        // TODO: cannot make order without current rotation
+        $order->rotation_id = resolve(RotationHelper::class)->getCurrentRotation()->id;
+        $order->save();
+
         if (isset($gift_card, $gift_card_remaining_balance)) {
             $gift_card->remaining_balance = $gift_card_remaining_balance;
             $gift_card->save();
-        }
 
-        if ($request->has('rotation_id')) {
-            // For seeding random rotations
-            $transaction->rotation_id = $request->get('rotation_id');
-        } else {
-            // TODO: cannot make order without current rotation
-            $transaction->rotation_id = resolve(RotationHelper::class)->getCurrentRotation()->id;
-        }
-        if ($request->has('created_at')) {
-            // For seeding random times
-            $transaction->created_at = $request->created_at;
-        }
-        $transaction->save();
-
-        if (isset($gift_card)) {
-            $giftCardAdjustmentService = new GiftCardAdjustmentService($gift_card, $transaction);
+            $giftCardAdjustmentService = new GiftCardAdjustmentService($gift_card, $order);
             $giftCardAdjustmentService->charge($gift_card_amount);
         }
 
-        $transaction_products->each(function (TransactionProduct $product) use ($transaction) {
-            $product->transaction_id = $transaction->id;
+        $order_products->each(function (OrderProduct $product) use ($order) {
+            $product->order_id = $order->id;
             $product->save();
         });
 
         $purchaser->update(['balance' => $remaining_balance]);
 
         $this->_result = self::RESULT_SUCCESS;
-        $this->_message = 'Order #' . $transaction->id . '. ' . $purchaser->full_name . ' now has ' . $remaining_balance;
-        $this->_transaction = $transaction->refresh();
+        $this->_message = 'Order #' . $order->id . '. ' . $purchaser->full_name . ' now has ' . $remaining_balance;
+        $this->_order = $order->refresh();
     }
 
     public function redirect(): RedirectResponse
@@ -212,7 +200,7 @@ class TransactionCreateService extends HttpService
             self::RESULT_NO_SELF_PURCHASE => redirect('/')->with('error', $this->getMessage()),
             self::RESULT_SUCCESS => redirect('/')->with([
                 'success' => $this->getMessage(),
-                'last_purchaser_id' => $this->_transaction->purchaser_id,
+                'last_purchaser_id' => $this->_order->purchaser_id,
             ]),
             default => redirect()->back()->with('error', $this->getMessage()),
         };

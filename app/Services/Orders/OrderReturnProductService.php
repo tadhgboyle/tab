@@ -1,68 +1,68 @@
 <?php
 
-namespace App\Services\Transactions;
+namespace App\Services\Orders;
 
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
-use App\Models\Transaction;
+use App\Models\Order;
 use App\Services\HttpService;
-use App\Models\TransactionProduct;
+use App\Models\OrderProduct;
 use Illuminate\Http\RedirectResponse;
 use App\Services\GiftCards\GiftCardAdjustmentService;
 
-class TransactionReturnProductService extends HttpService
+class OrderReturnProductService extends HttpService
 {
-    use TransactionService;
+    use OrderService;
 
     public const RESULT_ALREADY_RETURNED = 'ALREADY_RETURNED';
     public const RESULT_ITEM_RETURNED_MAX_TIMES = 'ITEM_RETURNED_MAX_TIMES';
     public const RESULT_SUCCESS = 'SUCCESS';
 
-    private TransactionProduct $_transactionProduct;
+    private OrderProduct $_orderProduct;
 
-    public function __construct(TransactionProduct $transactionProduct)
+    public function __construct(OrderProduct $orderProduct)
     {
-        $this->_transaction = $transactionProduct->transaction;
-        $this->_transactionProduct = $transactionProduct;
+        $this->_order = $orderProduct->order;
+        $this->_orderProduct = $orderProduct;
 
-        if ($this->_transaction->isReturned()) {
+        if ($this->_order->isReturned()) {
             $this->_result = self::RESULT_ALREADY_RETURNED;
             $this->_message = 'That order has already been returned, so you cannot return an item from it.';
             return;
         }
 
         // If it has not been returned more times than it was purchased, then ++ the returned count and refund the original cost + taxes
-        if ($this->_transactionProduct->returned >= $this->_transactionProduct->quantity) {
+        if ($this->_orderProduct->returned >= $this->_orderProduct->quantity) {
             $this->_result = self::RESULT_ITEM_RETURNED_MAX_TIMES;
             $this->_message = 'That item has already been returned the maximum amount of times for that order.';
             return;
         }
 
-        $this->_transactionProduct->increment('returned');
+        $this->_orderProduct->increment('returned');
 
         $this->refundPurchaser();
         $this->restoreStock();
-        $this->updateTransactionReturnedAttribute();
+        $this->updateOrderReturnedAttribute();
 
         $this->_result = self::RESULT_SUCCESS;
-        $this->_message = 'Successfully returned x1 ' . $this->_transactionProduct->product->name . ' for order #' . $this->_transaction->id . '.';
+        $this->_message = 'Successfully returned x1 ' . $this->_orderProduct->product->name . ' for order #' . $this->_order->id . '.';
 
     }
 
     private function refundPurchaser(): void
     {
-        $purchaser = $this->_transaction->purchaser;
+        $purchaser = $this->_order->purchaser;
 
-        $product_total = TaxHelper::forTransactionProduct($this->_transactionProduct, 1);
+        $product_total = TaxHelper::forOrderProduct($this->_orderProduct, 1);
 
         $gift_card_refund_amount = $this->totalToRefundGiftCard($product_total);
         $purchaser_refund_amount = $this->totalToRefundPurchaser($product_total, $gift_card_refund_amount);
 
         if ($gift_card_refund_amount->isPositive()) {
-            $gift_card = $this->_transaction->giftCard;
+            $gift_card = $this->_order->giftCard;
             $gift_card->update(['remaining_balance' => $gift_card->remaining_balance->add($gift_card_refund_amount)]);
 
-            $giftCardAdjustmentService = new GiftCardAdjustmentService($gift_card, $this->_transaction);
+            $giftCardAdjustmentService = new GiftCardAdjustmentService($gift_card, $this->_order);
             $giftCardAdjustmentService->refund($gift_card_refund_amount);
         }
 
@@ -73,12 +73,12 @@ class TransactionReturnProductService extends HttpService
 
     private function totalToRefundGiftCard(Money $productTotal): Money
     {
-        if ($this->_transaction->gift_card_amount->isZero()) {
+        if ($this->_order->gift_card_amount->isZero()) {
             return Money::parse(0);
         }
 
-        $amountRefundedToGiftCard = $this->_transaction->getAmountRefundedToGiftCard();
-        $amountLeftToRefundOnGiftCard = $this->_transaction->gift_card_amount->subtract($amountRefundedToGiftCard);
+        $amountRefundedToGiftCard = $this->_order->getAmountRefundedToGiftCard();
+        $amountLeftToRefundOnGiftCard = $this->_order->gift_card_amount->subtract($amountRefundedToGiftCard);
 
         if ($amountLeftToRefundOnGiftCard->greaterThanOrEqual($productTotal)) {
             return $productTotal;
@@ -94,20 +94,20 @@ class TransactionReturnProductService extends HttpService
 
     private function restoreStock(): void
     {
-        if ($this->_transactionProduct->product->restore_stock_on_return) {
-            $this->_transactionProduct->product->adjustStock(1);
+        if ($this->_orderProduct->product->restore_stock_on_return) {
+            $this->_orderProduct->product->adjustStock(1);
         }
     }
 
-    private function updateTransactionReturnedAttribute(): void
+    private function updateOrderReturnedAttribute(): void
     {
-        // Reload the transactionProdicts to get the updated returned count
-        $this->_transaction->load('products');
+        // Reload the orderProdicts to get the updated returned count
+        $this->_order->load('products');
 
-        $this->_transaction->update([
-            'status' => $this->_transaction->products->sum->returned === $this->_transaction->products->sum->quantity
-                ? Transaction::STATUS_FULLY_RETURNED
-                : Transaction::STATUS_PARTIAL_RETURNED,
+        $this->_order->update([
+            'status' => $this->_order->products->sum->returned === $this->_order->products->sum->quantity
+                ? Order::STATUS_FULLY_RETURNED
+                : Order::STATUS_PARTIAL_RETURNED,
         ]);
     }
 
