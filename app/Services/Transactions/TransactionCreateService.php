@@ -6,17 +6,17 @@ use App\Models\User;
 use Cknow\Money\Money;
 use App\Models\Product;
 use App\Models\GiftCard;
-use App\Services\HttpService;
 use App\Helpers\TaxHelper;
 use App\Helpers\Permission;
 use App\Models\Transaction;
-use App\Services\GiftCards\GiftCardAdjustmentService;
 use Illuminate\Http\Request;
+use App\Services\HttpService;
 use App\Helpers\RotationHelper;
 use App\Helpers\SettingsHelper;
 use App\Models\TransactionProduct;
 use Illuminate\Support\Collection;
 use Illuminate\Http\RedirectResponse;
+use App\Services\GiftCards\GiftCardAdjustmentService;
 
 class TransactionCreateService extends HttpService
 {
@@ -191,7 +191,7 @@ class TransactionCreateService extends HttpService
 
         if (isset($gift_card)) {
             $giftCardAdjustmentService = new GiftCardAdjustmentService($gift_card, $transaction);
-            $giftCardAdjustmentService->charge($gift_card_amount);    
+            $giftCardAdjustmentService->charge($gift_card_amount);
         }
 
         $transaction_products->each(function (TransactionProduct $product) use ($transaction) {

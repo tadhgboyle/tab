@@ -3,8 +3,6 @@
 namespace Tests\Unit\GiftCard;
 
 use Tests\TestCase;
-use App\Models\Role;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class GiftCardTest extends TestCase

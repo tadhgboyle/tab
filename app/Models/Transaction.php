@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use App\Concerns\Timeline\HasTimeline;
-use App\Concerns\Timeline\TimelineEntry;
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
+use App\Concerns\Timeline\HasTimeline;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
+use App\Concerns\Timeline\TimelineEntry;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -90,7 +90,9 @@ class Transaction extends Model implements HasTimeline
         }
 
         $this->giftCard->load('adjustments');
-        $amountRefundedToGiftCard = Money::sum(Money::parse(0), ...$this->giftCard->adjustments
+        $amountRefundedToGiftCard = Money::sum(
+            Money::parse(0),
+            ...$this->giftCard->adjustments
             ->where('transaction_id', $this->id)
             ->where('type', GiftCardAdjustment::TYPE_REFUND)
             ->map->amount

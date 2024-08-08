@@ -2,13 +2,13 @@
 
 namespace App\Services\Transactions;
 
-use App\Services\GiftCards\GiftCardAdjustmentService;
-use App\Services\HttpService;
-use App\Helpers\TaxHelper;
-use App\Models\TransactionProduct;
 use Cknow\Money\Money;
-use Illuminate\Http\RedirectResponse;
+use App\Helpers\TaxHelper;
 use App\Models\Transaction;
+use App\Services\HttpService;
+use App\Models\TransactionProduct;
+use Illuminate\Http\RedirectResponse;
+use App\Services\GiftCards\GiftCardAdjustmentService;
 
 class TransactionReturnProductService extends HttpService
 {
@@ -46,7 +46,7 @@ class TransactionReturnProductService extends HttpService
 
         $this->_result = self::RESULT_SUCCESS;
         $this->_message = 'Successfully returned x1 ' . $this->_transactionProduct->product->name . ' for order #' . $this->_transaction->id . '.';
-        return;
+
     }
 
     private function refundPurchaser(): void

@@ -20,7 +20,7 @@ class ActivityFactory extends Factory
         'Hot Air Balloon Ride', 'Fitness Bootcamp', 'DIY Craft Workshop',
         'Archery Session', 'Wine Tasting', 'Virtual Reality Gaming', 'Escape to Nature',
         'Zumba Party', 'Mindfulness Meditation', 'Puzzle Challenge', 'Kayaking Adventure'
-    ];    
+    ];
 
     /**
      * Define the model's default state.

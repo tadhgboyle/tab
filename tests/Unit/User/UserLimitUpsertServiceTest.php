@@ -2,15 +2,15 @@
 
 namespace Tests\Unit\User;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\Models\Category;
-use App\Services\Users\UserLimits\UserLimitUpsertService;
-use App\Models\User;
 use App\Models\Role;
-use App\Http\Requests\UserRequest;
+use App\Models\User;
 use Cknow\Money\Money;
+use App\Models\Category;
 use App\Models\UserLimit;
+use App\Http\Requests\UserRequest;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Services\Users\UserLimits\UserLimitUpsertService;
 
 class UserLimitUpsertServiceTest extends TestCase
 {
@@ -180,5 +180,5 @@ class UserLimitUpsertServiceTest extends TestCase
         return User::factory()->create([
             'role_id' => $superadmin_role->id
         ]);
-    }    
+    }
 }

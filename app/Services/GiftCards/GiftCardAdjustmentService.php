@@ -2,12 +2,11 @@
 
 namespace App\Services\GiftCards;
 
-use App\Models\GiftCard;
-use App\Models\GiftCardAdjustment;
-use App\Models\Transaction;
-use App\Services\GiftCards\GiftCardService;
-use App\Services\Service;
 use Cknow\Money\Money;
+use App\Models\GiftCard;
+use App\Services\Service;
+use App\Models\Transaction;
+use App\Models\GiftCardAdjustment;
 
 class GiftCardAdjustmentService extends Service
 {

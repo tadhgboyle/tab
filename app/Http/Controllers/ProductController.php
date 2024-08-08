@@ -8,8 +8,8 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Requests\ProductRequest;
 use Illuminate\Http\RedirectResponse;
 use App\Services\Products\ProductEditService;
-use App\Services\Products\ProductDeleteService;
 use App\Services\Products\ProductCreateService;
+use App\Services\Products\ProductDeleteService;
 use App\Http\Requests\ProductStockAdjustmentRequest;
 use App\Services\Products\ProductStockAdjustmentService;
 

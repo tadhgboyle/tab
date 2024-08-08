@@ -6,12 +6,12 @@ use App\Models\User;
 use App\Models\Category;
 use App\Helpers\CategoryHelper;
 use App\Helpers\RotationHelper;
-use App\Http\Requests\UserRequest;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Http\Requests\UserRequest;
 use Illuminate\Http\RedirectResponse;
 use App\Services\Users\UserEditService;
-use App\Services\Users\UserDeleteService;
 use App\Services\Users\UserCreateService;
+use App\Services\Users\UserDeleteService;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 class UserController extends Controller
