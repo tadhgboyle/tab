@@ -2,17 +2,20 @@
 
 namespace App\Models;
 
+use App\Concerns\Timeline\HasTimeline;
+use App\Concerns\Timeline\TimelineEntry;
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
 use Carbon\CarbonInterface;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
-class Activity extends Model
+class Activity extends Model implements HasTimeline
 {
     use HasFactory;
     use SoftDeletes;
@@ -79,6 +82,11 @@ class Activity extends Model
         return $this->hasManyThrough(User::class, ActivityRegistration::class, null, 'id', null, 'user_id');
     }
 
+    public function registrations(): HasMany
+    {
+        return $this->hasMany(ActivityRegistration::class);
+    }
+
     public function isAttending(User $user): bool
     {
         return $this->attendants->contains($user);
@@ -96,5 +104,45 @@ class Activity extends Model
 
         $starts_in_words = $this->start->diffForHumans(now(), CarbonInterface::DIFF_ABSOLUTE, false, 3);
         return '<span class="tag is-medium">🔮 Starts in ' . $starts_in_words . '</span>';
+    }
+
+    public function timeline(): array
+    {
+        $timeline = [
+            new TimelineEntry(
+                description: 'Created',
+                emoji: '📅',
+                time: $this->created_at,
+            ),
+        ];
+
+        if ($this->start->isPast()) {
+            $timeline[] = new TimelineEntry(
+                description: 'Started',
+                emoji: '🚀',
+                time: $this->start,
+            );
+        }
+
+        if ($this->end->isPast()) {
+            $timeline[] = new TimelineEntry(
+                description: 'Ended',
+                emoji: '🏁',
+                time: $this->end,
+            );
+        }
+
+        foreach ($this->registrations()->with('user', 'cashier')->get() as $registration) {
+            $timeline[] = new TimelineEntry(
+                description: "Registered {$registration->user->full_name}",
+                emoji: '🎟️',
+                time: $registration->created_at,
+                actor: $registration->cashier,
+            );
+        }
+
+        usort($timeline, fn ($a, $b) => $a->time <=> $b->time);
+
+        return $timeline;
     }
 }

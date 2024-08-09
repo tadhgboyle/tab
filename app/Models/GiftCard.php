@@ -86,8 +86,7 @@ class GiftCard extends Model implements HasTimeline
 
     public function usageBy(User $user): Money
     {
-        // TODO: without('products')
-        return Money::sum(Money::parse(0), ...$user->orders->where('gift_card_id', $this->id)->map->gift_card_amount);
+        return Money::sum(Money::parse(0), ...$user->orders()->where('gift_card_id', $this->id)->get()->map->gift_card_amount);
     }
 
     public function getStatusHtml(): string
@@ -120,6 +119,7 @@ class GiftCard extends Model implements HasTimeline
                 emoji: '🧾',
                 time: $adjustment->created_at,
                 actor: $adjustment->order->purchaser,
+                link: route('orders_view', $adjustment->order),
             );
         }
 
@@ -128,7 +128,8 @@ class GiftCard extends Model implements HasTimeline
                 description: "Assigned to {$user->full_name}",
                 emoji: '👤',
                 time: $user->pivot->created_at,
-                actor: $user,
+                actor: $user, // TODO $user->pivot->created_by
+                link: route('users_view', $user),
             );
         }
 

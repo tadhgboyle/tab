@@ -138,7 +138,7 @@ class Order extends Model implements HasTimeline
         ];
 
         $events = [];
-        foreach ($this->productReturns as $productReturn) {
+        foreach ($this->productReturns()->with('orderProduct')->get() as $productReturn) {
             $description = "Returned {$productReturn->orderProduct->product->name}";
             if ($hasCashReturn = $productReturn->purchaser_amount->isPositive()) {
                 $description .= " in cash as {$productReturn->purchaser_amount}";
@@ -155,16 +155,26 @@ class Order extends Model implements HasTimeline
         }
 
         if ($this->isReturned()) {
+            $orderReturn = $this->return;
+            $hasProductReturn = $this->productReturns->isNotEmpty();
+
             $description = 'Fully returned';
-            if ($this->return->caused_by_product_return) {
+            if (!$orderReturn->caused_by_product_return) {
+                if ($hasCashReturn = $orderReturn->purchaser_amount->isPositive()) {
+                    $description .= ($hasProductReturn ? " remaining " : "") . " in cash as {$orderReturn->purchaser_amount}";
+                }
+                if ($orderReturn->gift_card_amount->isPositive()) {
+                    $description .= ($hasCashReturn ? " and " : ($hasProductReturn ? " remaining " : "")). " {$orderReturn->gift_card_amount} to gift card";
+                }
+            } else {
                 $description .= ' due to product return';
             }
 
             $events[] = new TimelineEntry(
                 description: $description,
                 emoji: '🔄',
-                time: $this->return->created_at,
-                actor: $this->return->returner,
+                time: $orderReturn->created_at,
+                actor: $orderReturn->returner,
             );
         }
 

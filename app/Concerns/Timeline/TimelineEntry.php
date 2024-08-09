@@ -12,6 +12,7 @@ class TimelineEntry
         public string $emoji,
         public Carbon $time,
         public ?User $actor = null,
+        public ?string $link = null,
     ) {
         //
     }

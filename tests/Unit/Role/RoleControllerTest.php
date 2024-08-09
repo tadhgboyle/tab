@@ -287,7 +287,7 @@ class RoleControllerTest extends TestCase
         $this->assertDatabaseHas(Role::class, $params);
     }
 
-    public function testDoesNotUpdateRoleToSuperuserIfStaffIsNotSelected(): void
+    public function testDoesNotUpdateRoleToSuperuserIfStaffIsNotAlsoSelected(): void
     {
         $params = [
             'name' => 'Updated Camper Role',
@@ -307,7 +307,7 @@ class RoleControllerTest extends TestCase
         ]);
     }
 
-    public function testUpdatesRoleToSuperuserIfStaffIsSelected(): void
+    public function testUpdatesRoleToSuperuserIfStaffIsAlsoSelected(): void
     {
         $params = [
             'name' => 'Updated Manager Role',
@@ -372,6 +372,34 @@ class RoleControllerTest extends TestCase
         ]);
     }
 
+    public function testDoesNotUpdateOrderOrStaffValueOrSuperuserValueOrPermissionsIfRoleIsSuperuser(): void
+    {
+        $params = [
+            'name' => 'Updated Superadmin Role',
+            'order' => Role::max('order') + 1,
+            'staff' => false,
+            'superuser' => false,
+            'permissions' => [
+                'settings' => true,
+                'settings_roles_manage' => true,
+            ],
+        ];
+
+        $this->actingAs($this->_superuser)
+            ->put(route('settings_roles_update', $this->_superadmin_role->id), $params)
+            ->assertRedirect(route('settings'))
+            ->assertSessionHas('success', 'Edited role Updated Superadmin Role.');
+
+        $this->assertDatabaseHas(Role::class, [
+            'id' => $this->_superadmin_role->id,
+            'name' => 'Updated Superadmin Role',
+            'order' => $this->_superadmin_role->order,
+            'staff' => true,
+            'superuser' => true,
+            'permissions' => '[]',
+        ]);
+    }
+
     public function testCanReorderRoles(): void
     {
         $params = [
@@ -402,9 +430,10 @@ class RoleControllerTest extends TestCase
             'order' => 3,
         ]);
 
+        // Superadmin roles cannot have their order changed
         $this->assertDatabaseHas(Role::class, [
             'id' => $this->_superadmin_role->id,
-            'order' => 4,
+            'order' => 1,
         ]);
     }
 }

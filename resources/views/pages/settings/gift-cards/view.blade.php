@@ -5,7 +5,9 @@
     <code>{{ $giftCard->code() }}</code> {!! $giftCard->getStatusHtml() !!}
 </h4>
 
-<strong>Expiry date:</strong> {{ !$giftCard->expires_at ? "Doesn't expire" : $giftCard->expires_at->format('M jS Y') }}
+@if($giftCard->expires_at)
+    <p><strong>{{ $giftCard->expired() ? "Expired" : "Expires" }} at:</strong> {{ $giftCard->expires_at->format('M jS Y') }}</p>
+@endif
 
 <div class="columns">
     <div class="column">

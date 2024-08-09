@@ -68,6 +68,7 @@ class ProductController extends Controller
     {
         return response()->json([
             'id' => $product->id,
+            'category_id' => $product->category_id,
             'name' => $product->name,
             'price' => (int) $product->price->getAmount() / 100,
             'pst' => $product->pst,

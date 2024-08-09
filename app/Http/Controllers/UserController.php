@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\User;
 use App\Models\Category;
 use App\Helpers\CategoryHelper;
 use App\Helpers\RotationHelper;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Requests\UserRequest;
+use Cknow\Money\Money;
 use Illuminate\Http\RedirectResponse;
 use App\Services\Users\UserEditService;
 use App\Services\Users\UserCreateService;
@@ -131,5 +133,24 @@ class UserController extends Controller
     public function delete(User $user): RedirectResponse
     {
         return (new UserDeleteService($user))->redirect();
+    }
+
+    public function ajaxCheckLimit(User $user, Category $category)
+    {
+        $requestData = collect(json_decode(request()->query('products')));
+
+        $products = Product::query()->whereIn('id', $requestData->keys())->get();
+
+        $tryingToSpend = Money::sum(...$products->map(function (Product $product) use ($requestData) {
+            return $product->getPriceAfterTax()->multiply($requestData->get($product->id));
+        }));
+
+        $userLimit = $user->limitFor($category);
+
+        return response()->json([
+            'can_spend' => $userLimit->canSpend($tryingToSpend),
+            'limit' => $userLimit->limit->format(),
+            'duration' => $userLimit->duration(),
+        ]);
     }
 }

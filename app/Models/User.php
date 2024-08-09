@@ -45,7 +45,7 @@ class User extends Authenticatable implements HasTimeline
 
     public function orders(): HasMany
     {
-        return $this->hasMany(Order::class, 'purchaser_id')->with('products');
+        return $this->hasMany(Order::class, 'purchaser_id');
     }
 
     public function activityRegistrations(): HasMany
@@ -205,12 +205,13 @@ class User extends Authenticatable implements HasTimeline
         ];
 
         $events = [];
-        foreach ($this->orders as $order) {
+        foreach ($this->orders()->with('cashier')->get() as $order) {
             $events[] = new TimelineEntry(
                 description: "Purchased {$order->total_price}",
                 emoji: '🛒',
                 time: $order->created_at,
                 actor: $order->cashier,
+                link: route('orders_view', $order),
             );
         }
 
@@ -220,6 +221,7 @@ class User extends Authenticatable implements HasTimeline
                 emoji: '🎟️',
                 time: $activityRegistration->created_at,
                 actor: $activityRegistration->cashier,
+                link: route('activities_view', $activityRegistration->activity),
             );
         }
 

@@ -62,35 +62,31 @@ class UserLimit extends Model
         // If they have unlimited money (no limit set) for this category,
         // get all their orders, as they have no limit set we dont need to worry about
         // when the order was created_at.
-        if ($this->isUnlimited()) {
-            $orders = $this->user->orders
-                ->where('status', '!=', Order::STATUS_FULLY_RETURNED);
-            $activity_registrations = $this->user->activityRegistrations
-                ->where('returned', false);
-        } else {
+        if (!$this->isUnlimited()) {
             $carbon_string = Carbon::now()->subDays($this->duration === self::LIMIT_DAILY ? 1 : 7)->toDateTimeString();
-
-            $orders = $this->user->orders
-                ->where('created_at', '>=', $carbon_string)
-                ->where('status', '!=', Order::STATUS_FULLY_RETURNED);
-
-            $activity_registrations = $this->user->activityRegistrations
-                ->where('created_at', '>=', $carbon_string)
-                ->where('returned', false);
         }
 
-        $spent = Money::parse(0);
+        $orders = $this->user->orders()
+            ->with('products')
+            ->unless($this->isUnlimited(), fn ($query) => $query->where('created_at', '>=', $carbon_string))
+            ->with('products', function ($query) {
+                $query->where('category_id', $this->category->id);
+            })
+            ->where('status', '!=', Order::STATUS_FULLY_RETURNED)
+            ->get();
 
-        foreach ($orders as $order) {
-            // Loop order products. Determine if the product's category is the one we are looking at,
-            // if so, add its ((value * (quantity - returned)) * tax) to the end result
-            foreach ($order->products->filter(fn (OrderProduct $product) => $product->category_id === $this->category->id) as $product) {
-                $spent = $spent->add(TaxHelper::forOrderProduct($product, $product->quantity - $product->returned));
-            }
-        }
+        $activity_registrations = $this->user->activityRegistrations()
+            ->unless($this->isUnlimited(), fn ($query) => $query->where('created_at', '>=', $carbon_string))
+            ->where('category_id', $this->category->id)
+            ->where('returned', false)
+            ->get();
 
-        return $spent->add(...$activity_registrations->filter(function (ActivityRegistration $activityRegistration) {
-            return $activityRegistration->category_id === $this->category->id;
-        })->map->total_price);
+        $spent = $orders
+            ->flatMap(fn (Order $order) => $order->products)
+            ->reduce(fn (Money $carry, OrderProduct $product) => $carry->add(
+                TaxHelper::forOrderProduct($product, $product->quantity - $product->returned)
+            ), Money::parse(0));
+
+        return $spent->add(...$activity_registrations->map->total_price);
     }
 }

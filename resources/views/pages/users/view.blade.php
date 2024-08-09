@@ -41,14 +41,14 @@
         </div>
         <div class="level-item has-text-centered">
             <div>
-            <p class="heading">Total paid out</p>
+                <p class="heading">Total paid out</p>
                 <p class="title">{{ $user->findPaidOut() }}</p>
             </div>
         </div>
         <div class="level-item has-text-centered">
             <div>
-            <p class="heading">Total owing</p>
-            <p class="title" style="text-decoration: underline; cursor: help;"  onclick="openOwingModal();">{{ $owing }}</p>
+                <p class="heading">Total owing</p>
+                <p class="title" style="text-decoration: underline; cursor: help;"  onclick="openOwingModal();">{{ $owing }}</p>
             </div>
         </div>
     </nav>
@@ -86,7 +86,7 @@
                             @endpermission
                         </thead>
                         <tbody>
-                            @foreach($user->orders->sortByDesc('created_at') as $order)
+                            @foreach($user->orders()->with('cashier')->orderBy('created_at', 'desc')->get() as $order)
                             <tr>
                                 <td>
                                     <div>{{ $order->created_at->format('M jS Y h:ia') }}</div>

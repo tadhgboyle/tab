@@ -56,6 +56,8 @@
         </div>
     </div>
 </div>
+<x-entity-timeline :timeline="$activity->timeline()" />
+
 @if($can_register)
 <div class="modal">
     <div class="modal-background" onclick="closeModal();"></div>

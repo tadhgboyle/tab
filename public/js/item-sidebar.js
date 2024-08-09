@@ -28,33 +28,58 @@ const addProduct = async (productId) => {
     // TODO: check stock and don't add if it would be over the limit
     await fetch(`/products/${productId}`)
         .then(resp => resp.json())
-        .then(product => {
+        .then(async (product) => {
             let quantity = 1;
 
             const existingIndex = indexByProductId(productId);
             if (existingIndex !== -1) {
                 quantity += ITEMS[existingIndex].quantity;
-                ITEMS = ITEMS.filter(item => item.id !== productId);
             }
 
-            ITEMS.push({
-                id: product.id,
-                name: product.name,
-                price: product.price,
-                tax: {
-                    pst: product.pst,
-                    gst: product.gst,
-                },
-                quantity: quantity,
+            const products = {};
+
+            productsByCategory(product.category_id).forEach(item => {
+                products[item.id] = item.quantity;
             });
 
-            cacheItems();
-            render();
+            products[productId] = quantity;
+
+            console.log(products);
+
+            await fetch(`/users/${PURCHASER_ID}/check-limit/${product.category_id}?products=${JSON.stringify(products)}`)
+                .then(resp => resp.json())
+                .then(data => {
+                    console.log(data);
+                    if (data.can_spend) {
+                        ITEMS = ITEMS.filter(item => item.id !== productId);
+
+                        ITEMS.push({
+                            id: product.id,
+                            category_id: product.category_id,
+                            name: product.name,
+                            price: product.price,
+                            tax: {
+                                pst: product.pst,
+                                gst: product.gst,
+                            },
+                            quantity: quantity,
+                        });
+            
+                        cacheItems();
+                        render();
+                    } else {
+                        alert(`You can't spend more than ${data.limit} on this category per ${data.duration}.`);
+                    }
+                });
         });
 };
 
 const indexByProductId = (productId) => {
     return ITEMS.findIndex(item => item.id === productId);
+};
+
+const productsByCategory = (categoryId) => {
+    return ITEMS.filter(item => item.category_id === categoryId);
 };
 
 const removeProductSingle = (productId) => {

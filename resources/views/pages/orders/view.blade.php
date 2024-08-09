@@ -1,91 +1,111 @@
 @extends('layouts.default', ['page' => 'orders'])
 @section('content')
 <h2 class="title has-text-weight-bold">View Order</h2>
-<div class="box">
-    <div class="columns">
-        <div class="column">
-            @include('includes.messages')
-            <p><strong>Order ID:</strong> {{ $order->id }}</p>
+<h4 class="subtitle">
+    #{{ $order->id }} {!! $order->getStatusHtml() !!}
+</h4>
+
+<div class="columns">
+    @include('includes.messages')
+
+    <div class="column box is-two-thirds">
+        <h4 class="title has-text-weight-bold is-4">Items</h4>
+        <div id="loading" align="center">
+            <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
+        </div>
+        <div id="table_container" style="visibility: hidden;">
+            <table id="product_list">
+                <thead>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Returned</th>
+                    <th>Item Subtotal</th>
+                    <th>Item Total</th>
+                    @permission(\App\Helpers\Permission::ORDERS_RETURN)
+                    <th></th>
+                    @endpermission
+                </thead>
+                <tbody>
+                    @foreach($order->products as $product)
+                    <tr>
+                        <td>
+                            <div>{{ $product->product->name }}</div>
+                        </td>
+                        <td>
+                            <div>{{ $product->price }}</div>
+                        </td>
+                        <td>
+                            <div>{{ $product->quantity }}</div>
+                        </td>
+                        <td>
+                            <div>{{ $product->returned }}</div>
+                        </td>
+                        <td>
+                            <div>{{ $product->price->multiply($product->quantity) }}</div>
+                        </td>
+                        <td>
+                            <div>{{ \App\Helpers\TaxHelper::forOrderProduct($product, $product->quantity) }}</div>
+                        </td>
+                        @permission(\App\Helpers\Permission::ORDERS_RETURN)
+                        <td>
+                            <div>
+                                @if(!$order->isReturned() && $product->returned < $product->quantity)
+                                    <button class="button is-danger is-small"  onclick="openProductModal({{ $product->id }});">Return ({{ $product->quantity - $product->returned }})</button>
+                                @else
+                                    <div><i>Returned</i></div>
+                                @endif
+                            </div>
+                        </td>
+                        @endpermission
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="column">
+        <div class="box">
             <p><strong>Date:</strong> {{ $order->created_at->format('M jS Y h:ia') }}</p>
             <p><strong>Rotation:</strong> {{ $order->rotation->name }}</p>
             <p><strong>Purchaser:</strong> @permission(\App\Helpers\Permission::USERS_VIEW) <a href="{{ route('users_view', $order->purchaser_id) }}">{{ $order->purchaser->full_name }}</a> @else {{ $order->purchaser->full_name }} @endpermission</p>
             <p><strong>Cashier:</strong> @permission(\App\Helpers\Permission::USERS_VIEW) <a href="{{ route('users_view', $order->cashier_id) }}">{{ $order->cashier->full_name }}</a> @else {{ $order->cashier->full_name }} @endpermission</p>
-            <p><strong>Total Price:</strong> {{ $order->total_price }}</p>
+        </div>
+        <div class="box">
+            <p><strong>Total price:</strong> {{ $order->total_price }}</p>
             <p><strong>Purchaser amount:</strong> {{ $order->purchaser_amount }}</p>
             @if($order->gift_card_amount->isPositive())
                 <p><strong>Gift card amount:</strong> {{ $order->gift_card_amount }} @if($order->giftCard) <code>{{ $order->giftCard->code() }}</code> @endif</p>
             @endif
-            <p><strong>Status:</strong> {!! $order->getStatusHtml() !!}</p>
-            @if($order->status !== \App\Models\Order::STATUS_NOT_RETURNED)
+        </div>
+        @if($order->status !== \App\Models\Order::STATUS_NOT_RETURNED)
+            <div class="box">
                 <p><strong>Returned:</strong> {{ $order->getReturnedTotal() }}</p>
                 @if($order->gift_card_amount->isPositive())
                     <p><strong>Returned to gift card:</strong> {{ $order->getReturnedTotalToGiftCard() }}</p>
                 @endif
-                <p><strong>Returned to purchaser balance:</strong> {{ $order->getReturnedTotalInCash() }}</p>
-                @if($order->gift_card_amount->isPositive())
-                    <p><strong>Amount left to return to gift card:</strong> {{ $order->gift_card_amount->subtract($order->getReturnedTotalToGiftCard()) }}</p>
+                <p><strong>Returned to purchaser:</strong> {{ $order->getReturnedTotalInCash() }}</p>
+                @if($order->status === \App\Models\Order::STATUS_PARTIAL_RETURNED)
+                    @if($order->gift_card_amount->isPositive())
+                        <p><strong>Amount left to return to gift card:</strong> {{ $order->gift_card_amount->subtract($order->getReturnedTotalToGiftCard()) }}</p>
+                    @endif
+                    <p><strong>Amount left to return:</strong> {{ $order->getOwingTotal() }}</p>
                 @endif
-                <p><strong>Amount left to return:</strong> {{ $order->getOwingTotal() }}</p>
-            @endif
-            <br>
-            @if($order->status !== \App\Models\Order::STATUS_FULLY_RETURNED && hasPermission(\App\Helpers\Permission::ORDERS_RETURN))
-                <button class="button is-danger is-outlined" type="button" onclick="openModal();">
-                    <span>Return</span>
-                    <span class="icon is-small">
-                        <i class="fas fa-undo"></i>
-                    </span>
-                </button>
-            @endif
-        </div>
-        <div class="column">
-            <h4 class="title has-text-weight-bold is-4">Items</h4>
-            <div id="loading" align="center">
-                <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
+                @if($order->status !== \App\Models\Order::STATUS_FULLY_RETURNED && hasPermission(\App\Helpers\Permission::ORDERS_RETURN))
+                    <button class="button is-danger is-outlined" type="button" onclick="openModal();">
+                        <span>Return</span>
+                        <span class="icon is-small">
+                            <i class="fas fa-undo"></i>
+                        </span>
+                    </button>
+                @endif
             </div>
-            <div id="table_container" style="visibility: hidden;">
-                <table id="product_list">
-                    <thead>
-                        <th>Name</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                        <th>Item Subtotal</th>
-                        @permission(\App\Helpers\Permission::ORDERS_RETURN)
-                        <th></th>
-                        @endpermission
-                    </thead>
-                    <tbody>
-                        @foreach($order->products as $product)
-                        <tr>
-                            <td>
-                                <div>{{ $product->product->name }}</div>
-                            </td>
-                            <td>
-                                <div>{{ $product->price }}</div>
-                            </td>
-                            <td>
-                                <div>{{ $product->quantity }}</div>
-                            </td>
-                            <td>
-                                <div>{{ $product->price->multiply($product->quantity) }}</div>
-                            </td>
-                            @permission(\App\Helpers\Permission::ORDERS_RETURN)
-                            <td>
-                                <div>
-                                    @if(!$order->returned && $product->returned < $product->quantity)
-                                        <button class="button is-danger is-small"  onclick="openProductModal({{ $product->id }});">Return ({{ $product->quantity - $product->returned }})</button>
-                                    @else
-                                        <div><i>Returned</i></div>
-                                    @endif
-                                </div>
-                            </td>
-                            @endpermission
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        @endif
+        <br>
     </div>
+</div>
+<div class="box">
+    <h4 class="title has-text-weight-bold is-4">Timeline</h4>
     <x-entity-timeline :timeline="$order->timeline()" />
 </div>
 
@@ -137,11 +157,11 @@
             "paging": false,
             "scrollY": "49vh",
             "scrollCollapse": true,
+            "searching": false,
             @permission(\App\Helpers\Permission::ORDERS_RETURN)
             "columnDefs": [{
                 "orderable": false,
-                "searchable": false,
-                "targets": [4]
+                "targets": [6]
             }]
             @endpermission
         });

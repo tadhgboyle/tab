@@ -25,14 +25,14 @@
                 <div class="field">
                     <label class="label">Order<sup style="color: red">*</sup></label>
                     <div class="control">
-                        <input type="number" name="order" class="input" placeholder="Role Order" min="1" value="{{ $role->order ?? old('order') }}" required>
+                        <input type="number" name="order" class="input" placeholder="Role Order" min="1" value="{{ $role->order ?? old('order') }}" required @if(isset($role->superuser) && $role->superuser) disabled @endif>
                     </div>
                 </div>
                 <div class="field">
                     <div class="control">
                         <label class="checkbox label">
                             Staff
-                            <input type="checkbox" name="staff" id="staff" @if(isset($role->staff) && $role->staff) checked @endif>
+                            <input type="checkbox" name="staff" id="staff" @if(isset($role->staff) && $role->staff) checked @endif @if(isset($role->staff) && $role->staff) disabled @endif>
                         </label>
                     </div>
                 </div>
@@ -40,7 +40,7 @@
                     <div class="control">
                         <label class="checkbox label">
                             Superuser
-                            <input type="checkbox" name="superuser" id="superuser" @if(isset($role->superuser) && $role->superuser) checked @endif>
+                            <input type="checkbox" name="superuser" id="superuser" @if(isset($role->superuser) && $role->superuser) checked @endif @if(isset($role->superuser) && $role->superuser) disabled @endif>
                         </label>
                     </div>
                 </div>

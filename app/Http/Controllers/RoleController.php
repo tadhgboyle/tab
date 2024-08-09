@@ -64,19 +64,30 @@ class RoleController extends Controller
             ? PermissionHelper::parseNodes($request->permissions)
             : [];
 
-        $role->update([
+        $fields = [
             'name' => $request->name,
-            'order' => $request->order,
-            'staff' => $staff,
-            'superuser' => $superuser,
-            'permissions' => $permissions,
-        ]);
+        ];
+
+        if (!$role->superuser) {
+            $fields = array_merge($fields, [
+                'order' => $request->order,
+                'staff' => $staff,
+                'superuser' => $superuser,
+                'permissions' => $permissions,
+            ]);
+        }
+
+        $role->update($fields);
 
         return redirect()->route('settings')->with('success', 'Edited role ' . $role->name . '.');
     }
 
     public function delete(Request $request, Role $role)
     {
+        if ($role->id == auth()->user()->role_id) {
+            return redirect()->back()->with('error', 'You cannot delete your own role.');
+        }
+
         // TODO: add same validation from frontend
         // TODO: tests
         if (!$request->has('new_role')) {
@@ -112,7 +123,12 @@ class RoleController extends Controller
 
         $i = 1;
         foreach ($roles as $role) {
-            Role::find($role)->update(['order' => $i]);
+            $role = Role::find($role);
+            if ($role->superuser) {
+                continue;
+            }
+
+            $role->update(['order' => $i]);
             $i++;
         }
 
