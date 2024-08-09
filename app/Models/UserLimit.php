@@ -62,9 +62,7 @@ class UserLimit extends Model
         // If they have unlimited money (no limit set) for this category,
         // get all their orders, as they have no limit set we dont need to worry about
         // when the order was created_at.
-        if (!$this->isUnlimited()) {
-            $carbon_string = Carbon::now()->subDays($this->duration === self::LIMIT_DAILY ? 1 : 7)->toDateTimeString();
-        }
+        $carbon_string = Carbon::now()->subDays($this->duration === self::LIMIT_DAILY ? 1 : 7)->toDateTimeString();
 
         $orders = $this->user->orders()
             ->with('products')

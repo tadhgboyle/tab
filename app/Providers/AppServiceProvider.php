@@ -25,6 +25,11 @@ class AppServiceProvider extends ServiceProvider
         '💸',
         '👀',
         '👻',
+        '🎉',
+        '🎈',
+        '🎊',
+        '🎆',
+        '🎇',
     ];
 
     public const GREETINGS = [
@@ -64,11 +69,10 @@ class AppServiceProvider extends ServiceProvider
 
         // Create macro on Money to format it for inputs
         Money::macro('formatForInput', function () {
-            /** @phpstan-ignore-next-line  */
             $formatted = $this->format(null, null, NumberFormatter::DECIMAL);
 
             if (is_string($formatted)) {
-                $formatted = str_replace(',', '', $formatted);
+                $formatted = floatval(str_replace(',', '', $formatted));
             }
 
             return number_format($formatted, 2, '.', '');

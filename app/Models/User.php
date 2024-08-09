@@ -120,13 +120,13 @@ class User extends Authenticatable implements HasTimeline
     {
         $returned = Money::parse(0);
 
-        $this->orders->each(function (order $order) use (&$returned) {
+        $this->orders->each(function (Order $order) use (&$returned) {
             if ($order->isReturned()) {
                 $returned = $returned->add($order->total_price);
                 return;
             }
 
-            if ($order->status === order::STATUS_NOT_RETURNED) {
+            if ($order->status === Order::STATUS_NOT_RETURNED) {
                 return;
             }
 
@@ -146,8 +146,8 @@ class User extends Authenticatable implements HasTimeline
     {
         $returned = Money::parse(0);
 
-        $this->orders->each(function (order $order) use (&$returned) {
-            if ($order->status === order::STATUS_NOT_RETURNED) {
+        $this->orders->each(function (Order $order) use (&$returned) {
+            if ($order->status === Order::STATUS_NOT_RETURNED) {
                 return;
             }
 
