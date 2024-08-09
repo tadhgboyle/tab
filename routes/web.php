@@ -11,6 +11,8 @@
 |
 */
 
+use App\Http\Controllers\CashierController;
+use App\Http\Controllers\DashboardController;
 use App\Models\User;
 use App\Helpers\Permission;
 use App\Helpers\RotationHelper;
@@ -27,7 +29,6 @@ use App\Http\Controllers\RotationController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\OrderController;
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'login'])->name('login');
@@ -35,36 +36,29 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/', static function () {
-        if (!hasPermission(Permission::CASHIER) || !hasPermission(Permission::CASHIER_CREATE)) {
-            // TODO: figure out what to do with users who dont have permission. when they sign in they get a 403 page, not nice UX
-            return view('pages.403');
-        }
-
-        // TODO: similar handling of rotation selection/invalidity to statistics page
-        return view('pages.index', [
-            'users' => User::query()
-                ->unless(hasPermission(Permission::CASHIER_SELF_PURCHASES), function (EloquentBuilder $query) {
-                    $query->where('users.id', '!=', auth()->id());
-                })
-                ->unless(hasPermission(Permission::CASHIER_USERS_OTHER_ROTATIONS), function (EloquentBuilder $query) {
-                    $query->whereHas('rotations', function (EloquentBuilder $query) {
-                        return $query->where('rotation_id', resolve(RotationHelper::class)->getCurrentRotation()->id);
-                    });
-                })
-                ->select(['id', 'full_name', 'balance'])
-                ->with('rotations')
-                ->get(),
-            'currentRotation' => resolve(RotationHelper::class)->getCurrentRotation()
-        ]);
-    })->name('index');
-
     Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+
+    Route::get('/', static function () {
+        return redirect(route(
+            hasPermission(Permission::DASHBOARD)
+                ? 'dashboard'
+                : 'cashier'
+        ));
+    });
+
+    /*
+     * Dashboard
+     */
+    Route::group(['middleware' => 'permission:' . Permission::DASHBOARD], static function () {
+        Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    });
 
     /*
      * Cashier
      */
-    Route::group(['middleware' => 'permission:' . Permission::CASHIER], static function () {
+    Route::group(['middleware' => 'permission:' . Permission::CASHIER_CREATE], static function () {
+        Route::get('/cashier', CashierController::class)->name('cashier');
+
         Route::get('/orders/create/{user}', [OrderController::class, 'create'])->name('orders_create');
         Route::post('/orders/create/{user}', [OrderController::class, 'store'])->name('orders_store');
 

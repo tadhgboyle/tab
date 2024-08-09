@@ -38,7 +38,7 @@ class LoginControllerTest extends TestCase
                 'username' => $this->_user->username,
                 'password' => 'password',
             ])
-            ->assertRedirect(route('index'));
+            ->assertRedirect('/');
     }
 
     public function testCannotLoginWithInvalidCredentials(): void
@@ -57,7 +57,7 @@ class LoginControllerTest extends TestCase
         $this
             ->actingAs($this->_user)
             ->get(route('logout'))
-            ->assertRedirect(route('index'));
+            ->assertRedirect(route('login'));
 
         $this->assertGuest();
     }

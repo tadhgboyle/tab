@@ -130,7 +130,7 @@
         </table>
         <br>
         <input type="submit" onclick="handleSubmit()" id="submit-button" value="Submit" class="button is-success">
-        <a class="button is-outlined" href="{{ route('index') }}">Cancel</a>
+        <a class="button is-outlined" href="{{ route('cashier') }}">Cancel</a>
     </div>
 </div>
 <script>

@@ -2,11 +2,17 @@
     <div class="container">
         <div class="navbar-menu">
             <div class="navbar-start">
-                @if(hasPermission(\App\Helpers\Permission::CASHIER) && hasPermission(\App\Helpers\Permission::CASHIER_CREATE))
-                    <a class="navbar-item {{ page('cashier', @$page) }}" href="{{ route('index') }}">
+                @permission(\App\Helpers\Permission::DASHBOARD)
+                    <a class="navbar-item {{ page('dashboard', @$page) }}" href="{{ route('dashboard') }}">
+                        🏠 Dashboard
+                    </a>
+                @endpermission
+
+                @permission(\App\Helpers\Permission::CASHIER_CREATE)
+                    <a class="navbar-item {{ page('cashier', @$page) }}" href="{{ route('cashier') }}">
                         🛒 Cashier
                     </a>
-                @endif
+                @endpermission
 
                 @permission(\App\Helpers\Permission::USERS)
                     <div class="navbar-item has-dropdown is-hoverable">

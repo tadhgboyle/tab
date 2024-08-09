@@ -12,6 +12,10 @@ class PermissionHelper
 
     public function __construct()
     {
+        $this->register('Dashboard', Permission::DASHBOARD, [
+            Permission::DASHBOARD => 'View Dashboard',
+        ]);
+
         $this->register('Cashier', Permission::CASHIER, [
             Permission::CASHIER_CREATE => 'Create Orders',
             Permission::CASHIER_SELF_PURCHASES => 'Create orders for themselves',
@@ -163,6 +167,11 @@ class PermissionHelper
         }
 
         foreach ($selected_categories as $category_root_node) {
+            // dashboard has no child nodes, so we don't need to check for it
+            if ($category_root_node === Permission::DASHBOARD) {
+                continue;
+            }
+
             // remove any root categories which have no child nodes selected
             $found = false;
 
@@ -178,6 +187,6 @@ class PermissionHelper
             }
         }
 
-        return $nodes;
+        return array_values($nodes);
     }
 }

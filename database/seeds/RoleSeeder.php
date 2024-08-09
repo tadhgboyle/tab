@@ -23,6 +23,7 @@ class RoleSeeder extends Seeder
             'superuser' => false,
             'order' => 2,
             'permissions' => [
+                Permission::DASHBOARD,
                 Permission::CASHIER,
                 Permission::CASHIER_CREATE,
                 Permission::USERS,
@@ -52,6 +53,7 @@ class RoleSeeder extends Seeder
             'superuser' => false,
             'order' => 3,
             'permissions' => [
+                Permission::DASHBOARD,
                 Permission::USERS,
                 Permission::USERS_LIST,
                 Permission::USERS_VIEW,

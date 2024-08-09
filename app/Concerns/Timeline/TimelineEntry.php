@@ -8,7 +8,7 @@ use App\Models\User;
 class TimelineEntry
 {
     public function __construct(
-        public ?string $description = null,
+        public string $description,
         public string $emoji,
         public Carbon $time,
         public ?User $actor = null,

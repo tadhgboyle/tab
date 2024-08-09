@@ -4,6 +4,8 @@ namespace App\Helpers;
 
 class Permission
 {
+    public const DASHBOARD = 'dashboard';
+
     public const CASHIER = 'cashier';
     public const CASHIER_CREATE = 'cashier_create';
     public const CASHIER_SELF_PURCHASES = 'cashier_self_purchases';

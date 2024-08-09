@@ -88,7 +88,7 @@ class GiftCardControllerTest extends TestCase
 
     public function testAjaxHasValidityWhenInvalidCodePassed(): void
     {
-        $this->expectPermissionChecks([Permission::CASHIER]);
+        $this->expectPermissionChecks([Permission::CASHIER_CREATE]);
 
         $this->actingAs($this->_superuser)
             ->get(route('gift_cards_check_validity', ['code' => 'INVALID_CODE', 'purchaser_id' => $this->_superuser->id]))
@@ -100,7 +100,7 @@ class GiftCardControllerTest extends TestCase
 
     public function testAjaxHasValidityWhenExpiredGiftCardPassed(): void
     {
-        $this->expectPermissionChecks([Permission::CASHIER]);
+        $this->expectPermissionChecks([Permission::CASHIER_CREATE]);
 
         $giftCard = GiftCard::factory()->create([
             'expires_at' => now()->subDay(),
@@ -116,7 +116,7 @@ class GiftCardControllerTest extends TestCase
 
     public function testAjaxHasValidityWhenGiftCardCannotBeUsedByPurchaser(): void
     {
-        $this->expectPermissionChecks([Permission::CASHIER]);
+        $this->expectPermissionChecks([Permission::CASHIER_CREATE]);
 
         $giftCard = GiftCard::factory()->create([
             'expires_at' => null,
@@ -138,7 +138,7 @@ class GiftCardControllerTest extends TestCase
 
     public function testAjaxHasValidityWhenGiftCardFullyUsed(): void
     {
-        $this->expectPermissionChecks([Permission::CASHIER]);
+        $this->expectPermissionChecks([Permission::CASHIER_CREATE]);
 
         $giftCard = GiftCard::factory()->create([
             'remaining_balance' => 0,
@@ -155,7 +155,7 @@ class GiftCardControllerTest extends TestCase
 
     public function testAjaxHasValidityWhenGiftCardIsValid(): void
     {
-        $this->expectPermissionChecks([Permission::CASHIER]);
+        $this->expectPermissionChecks([Permission::CASHIER_CREATE]);
 
         $giftCard = GiftCard::factory()->create([
             'remaining_balance' => 100,

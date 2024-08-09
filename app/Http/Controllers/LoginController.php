@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
@@ -29,6 +30,6 @@ class LoginController extends Controller
     {
         Auth::logout();
 
-        return redirect()->route('index');
+        return redirect()->route('login');
     }
 }
