@@ -32,8 +32,6 @@ class PermissionHelperTest extends TestCase
             Permission::DASHBOARD,
         ];
 
-        eval(\Psy\sh());
-
         $this->assertEquals($expected, PermissionHelper::parseNodes($data));
     }
 
