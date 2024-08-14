@@ -48,9 +48,19 @@ class User extends Authenticatable implements HasTimeline
         return $this->hasMany(Order::class, 'purchaser_id');
     }
 
+    public function brokeredOrders(): HasMany
+    {
+        return $this->hasMany(Order::class, 'cashier_id');
+    }
+
     public function activityRegistrations(): HasMany
     {
         return $this->hasMany(ActivityRegistration::class);
+    }
+
+    public function brokeredActivityRegistrations(): HasMany
+    {
+        return $this->hasMany(ActivityRegistration::class, 'cashier_id');
     }
 
     public function giftCards(): BelongsToMany

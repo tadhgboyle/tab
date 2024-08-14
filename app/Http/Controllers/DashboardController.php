@@ -51,7 +51,40 @@ class DashboardController extends Controller
         // Count of new users (users who signed up in the last week)
         $data['new'] = User::where('created_at', '>=', now()->subWeek())->count();
         // Top users by spending across orders and activities (with their # of orders and activities)
+        $data['topSpending'] = User::query()
+            ->withCount(['orders', 'activityRegistrations'])
+            ->limit(10)
+            ->get();
         // Top cashiers by revenue (with their # of orders/activities)
+        $data['topCashiers'] = User::query()
+            ->withCount(['brokeredOrders', 'brokeredActivityRegistrations'])
+            ->having('brokered_orders_count', '>', 0)
+            ->orHaving('brokered_activity_registrations_count', '>', 0)
+            ->withSum('brokeredOrders', 'total_price')
+            ->withSum('brokeredActivityRegistrations', 'total_price')
+            ->limit(10)
+            ->get()
+            ->map(function ($cashier) {
+                $cashier->brokered_orders_sum_total_price = Money::parse($cashier->brokered_orders_sum_total_price);
+                $cashier->brokered_activity_registrations_sum_total_price = Money::parse($cashier->brokered_activity_registrations_sum_total_price);
+                $cashier->total_revenue = $cashier->brokered_orders_sum_total_price->add($cashier->brokered_activity_registrations_sum_total_price);
+                return $cashier;
+            })
+            ->sortByDesc('total_revenue');
+        // Top spenders
+        $data['topSpenders'] = User::query()
+            ->withCount(['orders', 'activityRegistrations'])
+            ->withSum('orders', 'total_price')
+            ->withSum('activityRegistrations', 'total_price')
+            ->limit(10)
+            ->get()
+            ->map(function ($user) {
+                $user->orders_sum_total_price = Money::parse($user->orders_sum_total_price);
+                $user->activity_registrations_sum_total_price = Money::parse($user->activity_registrations_sum_total_price);
+                $user->total_revenue = $user->orders_sum_total_price->add($user->activity_registrations_sum_total_price);
+                return $user;
+            })
+            ->sortByDesc('total_revenue');
 
         return $data;
     }
@@ -85,7 +118,8 @@ class DashboardController extends Controller
         // Total revenue lost from returns
         $productReturns = Money::parse(OrderProductReturn::sum('total_return_amount'));
         $orderReturns = Money::parse(OrderReturn::where('caused_by_product_return', false)->sum('total_return_amount'));
-        $data['returnRevenue'] = $productReturns->add($orderReturns);
+        $data['returnedOrderRevenue'] = $productReturns->add($orderReturns);
+        // TODO Total returns to gift cards
         // Total revenue lost from activity cancellations
         $data['activityCancellationRevenue'] = Money::parse(ActivityRegistration::where('returned', true)->sum('total_price'));
 
@@ -99,19 +133,21 @@ class DashboardController extends Controller
 
         // Upcoming activities (in the next week)
         $data['upcoming'] = Activity::where('start', '>=', now())
+            ->withCount('registrations')
             ->orderBy('start')
             ->limit(10)
             ->get();
         // Activities with the most signups
-        $data['mostSignups'] = ActivityRegistration::selectRaw('activity_id, count(*) as count')
-            ->groupBy('activity_id')
-            ->orderByDesc('count')
+        $data['mostSignups'] = Activity::query()
+            ->withCount('registrations')
+            ->orderByDesc('registrations_count')
             ->limit(10)
             ->get();
         // Activities with the most revenue
         $data['mostRevenue'] = ActivityRegistration::selectRaw('activity_id, sum(total_price) as revenue')
             ->groupBy('activity_id')
             ->orderByDesc('revenue')
+            ->with('activity')
             ->limit(10)
             ->get();
         // Activities with the most cancellations
@@ -132,15 +168,17 @@ class DashboardController extends Controller
 
         // Products with the most sales
         // TODO Subtract returns?
-        $data['mostSales'] = OrderProduct::without('product')->selectRaw('product_id, sum(quantity) as sales')
+        $data['mostSales'] = OrderProduct::selectRaw('product_id, sum(quantity) as sales')
             ->groupBy('product_id')
             ->orderByDesc('sales')
+            ->with('product')
             ->limit(10)
             ->get();
         // Products with the most returns
-        $data['mostReturns'] = OrderProduct::without('product')->selectRaw('product_id, sum(returned) as returns')
+        $data['mostReturns'] = OrderProduct::selectRaw('product_id, sum(returned) as returns')
             ->groupBy('product_id')
             ->orderByDesc('returns')
+            ->with('product')
             ->limit(10)
             ->get();
         // Products with the most revenue
@@ -156,7 +194,7 @@ class DashboardController extends Controller
         // Total number of gift cards
         $data['total'] = GiftCard::count();
         // Total amount of gift card unused balance
-        $data['unusedBalance'] = GiftCard::sum('remaining_balance');
+        $data['unusedBalance'] = Money::parse(GiftCard::sum('remaining_balance'));
         // Gift cards with the most remaining balance
         $data['mostRemainingBalance'] = GiftCard::orderByDesc('remaining_balance')
             ->limit(10)
@@ -185,7 +223,6 @@ class DashboardController extends Controller
             ->get();
         // TODO something like most recently out of stock?
         // TODO Activities with low capacity
-        $data['lowCapacityActivities'] = null;
         
         return $data;
     }
