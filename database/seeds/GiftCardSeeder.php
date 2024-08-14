@@ -6,6 +6,7 @@ use Auth;
 use App\Models\User;
 use App\Models\GiftCard;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class GiftCardSeeder extends Seeder
 {
@@ -30,7 +31,7 @@ class GiftCardSeeder extends Seeder
                 Auth::login($cashier);
                 $user = $users->shuffle()->first();
 
-                \DB::table('gift_card_user')->insert([
+                DB::table('gift_card_user')->insert([
                     'gift_card_id' => $giftCard->id,
                     'user_id' => $user->id,
                     'created_at' => now(),
