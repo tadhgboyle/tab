@@ -49,9 +49,10 @@ class OrderSeeder extends Seeder
                 if ($rotation->isFuture()) {
                     continue;
                 }
-                $created_at = $rotation->start->addSeconds(random_int(0, $rotation->end->diffInSeconds($rotation->start)));
+
+                $created_at = $rotation->start->addSeconds(random_int(0, $rotation->end->diffInSeconds($rotation->start, true)));
                 if ($created_at->isFuture()) {
-                    $created_at = $rotation->start->addSeconds(random_int(0, now()->diffInSeconds($rotation->start)));
+                    $created_at = $rotation->start->addSeconds(random_int(0, now()->diffInSeconds($rotation->start, true)));
                 }
                 Carbon::setTestNow($created_at);
 
@@ -72,7 +73,6 @@ class OrderSeeder extends Seeder
                 new OrderCreateService(new Request([
                     'purchaser_id' => $user->id,
                     'cashier_id' => $cashier->id,
-                    'rotation_id' => $rotation->id,
                     'products' => json_encode($products),
                     'gift_card_code' => $giftCard->code ?? null,
                 ]), $user);

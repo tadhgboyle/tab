@@ -41,11 +41,8 @@ class Activity extends Model implements HasTimeline
         'slots' => 'integer',
         'price' => MoneyIntegerCast::class,
         'pst' => 'boolean',
-    ];
-
-    protected $dates = [
-        'start',
-        'end',
+        'start' => 'datetime',
+        'end' => 'datetime',
     ];
 
     public function category(): BelongsTo

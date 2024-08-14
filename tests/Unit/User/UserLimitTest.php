@@ -21,7 +21,7 @@ use App\Services\Activities\ActivityRegistrationCreateService;
 // TODO: test with different limit durations (day/week)
 // TODO: test when categories are made after user is made
 // TODO: test after changing tax rates to ensure it is using historical data
-class UserLimitsTest extends TestCase
+class UserLimitTest extends TestCase
 {
     use RefreshDatabase;
 

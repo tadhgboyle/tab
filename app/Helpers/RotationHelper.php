@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Collection;
 class RotationHelper
 {
     private Collection $rotations;
-    private ?Rotation $currentRotation;
 
     /** @return Collection<int, Rotation> */
     public function getRotations(bool $with_users_count = false): Collection
@@ -23,7 +22,7 @@ class RotationHelper
 
     public function getCurrentRotation(): ?Rotation
     {
-        return $this->currentRotation ??= $this->getRotations()->first(static function (Rotation $rotation) {
+        return $this->getRotations()->first(static function (Rotation $rotation) {
             return $rotation->start->isPast() && $rotation->end->isFuture();
         });
     }

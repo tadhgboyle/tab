@@ -8,6 +8,7 @@ return new class() extends Migration {
     public function up()
     {
         Schema::table('gift_cards', function (Blueprint $table) {
+            $table->dropIndex('gift_cards_name_unique');
             $table->dropColumn('name');
         });
     }

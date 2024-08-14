@@ -17,7 +17,6 @@ use Cknow\Money\Money;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
-// TODO burn statistics pages, then upgrade laravel
 class DashboardController extends Controller
 {
     public function __invoke(Request $request)
