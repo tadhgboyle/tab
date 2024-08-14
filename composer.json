@@ -24,8 +24,7 @@
         "nunomaduro/phpinsights": "dev-master",
         "phpunit/phpunit": "^9.0",
         "symfony/var-dumper": "^6.0",
-        "laravel/tinker": "^2.0",
-        "nunomaduro/larastan": "^2.0"
+        "laravel/tinker": "^2.0"
     },
     "config": {
         "optimize-autoloader": true,
