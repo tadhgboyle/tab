@@ -12,7 +12,6 @@ class Permission
     public const DASHBOARD_GIFT_CARDS = 'dashboard_gift_cards';
     public const DASHBOARD_ALERTS = 'dashboard_alerts';
 
-
     public const CASHIER = 'cashier';
     public const CASHIER_CREATE = 'cashier_create';
     public const CASHIER_SELF_PURCHASES = 'cashier_self_purchases';

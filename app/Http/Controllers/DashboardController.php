@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\Permission;
-use App\Models\Activity;
-use App\Models\ActivityRegistration;
-use App\Models\GiftCard;
-use App\Models\GiftCardAdjustment;
-use App\Models\Order;
-use App\Models\OrderProduct;
-use App\Models\OrderProductReturn;
-use App\Models\OrderReturn;
-use App\Models\Product;
 use App\Models\User;
+use App\Models\Order;
 use Cknow\Money\Money;
+use App\Models\Product;
+use App\Models\Activity;
+use App\Models\GiftCard;
+use App\Helpers\Permission;
+use App\Models\OrderReturn;
+use App\Models\OrderProduct;
 use Illuminate\Http\Request;
+use App\Models\GiftCardAdjustment;
+use App\Models\OrderProductReturn;
 use Illuminate\Support\Collection;
+use App\Models\ActivityRegistration;
 
 class DashboardController extends Controller
 {
@@ -243,7 +243,7 @@ class DashboardController extends Controller
             ->get();
         // TODO something like most recently out of stock?
         // TODO Activities with low capacity
-        
+
         return $data;
     }
 }

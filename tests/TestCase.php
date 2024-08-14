@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery\MockInterface;
 use App\Http\Middleware\HasPermission;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\Permission;
-use App\Helpers\RotationHelper;
 use App\Models\User;
+use App\Helpers\Permission;
 use Illuminate\Http\Request;
+use App\Helpers\RotationHelper;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 class CashierController extends Controller

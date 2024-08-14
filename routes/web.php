@@ -11,21 +11,21 @@
 |
 */
 
-use App\Http\Controllers\CashierController;
-use App\Http\Controllers\DashboardController;
 use App\Helpers\Permission;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PayoutController;
+use App\Http\Controllers\CashierController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\GiftCardController;
 use App\Http\Controllers\RotationController;
 use App\Http\Controllers\SettingsController;
-use App\Http\Controllers\OrderController;
+use App\Http\Controllers\DashboardController;
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'login'])->name('login');

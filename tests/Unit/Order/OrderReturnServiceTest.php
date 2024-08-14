@@ -5,17 +5,17 @@ namespace Tests\Unit\Order;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\GiftCard;
 use App\Models\Settings;
-use App\Models\Order;
 use Illuminate\Http\Request;
 use Database\Seeders\RotationSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Services\Orders\OrderCreateService;
 use App\Services\Orders\OrderReturnService;
 use App\Services\Orders\OrderReturnProductService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class OrderReturnServiceTest extends TestCase
 {

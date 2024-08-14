@@ -3,15 +3,14 @@
 namespace App\Models;
 
 use Cknow\Money\Money;
-use App\Helpers\TaxHelper;
 use App\Concerns\Timeline\HasTimeline;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
 use App\Concerns\Timeline\TimelineEntry;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Order extends Model implements HasTimeline
 {
@@ -144,7 +143,7 @@ class Order extends Model implements HasTimeline
                 $description .= " in cash as {$productReturn->purchaser_amount}";
             }
             if ($productReturn->gift_card_amount->isPositive()) {
-                $description .= ($hasCashReturn ? " and " : "" ). " {$productReturn->gift_card_amount} to gift card";
+                $description .= ($hasCashReturn ? ' and ' : '') . " {$productReturn->gift_card_amount} to gift card";
             }
             $events[] = new TimelineEntry(
                 description: $description,
@@ -161,10 +160,10 @@ class Order extends Model implements HasTimeline
             $description = 'Fully returned';
             if (!$orderReturn->caused_by_product_return) {
                 if ($hasCashReturn = $orderReturn->purchaser_amount->isPositive()) {
-                    $description .= ($hasProductReturn ? " remaining " : "") . " in cash as {$orderReturn->purchaser_amount}";
+                    $description .= ($hasProductReturn ? ' remaining ' : '') . " in cash as {$orderReturn->purchaser_amount}";
                 }
                 if ($orderReturn->gift_card_amount->isPositive()) {
-                    $description .= ($hasCashReturn ? " and " : ($hasProductReturn ? " remaining " : "")). " {$orderReturn->gift_card_amount} to gift card";
+                    $description .= ($hasCashReturn ? ' and ' : ($hasProductReturn ? ' remaining ' : '')) . " {$orderReturn->gift_card_amount} to gift card";
                 }
             } else {
                 $description .= ' due to product return';

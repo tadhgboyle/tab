@@ -12,9 +12,9 @@ use App\Models\Settings;
 use Illuminate\Http\Request;
 use App\Http\Requests\PayoutRequest;
 use Database\Seeders\RotationSeeder;
+use App\Services\Orders\OrderCreateService;
 use App\Services\Payouts\PayoutCreateService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Services\Orders\OrderCreateService;
 
 class PayoutCreateServiceTest extends TestCase
 {
