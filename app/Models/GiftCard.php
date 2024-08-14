@@ -43,9 +43,9 @@ class GiftCard extends Model implements HasTimeline
         return $this->hasMany(Order::class);
     }
 
-    public function users(): BelongsToMany
+    public function assignments(): HasMany
     {
-        return $this->belongsToMany(User::class)->withPivot('created_at');
+        return $this->hasMany(GiftCardAssignment::class)->with('user', 'assigner');
     }
 
     public function expired(): bool
@@ -81,7 +81,7 @@ class GiftCard extends Model implements HasTimeline
 
     public function canBeUsedBy(User $user): bool
     {
-        return $this->users->isEmpty() || $this->users->contains($user);
+        return $this->assignments->isEmpty() || $this->assignments->contains($user);
     }
 
     public function usageBy(User $user): Money
@@ -123,13 +123,13 @@ class GiftCard extends Model implements HasTimeline
             );
         }
 
-        foreach ($this->users as $user) {
+        foreach ($this->assignments as $assignment) {
             $events[] = new TimelineEntry(
-                description: "Assigned to {$user->full_name}",
+                description: "Assigned to {$assignment->user->full_name}",
                 emoji: '👤',
-                time: $user->pivot->created_at,
-                actor: $user, // TODO $user->pivot->created_by
-                link: route('users_view', $user),
+                time: $assignment->created_at,
+                actor: $assignment->assigner,
+                link: route('users_view', $assignment->user),
             );
         }
 

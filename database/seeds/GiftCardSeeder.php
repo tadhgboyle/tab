@@ -31,10 +31,9 @@ class GiftCardSeeder extends Seeder
                 Auth::login($cashier);
                 $user = $users->shuffle()->first();
 
-                DB::table('gift_card_user')->insert([
-                    'gift_card_id' => $giftCard->id,
+                $giftCard->assignments()->create([
                     'user_id' => $user->id,
-                    'created_at' => now(),
+                    'assigner_id' => $cashier->id,
                 ]);
             }
         }

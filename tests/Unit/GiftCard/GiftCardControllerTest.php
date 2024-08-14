@@ -126,7 +126,10 @@ class GiftCardControllerTest extends TestCase
             'role_id' => $this->_superadmin_role->id,
         ]);
 
-        $giftCard->users()->attach($another_user);
+        $giftCard->assignments()->create([
+            'user_id' => $another_user->id,
+            'assigner_id' => $this->_superuser->id,
+        ]);
 
         $this->actingAs($this->_superuser)
             ->get(route('gift_cards_check_validity', ['code' => $giftCard->code, 'purchaser_id' => $this->_superuser->id]))

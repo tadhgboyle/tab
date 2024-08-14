@@ -50,7 +50,7 @@ class SettingsController extends Controller
         }
 
         if ($user->hasPermission(Permission::SETTINGS_GIFT_CARDS_MANAGE)) {
-            $vars['giftCards'] = GiftCard::query()->with('issuer')->withCount('users', 'uses')->orderBy('created_at', 'DESC')->get();
+            $vars['giftCards'] = GiftCard::query()->with('issuer')->withCount('assignments', 'uses')->orderBy('created_at', 'DESC')->get();
         }
 
         return view('pages.settings.settings', $vars);

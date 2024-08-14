@@ -6,6 +6,7 @@ use Cknow\Money\Money;
 use App\Concerns\Timeline\HasTimeline;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use App\Concerns\Timeline\TimelineEntry;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Lab404\Impersonate\Models\Impersonate;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -63,15 +64,14 @@ class User extends Authenticatable implements HasTimeline
         return $this->hasMany(ActivityRegistration::class, 'cashier_id');
     }
 
-    public function giftCards(): BelongsToMany
+    public function giftCards(): HasManyThrough
     {
-        return $this->belongsToMany(GiftCard::class);
+        return $this->hasManyThrough(GiftCard::class, GiftCardAssignment::class, secondKey: 'id');
     }
 
     public function rotations(): BelongsToMany
     {
-        // TODO why is this distinct?
-        return $this->belongsToMany(Rotation::class)->distinct();
+        return $this->belongsToMany(Rotation::class);
     }
 
     public function payouts(): HasMany

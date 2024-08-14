@@ -56,19 +56,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($giftCard->users as $user)
+                    @foreach($giftCard->assignments as $assignment)
                         <tr>
                             <td>
-                                <div>{{ $user->full_name }}</div>
+                                <div>{{ $assignment->user->full_name }}</div>
                             </td>
                             <td>
-                                <div>{{ $giftCard->usageBy($user) }}</div>
+                                <div>{{ $giftCard->usageBy($assignment->user) }}</div>
                             </td>
                             <td>
-                                <div>Null</div>
+                                <div>{{ $assignment->assigner->full_name }}</div>
                             </td>
                             <td>
-                                <div>{{ $user->pivot->created_at->format('M jS Y h:ia') }}</div>
+                                <div>{{ $assignment->created_at->format('M jS Y h:ia') }}</div>
                             </td>
                         </tr>
                     @endforeach

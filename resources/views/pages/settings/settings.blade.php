@@ -257,7 +257,7 @@
                                 <div>{{ $giftCard->remaining_balance }}</div>
                             </td>
                             <td>
-                                <div>{{ $giftCard->users_count }}</div>
+                                <div>{{ $giftCard->assignments_count }}</div>
                             </td>
                             <td>
                                 <div>{{ $giftCard->uses_count }}</div>
