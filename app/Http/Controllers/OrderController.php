@@ -36,7 +36,7 @@ class OrderController extends Controller
     public function create(User $user, SettingsHelper $settingsHelper)
     {
         if (!hasPermission(Permission::CASHIER_SELF_PURCHASES) && $user->id === auth()->id()) {
-            return redirect('/')->with('error', 'You cannot make purchases for yourself.');
+            return redirect()->route('cashier')->with('error', 'You cannot make purchases for yourself.');
         }
 
         return view('pages.orders.order', [

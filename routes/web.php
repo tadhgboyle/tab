@@ -63,7 +63,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/orders/create/{user}', [OrderController::class, 'store'])->name('orders_store');
 
         // Get product metadata via JS fetch
-        Route::get('/products/{product}', [ProductController::class, 'ajaxGetInfo'])->name('products_show');
+        Route::get('/products/{product}', [ProductController::class, 'ajaxGetInfo'])->whereNumber('product')->name('products_show');
 
         // Check user limit via JS fetch
         Route::get('/users/{user}/check-limit/{category}', [UserController::class, 'ajaxCheckLimit'])->name('users_check_limit');

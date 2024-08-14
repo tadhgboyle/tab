@@ -197,8 +197,8 @@ class OrderCreateService extends HttpService
     public function redirect(): RedirectResponse
     {
         return match ($this->getResult()) {
-            self::RESULT_NO_SELF_PURCHASE => redirect('/')->with('error', $this->getMessage()),
-            self::RESULT_SUCCESS => redirect('/')->with([
+            self::RESULT_NO_SELF_PURCHASE => redirect()->route('cashier')->with('error', $this->getMessage()),
+            self::RESULT_SUCCESS => redirect()->route('cashier')->with([
                 'success' => $this->getMessage(),
                 'last_purchaser_id' => $this->_order->purchaser_id,
             ]),
