@@ -5,11 +5,11 @@
     #{{ $order->id }} {!! $order->getStatusHtml() !!}
 </h4>
 
-<div class="columns">
-    @include('includes.messages')
+@include('includes.messages')
 
+<div class="columns">
     <div class="column box is-two-thirds">
-        <h4 class="title has-text-weight-bold is-4">Items</h4>
+        <h4 class="title has-text-weight-bold is-4">Products</h4>
         <div id="loading" align="center">
             <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
         </div>
@@ -75,7 +75,9 @@
             <p><strong>Total price:</strong> {{ $order->total_price }}</p>
             <p><strong>Purchaser amount:</strong> {{ $order->purchaser_amount }}</p>
             @if($order->gift_card_amount->isPositive())
-                <p><strong>Gift card amount:</strong> {{ $order->gift_card_amount }} @if($order->giftCard) <code>{{ $order->giftCard->code() }}</code> @endif</p>
+                <p>
+                    <strong>Gift card amount:</strong> {{ $order->gift_card_amount }} <code>{{ $order->giftCard->code() }}</code> - <a href="{{ route('settings_gift-cards_view', $order->giftCard)}}">view</a>
+                </p>
             @endif
         </div>
         @if($order->status !== \App\Models\Order::STATUS_NOT_RETURNED)

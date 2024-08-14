@@ -9,6 +9,10 @@ class GiftCardAssignmentController extends Controller
 {
     public function store(GiftCard $giftCard, User $user)
     {
+        if ($giftCard->expired()) {
+            return redirect()->route('settings_gift-cards_view', $giftCard)->with('error', 'Cannot assign an expired gift card.');
+        }
+
         $giftCard->assignments()->create([
             'user_id' => $user->id,
             'assigner_id' => auth()->id(),

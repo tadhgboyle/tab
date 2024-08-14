@@ -49,7 +49,7 @@ class OrderReturnProductService extends HttpService
         }
 
         $this->_result = self::RESULT_SUCCESS;
-        $this->_message = 'Successfully returned x1 ' . $this->_orderProduct->product->name . ' for order #' . $this->_order->id . '.';
+        $this->_message = 'Returned x1 ' . $this->_orderProduct->product->name;
     }
 
     private function refundPurchaser(): array

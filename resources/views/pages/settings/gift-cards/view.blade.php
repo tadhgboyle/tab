@@ -50,7 +50,7 @@
                     <h4 class="title has-text-weight-bold is-4">Users</h4>
                 </div>
                 <div class="column">
-                    <button class="button is-light is-pulled-right is-small" onclick="openModal();">
+                    <button class="button is-light is-pulled-right is-small" onclick="openModal();" {{ $giftCard->expired() ? "disabled" : "" }}>
                         ➕ Add User
                     </button>
                 </div>
@@ -122,53 +122,55 @@ $('#user_list').DataTable({
     },
 });
 
-$('#search_table').DataTable({
-    "paging": false,
-    "searching": false,
-    "bInfo": false,
-    "columnDefs": [
-        {
-            "orderable": false,
-            "targets": [0, 1]
-        }
-    ],
-    "language": {
-        "emptyTable": "No applicable users"
-    },
-});
-
-$('#search').on('keyup', function() {
-    if (this.value === undefined || this.value === '') {
-        return;
-    }
-    $.ajax({
-        type : "GET",
-        url : "{{ route('settings_gift-cards_assign_search', $giftCard->id) }}",
-        data: {
-            "_token": "{{ csrf_token() }}",
-            "search": this.value,
+@unless($giftCard->expired())
+    $('#search_table').DataTable({
+        "paging": false,
+        "searching": false,
+        "bInfo": false,
+        "columnDefs": [
+            {
+                "orderable": false,
+                "targets": [0, 1]
+            }
+        ],
+        "language": {
+            "emptyTable": "No applicable users"
         },
-        beforeSend : function() {
-            $('#search-div').html("<center><img src='{{ url('img/loader.gif') }}' class='loading-spinner'></img></center>");
-        },
-        success : function(response) {
-            $('#results').html(response);
-            $('#search-div').fadeOut(200);
-        },
-        error: function(xhr) {
-            $('#results').html("<p style='color: red;'><b>ERROR: </b><br>" + xhr.responseText + "</p>");
-        }
     });
-});
 
-const modal = document.querySelector('.modal');
+    $('#search').on('keyup', function() {
+        if (this.value === undefined || this.value === '') {
+            return;
+        }
+        $.ajax({
+            type : "GET",
+            url : "{{ route('settings_gift-cards_assign_search', $giftCard->id) }}",
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "search": this.value,
+            },
+            beforeSend : function() {
+                $('#search-div').html("<center><img src='{{ url('img/loader.gif') }}' class='loading-spinner'></img></center>");
+            },
+            success : function(response) {
+                $('#results').html(response);
+                $('#search-div').fadeOut(200);
+            },
+            error: function(xhr) {
+                $('#results').html("<p style='color: red;'><b>ERROR: </b><br>" + xhr.responseText + "</p>");
+            }
+        });
+    });
 
-function openModal() {
-    modal.classList.add('is-active');
-}
+    const modal = document.querySelector('.modal');
 
-function closeModal() {
-    modal.classList.remove('is-active');
-}
+    function openModal() {
+        modal.classList.add('is-active');
+    }
+
+    function closeModal() {
+        modal.classList.remove('is-active');
+    }
+@endunless
 </script>
 @endsection

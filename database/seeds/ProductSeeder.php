@@ -29,7 +29,7 @@ class ProductSeeder extends Seeder
         'Family Photo', 'Computer Pass (1 hour)',
         'Picnic Basket', 'Fishing Rod', 'Canvas Painting Kit', 'Yoga Mat', 'Telescope',
         'Board Game Set', 'Bluetooth Speaker', 'Candle Set', 'Luggage Tag', 'Plant',
-        'Headphones', 'Portable Charger', 'Art Supplies', 'Fitness Tracker', 'Gift Card',
+        'Headphones', 'Portable Charger', 'Art Supplies', 'Fitness Tracker',
         'Travel Pillow', 'Cookbook'
     ];
 

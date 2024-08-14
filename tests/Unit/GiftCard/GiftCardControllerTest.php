@@ -74,7 +74,7 @@ class GiftCardControllerTest extends TestCase
                 'balance' => 100,
                 'expires_at' => $expires_at,
             ])
-            ->assertRedirect(route('settings'))
+            ->assertRedirect(route('settings_gift-cards_view', GiftCard::first()->id))
             ->assertSessionHas('success', 'Created new gift card VALID_CODE.');
 
         $this->assertDatabaseHas('gift_cards', [
