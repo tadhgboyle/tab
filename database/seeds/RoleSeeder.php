@@ -24,6 +24,11 @@ class RoleSeeder extends Seeder
             'order' => 2,
             'permissions' => [
                 Permission::DASHBOARD,
+                Permission::DASHBOARD_USERS,
+                Permission::DASHBOARD_ACTIVITIES,
+                Permission::DASHBOARD_PRODUCTS,
+                Permission::DASHBOARD_GIFT_CARDS,
+                Permission::DASHBOARD_ALERTS,
                 Permission::CASHIER,
                 Permission::CASHIER_CREATE,
                 Permission::USERS,
@@ -54,6 +59,8 @@ class RoleSeeder extends Seeder
             'order' => 3,
             'permissions' => [
                 Permission::DASHBOARD,
+                Permission::DASHBOARD_FINANCIAL,
+                Permission::DASHBOARD_GIFT_CARDS,
                 Permission::USERS,
                 Permission::USERS_LIST,
                 Permission::USERS_VIEW,
@@ -71,11 +78,6 @@ class RoleSeeder extends Seeder
                 Permission::SETTINGS,
                 Permission::SETTINGS_GENERAL,
                 Permission::SETTINGS_GIFT_CARDS_MANAGE,
-                Permission::STATISTICS,
-                Permission::STATISTICS_ACTIVITY_SALES,
-                Permission::STATISTICS_PRODUCT_SALES,
-                Permission::STATISTICS_ORDER_HISTORY,
-                Permission::STATISTICS_INCOME_INFO,
             ]
         ]);
 

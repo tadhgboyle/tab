@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Permission;
 use App\Models\Activity;
 use App\Models\ActivityRegistration;
 use App\Models\GiftCard;
@@ -16,18 +17,38 @@ use Cknow\Money\Money;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
+// TODO burn statistics pages, then upgrade laravel
 class DashboardController extends Controller
 {
     public function __invoke(Request $request)
     {
-        return view('pages.dashboard', [
-            'users' => $this->getUserData(),
-            'financial' => $this->getFinancialData(),
-            'activities' => $this->getActivityData(),
-            'products' => $this->getProductData(),
-            'giftCards' => $this->getGiftCardData(),
-            'alerts' => $this->getAlerts(),
-        ]);
+        $data = [];
+
+        if (hasPermission(Permission::DASHBOARD_USERS)) {
+            $data['users'] = $this->getUserData();
+        }
+
+        if (hasPermission(Permission::DASHBOARD_FINANCIAL)) {
+            $data['financial'] = $this->getFinancialData();
+        }
+
+        if (hasPermission(Permission::DASHBOARD_ACTIVITIES)) {
+            $data['activities'] = $this->getActivityData();
+        }
+
+        if (hasPermission(Permission::DASHBOARD_PRODUCTS)) {
+            $data['products'] = $this->getProductData();
+        }
+
+        if (hasPermission(Permission::DASHBOARD_GIFT_CARDS)) {
+            $data['giftCards'] = $this->getGiftCardData();
+        }
+
+        if (hasPermission(Permission::DASHBOARD_ALERTS)) {
+            $data['alerts'] = $this->getAlerts();
+        }
+
+        return view('pages.dashboard', $data);
     }
 
     private function getUserData(): Collection

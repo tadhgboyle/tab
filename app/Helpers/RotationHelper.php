@@ -46,18 +46,6 @@ class RotationHelper
         return false;
     }
 
-    // TODO extract into more generic for use with cashier list, and more
-    public function getStatisticsRotationId(): string|int|null
-    {
-        $default = $this->getCurrentRotation()?->id;
-
-        if (hasPermission(Permission::STATISTICS_SELECT_ROTATION)) {
-            return Cookie::get('stats_rotation_id', $default ?? '*');
-        }
-
-        return $default;
-    }
-
     public function getUserListRotationId(): string|int|null
     {
         $default = $this->getCurrentRotation()?->id;

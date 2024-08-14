@@ -4,61 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "114d484538c37051d930c3f3b9280f62",
+    "content-hash": "d01f805e19e45dac640f9c76e4847c4d",
     "packages": [
-        {
-            "name": "bahadorbzd/consoletvs-charts",
-            "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/bahadorbzd/consoletvs-charts.git",
-                "reference": "874af83f1ae29a03e8813258c02228ef73ab8519"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/bahadorbzd/consoletvs-charts/zipball/874af83f1ae29a03e8813258c02228ef73ab8519",
-                "reference": "874af83f1ae29a03e8813258c02228ef73ab8519",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/console": "^7.14.1|^8.0|^9.0",
-                "illuminate/contracts": "^7.14.1|^8.0|^9.0",
-                "illuminate/http": "^7.14.1|^8.0|^9.0",
-                "illuminate/support": "^7.14.1|^8.0|^9.0",
-                "php": ">=7.4"
-            },
-            "default-branch": true,
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "ConsoleTVs\\Charts\\ChartsServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Chartisan\\PHP\\": "src/chartisan/",
-                    "ConsoleTVs\\Charts\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "bahadorbzd",
-                    "email": "email.bahador@gmail.com"
-                }
-            ],
-            "description": "The missing charting library on laravel, powered by Chartisan",
-            "support": {
-                "issues": "https://github.com/bahadorbzd/consoletvs-charts/issues",
-                "source": "https://github.com/bahadorbzd/consoletvs-charts/tree/main"
-            },
-            "time": "2022-08-04T20:47:29+00:00"
-        },
         {
             "name": "barryvdh/laravel-dompdf",
             "version": "v2.0.1",
@@ -11523,7 +11470,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "bahadorbzd/consoletvs-charts": 20,
         "roave/security-advisories": 20,
         "nunomaduro/phpinsights": 20
     },

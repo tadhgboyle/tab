@@ -13,9 +13,7 @@
 
 use App\Http\Controllers\CashierController;
 use App\Http\Controllers\DashboardController;
-use App\Models\User;
 use App\Helpers\Permission;
-use App\Helpers\RotationHelper;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -27,7 +25,6 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\GiftCardController;
 use App\Http\Controllers\RotationController;
 use App\Http\Controllers\SettingsController;
-use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\OrderController;
 
 Route::middleware('guest')->group(function () {
@@ -166,13 +163,6 @@ Route::middleware('auth')->group(function () {
             // TODO: make POST
             Route::get('/{activity}/add/{user}', [ActivityController::class, 'registerUser'])->name('activities_user_add');
         });
-    });
-
-    /*
-     * Statistics
-     */
-    Route::group(['middleware' => ['permission:' . Permission::STATISTICS]], static function () {
-        Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics');
     });
 
     /*

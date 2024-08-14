@@ -5,6 +5,13 @@ namespace App\Helpers;
 class Permission
 {
     public const DASHBOARD = 'dashboard';
+    public const DASHBOARD_USERS = 'dashboard_users';
+    public const DASHBOARD_FINANCIAL = 'dashboard_financial';
+    public const DASHBOARD_ACTIVITIES = 'dashboard_activities';
+    public const DASHBOARD_PRODUCTS = 'dashboard_products';
+    public const DASHBOARD_GIFT_CARDS = 'dashboard_gift_cards';
+    public const DASHBOARD_ALERTS = 'dashboard_alerts';
+
 
     public const CASHIER = 'cashier';
     public const CASHIER_CREATE = 'cashier_create';
@@ -36,13 +43,6 @@ class Permission
     public const ORDERS_LIST_SELECT_ROTATION = 'orders_list_select_rotation'; // TODO
     public const ORDERS_VIEW = 'orders_view';
     public const ORDERS_RETURN = 'orders_return';
-
-    public const STATISTICS = 'statistics';
-    public const STATISTICS_ORDER_HISTORY = 'statistics_order_history';
-    public const STATISTICS_PRODUCT_SALES = 'statistics_product_sales';
-    public const STATISTICS_ACTIVITY_SALES = 'statistics_activity_sales';
-    public const STATISTICS_INCOME_INFO = 'statistics_income_info';
-    public const STATISTICS_SELECT_ROTATION = 'statistics_select_rotation';
 
     public const SETTINGS = 'settings';
     public const SETTINGS_GENERAL = 'settings_general';

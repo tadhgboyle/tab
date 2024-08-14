@@ -13,7 +13,12 @@ class PermissionHelper
     public function __construct()
     {
         $this->register('Dashboard', Permission::DASHBOARD, [
-            Permission::DASHBOARD => 'View Dashboard',
+            Permission::DASHBOARD_USERS => 'View user statistics',
+            Permission::DASHBOARD_FINANCIAL => 'View financial statistics',
+            Permission::DASHBOARD_ACTIVITIES => 'View activity statistics',
+            Permission::DASHBOARD_PRODUCTS => 'View product statistics',
+            Permission::DASHBOARD_GIFT_CARDS => 'View gift card statistics',
+            Permission::DASHBOARD_ALERTS => 'View alerts',
         ]);
 
         $this->register('Cashier', Permission::CASHIER, [
@@ -48,14 +53,6 @@ class PermissionHelper
             Permission::ORDERS_LIST_SELECT_ROTATION => 'View Orders from other Rotations',
             Permission::ORDERS_VIEW => 'View specific Order information',
             Permission::ORDERS_RETURN => 'Return whole Orders or individual items',
-        ]);
-
-        $this->register('Statistics', Permission::STATISTICS, [
-            Permission::STATISTICS_ORDER_HISTORY => 'View Order history chart',
-            Permission::STATISTICS_PRODUCT_SALES => 'View Product sales chart',
-            Permission::STATISTICS_ACTIVITY_SALES => 'View Activity sales chart',
-            Permission::STATISTICS_INCOME_INFO => 'View Income info chart',
-            Permission::STATISTICS_SELECT_ROTATION => 'View statistics charts from other Rotations',
         ]);
 
         $this->register('Settings', Permission::SETTINGS, [
@@ -167,11 +164,6 @@ class PermissionHelper
         }
 
         foreach ($selected_categories as $category_root_node) {
-            // dashboard has no child nodes, so we don't need to check for it
-            if ($category_root_node === Permission::DASHBOARD) {
-                continue;
-            }
-
             // remove any root categories which have no child nodes selected
             $found = false;
 

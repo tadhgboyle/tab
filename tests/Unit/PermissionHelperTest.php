@@ -23,13 +23,11 @@ class PermissionHelperTest extends TestCase
             'category2_node_2' => true, // child node with category node set to false, should be removed
             'category3_node_1' => true, // child node with non-existing category node, should be removed
             'category4' => true, // category with no child nodes, should be removed
-            Permission::DASHBOARD => true // exception root node, should be kept
         ];
 
         $expected = [
             'category1',
             'category1_node_1',
-            Permission::DASHBOARD,
         ];
 
         $this->assertEquals($expected, PermissionHelper::parseNodes($data));
@@ -40,7 +38,7 @@ class PermissionHelperTest extends TestCase
         $permissionHelper = resolve(PermissionHelper::class);
 
         $this->assertEquals(
-            "'dashboard','cashier','users','products','activities','orders','statistics','settings'",
+            "'dashboard','cashier','users','products','activities','orders','settings'",
             $permissionHelper->getCategoryKeys()
         );
     }

@@ -6,14 +6,9 @@ use NumberFormatter;
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
 use App\Helpers\RoleHelper;
-use App\Charts\IncomeInfoChart;
 use App\Helpers\CategoryHelper;
 use App\Helpers\RotationHelper;
 use App\Helpers\SettingsHelper;
-use ConsoleTVs\Charts\Registrar;
-use App\Charts\OrderHistoryChart;
-use App\Charts\ProductSalesChart;
-use App\Charts\ActivitySalesChart;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -84,13 +79,8 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot(Registrar $charts): void
+    public function boot(): void
     {
-        $charts->register([
-            OrderHistoryChart::class,
-            ProductSalesChart::class,
-            ActivitySalesChart::class,
-            IncomeInfoChart::class,
-        ]);
+        // ...
     }
 }

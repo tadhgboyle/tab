@@ -108,14 +108,14 @@ class RotationHelperTest extends TestCase
         $this->assertFalse($rotationHelper->doesRotationOverlap($rotation->start, $rotation->end, $rotation->id));
     }
 
-    public function testGetStatisticsRotationIdReturnsNullWhenNoCurrentRotationOrExtraPermission(): void
+    public function testGetUserListRotationIdReturnsNullWhenNoCurrentRotationOrExtraPermission(): void
     {
         $this->actingAs($this->_cashier_user);
 
-        $this->assertNull(resolve(RotationHelper::class)->getStatisticsRotationId());
+        $this->assertNull(resolve(RotationHelper::class)->getUserListRotationId());
     }
 
-    public function testGetStatisticsRotationIdReturnsCurrentRotationIdWhenNoExtraPermission(): void
+    public function testGetUserListRotationIdReturnsCurrentRotationIdWhenNoExtraPermission(): void
     {
         $this->actingAs($this->_cashier_user);
 
@@ -125,10 +125,10 @@ class RotationHelperTest extends TestCase
             'end' => Carbon::now()->addDays(2),
         ]);
 
-        $this->assertEquals($rotation->id, resolve(RotationHelper::class)->getStatisticsRotationId());
+        $this->assertEquals($rotation->id, resolve(RotationHelper::class)->getUserListRotationId());
     }
 
-    public function testGetStatisticsRotationIdReturnsCookiedIdWhenExtraPermission(): void
+    public function testGetUserListRotationIdReturnsCookiedIdWhenExtraPermission(): void
     {
         $this->markTestSkipped('Skipped because we cannot mock the Cookie facade.');
 
@@ -138,10 +138,10 @@ class RotationHelperTest extends TestCase
 
         $this->actingAs($this->_superuser_user);
 
-        $this->assertEquals($cookie_value, resolve(RotationHelper::class)->getStatisticsRotationId());
+        $this->assertEquals($cookie_value, resolve(RotationHelper::class)->getUserListRotationId());
     }
 
-    public function testGetStatisticsRotationIdReturnsAsteriskWhenNoCookieStoredAndHasExtraPermission(): void
+    public function testGetUserListRotationIdReturnsAsteriskWhenNoCookieStoredAndHasExtraPermission(): void
     {
         $this->markTestSkipped('Skipped because we cannot mock the Cookie facade.');
 
@@ -149,6 +149,6 @@ class RotationHelperTest extends TestCase
 
         $this->actingAs($this->_superuser_user);
 
-        $this->assertEquals('*', resolve(RotationHelper::class)->getStatisticsRotationId());
+        $this->assertEquals('*', resolve(RotationHelper::class)->getUserListRotationId());
     }
 }
