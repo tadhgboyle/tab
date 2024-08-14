@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class GiftCardAssignment extends Model
 {
 
+    protected $fillable = [
+        'user_id',
+        'assigner_id',
+    ];
+
     public function giftCard()
     {
         return $this->belongsTo(GiftCard::class);
