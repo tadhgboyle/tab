@@ -5,18 +5,18 @@ namespace Tests\Unit\Order;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Order;
 use Cknow\Money\Money;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\GiftCard;
 use App\Models\Settings;
 use App\Models\UserLimit;
-use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Helpers\RotationHelper;
 use Database\Seeders\RotationSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Services\Orders\OrderCreateService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 // TODO: testCannotMakeOrderWithNoCurrentRotation
 class OrderCreateServiceTest extends TestCase

@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
-use App\Concerns\Timeline\HasTimeline;
-use App\Concerns\Timeline\TimelineEntry;
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
 use Carbon\CarbonInterface;
+use App\Concerns\Timeline\HasTimeline;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Concerns\Timeline\TimelineEntry;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;

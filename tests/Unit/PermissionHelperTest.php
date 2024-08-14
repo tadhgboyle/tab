@@ -2,7 +2,6 @@
 
 namespace Tests\Unit;
 
-use App\Helpers\Permission;
 use Tests\TestCase;
 use App\Helpers\PermissionHelper;
 

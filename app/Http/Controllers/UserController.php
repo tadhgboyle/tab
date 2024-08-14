@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use App\Models\User;
+use Cknow\Money\Money;
+use App\Models\Product;
 use App\Models\Category;
 use App\Helpers\CategoryHelper;
 use App\Helpers\RotationHelper;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Requests\UserRequest;
-use Cknow\Money\Money;
 use Illuminate\Http\RedirectResponse;
 use App\Services\Users\UserEditService;
 use App\Services\Users\UserCreateService;

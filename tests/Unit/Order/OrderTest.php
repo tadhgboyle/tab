@@ -5,10 +5,10 @@ namespace Tests\Unit\Order;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Order;
 use Cknow\Money\Money;
 use App\Models\GiftCard;
 use App\Models\Rotation;
-use App\Models\Order;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class OrderTest extends TestCase

@@ -2,11 +2,11 @@
 
 namespace App\Services\Orders;
 
+use App\Models\Order;
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
-use App\Models\Order;
-use App\Services\HttpService;
 use App\Models\OrderProduct;
+use App\Services\HttpService;
 use Illuminate\Http\RedirectResponse;
 use App\Services\GiftCards\GiftCardAdjustmentService;
 
@@ -50,7 +50,6 @@ class OrderReturnProductService extends HttpService
 
         $this->_result = self::RESULT_SUCCESS;
         $this->_message = 'Successfully returned x1 ' . $this->_orderProduct->product->name . ' for order #' . $this->_order->id . '.';
-
     }
 
     private function refundPurchaser(): array
