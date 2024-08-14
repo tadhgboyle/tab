@@ -81,7 +81,7 @@ class GiftCard extends Model implements HasTimeline
 
     public function canBeUsedBy(User $user): bool
     {
-        return $this->assignments->isEmpty() || $this->assignments->contains($user);
+        return $this->assignments->isEmpty() || $this->assignments->map->user->contains($user);
     }
 
     public function usageBy(User $user): Money

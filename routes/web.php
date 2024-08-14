@@ -12,6 +12,7 @@
 */
 
 use App\Helpers\Permission;
+use App\Http\Controllers\GiftCardAssignmentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -220,6 +221,12 @@ Route::middleware('auth')->group(function () {
             Route::get('/create', [GiftCardController::class, 'create'])->name('settings_gift-cards_create');
             Route::post('/create', [GiftCardController::class, 'store'])->name('settings_gift-cards_store');
             Route::get('/{giftCard}', [GiftCardController::class, 'show'])->name('settings_gift-cards_view');
+
+            // TODO: make POST
+            Route::get('/{giftCard}/assign/{user}', [GiftCardAssignmentController::class, 'store'])->name('settings_gift-cards_assign');
+            Route::get('/{giftCard}/unassign/{user}', [GiftCardAssignmentController::class, 'destroy'])->name('settings_gift-cards_unassign');
+
+            Route::get('/{giftCard}/search', [GiftCardAssignmentController::class, 'ajaxUserSearch'])->name('settings_gift-cards_assign_search');
         });
     });
 

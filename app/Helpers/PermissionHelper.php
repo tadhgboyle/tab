@@ -4,7 +4,6 @@ namespace App\Helpers;
 
 use App\Models\Role;
 use Illuminate\Support\Str;
-use JetBrains\PhpStorm\Pure;
 
 class PermissionHelper
 {
@@ -83,7 +82,6 @@ class PermissionHelper
     /**
      * @return string Comma seperated unique category root nodes / keys.
      */
-    #[Pure]
     public function getCategoryKeys(): string
     {
         $return = '';

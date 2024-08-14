@@ -66,7 +66,7 @@ class User extends Authenticatable implements HasTimeline
 
     public function giftCards(): HasManyThrough
     {
-        return $this->hasManyThrough(GiftCard::class, GiftCardAssignment::class, secondKey: 'id');
+        return $this->hasManyThrough(GiftCard::class, GiftCardAssignment::class, 'user_id', 'id', 'id', 'gift_card_id');
     }
 
     public function rotations(): BelongsToMany

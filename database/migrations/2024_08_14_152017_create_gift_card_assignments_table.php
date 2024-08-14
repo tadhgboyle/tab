@@ -18,6 +18,8 @@ return new class extends Migration
             $table->unsignedBigInteger('assigner_id');
             $table->foreign('assigner_id')->references('id')->on('users');
             $table->timestamps();
+
+            $table->unique(['gift_card_id', 'user_id']);
         });
     }
 

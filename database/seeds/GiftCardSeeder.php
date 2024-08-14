@@ -31,10 +31,15 @@ class GiftCardSeeder extends Seeder
                 Auth::login($cashier);
                 $user = $users->shuffle()->first();
 
-                $giftCard->assignments()->create([
-                    'user_id' => $user->id,
-                    'assigner_id' => $cashier->id,
-                ]);
+                try {
+                    $giftCard->assignments()->create([
+                        'user_id' => $user->id,
+                        'assigner_id' => $cashier->id,
+                    ]);
+                } catch (\Illuminate\Database\UniqueConstraintViolationException $e) {
+                    // Ignore if unique error arises
+                    continue;
+                }
             }
         }
     }

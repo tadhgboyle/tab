@@ -34,6 +34,13 @@
                 </div>
             </div>
 
+            <label class="label">Expiry</label>
+            <div class="field">
+                <div class="control">
+                    <input type="datetime-local" id="expires_at" name="expires_at" class="input" value="{{ old('expires_at') }}" min={{ now()->toDateTimeLocalString() }}>
+                </div>
+            </div>
+
             <div class="control">
                 <button class="button is-success" type="submit">
                     <span class="icon is-small">

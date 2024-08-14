@@ -35,7 +35,7 @@ class GiftCardController extends Controller
         $giftCard->issuer_id = auth()->id();
         $giftCard->save();
 
-        return redirect()->route('settings')->with('success', "Created new gift card {$giftCard->code()}.");
+        return redirect()->route('settings_gift-cards_view', $giftCard)->with('success', "Created new gift card {$giftCard->code()}.");
     }
 
     // TODO: Implement update method
