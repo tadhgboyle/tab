@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Payout;
 use App\Models\User;
 use App\Models\Order;
 use Cknow\Money\Money;
@@ -94,6 +95,8 @@ class DashboardController extends Controller
         // Top spenders
         $data['topSpenders'] = User::query()
             ->withCount(['orders', 'activityRegistrations'])
+            ->having('orders_count', '>', 0)
+            ->orHaving('activity_registrations_count', '>', 0)
             ->withSum('orders', 'total_price')
             ->withSum('activityRegistrations', 'total_price')
             ->limit(10)
@@ -142,6 +145,11 @@ class DashboardController extends Controller
         // TODO Total returns to gift cards
         // Total revenue lost from activity cancellations
         $data['activityCancellationRevenue'] = Money::parse(ActivityRegistration::where('returned', true)->sum('total_price'));
+        // Total paid out
+        $data['totalPayouts'] = Money::parse(Payout::sum('amount'));
+        // Recent payouts
+        // TODO Allow selecting rotation
+        $data['recentPayouts'] = Payout::orderByDesc('created_at')->limit(10)->get();
 
         return $data;
     }

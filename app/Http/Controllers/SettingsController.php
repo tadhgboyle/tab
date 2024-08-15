@@ -41,7 +41,7 @@ class SettingsController extends Controller
         }
 
         if ($user->hasPermission(Permission::SETTINGS_ROLES_MANAGE)) {
-            $vars['roles'] = $roleHelper->getRoles('ASC');
+            $vars['roles'] = $roleHelper->getRoles('ASC', true);
         }
 
         if ($user->hasPermission(Permission::SETTINGS_ROTATIONS_MANAGE)) {

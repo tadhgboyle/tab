@@ -110,6 +110,7 @@
                         <tr>
                             <th>Name</th>
                             <th>Staff</th>
+                            <th>Users</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -121,6 +122,9 @@
                             </td>
                             <td>
                                 <div>{{ $role->staff ? "✅" : "❌" }}</div>
+                            </td>
+                            <td>
+                                <div>{{ $role->users_count }}</div>
                             </td>
                             <td>
                                 <div>

@@ -153,8 +153,9 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
 - Let orders use multiple gift cards
 - When editing entities, correctly return back to the list/show page the user was previously on upon success
 - Add "cost" to products and display margins
-- Add product varients
+- Add product variants
 - Create `Cart` model to represent an in-flight order
+- Ability to mark products as final sale/cannot be returned
 
 ## Issues/Bugs
 - When cashier page refreshed with gift card, ensure it still has balance + update balance in table row

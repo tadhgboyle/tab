@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use App\Http\Requests\PayoutRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Services\Payouts\PayoutCreateService;
+use Str;
 
 class PayoutSeeder extends Seeder
 {
@@ -32,8 +33,14 @@ class PayoutSeeder extends Seeder
                 continue;
             }
 
+            if (random_int(0, 1) === 0) {
+                $identifier = '#' . random_int(101010, 202020);
+            } else {
+                $identifier = Str::random(10);
+            }
+
             new PayoutCreateService(new PayoutRequest([
-                'identifier' => '#' . random_int(101010, 202020),
+                'identifier' => $identifier,
                 'amount' => random_int(1, $amount->getAmount()),
             ]), $user);
         }

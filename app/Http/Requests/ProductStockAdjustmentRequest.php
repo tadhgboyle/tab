@@ -10,8 +10,8 @@ class ProductStockAdjustmentRequest extends FormRequest implements FormRequestCo
     public function rules(): array
     {
         return [
-            'adjust_stock' => 'numeric',
-            'adjust_box' => 'numeric',
+            'adjust_stock' => 'integer',
+            'adjust_box' => 'integer',
         ];
     }
 }

@@ -58,8 +58,7 @@ class ProductStockAdjustmentServiceTest extends TestCase
         $this->assertSame(ProductStockAdjustmentService::RESULT_SUCCESS, $productService->getResult());
 
         $product->refresh();
-        $this->assertsame(7, $product->stock);
-        $this->assertTrue(session()->has('last_product'));
+        $this->assertSame(7, $product->stock);
         $this->assertSame($product->id, session()->get('last_product')->id);
     }
 
@@ -79,8 +78,7 @@ class ProductStockAdjustmentServiceTest extends TestCase
         $this->assertSame(ProductStockAdjustmentService::RESULT_SUCCESS, $productService->getResult());
 
         $product->refresh();
-        $this->assertsame(25, $product->stock);
-        $this->assertTrue(session()->has('last_product'));
+        $this->assertSame(25, $product->stock);
         $this->assertSame($product->id, session()->get('last_product')->id);
     }
 
@@ -102,7 +100,6 @@ class ProductStockAdjustmentServiceTest extends TestCase
 
         $product->refresh();
         $this->assertsame(26, $product->stock);
-        $this->assertTrue(session()->has('last_product'));
         $this->assertSame($product->id, session()->get('last_product')->id);
     }
 }

@@ -2,6 +2,7 @@
 @section('content')
 <h1 class="title has-text-weight-bold">Dashboard</h1>
 
+@permission(\App\Helpers\Permission::DASHBOARD_USERS)
 <div class="box">
     <h4 class="subtitle has-text-weight-bold">Users</h4>
     <nav class="level">
@@ -111,7 +112,9 @@
         </tbody>
     </table>
 </div>
+@endpermission
 
+@permission(\App\Helpers\Permission::DASHBOARD_FINANCIAL)
 <div class="box">
     <h4 class="subtitle has-text-weight-bold">Finances</h4>
     <nav class="level">
@@ -188,8 +191,56 @@
             </div>
         </div>
     </nav>
-</div>
 
+    <nav class="level">
+        <div class="level-item has-text-centered">
+            <div>
+                <p class="heading">Total payouts</p>
+                <p class="title">{{ $financial['totalPayouts'] }}</p>
+            </div>
+        </div>
+        <div class="level-item has-text-centered">
+            <div>
+                <p class="heading">Remaining to be paid out</p>
+                <p class="title">{{ $financial['totalRevenue']->subtract($financial['totalPayouts']) }}</p>
+            </div>
+        </div>
+    </nav>
+
+    <div class="box">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Identifier</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($financial['recentPayouts'] as $payout)
+                <tr>
+                    <td>
+                        <div>{{ $payout->user->full_name }}</div>
+                    </td>
+                    <td>
+                        <div>{{ $payout->identifier }}</div>
+                    </td>
+                    <td>
+                        <div>{{ $payout->amount }}</div>
+                    </td>
+                    <td>
+                        <div>{{ $payout->created_at }}</div>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+@endpermission
+
+@permission(\App\Helpers\Permission::DASHBOARD_ACTIVITIES)
 <div class="box">
     <h4 class="subtitle has-text-weight-bold">Activities</h4>
     <!-- {{ $activities }} -->
@@ -282,7 +333,9 @@
         </table>
     </div>
 </div>
+@endpermission
 
+@permission(\App\Helpers\Permission::DASHBOARD_PRODUCTS)
 <div class="box">
     <h4 class="subtitle has-text-weight-bold">Products</h4>
     <!-- {{ $products }} -->
@@ -332,12 +385,17 @@
         </table>
     </div>
 </div>
+@endpermission
 
+@permission(\App\Helpers\Permission::DASHBOARD_GIFT_CARDS)
 <div class="box">
     {{ $giftCards }}
 </div>
+@endpermission
 
+@permission(\App\Helpers\Permission::DASHBOARD_ALERTS)
 <div class="box">
     {{ $alerts }}
 </div>
+@endpermission
 @stop

@@ -15,9 +15,14 @@ class RoleHelper
      *
      * @return Collection<int, Role>
      */
-    public function getRoles(string $order = 'DESC'): Collection
+    public function getRoles(string $order = 'DESC', bool $with_user_count = false): Collection
     {
-        return $this->roles ??= Role::query()->orderBy('order', $order)->get();
+        return $this->roles ??= Role::query()
+            ->orderBy('order', $order)
+            ->when($with_user_count, static function ($query) {
+                $query->withCount('users');
+            })
+            ->get();
     }
 
     /** @return Collection<int, Role> */
