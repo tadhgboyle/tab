@@ -210,6 +210,10 @@ class DashboardController extends Controller
             ->limit(10)
             ->get();
         // Products with the most revenue
+
+        // TODO store total_price on OrderProduct
+        // TODO store total_tax on OrderProduct and Order
+
         // Products with the most revenue lost from returns
 
         return $data;
@@ -240,12 +244,15 @@ class DashboardController extends Controller
         $data = collect();
 
         // Gift cards about to expire
-        $data['expiringGiftCards'] = GiftCard::where('expires_at', '<=', now()->addWeek())
+        $data['expiringGiftCards'] = GiftCard::query()
+            ->where('expires_at', '<=', now()->addWeek())
             ->orderBy('expires_at')
             ->limit(10)
             ->get();
         // Products with low stock
-        $data['lowStockProducts'] = Product::where('stock', '<=', 10)
+        $data['lowStockProducts'] = Product::query()
+            ->where('unlimited_stock', false)
+            ->where('stock', '<=', 10)
             ->orderBy('stock')
             ->limit(10)
             ->get();

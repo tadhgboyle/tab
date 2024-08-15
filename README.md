@@ -140,13 +140,11 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
 - User tags (tax free tagged, limit of xyz tag, etc)
 - Allow categories to be PST and/or GST exempt
 - Move "ajax" routes to API controllers + paths
-- Timeline on orders, gift cards, etc to see when they were made, used, refunded, etc
 - Update services to use enums for result statuses
 - Emails for a bunch of stuff:
     - Gift card given (would need to let gift cards optionally have an assigned user, but should prolly still be able to be used by anyone)
     - Admin emails: New user made, settings changed, etc
-- Rename payouts to something better
-- Store credits (when a order with gift card is returned, give them store credit, etc)
+- Store credit
 - Add check balance modal for gift card (under a "tools" dropdown?)
 - Add way to "hide used gift cards" in gift card list
 - Convert jquery ajax requests to use axios
@@ -156,10 +154,9 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
 - Add product variants
 - Create `Cart` model to represent an in-flight order
 - Ability to mark products as final sale/cannot be returned
+- Add returns to user timelines
 
 ## Issues/Bugs
 - When cashier page refreshed with gift card, ensure it still has balance + update balance in table row
-- Make settings boxes/columns more fluid, so it doesn't look odd when people have subnet of permissions
+- Make settings boxes/columns more fluid, so it doesn't look odd when people have subset of permissions
 - Make seeders only create past entities nothing in the future
-- When don't have permission to view statistics/users/orders from other rotations, still show the dropdown just have it disabled so they can see active rotation
-- Fix user owing (plus modal) to account for gift card returns when calculating owing

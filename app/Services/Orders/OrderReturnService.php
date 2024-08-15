@@ -20,7 +20,6 @@ class OrderReturnService extends HttpService
     {
         $this->_order = $order;
 
-        // This should never happen, but a good security measure
         if ($this->_order->isReturned()) {
             $this->_result = self::RESULT_ALREADY_RETURNED;
             $this->_message = 'That order has already been fully returned.';
