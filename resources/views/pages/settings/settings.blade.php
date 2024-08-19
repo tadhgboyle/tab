@@ -72,7 +72,7 @@
                                 <div>{{ $category->name }}</div>
                             </td>
                             <td>
-                                <div>{{ $category->type->name }}</div>
+                                <div>{{ $category->type->getName() }}</div>
                             </td>
                             <td>
                                 <a href="{{ route('settings_categories_edit', $category->id) }}">Edit</a>

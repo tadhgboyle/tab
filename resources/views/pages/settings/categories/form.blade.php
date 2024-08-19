@@ -1,7 +1,7 @@
 @extends('layouts.default', ['page' => 'settings'])
 @section('content')
 @php
-use App\Casts\CategoryType
+use App\Enums\CategoryType
 @endphp
 <h2 class="title has-text-weight-bold">{{ isset($category) ? 'Edit' : 'Create' }} Category</h2>
 <div class="columns">
@@ -18,7 +18,7 @@ use App\Casts\CategoryType
             <div class="field">
                 <label class="label">Name<sup style="color: red">*</sup></label>
                 <div class="control">
-                    <input type="text" name="name" class="input" placeholder="Category Name" value="{{ $category->name ?? old('name') }}">
+                    <input type="text" name="name" class="input" placeholder="Category Name" value="{{ $category->name ?? old('name') }}" required>
                 </div>
             </div>
             <div class="field">
@@ -27,13 +27,13 @@ use App\Casts\CategoryType
                     <div class="select" id="type">
                         <select name="type" class="input" required>
                             {!! !isset($category) ? "<option value=\"\" disabled selected>Select Type...</option>" : '' !!}
-                            <option value="1" {{ (isset($category) && $category->type->id === CategoryType::TYPE_PRODUCTS_ACTIVITIES) || old('type') === CategoryType::TYPE_PRODUCTS_ACTIVITIES ? "selected" : "" }}>
-                                Products + Activities
+                            <option value="1" {{ (isset($category) && $category->type === CategoryType::ProductsActivities) || old('type') === CategoryType::ProductsActivities->value ? "selected" : "" }}>
+                                Products & Activities
                             </option>
-                            <option value="2" {{ (isset($category) && $category->type->id === CategoryType::TYPE_PRODUCTS) || old('type') === CategoryType::TYPE_PRODUCTS ? "selected" : "" }}>
+                            <option value="2" {{ (isset($category) && $category->type === CategoryType::Products) || old('type') === CategoryType::Products->value ? "selected" : "" }}>
                                 Products
                             </option>
-                            <option value="3" {{ (isset($category) && $category->type->id === CategoryType::TYPE_ACTIVITIES) || old('type') === CategoryType::TYPE_ACTIVITIES ? "selected" : "" }}>
+                            <option value="3" {{ (isset($category) && $category->type === CategoryType::Activities) || old('type') === CategoryType::Activities->value ? "selected" : "" }}>
                                 Activities
                             </option>
                         </select>

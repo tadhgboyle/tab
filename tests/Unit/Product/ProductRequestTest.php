@@ -4,7 +4,6 @@ namespace Tests\Unit\Product;
 
 use App\Models\Product;
 use App\Models\Category;
-use App\Casts\CategoryType;
 use Tests\FormRequestTestCase;
 use App\Http\Requests\ProductRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;

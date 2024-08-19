@@ -6,7 +6,7 @@ use stdClass;
 use Tests\TestCase;
 use App\Models\Product;
 use App\Models\Category;
-use App\Casts\CategoryType;
+use App\Enums\CategoryType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CategoryTest extends TestCase
@@ -17,17 +17,16 @@ class CategoryTest extends TestCase
     {
         foreach (
             [
-                CategoryType::TYPE_PRODUCTS_ACTIVITIES => 'Products & Activities',
-                CategoryType::TYPE_PRODUCTS => 'Products',
-                CategoryType::TYPE_ACTIVITIES => 'Activities',
+                CategoryType::ProductsActivities->value => 'Products & Activities',
+                CategoryType::Products->value => 'Products',
+                CategoryType::Activities->value => 'Activities',
             ] as $type => $name) {
             $category = Category::factory()->create([
                 'type' => $type,
             ]);
 
-            $this->assertInstanceOf(stdClass::class, $category->type);
-            $this->assertEquals($type, $category->type->id);
-            $this->assertEquals($name, $category->type->name);
+            $this->assertEquals($type, $category->type->value);
+            $this->assertEquals($name, $category->type->getName());
         }
     }
 

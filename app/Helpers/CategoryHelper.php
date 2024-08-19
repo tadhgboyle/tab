@@ -3,7 +3,7 @@
 namespace App\Helpers;
 
 use App\Models\Category;
-use App\Casts\CategoryType;
+use App\Enums\CategoryType;
 use Illuminate\Support\Collection;
 
 class CategoryHelper
@@ -21,19 +21,19 @@ class CategoryHelper
     /** @return Collection<int, Category> */
     public function getProductCategories(): Collection
     {
-        return $this->productCategories ??= $this->getCategoriesOfType(CategoryType::TYPE_PRODUCTS);
+        return $this->productCategories ??= $this->getCategoriesOfType(CategoryType::Products);
     }
 
     /** @return Collection<int, Category> */
     public function getActivityCategories(): Collection
     {
-        return $this->activityCategories ??= $this->getCategoriesOfType(CategoryType::TYPE_ACTIVITIES);
+        return $this->activityCategories ??= $this->getCategoriesOfType(CategoryType::Activities);
     }
 
-    private function getCategoriesOfType(int $type): Collection
+    private function getCategoriesOfType(CategoryType $type): Collection
     {
         return $this->getCategories()->filter(static function (Category $category) use ($type) {
-            return in_array($category->type->id, [$type, CategoryType::TYPE_PRODUCTS_ACTIVITIES], true);
+            return in_array($category->type, [$type, CategoryType::ProductsActivities], true);
         });
     }
 }

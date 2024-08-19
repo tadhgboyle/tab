@@ -12,7 +12,7 @@ use App\Models\Rotation;
 use App\Models\Settings;
 use App\Models\UserLimit;
 use Mockery\MockInterface;
-use App\Casts\CategoryType;
+use App\Enums\CategoryType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Services\Activities\ActivityRegistrationCreateService;
 
@@ -49,7 +49,7 @@ class ActivityRegistrationCreateServiceTest extends TestCase
         ]);
         $this->_activities_category = Category::factory()->create([
             'name' => 'Activities',
-            'type' => CategoryType::TYPE_ACTIVITIES,
+            'type' => CategoryType::Activities,
         ]);
         $this->_activity = Activity::factory()->create([
             'category_id' => $this->_activities_category->id,

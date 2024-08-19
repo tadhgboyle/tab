@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Casts\CategoryType;
+use App\Enums\CategoryType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -20,7 +20,7 @@ class Category extends Model
 
     protected $casts = [
         'name' => 'string',
-        'type' => CategoryType::class, // $category->type->name (ie: "Products Only") + $category->type->id (ie: 2)
+        'type' => CategoryType::class,
     ];
 
     public function products(): HasMany

@@ -10,7 +10,7 @@ use App\Models\Activity;
 use App\Models\Category;
 use App\Models\Rotation;
 use App\Models\Settings;
-use App\Casts\CategoryType;
+use App\Enums\CategoryType;
 use App\Models\ActivityRegistration;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -42,7 +42,7 @@ class ActivityTest extends TestCase
 
         $this->_activities_category = Category::factory()->create([
             'name' => 'Activities',
-            'type' => CategoryType::TYPE_ACTIVITIES,
+            'type' => CategoryType::Activities,
         ]);
     }
 

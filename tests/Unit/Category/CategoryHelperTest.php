@@ -4,7 +4,7 @@ namespace Tests\Unit\Category;
 
 use Tests\TestCase;
 use App\Models\Category;
-use App\Casts\CategoryType;
+use App\Enums\CategoryType;
 use App\Helpers\CategoryHelper;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -22,20 +22,20 @@ class CategoryHelperTest extends TestCase
     public function testGetProductCategoriesWorksAsExpected(): void
     {
         Category::factory()->count(1)->state([
-            'type' => CategoryType::TYPE_PRODUCTS,
+            'type' => CategoryType::Products,
         ])->create();
 
         Category::factory()->count(2)->state([
-            'type' => CategoryType::TYPE_ACTIVITIES,
+            'type' => CategoryType::Activities,
         ])->create();
 
         Category::factory()->count(3)->state([
-            'type' => CategoryType::TYPE_PRODUCTS_ACTIVITIES,
+            'type' => CategoryType::ProductsActivities,
         ])->create();
 
         $this->assertCount(4, resolve(CategoryHelper::class)->getProductCategories());
 
-        Category::whereIn('type', [CategoryType::TYPE_PRODUCTS_ACTIVITIES, CategoryType::TYPE_PRODUCTS])->each(function (Category $category) {
+        Category::whereIn('type', [CategoryType::ProductsActivities, CategoryType::Products])->each(function (Category $category) {
             $this->assertContains($category->id, resolve(CategoryHelper::class)->getProductCategories()->pluck('id'));
         });
     }
@@ -43,20 +43,20 @@ class CategoryHelperTest extends TestCase
     public function testGetActivityCategoriesWorksAsExpected(): void
     {
         Category::factory()->count(1)->state([
-            'type' => CategoryType::TYPE_PRODUCTS,
+            'type' => CategoryType::Products,
         ])->create();
 
         Category::factory()->count(2)->state([
-            'type' => CategoryType::TYPE_ACTIVITIES,
+            'type' => CategoryType::Activities,
         ])->create();
 
         Category::factory()->count(3)->state([
-            'type' => CategoryType::TYPE_PRODUCTS_ACTIVITIES,
+            'type' => CategoryType::ProductsActivities,
         ])->create();
 
         $this->assertCount(5, resolve(CategoryHelper::class)->getActivityCategories());
 
-        Category::whereIn('type', [CategoryType::TYPE_PRODUCTS_ACTIVITIES, CategoryType::TYPE_ACTIVITIES])->each(function (Category $category) {
+        Category::whereIn('type', [CategoryType::ProductsActivities, CategoryType::Activities])->each(function (Category $category) {
             $this->assertContains($category->id, resolve(CategoryHelper::class)->getActivityCategories()->pluck('id'));
         });
     }

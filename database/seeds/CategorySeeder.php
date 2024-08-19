@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
-use App\Casts\CategoryType;
+use App\Enums\CategoryType;
 use Illuminate\Database\Seeder;
 
 class CategorySeeder extends Seeder
@@ -17,22 +17,22 @@ class CategorySeeder extends Seeder
     {
         $food_category = Category::factory()->create([
             'name' => 'Food',
-            'type' => CategoryType::TYPE_PRODUCTS
+            'type' => CategoryType::Products
         ]);
 
         $merch_category = Category::factory()->create([
             'name' => 'Merch',
-            'type' => CategoryType::TYPE_PRODUCTS
+            'type' => CategoryType::Products
         ]);
 
         $activities_category = Category::factory()->create([
             'name' => 'Activities',
-            'type' => CategoryType::TYPE_ACTIVITIES
+            'type' => CategoryType::Activities
         ]);
 
         $general_category = Category::factory()->create([
             'name' => 'General',
-            'type' => CategoryType::TYPE_PRODUCTS_ACTIVITIES
+            'type' => CategoryType::ProductsActivities
         ]);
 
         return [$food_category, $merch_category, $activities_category, $general_category];
