@@ -14,8 +14,9 @@
                     <th>Category</th>
                     <th>Price</th>
                     <th>Stock</th>
-                    <th>Stock Override</th>
-                    <th>PST</th>
+                    @permission(\App\Helpers\Permission::PRODUCTS_VIEW)
+                    <th></th>
+                    @endpermission
                     @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)
                     <th></th>
                     @endpermission
@@ -36,12 +37,11 @@
                     <td>
                         <div>{!! $product->getStock() !!}</div>
                     </td>
+                    @permission(\App\Helpers\Permission::PRODUCTS_VIEW)
                     <td>
-                        <div>{{ $product->stock_override ? "✅" : "❌" }}</div>
+                        <div><a href="{{ route('products_view', $product->id) }}">View</a></div>
                     </td>
-                    <td>
-                        <div>{{ $product->pst ? "✅" : "❌" }}</div>
-                    </td>
+                    @endpermission
                     @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)
                     <td>
                         <div><a href="{{ route('products_edit', $product->id) }}">Edit</a></div>
@@ -63,10 +63,11 @@
                 "orderable": false,
                 "searchable": false,
                 "targets": [
+                    @permission(\App\Helpers\Permission::PRODUCTS_VIEW)
                     4,
-                    5,
+                    @endpermission
                     @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)
-                    6,
+                    5,
                     @endpermission
                 ]
             }]

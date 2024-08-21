@@ -48,7 +48,7 @@
                     <h4 class="title has-text-weight-bold is-4">Categories</h4>
                 </div>
                 <div class="column">
-                    <a class="button is-light  is-pulled-right is-small" href="{{ route('settings_categories_create') }}">
+                    <a class="button is-light is-pulled-right is-small" href="{{ route('settings_categories_create') }}">
                         ➕ Create
                     </a>
                 </div>

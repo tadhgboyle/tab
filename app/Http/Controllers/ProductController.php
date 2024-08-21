@@ -22,6 +22,13 @@ class ProductController extends Controller
         ]);
     }
 
+    public function show(Product $product)
+    {
+        return view('pages.products.view', [
+            'product' => $product,
+        ]);
+    }
+
     public function create()
     {
         return view('pages.products.form', [

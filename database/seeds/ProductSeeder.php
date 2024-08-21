@@ -16,7 +16,7 @@ class ProductSeeder extends Seeder
     ];
 
     private static array $merchNames = [
-        'Sweater', 'Hoodie', 'Hat', 'Pants', 'Fanny Pack', 'Sunglasses',
+        'Sweater', 'Hat', 'Pants', 'Fanny Pack', 'Sunglasses',
         'T Shirt', 'Skimboard', 'Waterbottle', 'Shorts', 'Long Sleeve Shirt',
         'Beanie', 'Flip Flops', 'Backpack', 'Phone Case', 'Wristband', 'Tank Top',
         'Keychain', 'Sticker Pack', 'Umbrella', 'Bandana', 'Socks', 'Drawstring Bag',
@@ -62,5 +62,38 @@ class ProductSeeder extends Seeder
                 'category_id' => $general_category
             ])->create();
         }
+
+        // Create example variant product
+        $product = Product::factory()->state([
+            'name' => 'Hoodie',
+            'category_id' => $merch_category
+        ])->create();
+        $sizeVariantOption = $product->variantOptions()->create([
+            'name' => 'Size',
+        ]);
+        $colorVariantOption = $product->variantOptions()->create([
+            'name' => 'Color',
+        ]);
+        $sizeVariantOption->values()->createMany([
+            ['value' => 'Small'],
+            ['value' => 'Medium'],
+            ['value' => 'Large'],
+        ]);
+        $colorVariantOption->values()->createMany([
+            ['value' => 'Green'],
+            ['value' => 'Blue'],
+        ]);
+        $variant = $product->variants()->create([
+            'price' => 3000,
+            'sku' => 'Hoodie-Small-Green',
+        ]);
+        $variant->optionValueAssignments()->create([
+            'product_variant_option_id' => $sizeVariantOption->id,
+            'product_variant_option_value_id' => $sizeVariantOption->values()->where('value', 'Small')->first()->id,
+        ]);
+        $variant->optionValueAssignments()->create([
+            'product_variant_option_id' => $colorVariantOption->id,
+            'product_variant_option_value_id' => $colorVariantOption->values()->where('value', 'Green')->first()->id,
+        ]);
     }
 }

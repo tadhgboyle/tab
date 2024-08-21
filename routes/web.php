@@ -13,6 +13,8 @@
 
 use App\Helpers\Permission;
 use App\Http\Controllers\GiftCardAssignmentController;
+use App\Http\Controllers\ProductVariantController;
+use App\Http\Controllers\ProductVariantOptionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -124,12 +126,26 @@ Route::middleware('auth')->group(function () {
             Route::get('/', [ProductController::class, 'index'])->name('products_list');
         });
 
+        Route::group(['middleware' => 'permission:' . Permission::PRODUCTS_VIEW], static function () {
+            Route::get('/{product}', [ProductController::class, 'show'])->name('products_view');
+        });
+
         Route::group(['middleware' => 'permission:' . Permission::PRODUCTS_MANAGE], static function () {
             Route::get('/create', [ProductController::class, 'create'])->name('products_create');
             Route::post('/create', [ProductController::class, 'store'])->name('products_store');
             Route::get('/{product}/edit', [ProductController::class, 'edit'])->name('products_edit');
             Route::put('/{product}/edit', [ProductController::class, 'update'])->name('products_update');
             Route::delete('/{product}', [ProductController::class, 'delete'])->name('products_delete');
+
+            Route::get('/{product}/variant', [ProductVariantController::class, 'create'])->name('products_variants_create');
+            Route::post('/{product}/variant', [ProductVariantController::class, 'store'])->name('products_variants_store');
+            Route::get('/{product}/variant/{productVariant}', [ProductVariantController::class, 'edit'])->name('products_variants_edit');
+            Route::put('/{product}/variant/{productVariant}', [ProductVariantController::class, 'update'])->name('products_variants_update');
+
+            Route::get('/{product}/variant-options', [ProductVariantOptionController::class, 'create'])->name('products_variant-options_create');
+            Route::post('/{product}/variant-options', [ProductVariantOptionController::class, 'store'])->name('products_variant-options_store');
+            Route::get('/{product}/variant-options/{productVariantOption}', [ProductVariantOptionController::class, 'edit'])->name('products_variant-options_edit');
+            Route::put('/{product}/variant-options/{productVariantOption}', [ProductVariantOptionController::class, 'update'])->name('products_variant-options_update');
         });
 
         Route::group(['middleware' => 'permission:' . Permission::PRODUCTS_LEDGER], static function () {
