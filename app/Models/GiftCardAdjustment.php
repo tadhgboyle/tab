@@ -2,15 +2,14 @@
 
 namespace App\Models;
 
+use App\Enums\GiftCardAdjustmentType;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
 
 class GiftCardAdjustment extends Model
 {
-    public const TYPE_CHARGE = 'charge';
-    public const TYPE_REFUND = 'refund';
-
     protected $casts = [
+        'type' => GiftCardAdjustmentType::class,
         'amount' => MoneyIntegerCast::class,
     ];
 
@@ -33,11 +32,11 @@ class GiftCardAdjustment extends Model
 
     public function isCharge(): bool
     {
-        return $this->type === self::TYPE_CHARGE;
+        return $this->type === GiftCardAdjustmentType::Charge;
     }
 
     public function isRefund(): bool
     {
-        return $this->type === self::TYPE_REFUND;
+        return $this->type === GiftCardAdjustmentType::Refund;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\GiftCardAdjustmentType;
 use Cknow\Money\Money;
 use App\Helpers\Permission;
 use App\Concerns\Timeline\HasTimeline;
@@ -113,7 +114,7 @@ class GiftCard extends Model implements HasTimeline
 
         foreach ($this->adjustments as $adjustment) {
             $events[] = new TimelineEntry(
-                description: $adjustment->type === GiftCardAdjustment::TYPE_CHARGE
+                description: $adjustment->type === GiftCardAdjustmentType::Charge
                     ? "Used to purchase {$adjustment->amount} worth of items"
                     : "Refunded {$adjustment->amount}",
                 emoji: '🧾',

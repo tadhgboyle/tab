@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\GiftCardAdjustmentType;
 use App\Models\Payout;
 use App\Models\User;
 use App\Models\Order;
@@ -129,7 +130,7 @@ class DashboardController extends Controller
         $data['totalRevenue'] = $data['orderRevenue']->add($data['activityRevenue']);
         // Total revenue from gift cards
         // TODO Subtract refunds?
-        $data['giftCardRevenue'] = Money::parse(GiftCardAdjustment::where('type', GiftCardAdjustment::TYPE_CHARGE)->sum('amount'));
+        $data['giftCardRevenue'] = Money::parse(GiftCardAdjustment::where('type', GiftCardAdjustmentType::Charge)->sum('amount'));
         // Average order value
         $data['averageOrderValue'] = Money::parse(Order::avg('total_price'))->divide(100);
         // Average cash payment value

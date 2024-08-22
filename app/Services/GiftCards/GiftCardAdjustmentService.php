@@ -2,11 +2,11 @@
 
 namespace App\Services\GiftCards;
 
+use App\Enums\GiftCardAdjustmentType;
 use App\Models\Order;
 use Cknow\Money\Money;
 use App\Models\GiftCard;
 use App\Services\Service;
-use App\Models\GiftCardAdjustment;
 
 class GiftCardAdjustmentService extends Service
 {
@@ -24,15 +24,15 @@ class GiftCardAdjustmentService extends Service
 
     public function charge(Money $amount): void
     {
-        $this->createAdjustment($amount, GiftCardAdjustment::TYPE_CHARGE);
+        $this->createAdjustment($amount, GiftCardAdjustmentType::Charge);
     }
 
     public function refund(Money $amount): void
     {
-        $this->createAdjustment($amount, GiftCardAdjustment::TYPE_REFUND);
+        $this->createAdjustment($amount, GiftCardAdjustmentType::Refund);
     }
 
-    private function createAdjustment(Money $amount, string $type): void
+    private function createAdjustment(Money $amount, GiftCardAdjustmentType $type): void
     {
         $this->_gift_card->adjustments()->create([
             'order_id' => $this->_order->id,
