@@ -24,6 +24,13 @@
             </div>
 
             <div class="field">
+                <label class="label">SKU</label>
+                <div class="control">
+                    <input type="text" name="sku" class="input" placeholder="SKU" value="{{ $product->sku ?? old('sku') }}">
+                </div>
+            </div>
+
+            <div class="field">
                 <label class="label">Price<sup style="color: red">*</sup></label>
                 <div class="control has-icons-left">
                     <span class="icon is-small is-left">

@@ -101,6 +101,9 @@
     <div class="column">
         <div class="box">
             <p><strong>Category:</strong> {{ $product->category->name }}</p>
+            @if(!$product->hasVariants() && $product->sku)
+                <p><strong>SKU:</strong> {{ $product->sku }}</p>
+            @endif
         </div>
 
         <div class="box">

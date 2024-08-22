@@ -9,66 +9,68 @@
 
 <div class="columns">
     <div class="column box is-two-thirds">
-        <h4 class="title has-text-weight-bold is-4">Products</h4>
-        <div id="loading" align="center">
-            <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
-        </div>
-        <div id="table_container" style="visibility: hidden;">
-            <table id="product_list">
-                <thead>
-                    <th>Name</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Returned</th>
-                    <th>Item Subtotal</th>
-                    <th>Item Total</th>
+        <table id="product_list">
+            <thead>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Returned</th>
+                <th>Item Subtotal</th>
+                <th>Item Total</th>
+                @permission(\App\Helpers\Permission::ORDERS_RETURN)
+                <th></th>
+                @endpermission
+            </thead>
+            <tbody>
+                @foreach($order->products as $product)
+                <tr>
+                    <td>
+                        <div>{{ $product->product->name }}</div>
+                    </td>
+                    <td>
+                        <div>{{ $product->price }}</div>
+                    </td>
+                    <td>
+                        <div>{{ $product->quantity }}</div>
+                    </td>
+                    <td>
+                        <div>{{ $product->returned }}</div>
+                    </td>
+                    <td>
+                        <div>{{ $product->price->multiply($product->quantity) }}</div>
+                    </td>
+                    <td>
+                        <div>{{ \App\Helpers\TaxHelper::forOrderProduct($product, $product->quantity) }}</div>
+                    </td>
                     @permission(\App\Helpers\Permission::ORDERS_RETURN)
-                    <th></th>
+                    <td>
+                        <div>
+                            @if(!$order->isReturned() && $product->returned < $product->quantity)
+                                <button class="button is-danger is-small"  onclick="openProductModal({{ $product->id }});">Return ({{ $product->quantity - $product->returned }})</button>
+                            @else
+                                <div><i>Returned</i></div>
+                            @endif
+                        </div>
+                    </td>
                     @endpermission
-                </thead>
-                <tbody>
-                    @foreach($order->products as $product)
-                    <tr>
-                        <td>
-                            <div>{{ $product->product->name }}</div>
-                        </td>
-                        <td>
-                            <div>{{ $product->price }}</div>
-                        </td>
-                        <td>
-                            <div>{{ $product->quantity }}</div>
-                        </td>
-                        <td>
-                            <div>{{ $product->returned }}</div>
-                        </td>
-                        <td>
-                            <div>{{ $product->price->multiply($product->quantity) }}</div>
-                        </td>
-                        <td>
-                            <div>{{ \App\Helpers\TaxHelper::forOrderProduct($product, $product->quantity) }}</div>
-                        </td>
-                        @permission(\App\Helpers\Permission::ORDERS_RETURN)
-                        <td>
-                            <div>
-                                @if(!$order->isReturned() && $product->returned < $product->quantity)
-                                    <button class="button is-danger is-small"  onclick="openProductModal({{ $product->id }});">Return ({{ $product->quantity - $product->returned }})</button>
-                                @else
-                                    <div><i>Returned</i></div>
-                                @endif
-                            </div>
-                        </td>
-                        @endpermission
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
     <div class="column">
         <div class="box">
             <p><strong>Date:</strong> {{ $order->created_at->format('M jS Y h:ia') }}</p>
             <p><strong>Rotation:</strong> {{ $order->rotation->name }}</p>
-            <p><strong>Purchaser:</strong> @permission(\App\Helpers\Permission::USERS_VIEW) <a href="{{ route('users_view', $order->purchaser_id) }}">{{ $order->purchaser->full_name }}</a> @else {{ $order->purchaser->full_name }} @endpermission</p>
+            <p>
+                <strong>Purchaser:</strong>
+                    @permission(\App\Helpers\Permission::USERS_VIEW)
+                        <a href="{{ route('users_view', $order->purchaser_id) }}">{{ $order->purchaser->full_name }}</a>
+                    @else
+                        {{ $order->purchaser->full_name }}
+                    @endpermission
+                    - {{ $order->purchaser->orders()->count() }} orders
+            </p>
             <p><strong>Cashier:</strong> @permission(\App\Helpers\Permission::USERS_VIEW) <a href="{{ route('users_view', $order->cashier_id) }}">{{ $order->cashier->full_name }}</a> @else {{ $order->cashier->full_name }} @endpermission</p>
         </div>
         <div class="box">
@@ -103,7 +105,6 @@
                 @endif
             </div>
         @endif
-        <br>
     </div>
 </div>
 <div class="box">
@@ -167,8 +168,6 @@
             }]
             @endpermission
         });
-        $('#loading').hide();
-        $('#table_container').css('visibility', 'visible');
     });
 
     @permission(\App\Helpers\Permission::ORDERS_RETURN)

@@ -23,6 +23,7 @@ class ProductEditTest extends TestCase
         $productService = new ProductEditService(new ProductRequest([
             'product_id' => $product->id,
             'name' => 'Test Product',
+            'sku' => 'SKU-123',
             'price' => 10_50,
             'category_id' => $category->id,
             'box_size' => 22,
@@ -35,6 +36,7 @@ class ProductEditTest extends TestCase
         $product = $productService->getProduct();
         $this->assertModelExists($product);
         $this->assertSame('Test Product', $product->name);
+        $this->assertSame('SKU-123', $product->sku);
         $this->assertEquals(Money::parse(10_50), $product->price);
         $this->assertSame($category->id, $product->category_id);
         $this->assertSame(10, $product->stock);

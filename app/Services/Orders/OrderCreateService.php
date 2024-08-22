@@ -65,7 +65,7 @@ class OrderCreateService extends HttpService
 
         foreach ($order_products_from_request->all() as $product_meta) {
             $id = $product_meta->id;
-            $variantId = $product_meta->variantId;
+            $variantId = isset($product_meta->variantId) ? $product_meta->variantId : null;
             $quantity = $product_meta->quantity;
 
             $product = Product::find($id);

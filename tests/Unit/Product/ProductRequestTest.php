@@ -42,6 +42,33 @@ class ProductRequestTest extends FormRequestTestCase
         ]));
     }
 
+    public function testSkuIsOptionalAndUnique(): void
+    {
+        $this->assertNotHaveErrors('sku', new ProductRequest([
+            'sku' => null
+        ]));
+
+        $this->assertNotHaveErrors('sku', new ProductRequest([
+            'sku' => 'HOODIE-123'
+        ]));
+
+        $category = Category::factory()->create();
+        $product = Product::factory()->create([
+            'name' => 'Product',
+            'sku' => 'SKU-123',
+            'category_id' => $category->id,
+        ]);
+
+        $this->assertHasErrors('sku', new ProductRequest([
+            'sku' => $product->sku,
+        ]));
+
+        $this->assertNotHaveErrors('sku', new ProductRequest([
+            'product_id' => $product->id,
+            'sku' => $product->sku,
+        ]));
+    }
+
     public function testPriceIsRequiredAndNumeric(): void
     {
         $this->assertHasErrors('price', new ProductRequest([

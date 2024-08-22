@@ -26,6 +26,7 @@ class ProductEditService extends HttpService
 
         $product->update([
             'name' => $request->name,
+            'sku' => $request->sku,
             'price' => $request->price,
             'category_id' => $request->category_id,
             'stock' => $stock,
