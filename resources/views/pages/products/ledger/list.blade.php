@@ -10,6 +10,7 @@
             <thead>
                 <tr>
                     <th>Name</th>
+                    <th>SKU</th>
                     <th>Category</th>
                     <th>Stock</th>
                     <th>Stock Override</th>
@@ -21,6 +22,9 @@
                 <tr id="{{ $product->id }}">
                     <td>
                         <div>{{ $product->name }}</div>
+                    </td>
+                    <td>
+                        <div>{{ $product->sku }}</div>
                     </td>
                     <td>
                         <div>{{ $product->category->name }}</div>

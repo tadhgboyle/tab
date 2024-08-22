@@ -24,6 +24,7 @@ class OrderCreateService extends HttpService
 
     public const RESULT_NO_SELF_PURCHASE = 'NO_SELF_PURCHASE';
     public const RESULT_NO_ITEMS_SELECTED = 'NO_ITEMS_SELECTED';
+    public const RESULT_MUST_SELECT_VARIANT = 'MUST_SELECT_VARIANT';
     public const RESULT_NEGATIVE_QUANTITY = 'NEGATIVE_QUANTITY';
     public const RESULT_NO_STOCK = 'NO_STOCK';
     public const RESULT_NOT_ENOUGH_BALANCE = 'NOT_ENOUGH_BALANCE';
@@ -70,6 +71,11 @@ class OrderCreateService extends HttpService
 
             $product = Product::find($id);
             $productVariant = $variantId ? $product->variants->find($variantId) : null;
+            if ($product->hasVariants() && !$productVariant) {
+                $this->_result = self::RESULT_MUST_SELECT_VARIANT;
+                $this->_message = "You must select a variant for item {$product->name}";
+                return;
+            }
 
             if ($quantity < 1) {
                 $this->_result = self::RESULT_NEGATIVE_QUANTITY;

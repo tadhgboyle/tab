@@ -83,7 +83,7 @@
                                         <div></div>
                                     </td>
                                     <td>
-                                        <div>{!! $product->getStock() !!}</div>
+                                        <div>{!! $variant->getStock() !!}</div>
                                     </td>
                                     <td>
                                         <div>{{ $variant->price }}</div>

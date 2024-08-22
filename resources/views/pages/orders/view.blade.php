@@ -5,58 +5,188 @@
     #{{ $order->id }} {!! $order->getStatusHtml() !!}
 </h4>
 
+
+@if($order->status !== \App\Models\Order::STATUS_FULLY_RETURNED && hasPermission(\App\Helpers\Permission::ORDERS_RETURN))
+    <button class="button is-danger is-outlined is-pulled-right" type="button" onclick="openModal();">
+        <span>Return</span>
+        <span class="icon is-small">
+            <i class="fas fa-undo"></i>
+        </span>
+    </button>
+@endif
+
 @include('includes.messages')
 
 <div class="columns">
-    <div class="column box is-two-thirds">
-        <table id="product_list">
-            <thead>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Returned</th>
-                <th>Item Subtotal</th>
-                <th>Item Total</th>
-                @permission(\App\Helpers\Permission::ORDERS_RETURN)
-                <th></th>
-                @endpermission
-            </thead>
-            <tbody>
-                @foreach($order->products as $product)
-                <tr>
-                    <td>
-                        <div>{{ $product->product->name }}</div>
-                    </td>
-                    <td>
-                        <div>{{ $product->price }}</div>
-                    </td>
-                    <td>
-                        <div>{{ $product->quantity }}</div>
-                    </td>
-                    <td>
-                        <div>{{ $product->returned }}</div>
-                    </td>
-                    <td>
-                        <div>{{ $product->price->multiply($product->quantity) }}</div>
-                    </td>
-                    <td>
-                        <div>{{ \App\Helpers\TaxHelper::forOrderProduct($product, $product->quantity) }}</div>
-                    </td>
-                    @permission(\App\Helpers\Permission::ORDERS_RETURN)
-                    <td>
-                        <div>
-                            @if(!$order->isReturned() && $product->returned < $product->quantity)
-                                <button class="button is-danger is-small"  onclick="openProductModal({{ $product->id }});">Return ({{ $product->quantity - $product->returned }})</button>
-                            @else
-                                <div><i>Returned</i></div>
+    <div class="column is-two-thirds">
+        <div class="card">
+            <div class="card-content">
+                @foreach($order->products as $orderProduct)
+                <div class="content">
+                    <div class="columns">
+                        <div class="column">
+                            <strong>
+                                @permission(\App\Helpers\Permission::PRODUCTS_VIEW)
+                                    <a href="{{ route('products_view', $orderProduct->product) }}">{{ $orderProduct->product->name }}</a>
+                                @else
+                                    {{ $orderProduct->product->name }}
+                                @endpermission
+                            </strong>
+                            @if($orderProduct->productVariant)
+                                <br>
+                                @foreach($orderProduct->productVariant->descriptions() as $description)
+                                    <span class="tag">{{ $description }}</span>
+                                @endforeach
+                            @endif
+                            @if($orderProduct->productVariant || $orderProduct->product->sku)
+                                <br>
+                                <span class="is-size-7">SKU: {{ $orderProduct->productVariant ? $orderProduct->productVariant->sku : $orderProduct->product->sku }}</span>
                             @endif
                         </div>
-                    </td>
-                    @endpermission
-                </tr>
+                        <div class="column">
+                            <div class="is-pulled-right">
+                                <p>
+                                    {{ $orderProduct->price }}
+                                    x
+                                    @if($orderProduct->returned > 0)
+                                        <del>{{ $orderProduct->quantity }}</del> {{ $orderProduct->quantity - $orderProduct->returned }}
+                                    @else
+                                        {{ $orderProduct->quantity }}
+                                    @endif
+                                </p>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="is-pulled-right">
+                                {{ $orderProduct->price->multiply($orderProduct->quantity) }}
+                            </div>
+                        </div>
+                        @permission(\App\Helpers\Permission::ORDERS_RETURN)
+                            <div class="column">
+                                <div class="is-pulled-right">
+                                    @if(!$order->isReturned() && $orderProduct->returned < $orderProduct->quantity)
+                                        <button class="button is-danger is-small"  onclick="openProductModal({{ $orderProduct->id }});">Return ({{ $orderProduct->quantity - $orderProduct->returned }})</button>
+                                    @else
+                                        <div><i>Returned</i></div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endpermission
+                    </div>
+                </div>
+                    @unless($loop->last)
+                        <hr />
+                    @endif
                 @endforeach
-            </tbody>
-        </table>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <div class="card-content">
+                <div class="content">
+                    <div class="columns">
+                        <div class="column">
+                            Subtotal
+                        </div>
+                        <div class="column">
+                            <div class="is-pulled-right">
+                                @php
+                                    $products_count = $order->products()->count();
+                                @endphp
+                                {{ $products_count }} {{ \Str::plural('item', $products_count) }}
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="is-pulled-right">
+                                {{ $order->subtotal() }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="columns">
+                        <div class="column is-two-thirds">
+                            Taxes
+                        </div>
+                        <div class="column">
+                            <div class="is-pulled-right">
+                                {{ $order->totalTax() }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="columns">
+                        <div class="column is-two-thirds">
+                            <strong>Total</strong>
+                        </div>
+                        <div class="column">
+                            <div class="is-pulled-right">
+                                <strong>{{ $order->total_price }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="columns">
+                        <div class="column is-two-thirds">
+                            Purchaser amount
+                        </div>
+                        <div class="column">
+                            <div class="is-pulled-right">
+                                {{ $order->purchaser_amount }}
+                            </div>
+                        </div>
+                    </div>
+                    @if($order->gift_card_amount->isPositive())
+                        <div class="columns">
+                            <div class="column is-two-thirds">
+                                @permission(\App\Helpers\Permission::SETTINGS_GIFT_CARDS_MANAGE)
+                                    <a href="{{ route('settings_gift-cards_view', $order->giftCard)}}">Gift card amount</a>
+                                @else
+                                    Gift card amount
+                                @endpermission
+                            </div>
+                            <div class="column">
+                                <div class="is-pulled-right">
+                                    {{ $order->gift_card_amount }}
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                    @if($order->status !== \App\Models\Order::STATUS_NOT_RETURNED && $order->getReturnedTotal()->isPositive())
+                        <hr>
+                        <div class="columns">
+                            <div class="column is-two-thirds">
+                                Purchaser returned
+                            </div>
+                            <div class="column">
+                                <div class="is-pulled-right">
+                                    {{ $order->getReturnedTotalInCash() }}
+                                </div>
+                            </div>
+                        </div>
+                        @if($order->gift_card_amount->isPositive())
+                            <div class="columns">
+                                <div class="column is-two-thirds">
+                                    Gift card returned
+                                </div>
+                                <div class="column">
+                                    <div class="is-pulled-right">
+                                        {{ $order->getReturnedTotalToGiftCard() }}
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                        <div class="columns">
+                            <div class="column is-two-thirds">
+                                <strong>Returned</strong>
+                            </div>
+                            <div class="column">
+                                <div class="is-pulled-right">
+                                    <strong>{{ $order->getReturnedTotal() }}</strong>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
     </div>
     <div class="column">
         <div class="box">
@@ -73,38 +203,6 @@
             </p>
             <p><strong>Cashier:</strong> @permission(\App\Helpers\Permission::USERS_VIEW) <a href="{{ route('users_view', $order->cashier_id) }}">{{ $order->cashier->full_name }}</a> @else {{ $order->cashier->full_name }} @endpermission</p>
         </div>
-        <div class="box">
-            <p><strong>Total price:</strong> {{ $order->total_price }}</p>
-            <p><strong>Purchaser amount:</strong> {{ $order->purchaser_amount }}</p>
-            @if($order->gift_card_amount->isPositive())
-                <p>
-                    <strong>Gift card amount:</strong> {{ $order->gift_card_amount }} <code>{{ $order->giftCard->code() }}</code> - <a href="{{ route('settings_gift-cards_view', $order->giftCard)}}">view</a>
-                </p>
-            @endif
-        </div>
-        @if($order->status !== \App\Models\Order::STATUS_NOT_RETURNED)
-            <div class="box">
-                <p><strong>Returned:</strong> {{ $order->getReturnedTotal() }}</p>
-                @if($order->gift_card_amount->isPositive())
-                    <p><strong>Returned to gift card:</strong> {{ $order->getReturnedTotalToGiftCard() }}</p>
-                @endif
-                <p><strong>Returned to purchaser:</strong> {{ $order->getReturnedTotalInCash() }}</p>
-                @if($order->status === \App\Models\Order::STATUS_PARTIAL_RETURNED)
-                    @if($order->gift_card_amount->isPositive())
-                        <p><strong>Amount left to return to gift card:</strong> {{ $order->gift_card_amount->subtract($order->getReturnedTotalToGiftCard()) }}</p>
-                    @endif
-                    <p><strong>Amount left to return:</strong> {{ $order->getOwingTotal() }}</p>
-                @endif
-                @if($order->status !== \App\Models\Order::STATUS_FULLY_RETURNED && hasPermission(\App\Helpers\Permission::ORDERS_RETURN))
-                    <button class="button is-danger is-outlined" type="button" onclick="openModal();">
-                        <span>Return</span>
-                        <span class="icon is-small">
-                            <i class="fas fa-undo"></i>
-                        </span>
-                    </button>
-                @endif
-            </div>
-        @endif
     </div>
 </div>
 <div class="box">
@@ -155,21 +253,6 @@
 @endpermission
 
 <script type="text/javascript">
-    $(document).ready(function() {
-        $('#product_list').DataTable({
-            "paging": false,
-            "scrollY": "49vh",
-            "scrollCollapse": true,
-            "searching": false,
-            @permission(\App\Helpers\Permission::ORDERS_RETURN)
-            "columnDefs": [{
-                "orderable": false,
-                "targets": [6]
-            }]
-            @endpermission
-        });
-    });
-
     @permission(\App\Helpers\Permission::ORDERS_RETURN)
         const modal_order = document.querySelector('.modal-order');
 

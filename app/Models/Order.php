@@ -67,6 +67,25 @@ class Order extends Model implements HasTimeline
         return $this->hasMany(OrderProductReturn::class);
     }
 
+    // TODO: make this a column in the database along with total_tax = total_price
+    // TODO: test
+    public function subtotal(): Money
+    {
+        $subtotal = Money::parse(0);
+
+        foreach ($this->products as $product) {
+            $subtotal = $subtotal->add($product->price->multiply($product->quantity));
+        }
+
+        return $subtotal;
+    }
+
+    // TODO: test
+    public function totalTax(): Money
+    {
+        return $this->total_price->subtract($this->subtotal());
+    }
+
     public function getReturnedTotal(): Money
     {
         if ($this->isReturned()) {

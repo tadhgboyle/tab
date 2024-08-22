@@ -70,13 +70,4 @@ class OrderProduct extends Model
     {
         return $this->belongsTo(Category::class);
     }
-
-    private function priceToCharge(): Money
-    {
-        if ($this->productVariant) {
-            return $this->productVariant->price;
-        }
-
-        return $this->product->price;
-    }
 }

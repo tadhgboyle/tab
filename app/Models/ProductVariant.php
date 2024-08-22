@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 
 class ProductVariant extends Model
 {
@@ -33,9 +34,14 @@ class ProductVariant extends Model
 
     public function description(): string
     {
-        return $this->product->name . ': ' . $this->optionValueAssignments->map(function (ProductVariantOptionValueAssignment $assignment) {
+        return $this->product->name . ': ' . $this->descriptions()->implode(', ');
+    }
+
+    public function descriptions(): Collection
+    {
+        return $this->optionValueAssignments->map(function (ProductVariantOptionValueAssignment $assignment) {
             return $assignment->productVariantOption->name . ': ' . $assignment->productVariantOptionValue->value;
-        })->implode(', ');
+        });
     }
 
     public function getBoxSizeAttribute(): int
