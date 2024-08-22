@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Cknow\Money\Casts\MoneyIntegerCast;
+use Cknow\Money\Money;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -10,6 +11,7 @@ class OrderProduct extends Model
 {
     protected $fillable = [
         'product_id',
+        'product_variant_id',
         'category_id',
         'quantity',
         'price',
@@ -32,19 +34,20 @@ class OrderProduct extends Model
 
     public static function from(
         Product $product,
+        ?ProductVariant $productVariant = null,
         int $quantity,
         float $gst,
         ?float $pst = null,
-        int $returned = 0
     ): OrderProduct {
         return new OrderProduct([
             'product_id' => $product->id,
+            'product_variant_id' => $productVariant?->id,
             'category_id' => $product->category_id,
             'quantity' => $quantity,
-            'price' => $product->price,
+            'price' => $productVariant?->price ?? $product->price,
             'gst' => $gst,
             'pst' => $pst,
-            'returned' => $returned,
+            'returned' => 0,
         ]);
     }
 
@@ -58,8 +61,22 @@ class OrderProduct extends Model
         return $this->belongsTo(Product::class);
     }
 
+    public function productVariant(): BelongsTo
+    {
+        return $this->belongsTo(ProductVariant::class);
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    private function priceToCharge(): Money
+    {
+        if ($this->productVariant) {
+            return $this->productVariant->price;
+        }
+
+        return $this->product->price;
     }
 }

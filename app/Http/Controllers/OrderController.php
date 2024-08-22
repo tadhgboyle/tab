@@ -41,7 +41,14 @@ class OrderController extends Controller
 
         return view('pages.orders.order', [
             'user' => $user,
-            'products' => Product::orderBy('name', 'ASC')->get(),
+            'products' => Product::orderBy('name', 'ASC')->with(
+                'variantOptions',
+                'variants',
+                'variants.product',
+                'variants.optionValueAssignments',
+                'variants.optionValueAssignments.productVariantOption',
+                'variants.optionValueAssignments.productVariantOptionValue',
+            )->get(),
             'current_gst' => $settingsHelper->getGst() / 100,
             'current_pst' => $settingsHelper->getPst() / 100,
         ]);

@@ -28,31 +28,77 @@
                     </thead>
                     <tbody>
                         @foreach($products as $product)
-                        <tr>
-                            <td>
-                                @if($product->getStock() > 0)
-                                    <div class="control">
-                                        <span class="button is-small" onclick="addProduct({{ $product->id }})">
-                                            <span class="icon is-small">
-                                                <i class="fas fa-plus"></i>
+                            <tr>
+                                <td>
+                                    @if(!$product->hasVariants() && $product->getStock() > 0)
+                                        <div class="control">
+                                            <span class="button is-small" onclick="addProduct({{ $product->id }})">
+                                                <span class="icon is-small">
+                                                    <i class="fas fa-plus"></i>
+                                                </span>
                                             </span>
-                                        </span>
+                                        </div>
+                                    @endif
+                                </td>
+                                <td>
+                                    <div>
+                                        @if($product->hasVariants())
+                                            <strong>{{ $product->name }}</strong>
+                                        @else
+                                            {{ $product->name }}
+                                        @endif
                                     </div>
-                                @endif
-                            </td>
-                            <td>
-                                <div>{{ $product->name }}</div>
-                            </td>
-                            <td>
-                                <div>{{ $product->category->name }}</div>
-                            </td>
-                            <td>
-                                <div>{!! $product->getStock() !!}</div>
-                            </td>
-                            <td>
-                                <div>{{ $product->price }}</div>
-                            </td>
-                        </tr>
+                                </td>
+                                <td>
+                                    <div>{{ $product->category->name }}</div>
+                                </td>
+                                <td>
+                                    <div>{!! $product->getStock() !!}</div>
+                                </td>
+                                <td>
+                                    <div>
+                                        @unless($product->hasVariants())
+                                            {{ $product->price }}
+                                        @endunless
+                                    </div>
+                                </td>
+                            </tr>
+                            @foreach ($product->variants as $variant)
+                                <tr>
+                                    <td>
+                                        @if($variant->getStock() > 0)
+                                            <div class="control">
+                                                <span class="button is-small" onclick="addProduct({{ $product->id }}, {{ $variant->id }})">
+                                                    <span class="icon is-small">
+                                                        <i class="fas fa-plus"></i>
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <div>{{ $variant->description() }}</div>
+                                    </td>
+                                    <td>
+                                        <div></div>
+                                    </td>
+                                    <td>
+                                        <div>{!! $product->getStock() !!}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{ $variant->price }}</div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            @if($product->hasVariants())
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            @endif
                         @endforeach
                     </tbody>
                 </table>

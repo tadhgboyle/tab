@@ -32,7 +32,6 @@ class OrderCreateService extends HttpService
     public const RESULT_INVALID_GIFT_CARD = 'INVALID_GIFT_CARD';
     public const RESULT_INVALID_GIFT_CARD_BALANCE = 'INVALID_GIFT_CARD_BALANCE';
     public const RESULT_GIFT_CARD_CANNOT_BE_USED = 'GIFT_CARD_CANNOT_BE_USED';
-
     public const RESULT_SUCCESS = 'SUCCESS';
 
     public function __construct(Request $request, User $purchaser)
@@ -66,9 +65,11 @@ class OrderCreateService extends HttpService
 
         foreach ($order_products_from_request->all() as $product_meta) {
             $id = $product_meta->id;
+            $variantId = $product_meta->variantId;
             $quantity = $product_meta->quantity;
 
             $product = Product::find($id);
+            $productVariant = $variantId ? $product->variants->find($variantId) : null;
 
             if ($quantity < 1) {
                 $this->_result = self::RESULT_NEGATIVE_QUANTITY;
@@ -77,20 +78,29 @@ class OrderCreateService extends HttpService
             }
 
             // Stock handling
-            if (!$product->hasStock($quantity)) {
-                $this->_result = self::RESULT_NO_STOCK;
-                $this->_message = "Not enough {$product->name} in stock. Only {$product->stock} remaining.";
-                return;
+            if ($productVariant) {
+                if (!$productVariant->hasStock($quantity)) {
+                    $this->_result = self::RESULT_NO_STOCK;
+                    $this->_message = "Not enough {$product->name} - {$productVariant->sku} in stock. Only {$productVariant->stock} remaining.";
+                    return;
+                }
+            } else {
+                if (!$product->hasStock($quantity)) {
+                    $this->_result = self::RESULT_NO_STOCK;
+                    $this->_message = "Not enough {$product->name} in stock. Only {$product->stock} remaining.";
+                    return;
+                }    
             }
 
             $order_products->add(OrderProduct::from(
                 $product,
+                $productVariant,
                 $quantity,
                 $settingsHelper->getGst(),
                 $product->pst ? $settingsHelper->getPst() : null
             ));
 
-            $total_price = $total_price->add(TaxHelper::calculateFor($product->price, $quantity, $product->pst));
+            $total_price = $total_price->add(TaxHelper::calculateFor($productVariant?->price ?? $product->price, $quantity, $product->pst));
         }
 
         $charge_user_amount = $total_price;
@@ -147,8 +157,14 @@ class OrderCreateService extends HttpService
             $category_spent_orig = $user_limit->findSpent();
 
             // Loop all products in this order. If the product's category is the current one in the above loop, add its price to category spent
-            foreach ($order_products->filter(fn (OrderProduct $product) => $product->category->id === $category->id) as $product) {
-                $category_spending = $category_spending->add(TaxHelper::calculateFor($product->price, $product->quantity, $product->pst !== null));
+            foreach ($order_products->filter(fn (OrderProduct $orderProduct) => $orderProduct->category->id === $category->id) as $orderProduct) {
+                $category_spending = $category_spending->add(
+                    TaxHelper::calculateFor(
+                        $orderProduct->productVariant?->price ?? $orderProduct->product->price,
+                        $orderProduct->quantity,
+                        $orderProduct->pst !== null
+                    )
+                );
             }
 
             // Break loop if we exceed their limit
@@ -159,9 +175,13 @@ class OrderCreateService extends HttpService
             }
         }
 
-        $order_products->each(fn (OrderProduct $product) => $product->product->removeStock(
-            $product->quantity
-        ));
+        $order_products->each(function (OrderProduct $orderProduct) {
+            if ($orderProduct->productVariant) {
+                $orderProduct->productVariant->removeStock($orderProduct->quantity);
+            } else {
+                $orderProduct->product->removeStock($orderProduct->quantity);
+            }
+        });
 
         $order = new Order();
         $order->purchaser_id = $purchaser->id;

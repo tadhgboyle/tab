@@ -41,6 +41,13 @@
                 </div>
             </div>
 
+            <div class="field">
+                <label class="label">Stock<sup style="color: red">*</sup></label>
+                <div class="control">
+                    <input type="number" step="1" name="stock" class="input" placeholder="0" required value="{{ $productVariant->stock ?? old('stock', 0) }}">
+                </div>
+            </div>
+
             @foreach($product->variantOptions as $option)
                 <div class="field">
                     <label class="label">{{ $option->name }}</label>

@@ -16,7 +16,9 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained();
             $table->string('sku')->unique();
             $table->integer('price');
+            $table->integer('stock');
             // stock? tax settings? weight? dimensions?
+            $table->softDeletes();
             $table->timestamps();
         });
     }

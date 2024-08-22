@@ -42,9 +42,16 @@ class OrderReturnService extends HttpService
             $returned = $orderProduct->returned;
             $orderProduct->update(['returned' => $orderProduct->quantity]);
             if ($orderProduct->product->restore_stock_on_return) {
-                $orderProduct->product->adjustStock(
-                    $orderProduct->quantity - $returned
-                );
+                $amountToRestore = $orderProduct->quantity - $returned;
+                if ($orderProduct->productVariant) {
+                    $orderProduct->productVariant->adjustStock(
+                        $amountToRestore
+                    );
+                } else {
+                    $orderProduct->product->adjustStock(
+                        $amountToRestore
+                    );
+                }
             }
         });
     }

@@ -12,6 +12,10 @@ class ProductVariantController extends Controller
 {
     public function create(Product $product)
     {
+        if ($product->variantOptions->isEmpty()) {
+            return redirect()->route('products_view', $product)->with('error', 'Product has no variant options.');
+        }
+
         return view('pages.products.variants.form', [
             'product' => $product,
         ]);
@@ -22,6 +26,7 @@ class ProductVariantController extends Controller
         $request->validate([
             'sku' => ['required', 'string', Rule::unique('product_variants')],
             'price' => ['required', 'numeric'],
+            'stock' => ['required', 'integer', 'min:0'],
             // options validation:
             // - at least one option selected
             // - all selected options are valid for the product
@@ -44,7 +49,7 @@ class ProductVariantController extends Controller
             return back()->with('error', "Product variant already exists for SKUs: {$existingVariants->join(', ')}.")->withInput();
         }
 
-        $productVariant = $product->variants()->create($request->only('sku', 'price'));
+        $productVariant = $product->variants()->create($request->only('sku', 'price', 'stock'));
 
         $productVariant->optionValueAssignments()->createMany(
             $optionValues->map(function ($optionValueId, $optionId) {

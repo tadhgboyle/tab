@@ -15,7 +15,7 @@
                     <h4 class="title has-text-weight-bold is-4">Variants</h4>
                 </div>
                 <div class="column">
-                    <a class="button is-light is-pulled-right is-small" href="{{ route('products_variants_create', $product) }}">
+                    <a class="button is-light is-pulled-right is-small" href="{{ route('products_variants_create', $product) }}" @if($product->variantOptions->isEmpty()) disabled @endif>
                         ➕ Create
                     </a>
                 </div>
@@ -27,6 +27,7 @@
                     @foreach ($product->variantOptions as $option)
                         <th>{{ $option->name }}</th>
                     @endforeach
+                    <th>Stock</th>
                     <th>Price</th>
                     @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)
                         <th></th>
@@ -35,10 +36,20 @@
                 <tbody>
                     @foreach($product->variants as $variant)
                     <tr>
-                        <td>{{ $variant->sku }}</td>
+                        <td><code>{{ $variant->sku }}</code></td>
                         @foreach ($product->variantOptions as $option)
-                            <td>{!! $variant->optionValueAssignments->firstWhere('product_variant_option_id', $option->id)->productVariantOptionValue->value ?? '<i>Not set</i>' !!}</td>
+                            @php
+                                $optionValueAssignment = $variant->optionValueAssignments->firstWhere('product_variant_option_id', $option->id);
+                            @endphp
+                            <td>
+                                @if ($optionValueAssignment)
+                                    <div class="tag">{{ $optionValueAssignment->productVariantOptionValue->value }}</div>
+                                @else
+                                    <i>Not set</i>
+                                @endif
+                            </td>
                         @endforeach
+                        <td>{{ $variant->stock }}</td>
                         <td>{{ $variant->price }}</td>
                         @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)
                             <td><a href="{{ route('products_variants_edit', [$product->id, $variant->id]) }}">Edit</a></td>
@@ -52,7 +63,7 @@
         <div class="box">
             <div class="columns">
                 <div class="column">
-                    <h4 class="title has-text-weight-bold is-4">Variant Options</h4>
+                    <h4 class="title has-text-weight-bold is-4">Options</h4>
                 </div>
                 <div class="column">
                     <a class="button is-light is-pulled-right is-small" href="{{ route('products_variant-options_create', $product) }}">
@@ -73,7 +84,11 @@
                     @foreach($product->variantOptions as $variantOption)
                     <tr>
                         <td>{{ $variantOption->name }}</td>
-                        <td>{{ $variantOption->values->map->value->implode(', ') }}</td>
+                        <td>
+                            @foreach($variantOption->values as $value)
+                                <div class="tag">{{ $value->value }}</div>
+                            @endforeach
+                        </td>
                         @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)
                             <td><a href="{{ route('products_variant-options_edit', [$product->id, $variantOption->id]) }}">Edit</a></td>
                         @endpermission
@@ -85,14 +100,25 @@
     </div>
     <div class="column">
         <div class="box">
-            <p><strong>Price:</strong> {{ $product->price }}</p>
-            <p><strong>PST:</strong> {{ $product->pst ? 'Yes' : 'No' }}</p>
+            <p><strong>Category:</strong> {{ $product->category->name }}</p>
         </div>
 
         <div class="box">
-            <p><strong>Stock:</strong> {{ $product->getStock() }}</p>
-            <p><strong>Unlimited stock:</strong> {{ $product->unlimited_stock ? 'Yes' : 'No' }}</p>
-            <p><strong>Stock override:</strong> {{ $product->stock_override ? 'Yes' : 'No' }}</p>
+            <p>
+                <strong>Price:</strong>
+                @if($product->hasVariants())
+                    {{ $product->variants->min('price') }} - {{ $product->variants->max('price') }}
+                @else
+                    {{ $product->price }}
+                @endif
+            </p>
+            <p><strong>PST:</strong> {{ $product->pst ? '✅' : '❌' }}</p>
+        </div>
+
+        <div class="box">
+            <p><strong>Stock:</strong> {!! $product->getStock() !!} @if(!$product->unlimited_stock && $product->hasVariants()) (across {{ $product->variants->count() }} variants)</p> @endif
+            <p><strong>Stock override:</strong> {{ $product->stock_override ? '✅' : '❌' }}</p>
+            <p><strong>Restore stock on return:</strong> {{ $product->restore_stock_on_return ? '✅' : '❌' }}</p>
         </div>
     </div>
 </div>

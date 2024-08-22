@@ -18,7 +18,7 @@ class ProductController extends Controller
     public function index()
     {
         return view('pages.products.list', [
-            'products' => Product::all(),
+            'products' => Product::with('variants')->get(),
         ]);
     }
 
@@ -73,11 +73,17 @@ class ProductController extends Controller
 
     public function ajaxGetInfo(Product $product): JsonResponse
     {
+        if (request()->query('variantId')) {
+            $price = $product->variants()->find(request()->query('variantId'))->price;
+        } else {
+            $price = $product->price;
+        }
+
         return response()->json([
             'id' => $product->id,
             'category_id' => $product->category_id,
             'name' => $product->name,
-            'price' => (int) $product->price->getAmount() / 100,
+            'price' => (int) $price->getAmount() / 100,
             'pst' => $product->pst,
             'gst' => true, // taxes suck
         ]);

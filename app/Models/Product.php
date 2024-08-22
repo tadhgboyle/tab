@@ -2,20 +2,21 @@
 
 namespace App\Models;
 
+use App\Traits\InteractsWithStock;
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Product extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
+
+    use InteractsWithStock;
 
     protected $casts = [
         'name' => 'string',
@@ -59,67 +60,22 @@ class Product extends Model
         return $this->hasMany(ProductVariantOption::class);
     }
 
+    public function hasVariants(): bool
+    {
+        return $this->variants->isNotEmpty();
+    }
+
     public function getPriceAfterTax(): Money
     {
         return TaxHelper::calculateFor($this->price, 1, $this->pst);
     }
 
-    // Used to check if items in order have enough stock BEFORE using removeStock() to remove it.
-    // If we didn't use this, then stock would be adjusted and then the order could fail, resulting in inaccurate stock.
-    public function hasStock(int $quantity): bool
+    public function getStockAttribute(int $baseStock): int
     {
-        if ($this->unlimited_stock) {
-            return true;
+        if ($this->hasVariants()) {
+            return $this->variants->sum('stock');
         }
 
-        if ($this->stock >= $quantity || $this->stock_override) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function getStock(): int|string
-    {
-        if ($this->unlimited_stock) {
-            return '<i>Unlimited</i>';
-        }
-
-        return $this->stock;
-    }
-
-    public function removeStock(int $remove_stock): bool
-    {
-        if ($this->unlimited_stock) {
-            return true;
-        }
-
-        if ($this->stock_override || ($this->getStock() >= $remove_stock)) {
-            $this->decrement('stock', $remove_stock);
-            return true;
-        }
-
-        return false;
-    }
-
-    public function adjustStock(int $new_stock): false|int
-    {
-        return $this->increment('stock', $new_stock);
-    }
-
-    public function addBox(int $box_count): bool|int
-    {
-        return $this->adjustStock($box_count * $this->box_size);
-    }
-
-    public function findSold(string|int $rotation_id): int
-    {
-        return OrderProduct::when($rotation_id !== '*', static function (Builder $query) use ($rotation_id) {
-            $query->whereHas('order', function (Builder $query) use ($rotation_id) {
-                $query->where('rotation_id', $rotation_id);
-            });
-        })->where('product_id', $this->id)->chunkMap(static function (OrderProduct $orderProduct) {
-            return $orderProduct->quantity - $orderProduct->returned;
-        })->sum();
+        return $baseStock;
     }
 }

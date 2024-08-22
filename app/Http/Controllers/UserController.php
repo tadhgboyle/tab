@@ -140,10 +140,18 @@ class UserController extends Controller
         $requestData = collect(json_decode(request()->query('products')));
 
         $products = Product::query()->whereIn('id', $requestData->keys())->get();
+        $tryingToSpend = Money::parse(0);
 
-        $tryingToSpend = Money::sum(...$products->map(function (Product $product) use ($requestData) {
-            return $product->getPriceAfterTax()->multiply($requestData->get($product->id));
-        }));
+        foreach ($products as $product) {
+            foreach ($requestData->get($product->id) as $variantId => $quantity) {
+                if ($variantId == 0) {
+                    $tryingToSpend = $tryingToSpend->add($product->getPriceAfterTax()->multiply($quantity));
+                    continue;
+                }
+                $variant = $product->variants()->find($variantId);
+                $tryingToSpend = $tryingToSpend->add($variant->price->multiply($quantity)); // ->getPriceAfterTax()?
+            }
+        }
 
         $userLimit = $user->limitFor($category);
 

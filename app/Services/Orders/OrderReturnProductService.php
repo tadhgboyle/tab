@@ -122,7 +122,11 @@ class OrderReturnProductService extends HttpService
     private function restoreStock(): void
     {
         if ($this->_orderProduct->product->restore_stock_on_return) {
-            $this->_orderProduct->product->adjustStock(1);
+            if ($this->_orderProduct->productVariant) {
+                $this->_orderProduct->productVariant->adjustStock(1);
+            } else {
+                $this->_orderProduct->product->adjustStock(1);
+            }
         }
     }
 

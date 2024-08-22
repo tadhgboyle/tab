@@ -24,9 +24,9 @@ window.onload = () => {
     render();
 };
 
-const addProduct = async (productId) => {
+const addProduct = async (productId, variantId = 0) => {
     // TODO: check stock and don't add if it would be over the limit
-    await fetch(`/products/${productId}`)
+    await fetch(`/products/${productId}/info?variantId=${variantId}`)
         .then(resp => resp.json())
         .then(async (product) => {
             let quantity = 1;
@@ -39,10 +39,12 @@ const addProduct = async (productId) => {
             const products = {};
 
             productsByCategory(product.category_id).forEach(item => {
-                products[item.id] = item.quantity;
+                products[item.id] = {};
+                products[item.id][variantId] = item.quantity;
             });
 
-            products[productId] = quantity;
+            products[productId] = {};
+            products[productId][variantId] = quantity;
 
             console.log(products);
 
@@ -55,6 +57,7 @@ const addProduct = async (productId) => {
 
                         ITEMS.push({
                             id: product.id,
+                            variantId: variantId,
                             category_id: product.category_id,
                             name: product.name,
                             price: product.price,
@@ -121,6 +124,7 @@ const handleSubmit = () => {
         ITEMS.map(item => {
             return {
                 id: item.id,
+                variantId: item.variantId,
                 quantity: item.quantity,
             }
         }),

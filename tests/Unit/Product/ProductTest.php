@@ -214,23 +214,6 @@ class ProductTest extends TestCase
         $this->assertSame(6, $product->stock);
     }
 
-    public function testFindSoldCount(): void
-    {
-        $this->createFakeRecords();
-
-        $current_rotation = resolve(RotationHelper::class)->getRotations()->first()->id;
-
-        foreach ([['Skittles', 2], ['Hat', 1], ['Sweater', 1], ['Coffee', 2]] as $product) {
-            [$name, $sold_count] = $product;
-            $this->assertEquals($sold_count, Product::firstWhere('name', $name)->findSold($current_rotation));
-        }
-
-        foreach ([['Skittles', 4], ['Hat', 2], ['Sweater', 2], ['Coffee', 4]] as $product) {
-            [$name, $sold_count] = $product;
-            $this->assertEquals($sold_count, Product::firstWhere('name', $name)->findSold('*'));
-        }
-    }
-
     /** @return Role[] */
     private function createRoles(): array
     {
@@ -289,9 +272,9 @@ class ProductTest extends TestCase
             'gift_card_amount' => 0_00,
         ]);
 
-        $skittles_product = OrderProduct::from($skittles, 2, 5);
+        $skittles_product = OrderProduct::from($skittles, null, 2, 5);
         $skittles_product->order_id = $order1->id;
-        $hat_product = OrderProduct::from($hat, 1, 5);
+        $hat_product = OrderProduct::from($hat, null, 1, 5);
         $hat_product->order_id = $order1->id;
 
         $order1->products()->saveMany([
@@ -308,9 +291,9 @@ class ProductTest extends TestCase
             'gift_card_amount' => 0_00,
         ]);
 
-        $sweater_product = OrderProduct::from($sweater, 1, 5, 7);
+        $sweater_product = OrderProduct::from($sweater, null, 1, 5, 7);
         $sweater_product->order_id = $order2->id;
-        $coffee_product = OrderProduct::from($coffee, 2, 5, 7);
+        $coffee_product = OrderProduct::from($coffee, null, 2, 5, 7);
         $coffee_product->order_id = $order2->id;
 
         $order2->products()->saveMany([
@@ -329,9 +312,9 @@ class ProductTest extends TestCase
             'gift_card_amount' => 0_00,
         ]);
 
-        $skittles_product = OrderProduct::from($skittles, 2, 5);
+        $skittles_product = OrderProduct::from($skittles, null, 2, 5);
         $skittles_product->order_id = $order1->id;
-        $hat_product = OrderProduct::from($hat, 1, 5);
+        $hat_product = OrderProduct::from($hat, null, 1, 5);
         $hat_product->order_id = $order1->id;
 
         $order3->products()->saveMany([
@@ -348,9 +331,9 @@ class ProductTest extends TestCase
             'gift_card_amount' => 0_00,
         ]);
 
-        $sweater_product = OrderProduct::from($sweater, 1, 5, 7);
+        $sweater_product = OrderProduct::from($sweater, null, 1, 5, 7);
         $sweater_product->order_id = $order2->id;
-        $coffee_product = OrderProduct::from($coffee, 2, 5, 7);
+        $coffee_product = OrderProduct::from($coffee, null, 2, 5, 7);
         $coffee_product->order_id = $order2->id;
 
         $order4->products()->saveMany([
