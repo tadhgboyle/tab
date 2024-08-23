@@ -2,6 +2,7 @@
 
 namespace App\Services\Orders;
 
+use App\Enums\OrderStatus;
 use App\Models\Order;
 use Cknow\Money\Money;
 use App\Models\OrderProduct;
@@ -30,7 +31,7 @@ class OrderReturnService extends HttpService
         [$purchaserAmount, $giftCardAmount] = $this->refundPurchaser();
         $this->createOrderReturn($purchaserAmount, $giftCardAmount);
 
-        $this->_order->update(['status' => Order::STATUS_FULLY_RETURNED]);
+        $this->_order->update(['status' => OrderStatus::FullyReturned]);
 
         $this->_result = self::RESULT_SUCCESS;
         $this->_message = 'Successfully returned order #' . $this->_order->id . ' for ' . $this->_order->purchaser->full_name;

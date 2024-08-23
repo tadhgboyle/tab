@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Order;
 
+use App\Enums\OrderStatus;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
@@ -28,7 +29,7 @@ class OrderReturnServiceTest extends TestCase
         $orderService = (new OrderReturnService($order));
         $this->assertSame(OrderReturnService::RESULT_SUCCESS, $orderService->getResult());
 
-        $this->assertSame(Order::STATUS_FULLY_RETURNED, $order->status);
+        $this->assertSame(OrderStatus::FullyReturned, $order->status);
         $this->assertTrue($order->isReturned());
     }
 
@@ -40,7 +41,7 @@ class OrderReturnServiceTest extends TestCase
         $orderService = (new OrderReturnService($order));
         $this->assertSame(OrderReturnService::RESULT_SUCCESS, $orderService->getResult());
 
-        $this->assertSame(Order::STATUS_FULLY_RETURNED, $order->status);
+        $this->assertSame(OrderStatus::FullyReturned, $order->status);
         $this->assertTrue($order->isReturned());
         $this->assertEquals(
             $balance_before->add($order->purchaser_amount),
@@ -67,7 +68,7 @@ class OrderReturnServiceTest extends TestCase
         $orderService = new OrderReturnService($order);
 
         $this->assertSame(OrderReturnService::RESULT_SUCCESS, $orderService->getResult());
-        $this->assertSame(Order::STATUS_FULLY_RETURNED, $order->status);
+        $this->assertSame(OrderStatus::FullyReturned, $order->status);
         $this->assertTrue($order->isReturned());
 
         $this->assertEquals(
@@ -105,7 +106,7 @@ class OrderReturnServiceTest extends TestCase
         $orderService = new OrderReturnService($order->refresh());
 
         $this->assertSame(OrderReturnService::RESULT_SUCCESS, $orderService->getResult());
-        $this->assertSame(Order::STATUS_FULLY_RETURNED, $order->status);
+        $this->assertSame(OrderStatus::FullyReturned, $order->status);
         $this->assertTrue($order->isReturned());
 
         $this->assertEquals(
@@ -150,7 +151,7 @@ class OrderReturnServiceTest extends TestCase
         $orderService2 = (new OrderReturnService($order));
         $this->assertSame(OrderReturnService::RESULT_ALREADY_RETURNED, $orderService2->getResult());
 
-        $this->assertSame(Order::STATUS_FULLY_RETURNED, $order->status);
+        $this->assertSame(OrderStatus::FullyReturned, $order->status);
         $this->assertEquals($order->total_price, $user->findReturned());
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Services\Orders;
 
+use App\Enums\OrderStatus;
 use App\Models\Order;
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
@@ -137,8 +138,8 @@ class OrderReturnProductService extends HttpService
 
         $this->_order->update([
             'status' => $this->_order->products->sum->returned === $this->_order->products->sum->quantity
-                ? Order::STATUS_FULLY_RETURNED
-                : Order::STATUS_PARTIAL_RETURNED,
+                ? OrderStatus::FullyReturned
+                : OrderStatus::PartiallyReturned,
         ]);
     }
 

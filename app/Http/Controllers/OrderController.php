@@ -21,7 +21,6 @@ class OrderController extends Controller
         return view('pages.orders.list', [
             'orders' => Order::orderBy('created_at', 'DESC')
                 ->with('purchaser', 'cashier')
-                ->withSum('products', 'quantity')
                 ->get(),
         ]);
     }
@@ -67,22 +66,5 @@ class OrderController extends Controller
     public function returnProduct(Order $order, OrderProduct $orderProduct): RedirectResponse
     {
         return (new OrderReturnProductService($orderProduct))->redirect();
-    }
-
-    public function ajaxGetProducts(Order $order): string
-    {
-        $output = '';
-
-        foreach ($order->products as $orderProduct) {
-            $output .=
-                '<tr>' .
-                    '<td>' . $orderProduct->product->name . '</td>' .
-                    '<td>' . $orderProduct->category->name . '</td>' .
-                    '<td>' . $orderProduct->price . '</td>' .
-                    '<td>' . $orderProduct->quantity . '</td>' .
-                '</tr>';
-        }
-
-        return $output;
     }
 }

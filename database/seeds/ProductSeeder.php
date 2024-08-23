@@ -27,7 +27,7 @@ class ProductSeeder extends Seeder
         'Ceramic', 'Tube Ride', 'Sunscreen', 'Tooth Brush', 'Boat Rental',
         'Floss', 'Tye Die Kit', 'Smores Kit', 'Family Photo', 'Computer Pass (1 hour)',
         'Picnic Basket', 'Fishing Rod', 'Canvas Painting Kit', 'Yoga Mat', 'Telescope',
-        'Board Game Set', 'Bluetooth Speaker', 'Candle Set', 'Luggage Tag', 'Plant',
+        'Board Game Set', 'Bluetooth Speaker', 'Luggage Tag', 'Plant',
         'Headphones', 'Portable Charger', 'Art Supplies', 'Fitness Tracker',
         'Travel Pillow', 'Cookbook',
     ];
@@ -144,6 +144,97 @@ class ProductSeeder extends Seeder
                 'Duration' => ['1 hour', '2 hours', '3 hours'],
             ],
         ],
+        'Candle' => [
+            'category' => 'General',
+            'variant_options' => [
+                'Scent' => ['Vanilla', 'Lavender', 'Pine'],
+                'Size' => ['Small', 'Medium', 'Large'],
+                'Colour' => ['White', 'Blue', 'Red'],
+            ],
+            'variants' => [
+                [
+                    'price' => 10_00,
+                    'sku' => 'Candle-Small-White-Vanilla',
+                    'option_value_assignments' => [
+                        ['option' => 'Size', 'value' => 'Small'],
+                        ['option' => 'Colour', 'value' => 'White'],
+                        ['option' => 'Scent', 'value' => 'Vanilla'],
+                    ],
+                ],
+                [
+                    'price' => 10_00,
+                    'sku' => 'Candle-Small-White-Lavender',
+                    'option_value_assignments' => [
+                        ['option' => 'Size', 'value' => 'Small'],
+                        ['option' => 'Colour', 'value' => 'White'],
+                        ['option' => 'Scent', 'value' => 'Lavender'],
+                    ],
+                ],
+                [
+                    'price' => 10_00,
+                    'sku' => 'Candle-Small-White-Pine',
+                    'option_value_assignments' => [
+                        ['option' => 'Size', 'value' => 'Small'],
+                        ['option' => 'Colour', 'value' => 'White'],
+                        ['option' => 'Scent', 'value' => 'Pine'],
+                    ],
+                ],
+                [
+                    'price' => 15_00,
+                    'sku' => 'Candle-Medium-Blue-Vanilla',
+                    'option_value_assignments' => [
+                        ['option' => 'Size', 'value' => 'Medium'],
+                        ['option' => 'Colour', 'value' => 'Blue'],
+                        ['option' => 'Scent', 'value' => 'Vanilla'],
+                    ],
+                ],
+                [
+                    'price' => 15_00,
+                    'sku' => 'Candle-Medium-Blue-Lavender',
+                    'option_value_assignments' => [
+                        ['option' => 'Size', 'value' => 'Medium'],
+                        ['option' => 'Colour', 'value' => 'Blue'],
+                        ['option' => 'Scent', 'value' => 'Lavender'],
+                    ],
+                ],
+                [
+                    'price' => 15_00,
+                    'sku' => 'Candle-Medium-Blue-Pine',
+                    'option_value_assignments' => [
+                        ['option' => 'Size', 'value' => 'Medium'],
+                        ['option'=> 'Colour', 'value' => 'Blue'],
+                        ['option' => 'Scent', 'value' => 'Pine'],
+                    ],
+                ],
+                [
+                    'price' => 20_00,
+                    'sku' => 'Candle-Large-Red-Vanilla',
+                    'option_value_assignments' => [
+                        ['option' => 'Size', 'value' => 'Large'],
+                        ['option' => 'Colour', 'value' => 'Red'],
+                        ['option' => 'Scent', 'value' => 'Vanilla'],
+                    ],
+                ],
+                [
+                    'price' => 20_00,
+                    'sku' => 'Candle-Large-Red-Lavender',
+                    'option_value_assignments' => [
+                        ['option' => 'Size', 'value' => 'Large'],
+                        ['option' => 'Colour', 'value' => 'Red'],
+                        ['option' => 'Scent', 'value' => 'Lavender'],
+                    ],
+                ],
+                [
+                    'price' => 20_00,
+                    'sku' => 'Candle-Large-Red-Pine',
+                    'option_value_assignments' => [
+                        ['option' => 'Size', 'value' => 'Large'],
+                        ['option' => 'Colour', 'value' => 'Red'],
+                        ['option' => 'Scent', 'value' => 'Pine'],
+                    ],
+                ],
+            ],
+        ],
     ];
 
     /**
@@ -216,38 +307,5 @@ class ProductSeeder extends Seeder
                 }
             }
         }
-
-        // Create example variant product
-        // $product = Product::factory()->state([
-        //     'name' => 'Hoodie',
-        //     'category_id' => $merch_category
-        // ])->create();
-        // $sizeVariantOption = $product->variantOptions()->create([
-        //     'name' => 'Size',
-        // ]);
-        // $colorVariantOption = $product->variantOptions()->create([
-        //     'name' => 'Color',
-        // ]);
-        // $sizeVariantOption->values()->createMany([
-        //     ['value' => 'Small'],
-        //     ['value' => 'Medium'],
-        //     ['value' => 'Large'],
-        // ]);
-        // $colorVariantOption->values()->createMany([
-        //     ['value' => 'Green'],
-        //     ['value' => 'Blue'],
-        // ]);
-        // $variant = $product->variants()->create([
-        //     'price' => 3000,
-        //     'sku' => 'Hoodie-Small-Green',
-        // ]);
-        // $variant->optionValueAssignments()->create([
-        //     'product_variant_option_id' => $sizeVariantOption->id,
-        //     'product_variant_option_value_id' => $sizeVariantOption->values()->where('value', 'Small')->first()->id,
-        // ]);
-        // $variant->optionValueAssignments()->create([
-        //     'product_variant_option_id' => $colorVariantOption->id,
-        //     'product_variant_option_value_id' => $colorVariantOption->values()->where('value', 'Green')->first()->id,
-        // ]);
     }
 }

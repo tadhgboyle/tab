@@ -66,6 +66,13 @@ class Product extends Model
         return $this->variants->isNotEmpty();
     }
 
+    public function hasAllVariantCombinations(): bool
+    {
+        return $this->variants->count() === $this->variantOptions->reduce(function ($carry, ProductVariantOption $option) {
+            return $carry * $option->values->count();
+        }, 1);
+    }
+
     public function getPriceAfterTax(): Money
     {
         return TaxHelper::calculateFor($this->price, 1, $this->pst);

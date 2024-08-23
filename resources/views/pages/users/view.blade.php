@@ -304,7 +304,7 @@
                         </td>
                     </tr>
                     @switch($order->status)
-                        @case(\App\Models\Order::STATUS_FULLY_RETURNED)
+                    @case(\App\Enums\OrderStatus::FullyReturned)
                             <tr>
                                 <td>
                                     <div>Return (#{{ $order->id }})</div>
@@ -314,7 +314,7 @@
                                 </td>
                             </tr>
                             @break
-                        @case(\App\Models\Order::STATUS_PARTIAL_RETURNED)
+                        @case(\App\Enums\OrderStatus::PartiallyReturned)
                                 @if($order->getReturnedTotalInCash()->isPositive())
                                     <tr>
                                         <td>

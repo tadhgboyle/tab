@@ -9,7 +9,7 @@
     </div>
     <div class="column">
         <div class="is-pulled-right">
-            @if($order->status !== \App\Models\Order::STATUS_FULLY_RETURNED && hasPermission(\App\Helpers\Permission::ORDERS_RETURN))
+            @if($order->status !== \App\Enums\OrderStatus::FullyReturned && hasPermission(\App\Helpers\Permission::ORDERS_RETURN))
                 <button class="button is-danger is-outlined" type="button" onclick="openModal();">
                     <span>Return</span>
                     <span class="icon is-small">
@@ -155,7 +155,7 @@
                             </div>
                         </div>
                     @endif
-                    @if($order->status !== \App\Models\Order::STATUS_NOT_RETURNED && $order->getReturnedTotal()->isPositive())
+                    @if($order->status !== \App\Enums\OrderStatus::NotReturned && $order->getReturnedTotal()->isPositive())
                         <hr>
                         <div class="columns">
                             <div class="column is-two-thirds">

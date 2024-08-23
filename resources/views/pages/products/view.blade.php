@@ -15,7 +15,7 @@
                     <h4 class="title has-text-weight-bold is-4">Variants</h4>
                 </div>
                 <div class="column">
-                    <a class="button is-light is-pulled-right is-small" href="{{ route('products_variants_create', $product) }}" @if($product->variantOptions->isEmpty()) disabled @endif>
+                    <a class="button is-light is-pulled-right is-small" href="{{ route('products_variants_create', $product) }}" @if($product->variantOptions->isEmpty() || $product->hasAllVariantCombinations()) disabled @endif>
                         ➕ Create
                     </a>
                 </div>

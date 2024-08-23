@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\OrderStatus;
 use Cknow\Money\Money;
 use App\Concerns\Timeline\HasTimeline;
 use Cknow\Money\Casts\MoneyIntegerCast;
@@ -14,12 +15,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Order extends Model implements HasTimeline
 {
-    public const STATUS_NOT_RETURNED = 0;
-
-    public const STATUS_PARTIAL_RETURNED = 1;
-
-    public const STATUS_FULLY_RETURNED = 2;
-
     use HasFactory;
 
     protected $fillable = [
@@ -27,6 +22,7 @@ class Order extends Model implements HasTimeline
     ];
 
     protected $casts = [
+        'status' => OrderStatus::class,
         'total_price' => MoneyIntegerCast::class,
         'purchaser_amount' => MoneyIntegerCast::class,
         'gift_card_amount' => MoneyIntegerCast::class,
@@ -92,7 +88,7 @@ class Order extends Model implements HasTimeline
             return $this->total_price;
         }
 
-        if ($this->status === self::STATUS_NOT_RETURNED) {
+        if ($this->status === OrderStatus::NotReturned) {
             return Money::parse(0);
         }
 
@@ -123,7 +119,7 @@ class Order extends Model implements HasTimeline
             return $this->purchaser_amount;
         }
 
-        if ($this->status === self::STATUS_NOT_RETURNED) {
+        if ($this->status === OrderStatus::NotReturned) {
             return Money::parse(0);
         }
 
@@ -132,15 +128,15 @@ class Order extends Model implements HasTimeline
 
     public function isReturned(): bool
     {
-        return $this->status === self::STATUS_FULLY_RETURNED;
+        return $this->status === OrderStatus::FullyReturned;
     }
 
     public function getStatusHtml(): string
     {
         return match ($this->status) {
-            self::STATUS_FULLY_RETURNED => '<span class="tag is-medium">🚨 Returned</span>',
-            self::STATUS_PARTIAL_RETURNED => '<span class="tag is-medium">⚠️ Semi Returned</span>',
-            self::STATUS_NOT_RETURNED => '<span class="tag is-medium">👌 Not Returned</span>',
+            OrderStatus::FullyReturned => '<span class="tag is-medium">🚨 Returned</span>',
+            OrderStatus::PartiallyReturned => '<span class="tag is-medium">⚠️ Partially Returned</span>',
+            OrderStatus::NotReturned => '<span class="tag is-medium">👌 Not Returned</span>',
         };
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\OrderStatus;
 use Carbon\Carbon;
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
@@ -70,7 +71,7 @@ class UserLimit extends Model
             ->with('products', function ($query) {
                 $query->where('category_id', $this->category->id);
             })
-            ->where('status', '!=', Order::STATUS_FULLY_RETURNED)
+            ->where('status', '!=', OrderStatus::FullyReturned)
             ->get();
 
         $activity_registrations = $this->user->activityRegistrations()

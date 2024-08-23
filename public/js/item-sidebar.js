@@ -57,7 +57,7 @@ const addProduct = async (productId, variantId = 0) => {
                         ITEMS.push({
                             id: product.id,
                             variantId: variantId,
-                            variantDescription: product.variant_description,
+                            variantDescription: product.variantDescription,
                             categoryId: product.categoryId,
                             name: product.name,
                             price: product.price,

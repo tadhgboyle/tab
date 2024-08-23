@@ -16,6 +16,10 @@ class ProductVariantController extends Controller
             return redirect()->route('products_view', $product)->with('error', 'Product has no variant options.');
         }
 
+        if ($product->hasAllVariantCombinations()) {
+            return redirect()->route('products_view', $product)->with('error', 'Product has all variant combinations already.');
+        }
+
         return view('pages.products.variants.form', [
             'product' => $product,
         ]);

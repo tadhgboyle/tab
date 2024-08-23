@@ -2,6 +2,8 @@
 
 namespace Tests\Unit\Order;
 
+use App\Enums\GiftCardAdjustmentType;
+use App\Enums\OrderStatus;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
@@ -31,7 +33,7 @@ class OrderReturnProductServiceTest extends TestCase
         $this->assertSame(OrderReturnProductService::RESULT_SUCCESS, $orderService->getResult());
 
         $order = $order->refresh();
-        $this->assertSame(Order::STATUS_PARTIAL_RETURNED, $order->status);
+        $this->assertSame(OrderStatus::PartiallyReturned, $order->status);
         $this->assertEquals(
             $balance_before->add($hat->getPriceAfterTax()),
             $user->refresh()->balance
@@ -61,7 +63,7 @@ class OrderReturnProductServiceTest extends TestCase
         $orderService = (new OrderReturnProductService($hatOrderProduct));
 
         $this->assertSame(OrderReturnProductService::RESULT_SUCCESS, $orderService->getResult());
-        $this->assertSame(Order::STATUS_PARTIAL_RETURNED, $order->refresh()->status);
+        $this->assertSame(OrderStatus::PartiallyReturned, $order->refresh()->status);
         $this->assertEquals(
             $balance_before->subtract($hat->getPriceAfterTax()), // since there are 2 hats, only 1 has been returned
             $gift_card->refresh()->remaining_balance
@@ -69,7 +71,7 @@ class OrderReturnProductServiceTest extends TestCase
         $this->assertDatabaseHas('gift_card_adjustments', [
             'gift_card_id' => $gift_card->id,
             'amount' => $hat->getPriceAfterTax()->getAmount(),
-            'type' => GiftCardAdjustment::TYPE_REFUND
+            'type' => GiftCardAdjustmentType::Refund
         ]);
     }
 
@@ -98,7 +100,7 @@ class OrderReturnProductServiceTest extends TestCase
         $orderService = new OrderReturnProductService($hatOrderProduct);
 
         $this->assertSame(OrderReturnProductService::RESULT_SUCCESS, $orderService->getResult());
-        $this->assertSame(Order::STATUS_FULLY_RETURNED, $order->refresh()->status);
+        $this->assertSame(OrderStatus::FullyReturned, $order->refresh()->status);
         $this->assertEquals(
             $balance_before,
             $gift_card->refresh()->remaining_balance
@@ -107,7 +109,7 @@ class OrderReturnProductServiceTest extends TestCase
         $giftCardAdjustment = $gift_card->adjustments->last();
         $this->assertEquals($order->id, $giftCardAdjustment->order_id);
         $this->assertEquals($expected_gift_card_refund, $giftCardAdjustment->amount);
-        $this->assertEquals(GiftCardAdjustment::TYPE_REFUND, $giftCardAdjustment->type);
+        $this->assertEquals(GiftCardAdjustmentType::Refund, $giftCardAdjustment->type);
         $this->assertEquals($gift_card->id, $giftCardAdjustment->gift_card_id);
 
         $orderReturn = $order->return;
@@ -140,7 +142,7 @@ class OrderReturnProductServiceTest extends TestCase
         $this->assertSame(OrderReturnProductService::RESULT_SUCCESS, $orderService->getResult());
 
         $order = $order->refresh();
-        $this->assertSame(Order::STATUS_FULLY_RETURNED, $order->status);
+        $this->assertSame(OrderStatus::FullyReturned, $order->status);
         $this->assertTrue($order->isReturned());
         $this->assertEquals($order->total_price, $user->findReturned());
     }
@@ -161,7 +163,7 @@ class OrderReturnProductServiceTest extends TestCase
         $this->assertSame(OrderReturnProductService::RESULT_ITEM_RETURNED_MAX_TIMES, $orderService3->getResult());
 
         $order_2_items = $order_2_items->refresh();
-        $this->assertSame(Order::STATUS_PARTIAL_RETURNED, $order_2_items->status);
+        $this->assertSame(OrderStatus::PartiallyReturned, $order_2_items->status);
         $this->assertEquals($hat->getPriceAfterTax()->multiply(2), $user->findReturned());
     }
 

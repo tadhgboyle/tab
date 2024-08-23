@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\OrderStatus;
 use Cknow\Money\Money;
 use App\Concerns\Timeline\HasTimeline;
 use Cknow\Money\Casts\MoneyIntegerCast;
@@ -132,7 +133,7 @@ class User extends Authenticatable implements HasTimeline
                 return;
             }
 
-            if ($order->status === Order::STATUS_NOT_RETURNED) {
+            if ($order->status === OrderStatus::NotReturned) {
                 return;
             }
 
@@ -153,7 +154,7 @@ class User extends Authenticatable implements HasTimeline
         $returned = Money::parse(0);
 
         $this->orders->each(function (Order $order) use (&$returned) {
-            if ($order->status === Order::STATUS_NOT_RETURNED) {
+            if ($order->status === OrderStatus::NotReturned) {
                 return;
             }
 

@@ -78,7 +78,6 @@ Route::middleware('auth')->group(function () {
     Route::group(['middleware' => 'permission:' . Permission::ORDERS, 'prefix' => '/orders'], static function () {
         Route::group(['middleware' => 'permission:' . Permission::ORDERS_LIST], static function () {
             Route::get('/', [OrderController::class, 'index'])->name('orders_list');
-            Route::get('/{order}/products', [OrderController::class, 'ajaxGetProducts'])->name('orders_products');
         });
 
         Route::group(['middleware' => 'permission:' . Permission::ORDERS_VIEW], static function () {

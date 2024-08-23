@@ -63,12 +63,14 @@
                 "orderable": false,
                 "searchable": false,
                 "targets": [
-                    @permission(\App\Helpers\Permission::PRODUCTS_VIEW)
-                    4,
-                    @endpermission
-                    @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)
-                    5,
-                    @endpermission
+                    @if(hasPermission(\App\Helpers\Permission::PRODUCTS_VIEW) && hasPermission(\App\Helpers\Permission::PRODUCTS_MANAGE))
+                        4,
+                        5
+                    @elseif(hasPermission(\App\Helpers\Permission::PRODUCTS_VIEW) && !hasPermission(\App\Helpers\Permission::PRODUCTS_MANAGE))
+                        5
+                    @elseif(!hasPermission(\App\Helpers\Permission::PRODUCTS_VIEW) && hasPermission(\App\Helpers\Permission::PRODUCTS_MANAGE))
+                        5
+                    @endif
                 ]
             }]
         });

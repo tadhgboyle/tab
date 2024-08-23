@@ -85,7 +85,7 @@ class ProductController extends Controller
             'id' => $product->id,
             'categoryId' => $product->category_id,
             'name' => $product->name,
-            'variant_description' => $variantDescription ?? null,
+            'variantDescription' => $variantDescription ?? null,
             'price' => (int) $price->getAmount() / 100,
             'pst' => $product->pst,
             'gst' => true, // taxes suck
