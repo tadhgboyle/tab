@@ -31,7 +31,12 @@ const addProduct = async (productId, variantId = 0) => {
         .then(async (product) => {
             let quantity = 1;
 
-            const existingIndex = indexByProductId(productId);
+            let existingIndex;
+            if (variantId === 0) {
+                existingIndex = indexByProductId(productId);
+            } else {
+                existingIndex = indexByProductIdAndVariantId(productId, variantId);
+            }
             if (existingIndex !== -1) {
                 quantity += ITEMS[existingIndex].quantity;
             }
@@ -40,7 +45,11 @@ const addProduct = async (productId, variantId = 0) => {
 
             productsByCategory(product.categoryId).forEach(item => {
                 products[item.id] = {};
-                products[item.id][variantId] = item.quantity;
+                if (item.variantId === 0) {
+                    products[item.id][0] = item.quantity;
+                } else {
+                    products[item.id][item.variantId] = item.quantity;
+                }
             });
 
             products[productId] = {};
@@ -50,24 +59,24 @@ const addProduct = async (productId, variantId = 0) => {
                 .then(resp => resp.json())
                 .then(data => {
                     if (data.can_spend) {
-                        ITEMS = ITEMS.filter(item => {
-                            return item.id !== productId || item.variantId !== variantId;
-                        });
+                        if (existingIndex !== -1) {
+                            ITEMS[existingIndex].quantity = quantity;
+                        } else {
+                            ITEMS.push({
+                                id: product.id,
+                                variantId: variantId,
+                                variantDescription: product.variantDescription,
+                                categoryId: product.categoryId,
+                                name: product.name,
+                                price: product.price,
+                                tax: {
+                                    pst: product.pst,
+                                    gst: product.gst,
+                                },
+                                quantity: quantity,
+                            });    
+                        }
 
-                        ITEMS.push({
-                            id: product.id,
-                            variantId: variantId,
-                            variantDescription: product.variantDescription,
-                            categoryId: product.categoryId,
-                            name: product.name,
-                            price: product.price,
-                            tax: {
-                                pst: product.pst,
-                                gst: product.gst,
-                            },
-                            quantity: quantity,
-                        });
-            
                         cacheItems();
                         render();
                     } else {

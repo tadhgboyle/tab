@@ -71,7 +71,7 @@
                             <div class="column">
                                 <div class="is-pulled-right">
                                     @if(!$order->isReturned() && $orderProduct->returned < $orderProduct->quantity)
-                                        <button class="button is-danger is-small"  onclick="openProductModal({{ $orderProduct->id }});">Return ({{ $orderProduct->quantity - $orderProduct->returned }})</button>
+                                        <button class="button is-danger is-small is-outlined"  onclick="openProductModal({{ $orderProduct->id }});">Return ({{ $orderProduct->quantity - $orderProduct->returned }})</button>
                                     @else
                                         <div><i>Returned</i></div>
                                     @endif
@@ -97,7 +97,7 @@
                         <div class="column">
                             <div class="is-pulled-right">
                                 @php
-                                    $products_count = $order->products()->count();
+                                    $products_count = $order->products()->sum('quantity');
                                 @endphp
                                 {{ $products_count }} {{ \Str::plural('item', $products_count) }}
                             </div>
@@ -155,7 +155,7 @@
                             </div>
                         </div>
                     @endif
-                    @if($order->status !== \App\Enums\OrderStatus::NotReturned && $order->getReturnedTotal()->isPositive())
+                    @if($order->status !== \App\Enums\OrderStatus::NotReturned)
                         <hr>
                         <div class="columns">
                             <div class="column is-two-thirds">

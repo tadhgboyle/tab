@@ -127,13 +127,9 @@ class User extends Authenticatable implements HasTimeline
     {
         $returned = Money::parse(0);
 
-        $this->orders->each(function (Order $order) use (&$returned) {
+        $this->orders()->whereNot('status', OrderStatus::NotReturned)->get()->each(function (Order $order) use (&$returned) {
             if ($order->isReturned()) {
                 $returned = $returned->add($order->total_price);
-                return;
-            }
-
-            if ($order->status === OrderStatus::NotReturned) {
                 return;
             }
 
@@ -153,11 +149,7 @@ class User extends Authenticatable implements HasTimeline
     {
         $returned = Money::parse(0);
 
-        $this->orders->each(function (Order $order) use (&$returned) {
-            if ($order->status === OrderStatus::NotReturned) {
-                return;
-            }
-
+        $this->orders()->whereNot('status', OrderStatus::NotReturned)->get()->each(function (Order $order) use (&$returned) {
             if ($order->isReturned()) {
                 $returned = $returned->add($order->purchaser_amount);
                 return;
