@@ -39,6 +39,8 @@ class ProductVariant extends Model
 
     public function descriptions(): Collection
     {
+        $this->loadMissing('optionValueAssignments.productVariantOption', 'optionValueAssignments.productVariantOptionValue');
+
         return $this->optionValueAssignments->map(function (ProductVariantOptionValueAssignment $assignment) {
             return $assignment->productVariantOption->name . ': ' . $assignment->productVariantOptionValue->value;
         });

@@ -1,19 +1,25 @@
 @extends('layouts.default', ['page' => 'orders'])
 @section('content')
 <h2 class="title has-text-weight-bold">View Order</h2>
-<h4 class="subtitle">
-    #{{ $order->id }} {!! $order->getStatusHtml() !!}
-</h4>
-
-
-@if($order->status !== \App\Models\Order::STATUS_FULLY_RETURNED && hasPermission(\App\Helpers\Permission::ORDERS_RETURN))
-    <button class="button is-danger is-outlined is-pulled-right" type="button" onclick="openModal();">
-        <span>Return</span>
-        <span class="icon is-small">
-            <i class="fas fa-undo"></i>
-        </span>
-    </button>
-@endif
+<div class="columns">
+    <div class="column">
+        <h4 class="subtitle">
+            #{{ $order->id }} {!! $order->getStatusHtml() !!}
+        </h4>
+    </div>
+    <div class="column">
+        <div class="is-pulled-right">
+            @if($order->status !== \App\Models\Order::STATUS_FULLY_RETURNED && hasPermission(\App\Helpers\Permission::ORDERS_RETURN))
+                <button class="button is-danger is-outlined" type="button" onclick="openModal();">
+                    <span>Return</span>
+                    <span class="icon is-small">
+                        <i class="fas fa-undo"></i>
+                    </span>
+                </button>
+            @endif
+        </div>
+    </div>
+</div>
 
 @include('includes.messages')
 
@@ -183,6 +189,16 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="columns">
+                            <div class="column is-two-thirds">
+                                Balance
+                            </div>
+                            <div class="column">
+                                <div class="is-pulled-right">
+                                    {{ $order->getOwingTotal() }}
+                                </div>
+                            </div>
+                        </div>
                     @endif
                 </div>
             </div>
@@ -203,11 +219,10 @@
             </p>
             <p><strong>Cashier:</strong> @permission(\App\Helpers\Permission::USERS_VIEW) <a href="{{ route('users_view', $order->cashier_id) }}">{{ $order->cashier->full_name }}</a> @else {{ $order->cashier->full_name }} @endpermission</p>
         </div>
+        <div class="box">
+            <x-entity-timeline :timeline="$order->timeline()" />
+        </div>
     </div>
-</div>
-<div class="box">
-    <h4 class="title has-text-weight-bold is-4">Timeline</h4>
-    <x-entity-timeline :timeline="$order->timeline()" />
 </div>
 
 @permission(\App\Helpers\Permission::ORDERS_RETURN)

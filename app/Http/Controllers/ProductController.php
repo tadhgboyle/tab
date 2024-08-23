@@ -74,15 +74,18 @@ class ProductController extends Controller
     public function ajaxGetInfo(Product $product): JsonResponse
     {
         if (request()->query('variantId')) {
-            $price = $product->variants()->find(request()->query('variantId'))->price;
+            $variant = $product->variants()->find(request()->query('variantId'));
+            $variantDescription = $variant->description();
+            $price = $variant->price;
         } else {
             $price = $product->price;
         }
 
         return response()->json([
             'id' => $product->id,
-            'category_id' => $product->category_id,
+            'categoryId' => $product->category_id,
             'name' => $product->name,
+            'variant_description' => $variantDescription ?? null,
             'price' => (int) $price->getAmount() / 100,
             'pst' => $product->pst,
             'gst' => true, // taxes suck

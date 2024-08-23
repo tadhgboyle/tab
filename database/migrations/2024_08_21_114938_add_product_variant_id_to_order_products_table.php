@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::table('order_products', function (Blueprint $table) {
             $table->foreignId('product_variant_id')->after('product_id')->nullable()->constrained();
+
+            $table->unique(['order_id', 'product_id', 'product_variant_id']);
         });
     }
 

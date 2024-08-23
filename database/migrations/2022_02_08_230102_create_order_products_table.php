@@ -24,8 +24,6 @@ class CreateOrderProductsTable extends Migration
             $table->float('gst');
             $table->float('pst')->nullable();
             $table->timestamps();
-
-            $table->unique(['order_id', 'product_id']);
         });
     }
 
