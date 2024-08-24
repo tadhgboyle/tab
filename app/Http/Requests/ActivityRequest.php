@@ -6,6 +6,7 @@ use App\Helpers\CategoryHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule as ValidationRule;
 use App\Http\Requests\FormRequest as FormRequestContract;
+use Illuminate\Validation\Validator;
 
 class ActivityRequest extends FormRequest implements FormRequestContract
 {
@@ -24,7 +25,6 @@ class ActivityRequest extends FormRequest implements FormRequestContract
             ],
             'slots' => [
                 'nullable',
-                'min:1',
                 'numeric',
                 ValidationRule::requiredIf(!$this->has('unlimited_slots')),
             ],
@@ -48,5 +48,14 @@ class ActivityRequest extends FormRequest implements FormRequestContract
                 ValidationRule::in(resolve(CategoryHelper::class)->getActivityCategories()->pluck('id')),
             ],
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator) {
+            if (!$this->has('unlimited_slots') && $this->get('slots') < 1) {
+                $validator->errors()->add('slots', 'Slots must be at least 1.');
+            }
+        });
     }
 }

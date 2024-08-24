@@ -1,11 +1,10 @@
-import axios from 'axios';
+window.axios = require('axios');
 window.axios = axios;
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
-import 'bulma';
-import 'flatpickr';
-import FullCalendar from 'fullcalendar';
-window.FullCalendar = FullCalendar;
+require('bulma');
+require('flatpickr');
+window.FullCalendar = require('fullcalendar');
 window.$ = window.jQuery = require('jquery');
-import 'jquery-ui/ui/widgets/sortable';
-import 'datatables.net';
+require('jquery-ui/ui/widgets/sortable');
+require('datatables.net');
