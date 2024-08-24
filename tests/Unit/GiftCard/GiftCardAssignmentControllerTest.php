@@ -39,7 +39,9 @@ class GiftCardAssignmentControllerTest extends TestCase
             Permission::SETTINGS_GIFT_CARDS_MANAGE,
         ]);
 
-        $giftCard = GiftCard::factory()->create();
+        $giftCard = GiftCard::factory()->create([
+            'expires_at' => null,
+        ]);
 
         $this->actingAs($this->_superuser)
             ->get(route('settings_gift-cards_assign', [$giftCard->id, $this->_superuser->id]))

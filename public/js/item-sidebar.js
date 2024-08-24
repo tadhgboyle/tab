@@ -45,11 +45,7 @@ const addProduct = async (productId, variantId = 0) => {
 
             productsByCategory(product.categoryId).forEach(item => {
                 products[item.id] = {};
-                if (item.variantId === 0) {
-                    products[item.id][0] = item.quantity;
-                } else {
-                    products[item.id][item.variantId] = item.quantity;
-                }
+                products[item.id][item.variantId] = item.quantity;
             });
 
             products[productId] = {};

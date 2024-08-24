@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Order;
 
+use App\Enums\GiftCardAdjustmentType;
 use App\Enums\OrderStatus;
 use Tests\TestCase;
 use App\Models\Role;
@@ -78,7 +79,7 @@ class OrderReturnServiceTest extends TestCase
 
         $giftCardAdjustment = $giftCard->adjustments->last();
         $this->assertEquals($order->gift_card_amount, $giftCardAdjustment->amount);
-        $this->assertEquals('refund', $giftCardAdjustment->type);
+        $this->assertEquals(GiftCardAdjustmentType::Refund, $giftCardAdjustment->type);
         $this->assertEquals($order->id, $giftCardAdjustment->order_id);
     }
 
@@ -117,7 +118,7 @@ class OrderReturnServiceTest extends TestCase
 
         $giftCardAdjustment = $giftCard->adjustments->last();
         $this->assertEquals($giftCardAmountRefunded, $giftCardAdjustment->amount);
-        $this->assertEquals('refund', $giftCardAdjustment->type);
+        $this->assertEquals(GiftCardAdjustmentType::Refund, $giftCardAdjustment->type);
         $this->assertEquals($order->id, $giftCardAdjustment->order_id);
 
         $orderReturn = $order->return;

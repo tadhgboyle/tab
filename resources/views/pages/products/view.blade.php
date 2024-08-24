@@ -49,7 +49,7 @@
                                 @endif
                             </td>
                         @endforeach
-                        <td>{{ $variant->stock }}</td>
+                        <td>{!! $variant->unlimited_stock ? '<i>Unlimited</i>' : $variant->stock !!}</td>
                         <td>{{ $variant->price }}</td>
                         @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)
                             <td><a href="{{ route('products_variants_edit', [$product->id, $variant->id]) }}">Edit</a></td>
@@ -120,7 +120,9 @@
 
         <div class="box">
             <p><strong>Stock:</strong> {!! $product->getStock() !!} @if(!$product->unlimited_stock && $product->hasVariants()) (across {{ $product->variants->count() }} variants)</p> @endif
-            <p><strong>Stock override:</strong> {{ $product->stock_override ? '✅' : '❌' }}</p>
+            @unless($product->unlimited_stock)
+                <p><strong>Stock override:</strong> {{ $product->stock_override ? '✅' : '❌' }}</p>
+            @endunless
             <p><strong>Restore stock on return:</strong> {{ $product->restore_stock_on_return ? '✅' : '❌' }}</p>
         </div>
     </div>

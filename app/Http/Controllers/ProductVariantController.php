@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductVariantRequest;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\ProductVariantOptionValueAssignment;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Collection;
 
 class ProductVariantController extends Controller
 {
@@ -25,32 +25,12 @@ class ProductVariantController extends Controller
         ]);
     }
 
-    public function store(Request $request, Product $product)
+    public function store(ProductVariantRequest $request, Product $product)
     {
-        $request->validate([
-            'sku' => ['required', 'string', Rule::unique('product_variants')],
-            'price' => ['required', 'numeric'],
-            'stock' => ['required', 'integer', 'min:0'],
-            // options validation:
-            // - at least one option selected
-            // - all selected options are valid for the product
-            // - the option combination is unique for the products variants
-            'option_values' => ['required', 'array'],
-            'option_values.*' => ['required', Rule::exists('product_variant_option_values', 'id')->where('product_variant_option_id', $product->variantOptions->pluck('id'))],
-        ]);
-
         $optionValues = collect($request->input('option_values'));
 
-        // ensure the option value combination is unique
-        $existingVariants = ProductVariantOptionValueAssignment::whereIn('product_variant_option_value_id', $optionValues->values())
-            ->join('product_variants', 'product_variant_option_value_assignments.product_variant_id', '=', 'product_variants.id')
-            ->select('product_variants.sku')
-            ->groupBy('product_variant_option_value_assignments.product_variant_id')
-            ->havingRaw('COUNT(DISTINCT product_variant_option_value_assignments.product_variant_option_value_id) = ?', [count($optionValues->values())])
-            ->pluck('product_variants.sku');
-
-        if ($existingVariants->isNotEmpty()) {
-            return back()->with('error', "Product variant already exists for SKUs: {$existingVariants->join(', ')}.")->withInput();
+        if ($existingVariants = $this->isDuplicatedVariant($optionValues)) {
+            return back()->with('error', "Product variant already exists for SKUs: {$existingVariants}.")->withInput();
         }
 
         $productVariant = $product->variants()->create($request->only('sku', 'price', 'stock'));
@@ -59,7 +39,7 @@ class ProductVariantController extends Controller
             $optionValues->map(function ($optionValueId, $optionId) {
                 return [
                     'product_variant_option_id' => $optionId,
-                    'product_variant_option_value_id' => (int) $optionValueId
+                    'product_variant_option_value_id' => $optionValueId
                 ];
             })
         );
@@ -73,5 +53,49 @@ class ProductVariantController extends Controller
             'product' => $product,
             'productVariant' => $productVariant,
         ]);
+    }
+
+    public function update(ProductVariantRequest $request, Product $product, ProductVariant $productVariant)
+    {
+        $optionValues = collect($request->input('option_values'));
+
+        if ($existingVariants = $this->isDuplicatedVariant($optionValues, $productVariant)) {
+            return back()->with('error', "Product variant already exists for SKUs: {$existingVariants}.")->withInput();
+        }
+
+        $productVariant->update($request->only('sku', 'price', 'stock'));
+
+        // delete any existing option value assignments that are not in the new list, then add new ones that are not in the existing list
+        $productVariant->optionValueAssignments()->whereNotIn('product_variant_option_value_id', $optionValues->values())->delete();
+        $productVariant->optionValueAssignments()->createMany(
+            $optionValues->diff($productVariant->optionValueAssignments->pluck('product_variant_option_value_id'))
+                ->map(function ($optionValueId, $optionId) {
+                    return [
+                        'product_variant_option_id' => $optionId,
+                        'product_variant_option_value_id' => $optionValueId
+                    ];
+                })
+        );
+
+        return redirect()->route('products_view', $product)->with('success', 'Product variant updated.');
+    }
+
+    private function isDuplicatedVariant(Collection $optionValues, ProductVariant $ignore = null)
+    {
+        $existingVariants = ProductVariantOptionValueAssignment::whereIn('product_variant_option_value_id', $optionValues->values())
+            ->when($ignore, function ($query) use ($ignore) {
+                $query->whereNot('product_variant_id', $ignore->id);
+            })
+            ->join('product_variants', 'product_variant_option_value_assignments.product_variant_id', '=', 'product_variants.id')
+            ->select('product_variants.sku')
+            ->groupBy('product_variant_option_value_assignments.product_variant_id')
+            ->havingRaw('COUNT(DISTINCT product_variant_option_value_assignments.product_variant_option_value_id) = ?', [count($optionValues->values())])
+            ->pluck('product_variants.sku');
+
+        if ($existingVariants->isNotEmpty()) {
+            return $existingVariants->implode(', ');
+        }
+
+        return null;
     }
 }
