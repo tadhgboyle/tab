@@ -7,11 +7,7 @@
     <title>tab | {{ ucfirst($page) }}</title>
     <link rel="shortcut icon" type="image/x-icon" href="{{ url('favicon.ico') }}">
 
-    <link rel="stylesheet" href="{{ url('css/app.css') }}">
-    <link rel="stylesheet" href="{{ url('css/dataTables-1.10.21.min.css') }}">
-    <link rel="stylesheet" href="{{ url('css/styles.css') }}" />
-
-    <script src="{{ url('js/app.js') }}"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body>
