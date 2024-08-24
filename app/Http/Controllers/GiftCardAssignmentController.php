@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\GiftCard;
 use App\Models\User;
+use App\Models\GiftCard;
 
 class GiftCardAssignmentController extends Controller
 {

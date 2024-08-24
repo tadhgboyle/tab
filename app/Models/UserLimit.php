@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Enums\OrderStatus;
 use Carbon\Carbon;
 use Cknow\Money\Money;
+use App\Enums\OrderStatus;
 use App\Helpers\TaxHelper;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;

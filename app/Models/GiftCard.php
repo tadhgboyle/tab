@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Enums\GiftCardAdjustmentType;
 use Cknow\Money\Money;
 use App\Helpers\Permission;
+use App\Enums\GiftCardAdjustmentType;
 use App\Concerns\Timeline\HasTimeline;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +12,6 @@ use App\Concerns\Timeline\TimelineEntry;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class GiftCard extends Model implements HasTimeline
 {

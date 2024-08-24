@@ -2,14 +2,10 @@
 
 namespace Tests\Unit\Product;
 
-use App\Http\Requests\ProductVariantRequest;
-use App\Models\Category;
 use App\Models\Product;
-use App\Models\ProductVariant;
-use App\Models\Role;
-use App\Models\User;
-use App\Models\GiftCard;
+use App\Models\Category;
 use Tests\FormRequestTestCase;
+use App\Http\Requests\ProductVariantRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ProductVariantRequestTest extends FormRequestTestCase

@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\GiftCardAdjustmentType;
-use App\Models\Payout;
 use App\Models\User;
 use App\Models\Order;
+use App\Models\Payout;
 use Cknow\Money\Money;
 use App\Models\Product;
 use App\Models\Activity;
@@ -18,6 +17,7 @@ use App\Models\GiftCardAdjustment;
 use App\Models\OrderProductReturn;
 use Illuminate\Support\Collection;
 use App\Models\ActivityRegistration;
+use App\Enums\GiftCardAdjustmentType;
 
 class DashboardController extends Controller
 {

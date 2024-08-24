@@ -2,12 +2,11 @@
 
 namespace App\Models;
 
-use App\Enums\OrderStatus;
 use Cknow\Money\Money;
+use App\Enums\OrderStatus;
 use App\Concerns\Timeline\HasTimeline;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use App\Concerns\Timeline\TimelineEntry;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Lab404\Impersonate\Models\Impersonate;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -15,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class User extends Authenticatable implements HasTimeline
 {
