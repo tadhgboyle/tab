@@ -87,7 +87,7 @@ class OrderCreateService extends HttpService
             if ($productVariant) {
                 if (!$productVariant->hasStock($quantity)) {
                     $this->_result = self::RESULT_NO_STOCK;
-                    $this->_message = "Not enough {$product->name} - {$productVariant->sku} in stock. Only {$productVariant->stock} remaining.";
+                    $this->_message = "Not enough {$productVariant->description()} in stock. Only {$productVariant->stock} remaining.";
                     return;
                 }
             } else {

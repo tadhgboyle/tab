@@ -17,6 +17,7 @@ class ProductVariant extends Model
 
     protected $casts = [
         'stock' => 'integer',
+        'box_size' => 'integer',
         'price' => MoneyIntegerCast::class,
     ];
 
