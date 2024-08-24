@@ -90,6 +90,28 @@
     </div>
 </div>
 
+@isset($productVariant)
+    <div class="modal">
+        <div class="modal-background" onclick="closeModal();"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Confirmation</p>
+            </header>
+            <section class="modal-card-body">
+                <p>Are you sure you want to delete the product variant {{ $productVariant->description() }}?</p>
+                <form action="{{ route('products_variants_delete', [$product, $productVariant]) }}" id="deleteForm" method="POST">
+                    @csrf
+                    @method('DELETE')
+                </form>
+            </section>
+            <footer class="modal-card-foot">
+                <button class="button is-success" type="submit" form="deleteForm">Confirm</button>
+                <button class="button" onclick="closeModal();">Cancel</button>
+            </footer>
+        </div>
+    </div>
+@endisset
+
 <script>
     document.getElementById('generateSku').addEventListener('click', event => {
         event.preventDefault();
@@ -106,5 +128,17 @@
 
         sku.value = skuParts.join('-');
     }, false);
+
+    @isset($productVariant)
+        const modal = document.querySelector('.modal');
+
+        function openModal() {
+            modal.classList.add('is-active');
+        }
+
+        function closeModal() {
+            modal.classList.remove('is-active');
+        }
+    @endisset
 </script>
 @stop

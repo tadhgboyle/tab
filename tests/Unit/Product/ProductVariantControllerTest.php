@@ -221,4 +221,69 @@ class ProductVariantControllerTest extends TestCase
         $variantOptionValueAssignment = $variant->optionValueAssignments()->first();
         $this->assertEquals($option->id, $variantOptionValueAssignment->product_variant_option_id);
     }
+
+    public function testCannotUpdateProductVariantToDuplicateOfExistingVariant(): void
+    {
+        $option = $this->_product->variantOptions()->create([
+            'name' => 'Size',
+        ]);
+
+        $value = $option->values()->create([
+            'value' => 'Small',
+        ]);
+
+        $variant1 = $this->_product->variants()->create([
+            'sku' => 'SKU-1',
+            'price' => 100,
+            'stock' => 10,
+        ]);
+
+        $variant1->optionValueAssignments()->create([
+            'product_variant_option_id' => $option->id,
+            'product_variant_option_value_id' => $value->id,
+        ]);
+
+        $variant2 = $this->_product->variants()->create([
+            'sku' => 'SKU-2',
+            'price' => 200,
+            'stock' => 20,
+        ]);
+
+        $this->actingAs($this->_superuser)
+            ->put(route('products_variants_update', [$this->_product, $variant2]), [
+                'sku' => 'SKU-2',
+                'price' => 100,
+                'stock' => 10,
+                'option_values' => [
+                    $option->id => $value->id,
+                ],
+                'product_variant_id' => $variant2->id,
+            ])
+            ->assertRedirect()
+            ->assertSessionHas('error', "Product variant already exists for SKUs: SKU-1.")
+            ->assertSessionHasInput([
+                'sku' => 'SKU-2',
+                'price' => 100,
+                'stock' => 10,
+                'option_values' => [
+                    $option->id => $value->id,
+                ],
+            ]);
+    }
+
+    public function testCanDeleteProductVariant(): void
+    {
+        $variant = $this->_product->variants()->create([
+            'sku' => 'SKU-1',
+            'price' => 100,
+            'stock' => 10,
+        ]);
+
+        $this->actingAs($this->_superuser)
+            ->delete(route('products_variants_delete', [$this->_product, $variant]))
+            ->assertRedirect(route('products_view', $this->_product))
+            ->assertSessionHas('success', 'Product variant deleted.');
+
+        $this->assertTrue($variant->refresh()->trashed());
+    }
 }

@@ -141,6 +141,7 @@ Route::middleware('auth')->group(function () {
             // TODO: scopeBindings()
             Route::get('/{product}/variant/{productVariant}', [ProductVariantController::class, 'edit'])->name('products_variants_edit');
             Route::put('/{product}/variant/{productVariant}', [ProductVariantController::class, 'update'])->name('products_variants_update');
+            Route::delete('/{product}/variant/{productVariant}', [ProductVariantController::class, 'destroy'])->name('products_variants_delete');
 
             Route::get('/{product}/variant-options', [ProductVariantOptionController::class, 'create'])->name('products_variant-options_create');
             Route::post('/{product}/variant-options', [ProductVariantOptionController::class, 'store'])->name('products_variant-options_store');

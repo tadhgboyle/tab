@@ -73,6 +73,23 @@ class Product extends Model
         }, 1);
     }
 
+    // TODO: could this be getPriceAttribute()?
+    public function getVariantPriceRange(): string
+    {
+        if ($this->hasVariants()) {
+            $min = $this->variants->min('price');
+            $max = $this->variants->max('price');
+
+            if ($min === $max) {
+                return $min;
+            }
+
+            return "{$min} - {$max}";
+        }
+
+        return $this->price;
+    }
+
     public function getPriceAfterTax(): Money
     {
         return TaxHelper::calculateFor($this->price, 1, $this->pst);

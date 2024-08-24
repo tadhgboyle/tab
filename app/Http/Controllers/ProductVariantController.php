@@ -80,6 +80,13 @@ class ProductVariantController extends Controller
         return redirect()->route('products_view', $product)->with('success', 'Product variant updated.');
     }
 
+    public function destroy(Product $product, ProductVariant $productVariant)
+    {
+        $productVariant->delete();
+
+        return redirect()->route('products_view', $product)->with('success', 'Product variant deleted.');
+    }
+
     private function isDuplicatedVariant(Collection $optionValues, ProductVariant $ignore = null)
     {
         $existingVariants = ProductVariantOptionValueAssignment::whereIn('product_variant_option_value_id', $optionValues->values())

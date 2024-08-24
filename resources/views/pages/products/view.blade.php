@@ -110,7 +110,7 @@
             <p>
                 <strong>Price:</strong>
                 @if($product->hasVariants())
-                    {{ $product->variants->min('price') }} - {{ $product->variants->max('price') }}
+                    {{ $product->getVariantPriceRange() }}
                 @else
                     {{ $product->price }}
                 @endif

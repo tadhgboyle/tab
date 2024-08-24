@@ -32,7 +32,7 @@
                         <div>{{ $product->category->name }}</div>
                     </td>
                     <td>
-                        <div>{{ $product->hasVariants() ? $product->variants->min('price') . ' - ' . $product->variants->max('price') : $product->price }}</div>
+                        <div>{{ $product->hasVariants() ? $product->getVariantPriceRange() : $product->price }}</div>
                     </td>
                     <td>
                         <div>{!! $product->getStock() !!}</div>
