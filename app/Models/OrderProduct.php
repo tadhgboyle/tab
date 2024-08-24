@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Cknow\Money\Casts\MoneyIntegerCast;
-use Cknow\Money\Money;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 

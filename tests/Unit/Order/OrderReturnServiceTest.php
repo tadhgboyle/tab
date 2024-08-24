@@ -2,8 +2,6 @@
 
 namespace Tests\Unit\Order;
 
-use App\Enums\GiftCardAdjustmentType;
-use App\Enums\OrderStatus;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
@@ -12,8 +10,10 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\GiftCard;
 use App\Models\Settings;
+use App\Enums\OrderStatus;
 use Illuminate\Http\Request;
 use Database\Seeders\RotationSeeder;
+use App\Enums\GiftCardAdjustmentType;
 use App\Services\Orders\OrderCreateService;
 use App\Services\Orders\OrderReturnService;
 use App\Services\Orders\OrderReturnProductService;

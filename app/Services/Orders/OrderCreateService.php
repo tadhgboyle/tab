@@ -95,7 +95,7 @@ class OrderCreateService extends HttpService
                     $this->_result = self::RESULT_NO_STOCK;
                     $this->_message = "Not enough {$product->name} in stock. Only {$product->stock} remaining.";
                     return;
-                }    
+                }
             }
 
             $order_products->add(OrderProduct::from(

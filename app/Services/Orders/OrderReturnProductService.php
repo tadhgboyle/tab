@@ -2,9 +2,8 @@
 
 namespace App\Services\Orders;
 
-use App\Enums\OrderStatus;
-use App\Models\Order;
 use Cknow\Money\Money;
+use App\Enums\OrderStatus;
 use App\Helpers\TaxHelper;
 use App\Models\OrderProduct;
 use App\Services\HttpService;

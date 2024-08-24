@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class GiftCardAssignment extends Model
 {
-
     protected $fillable = [
         'user_id',
         'assigner_id',
@@ -16,7 +15,7 @@ class GiftCardAssignment extends Model
     {
         return $this->belongsTo(GiftCard::class);
     }
-    
+
     public function user()
     {
         return $this->belongsTo(User::class);

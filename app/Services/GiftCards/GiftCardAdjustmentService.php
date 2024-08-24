@@ -2,11 +2,11 @@
 
 namespace App\Services\GiftCards;
 
-use App\Enums\GiftCardAdjustmentType;
 use App\Models\Order;
 use Cknow\Money\Money;
 use App\Models\GiftCard;
 use App\Services\Service;
+use App\Enums\GiftCardAdjustmentType;
 
 class GiftCardAdjustmentService extends Service
 {

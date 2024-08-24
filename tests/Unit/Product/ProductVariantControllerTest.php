@@ -2,12 +2,12 @@
 
 namespace Tests\Unit\Product;
 
-use App\Models\Category;
-use App\Models\Product;
-use Cknow\Money\Money;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
+use Cknow\Money\Money;
+use App\Models\Product;
+use App\Models\Category;
 use App\Helpers\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -120,7 +120,7 @@ class ProductVariantControllerTest extends TestCase
         $this->assertEquals('SKU-1', $variant->sku);
         $this->assertEquals(Money::parse(1_00), $variant->price);
         $this->assertEquals(10, $variant->stock);
-        
+
         $variantOptionValueAssignment = $variant->optionValueAssignments()->first();
         $this->assertEquals($option->id, $variantOptionValueAssignment->product_variant_option_id);
     }
@@ -156,7 +156,7 @@ class ProductVariantControllerTest extends TestCase
                 ],
             ])
             ->assertRedirect()
-            ->assertSessionHas('error', "Product variant already exists for SKUs: SKU-1.")
+            ->assertSessionHas('error', 'Product variant already exists for SKUs: SKU-1.')
             ->assertSessionHasInput([
                 'sku' => 'SKU-2',
                 'price' => 200,
@@ -217,7 +217,7 @@ class ProductVariantControllerTest extends TestCase
         $this->assertEquals('SKU-2', $variant->sku);
         $this->assertEquals(Money::parse(2_00), $variant->price);
         $this->assertEquals(20, $variant->stock);
-        
+
         $variantOptionValueAssignment = $variant->optionValueAssignments()->first();
         $this->assertEquals($option->id, $variantOptionValueAssignment->product_variant_option_id);
     }
@@ -260,7 +260,7 @@ class ProductVariantControllerTest extends TestCase
                 'product_variant_id' => $variant2->id,
             ])
             ->assertRedirect()
-            ->assertSessionHas('error', "Product variant already exists for SKUs: SKU-1.")
+            ->assertSessionHas('error', 'Product variant already exists for SKUs: SKU-1.')
             ->assertSessionHasInput([
                 'sku' => 'SKU-2',
                 'price' => 100,

@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Category;
 
-use stdClass;
 use Tests\TestCase;
 use App\Models\Product;
 use App\Models\Category;

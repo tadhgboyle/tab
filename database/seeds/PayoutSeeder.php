@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
+use Str;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use App\Http\Requests\PayoutRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Services\Payouts\PayoutCreateService;
-use Str;
 
 class PayoutSeeder extends Seeder
 {

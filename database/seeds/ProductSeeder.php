@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Category;
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Database\Seeder;
 
 class ProductSeeder extends Seeder
@@ -202,7 +202,7 @@ class ProductSeeder extends Seeder
                     'sku' => 'Candle-Medium-Blue-Pine',
                     'option_value_assignments' => [
                         ['option' => 'Size', 'value' => 'Medium'],
-                        ['option'=> 'Colour', 'value' => 'Blue'],
+                        ['option' => 'Colour', 'value' => 'Blue'],
                         ['option' => 'Scent', 'value' => 'Pine'],
                     ],
                 ],

@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Foundation\Http\FormRequest;
 use App\Http\Requests\FormRequest as FormRequestContract;
 
 class ProductVariantRequest extends FormRequest implements FormRequestContract

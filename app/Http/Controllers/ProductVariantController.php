@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProductVariantRequest;
 use App\Models\Product;
 use App\Models\ProductVariant;
-use App\Models\ProductVariantOptionValueAssignment;
 use Illuminate\Support\Collection;
+use App\Http\Requests\ProductVariantRequest;
+use App\Models\ProductVariantOptionValueAssignment;
 
 class ProductVariantController extends Controller
 {
@@ -87,7 +87,7 @@ class ProductVariantController extends Controller
         return redirect()->route('products_view', $product)->with('success', 'Product variant deleted.');
     }
 
-    private function isDuplicatedVariant(Collection $optionValues, ProductVariant $ignore = null)
+    private function isDuplicatedVariant(Collection $optionValues, ?ProductVariant $ignore = null)
     {
         $existingVariants = ProductVariantOptionValueAssignment::whereIn('product_variant_option_value_id', $optionValues->values())
             ->when($ignore, function ($query) use ($ignore) {

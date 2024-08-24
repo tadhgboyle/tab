@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\Enums\OrderStatus;
 use Cknow\Money\Money;
+use App\Enums\OrderStatus;
 use App\Concerns\Timeline\HasTimeline;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;

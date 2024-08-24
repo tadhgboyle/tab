@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Models\ProductVariantOption;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Models\ProductVariantOption;
 
 class ProductVariantOptionController extends Controller
 {

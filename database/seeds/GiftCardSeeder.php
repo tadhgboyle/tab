@@ -6,7 +6,6 @@ use Auth;
 use App\Models\User;
 use App\Models\GiftCard;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class GiftCardSeeder extends Seeder
 {
