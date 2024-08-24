@@ -95,6 +95,25 @@ class ProductVariantRequestTest extends FormRequestTestCase
         ]));
     }
 
+    public function testBoxSizeIsNullableAndIsIntegerAndMin1(): void
+    {
+        $this->assertNotHaveErrors('box_size', new ProductVariantRequest([
+            'box_size' => null,
+        ]));
+
+        $this->assertHasErrors('box_size', new ProductVariantRequest([
+            'box_size' => 'box_size',
+        ]));
+
+        $this->assertHasErrors('box_size', new ProductVariantRequest([
+            'box_size' => 0,
+        ]));
+
+        $this->assertNotHaveErrors('box_size', new ProductVariantRequest([
+            'box_size' => 1,
+        ]));
+    }
+
     public function testOptionValuesIsRequiredAndIsArrayAndExistsInProductVariantOptionValues(): void
     {
         $this->assertHasErrors('option_values', new ProductVariantRequest([

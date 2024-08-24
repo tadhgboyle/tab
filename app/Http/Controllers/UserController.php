@@ -101,10 +101,6 @@ class UserController extends Controller
 
     public function edit(CategoryHelper $categoryHelper, RotationHelper $rotationHelper, User $user)
     {
-        if ($user->trashed()) {
-            return redirect()->route('users_list')->with('error', 'That user has been deleted.')->send();
-        }
-
         if (!auth()->user()->role->canInteract($user->role)) {
             return redirect()->route('users_list')->with('error', 'You cannot interact with that user.')->send();
         }

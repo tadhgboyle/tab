@@ -24,14 +24,10 @@ class Product extends Model
         'price' => MoneyIntegerCast::class,
         'pst' => 'boolean',
         'stock' => 'integer',
-        'unlimited_stock' => 'boolean', // stock is never checked
-        'stock_override' => 'boolean', // stock can go negative
+        'unlimited_stock' => 'boolean', 
+        'stock_override' => 'boolean',
         'box_size' => 'integer',
         'restore_stock_on_return' => 'boolean',
-    ];
-
-    protected $with = [
-        'category',
     ];
 
     protected $fillable = [

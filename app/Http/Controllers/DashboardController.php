@@ -251,6 +251,7 @@ class DashboardController extends Controller
             ->limit(10)
             ->get();
         // Products with low stock
+        // TODO: support variants
         $data['lowStockProducts'] = Product::query()
             ->where('unlimited_stock', false)
             ->where('stock', '<=', 10)

@@ -85,8 +85,8 @@
                     <div class="field is-grouped">
                         @permission(\App\Helpers\Permission::SETTINGS)
                         <a class="navbar-item {{ page('settings', @$page) }}" href="{{ route('settings') }}">
-                        ⚙️ Settings
-                    </a>
+                            ⚙️ Settings
+                        </a>
                         @endpermission
                         <a class="navbar-item" href="{{ route('logout') }}">
                         🚪 Logout

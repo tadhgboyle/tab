@@ -19,18 +19,18 @@ class ProductVariantOptionController extends Controller
     public function store(Request $request, Product $product)
     {
         $request->validate([
-            'name' => ['required', 'string', Rule::unique('product_variant_options')->where('product_id', $product->id)],
-            'values' => ['required', 'string'],
+            'name' => [
+                'required',
+                'string',
+                Rule::unique('product_variant_options')
+                    ->withoutTrashed()
+                    ->where('product_id', $product->id)
+            ],
         ]);
 
-        $productVariantOption = $product->variantOptions()->create($request->only('name'));
+        $variantOption = $product->variantOptions()->create($request->only('name'));
 
-        $values = collect(explode(',', $request->values));
-        $productVariantOption->values()->createMany(
-            $values->map(fn ($value) => ['value' => $value])->all()
-        );
-
-        return redirect()->route('products_view', $product)->with('success', 'Product variant option created successfully.');
+        return redirect()->route('products_variant-options_edit', [$product, $variantOption])->with('success', 'Product variant option created, you can now add values.');
     }
 
     public function edit(Product $product, ProductVariantOption $productVariantOption)
@@ -44,20 +44,25 @@ class ProductVariantOptionController extends Controller
     public function update(Request $request, Product $product, ProductVariantOption $productVariantOption)
     {
         $request->validate([
-            'name' => ['required', 'string', Rule::unique('product_variant_options')->where('product_id', $product->id)->ignore($productVariantOption)],
-            'values' => ['required', 'string'],
+            'name' => [
+                'required',
+                'string',
+                Rule::unique('product_variant_options')
+                    ->withoutTrashed()
+                    ->where('product_id', $product->id)
+                    ->ignoreModel($productVariantOption)
+            ],
         ]);
 
         $productVariantOption->update($request->only('name'));
 
-        $values = collect(explode(',', $request->values));
-        $existingValues = $productVariantOption->values->pluck('value')->all();
-        $newValues = $values->diff($existingValues);
-        $productVariantOption->values()->createMany(
-            $newValues->map(fn ($value) => ['value' => $value])->all()
-        );
-        $productVariantOption->values()->whereNotIn('value', $values)->delete();
+        return redirect()->route('products_view', $product)->with('success', 'Product variant option updated.');
+    }
 
-        return redirect()->route('products_view', $product)->with('success', 'Product variant option updated successfully.');
+    public function destroy(Product $product, ProductVariantOption $productVariantOption)
+    {
+        $productVariantOption->delete();
+
+        return redirect()->route('products_view', $product)->with('success', 'Product variant option deleted.');
     }
 }

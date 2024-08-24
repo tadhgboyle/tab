@@ -12,6 +12,7 @@
 */
 
 use App\Helpers\Permission;
+use App\Http\Controllers\ProductVariantOptionValueController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -136,17 +137,22 @@ Route::middleware('auth')->group(function () {
             Route::put('/{product}/edit', [ProductController::class, 'update'])->name('products_update');
             Route::delete('/{product}', [ProductController::class, 'delete'])->name('products_delete');
 
-            Route::get('/{product}/variant', [ProductVariantController::class, 'create'])->name('products_variants_create');
-            Route::post('/{product}/variant', [ProductVariantController::class, 'store'])->name('products_variants_store');
+            Route::get('/{product}/variant/create', [ProductVariantController::class, 'create'])->name('products_variants_create');
+            Route::post('/{product}/variant/create', [ProductVariantController::class, 'store'])->name('products_variants_store');
             // TODO: scopeBindings()
-            Route::get('/{product}/variant/{productVariant}', [ProductVariantController::class, 'edit'])->name('products_variants_edit');
-            Route::put('/{product}/variant/{productVariant}', [ProductVariantController::class, 'update'])->name('products_variants_update');
+            Route::get('/{product}/variant/{productVariant}/edit', [ProductVariantController::class, 'edit'])->name('products_variants_edit');
+            Route::put('/{product}/variant/{productVariant}/edit', [ProductVariantController::class, 'update'])->name('products_variants_update');
             Route::delete('/{product}/variant/{productVariant}', [ProductVariantController::class, 'destroy'])->name('products_variants_delete');
 
-            Route::get('/{product}/variant-options', [ProductVariantOptionController::class, 'create'])->name('products_variant-options_create');
-            Route::post('/{product}/variant-options', [ProductVariantOptionController::class, 'store'])->name('products_variant-options_store');
-            Route::get('/{product}/variant-options/{productVariantOption}', [ProductVariantOptionController::class, 'edit'])->name('products_variant-options_edit');
-            Route::put('/{product}/variant-options/{productVariantOption}', [ProductVariantOptionController::class, 'update'])->name('products_variant-options_update');
+            Route::get('/{product}/variant-options/create', [ProductVariantOptionController::class, 'create'])->name('products_variant-options_create');
+            Route::post('/{product}/variant-options/create', [ProductVariantOptionController::class, 'store'])->name('products_variant-options_store');
+            Route::get('/{product}/variant-options/{productVariantOption}/edit', [ProductVariantOptionController::class, 'edit'])->name('products_variant-options_edit');
+            Route::put('/{product}/variant-options/{productVariantOption}/edit', [ProductVariantOptionController::class, 'update'])->name('products_variant-options_update');
+            Route::delete('/{product}/variant-options/{productVariantOption}', [ProductVariantOptionController::class, 'destroy'])->name('products_variant-options_delete');
+
+            Route::post('/{product}/variant-options/{productVariantOption}/values/create', [ProductVariantOptionValueController::class, 'store'])->name('products_variant-options_values_create');
+            Route::put('/{product}/variant-options/{productVariantOption}/values/{productVariantOptionValue}', [ProductVariantOptionValueController::class, 'update'])->name('products_variant-options_values_update');
+            Route::delete('/{product}/variant-options/{productVariantOption}/values/{productVariantOptionValue}', [ProductVariantOptionValueController::class, 'destroy'])->name('products_variant-options_values_delete');
         });
 
         Route::group(['middleware' => 'permission:' . Permission::PRODUCTS_LEDGER], static function () {

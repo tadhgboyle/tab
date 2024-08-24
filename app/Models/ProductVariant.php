@@ -20,7 +20,7 @@ class ProductVariant extends Model
         'price' => MoneyIntegerCast::class,
     ];
 
-    protected $fillable = ['sku', 'price', 'stock'];
+    protected $fillable = ['sku', 'price', 'stock', 'box_size'];
 
     public function product(): BelongsTo
     {
@@ -34,21 +34,26 @@ class ProductVariant extends Model
 
     public function description(): string
     {
-        return $this->product->name . ': ' . $this->descriptions()->implode(', ');
+        return $this->product->name . ': ' . $this->descriptions(true)->implode(', ');
     }
 
-    public function descriptions(): Collection
+    /**
+     * Get a collection of descriptions for the variant, IE: Color: Red, Size: Large
+     * @param bool $excludeTrashedOptions Whether or not to exclude trashed options, `true` for cashier page, `false` when viewing historic orders
+     */
+    public function descriptions(bool $excludeTrashedOptions): Collection
     {
         $this->loadMissing('optionValueAssignments.productVariantOption', 'optionValueAssignments.productVariantOptionValue');
 
-        return $this->optionValueAssignments->map(function (ProductVariantOptionValueAssignment $assignment) {
+        return $this->optionValueAssignments->filter(function (ProductVariantOptionValueAssignment $assignment) use ($excludeTrashedOptions) {
+            if ($excludeTrashedOptions) {
+                return !$assignment->productVariantOption->trashed();
+            }
+
+            return true;
+        })->map(function (ProductVariantOptionValueAssignment $assignment) {
             return $assignment->productVariantOption->name . ': ' . $assignment->productVariantOptionValue->value;
         });
-    }
-
-    public function getBoxSizeAttribute(): int
-    {
-        return $this->product->box_size;
     }
 
     public function getStockOverrideAttribute(): bool

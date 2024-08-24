@@ -13,7 +13,7 @@ return new class() extends Migration {
         Schema::create('product_variants', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained();
-            $table->string('sku')->unique();
+            $table->string('sku');
             $table->integer('price');
             $table->integer('stock');
             // stock? tax settings? weight? dimensions?

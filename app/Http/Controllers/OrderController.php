@@ -41,6 +41,7 @@ class OrderController extends Controller
         return view('pages.orders.order', [
             'user' => $user,
             'products' => Product::orderBy('name', 'ASC')->with(
+                'category',
                 'variantOptions',
                 'variants',
                 'variants.product',

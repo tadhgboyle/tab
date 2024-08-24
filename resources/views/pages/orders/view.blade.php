@@ -40,7 +40,7 @@
                             </strong>
                             @if($orderProduct->productVariant)
                                 <br>
-                                @foreach($orderProduct->productVariant->descriptions() as $description)
+                                @foreach($orderProduct->productVariant->descriptions(false) as $description)
                                     <span class="tag">{{ $description }}</span>
                                 @endforeach
                             @endif

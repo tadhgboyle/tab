@@ -48,6 +48,13 @@
                 </div>
             </div>
 
+            <div class="field">
+                <label class="label">Box Size</label>
+                <div class="control">
+                    <input type="number" step="1" name="box_size" class="input" placeholder="0" value="{{ $productVariant->box_size ?? old('box_size', null) }}">
+                </div>
+            </div>
+
             @foreach($product->variantOptions as $option)
                 <div class="field">
                     <label class="label">{{ $option->name }}</label>

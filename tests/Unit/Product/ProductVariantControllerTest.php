@@ -109,6 +109,7 @@ class ProductVariantControllerTest extends TestCase
                 'sku' => 'SKU-1',
                 'price' => 100,
                 'stock' => 10,
+                'box_size' => 4,
                 'option_values' => [
                     $option->id => $value->id,
                 ],
@@ -120,6 +121,7 @@ class ProductVariantControllerTest extends TestCase
         $this->assertEquals('SKU-1', $variant->sku);
         $this->assertEquals(Money::parse(1_00), $variant->price);
         $this->assertEquals(10, $variant->stock);
+        $this->assertEquals(4, $variant->box_size);
 
         $variantOptionValueAssignment = $variant->optionValueAssignments()->first();
         $this->assertEquals($option->id, $variantOptionValueAssignment->product_variant_option_id);
@@ -155,7 +157,7 @@ class ProductVariantControllerTest extends TestCase
                     $option->id => $value->id,
                 ],
             ])
-            ->assertRedirect()
+            ->assertRedirect(route('products_variants_create', $this->_product))
             ->assertSessionHas('error', 'Product variant already exists for SKUs: SKU-1.')
             ->assertSessionHasInput([
                 'sku' => 'SKU-2',
@@ -259,7 +261,7 @@ class ProductVariantControllerTest extends TestCase
                 ],
                 'product_variant_id' => $variant2->id,
             ])
-            ->assertRedirect()
+            ->assertRedirect(route('products_variants_create', $this->_product))
             ->assertSessionHas('error', 'Product variant already exists for SKUs: SKU-1.')
             ->assertSessionHasInput([
                 'sku' => 'SKU-2',

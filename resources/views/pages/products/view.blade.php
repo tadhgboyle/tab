@@ -28,6 +28,7 @@
                         <th>{{ $option->name }}</th>
                     @endforeach
                     <th>Stock</th>
+                    <th>Box size</th>
                     <th>Price</th>
                     @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)
                         <th></th>
@@ -50,6 +51,7 @@
                             </td>
                         @endforeach
                         <td>{!! $variant->unlimited_stock ? '<i>Unlimited</i>' : $variant->stock !!}</td>
+                        <td>{!! $variant->box_size ?? '<i>N/A</i>' !!}</td>
                         <td>{{ $variant->price }}</td>
                         @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)
                             <td><a href="{{ route('products_variants_edit', [$product->id, $variant->id]) }}">Edit</a></td>

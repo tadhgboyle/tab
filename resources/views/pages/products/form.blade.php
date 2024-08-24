@@ -160,10 +160,8 @@
             </footer>
         </div>
     </div>
-@endisset
 
-<script type="text/javascript">
-    @isset($product)
+    <script type="text/javascript">
         const modal = document.querySelector('.modal');
 
         function openModal() {
@@ -173,6 +171,6 @@
         function closeModal() {
             modal.classList.remove('is-active');
         }
-    @endisset
-</script>
+    </script>
+@endisset
 @endsection

@@ -16,7 +16,7 @@ class ProductVariantOptionValueAssignment extends Model
 
     public function productVariantOption(): BelongsTo
     {
-        return $this->belongsTo(ProductVariantOption::class);
+        return $this->belongsTo(ProductVariantOption::class)->withTrashed();
     }
 
     public function productVariantOptionValue(): BelongsTo

@@ -294,6 +294,7 @@ class ProductSeeder extends Seeder
                     'price' => $variantData['price'],
                     'sku' => $variantData['sku'],
                     'stock' => random_int(0, 100),
+                    'box_size' => random_int(1, 3) === 1 ? random_int(1, 10) : null,
                 ]);
 
                 foreach ($variantData['option_value_assignments'] as $assignmentData) {

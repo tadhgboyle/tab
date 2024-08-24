@@ -18,7 +18,7 @@ class ProductController extends Controller
     public function index()
     {
         return view('pages.products.list', [
-            'products' => Product::with('variants')->get(),
+            'products' => Product::with('variants', 'category')->get(),
         ]);
     }
 
