@@ -134,7 +134,7 @@ const removeProductAll = (productId, variantId) => {
         return;
     }
 
-    ITEMS = ITEMS.filter(item => item.id !== productId);
+    ITEMS = ITEMS.filter(item => item.id !== productId || item.variantId !== variantId);
 
     cacheItems();
     render();
