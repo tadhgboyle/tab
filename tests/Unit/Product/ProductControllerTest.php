@@ -153,7 +153,21 @@ class ProductControllerTest extends TestCase
             ]);
     }
 
-    public function testCanViewAdjustStockPage(): void
+    public function testCanViewStockAdjustmentListPage(): void
+    {
+        $this->expectPermissionChecks([
+            Permission::PRODUCTS,
+            Permission::PRODUCTS_LEDGER,
+        ]);
+
+        $this
+            ->get(route('products_ledger'))
+            ->assertOk()
+            ->assertViewIs('pages.products.ledger.list')
+            ->assertViewHas('products');
+    }
+
+    public function testCanViewAdjustStockForm(): void
     {
         $this->expectPermissionChecks([
             Permission::PRODUCTS,
@@ -164,6 +178,26 @@ class ProductControllerTest extends TestCase
             ->get(route('products_ledger_ajax', $this->_product))
             ->assertOk()
             ->assertViewIs('pages.products.ledger.form')
-            ->assertViewHas('product');
+            ->assertViewHas('product')
+            ->assertViewMissing('productVariant');
+    }
+
+    public function testCanViewAdjustStockFormForVariant(): void
+    {
+        $this->expectPermissionChecks([
+            Permission::PRODUCTS,
+            Permission::PRODUCTS_LEDGER,
+        ]);
+
+        $this
+            ->get(route('products_ledger_ajax', ['product' => $this->_product, 'variantId' => $this->_product->variants()->create([
+                'sku' => 'SKU-1',
+                'price' => 25_00,
+                'stock' => 10,
+            ])]))
+            ->assertOk()
+            ->assertViewIs('pages.products.ledger.form')
+            ->assertViewHas('product')
+            ->assertViewHas('productVariant');
     }
 }

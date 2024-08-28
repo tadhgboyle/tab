@@ -19,26 +19,51 @@
             </thead>
             <tbody>
                 @foreach($products as $product)
-                <tr id="{{ $product->id }}">
-                    <td>
-                        <div>{{ $product->name }}</div>
-                    </td>
-                    <td>
-                        <div>{{ $product->sku }}</div>
-                    </td>
-                    <td>
-                        <div>{{ $product->category->name }}</div>
-                    </td>
-                    <td>
-                        <div>{!! $product->getStock() !!}</div>
-                    </td>
-                    <td>
-                        <div>{{ $product->stock_override ? "✅" : "❌" }}</div>
-                    </td>
-                    <td>
-                        <div>{!! $product->box_size === -1 ? '<i>N/A</i>' : $product->box_size !!}</div>
-                    </td>
-                </tr>
+                    @if($product->hasVariants())
+                        @foreach ($product->variants()->with('optionValueAssignments.productVariantOption', 'optionValueAssignments.productVariantOptionValue')->get() as $variant)
+                        <tr id="{{ $product->id }}" data-variant="{{ $variant->id }}">
+                            <td>
+                                <div>{{ $variant->description() }}</div>
+                            </td>
+                            <td>
+                                <div>{{ $variant->sku }}</div>
+                            </td>
+                            <td>
+                                <div>{{ $product->category->name }}</div>
+                            </td>
+                            <td>
+                                <div>{!! $variant->getStock() !!}</div>
+                            </td>
+                            <td>
+                                <div>{{ $variant->stock_override ? "✅" : "❌" }}</div>
+                            </td>
+                            <td>
+                                <div>{!! $variant->box_size === null ? '<i>N/A</i>' : $variant->box_size !!}</div>
+                            </td>
+                        </tr>
+                        @endforeach
+                    @else
+                    <tr id="{{ $product->id }}">
+                        <td>
+                            <div>{{ $product->name }}</div>
+                        </td>
+                        <td>
+                            <div>{{ $product->sku }}</div>
+                        </td>
+                        <td>
+                            <div>{{ $product->category->name }}</div>
+                        </td>
+                        <td>
+                            <div>{!! $product->getStock() !!}</div>
+                        </td>
+                        <td>
+                            <div>{{ $product->stock_override ? "✅" : "❌" }}</div>
+                        </td>
+                        <td>
+                            <div>{!! $product->box_size === -1 ? '<i>N/A</i>' : $product->box_size !!}</div>
+                        </td>
+                    </tr>
+                    @endif
                 @endforeach
             </tbody>
         </table>
@@ -47,7 +72,11 @@
         @include('includes.messages')
         <div id="adjust_product">
             @if(session()->has('last_product'))
-                @include('pages.products.ledger.form', ['product' => session('last_product')])
+                @if(session()->has('last_product_variant'))
+                    @include('pages.products.ledger.form', ['product' => session('last_product'), 'productVariant' => session('last_product_variant')])
+                @else
+                    @include('pages.products.ledger.form', ['product' => session('last_product')])
+                @endif
             @endif
         </div>
     </div>
@@ -62,6 +91,9 @@
         $('#product_list').on('click', 'tbody tr', function() {
             let url = "{{ route('products_ledger_ajax', ":id") }}";
             url = url.replace(':id', productList.row(this).id());
+            if ($(this).data('variant')) {
+                url += "?variantId=" + $(this).data('variant');
+            }
 
             $.ajax({
                 type : "GET",

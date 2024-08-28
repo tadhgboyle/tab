@@ -158,7 +158,7 @@ Route::middleware('auth')->group(function () {
         Route::group(['middleware' => 'permission:' . Permission::PRODUCTS_LEDGER], static function () {
             Route::get('/ledger', [ProductController::class, 'adjustList'])->name('products_ledger');
             Route::get('/ledger/{product}', [ProductController::class, 'ajaxGetPage'])->name('products_ledger_ajax');
-            Route::patch('/ledger/{product}', [ProductController::class, 'adjustStock'])->name('products_ledger_form');
+            Route::patch('/ledger/{product}/{productVariant?}', [ProductController::class, 'adjustStock'])->name('products_ledger_form');
         });
     });
 
