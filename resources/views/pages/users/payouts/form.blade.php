@@ -19,16 +19,14 @@
                     <span class="icon is-small is-left">
                         <i class="fas fa-dollar-sign"></i>
                     </span>
-                    <input type="number" step="0.01" name="amount" id="amount" class="input money-input" required min="0.01" value="{{ number_format(old('amount'), 2) }}">
+                    <input type="number" step="0.01" name="amount" id="amount" class="input money-input" required min="0.01" max="{{ $owing }}" value="{{ number_format(old('amount'), 2) }}">
                     <p class="help" id="remaining-owing">Remaining owing: ${{ $owing }}</p>
                 </div>
-                @if($owing > 0.00)
-                    <div class="control">
-                        <button class="button is-info" id="setMax">
-                            Full
-                        </button>
-                    </div>
-                @endif
+                <div class="control">
+                    <button class="button is-info" id="setMax">
+                        Full
+                    </button>
+                </div>
             </div>
             <div class="control pt-4">
                 <button class="button is-light" type="submit">
@@ -48,16 +46,14 @@
         const amount = document.getElementById('amount').value;
         const remainingOwing = {{ $owing }};
         const remaining = remainingOwing - amount;
-        document.getElementById('remaining-owing').innerText = `Remaining owing: $${remaining.toFixed(2)}`;
+        document.getElementById('remaining-owing').innerText = `Remaining owing: $${(remaining < 0 ? 0 : remaining).toFixed(2)}`;
     }
 
-    @if($owing > 0.00)
-        document.getElementById('setMax').addEventListener("click", event => {
-            event.preventDefault();
-            document.getElementById('amount').value = {{ $owing }}
-            updateHelpText();
-        }, false);
-    @endif
+    document.getElementById('setMax').addEventListener("click", event => {
+        event.preventDefault();
+        document.getElementById('amount').value = {{ $owing }}
+        updateHelpText();
+    }, false);
 
     document.getElementById('amount').addEventListener("change", updateHelpText, false);
 </script>

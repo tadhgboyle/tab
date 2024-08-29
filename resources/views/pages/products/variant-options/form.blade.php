@@ -2,7 +2,7 @@
 @section('content')
 <h2 class="title has-text-weight-bold">{{ isset($productVariantOption) ? 'Edit' : 'Create' }} Product Variant Option</h2>
 <h4 class="subtitle">
-    <strong>Product:</strong> {{ $product->name }}
+    <strong>Product:</strong> {{ $product->name }} @permission(\App\Helpers\Permission::PRODUCTS_VIEW)<a href="{{ route('products_view', $product->id) }}">(View)</a>@endpermission
     <br>
     @if(isset($productVariantOption))<strong>Variant Option:</strong> {{ $productVariantOption->name }} @endif
 </h4>
