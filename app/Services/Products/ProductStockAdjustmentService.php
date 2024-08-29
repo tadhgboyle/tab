@@ -23,8 +23,8 @@ class ProductStockAdjustmentService extends HttpService
             session()->flash('last_product_variant', $productVariant);
         }
 
-        $adjust_stock = $request->adjust_stock;
-        $adjust_box = $request->adjust_box ?? 0;
+        $adjust_stock = (int) $request->adjust_stock;
+        $adjust_box = (int) $request->adjust_box ?? 0;
 
         if ($productVariant?->exists) {
             $name = $productVariant->description();
