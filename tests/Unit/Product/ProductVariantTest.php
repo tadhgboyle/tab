@@ -143,6 +143,126 @@ class ProductVariantTest extends TestCase
         $this->assertEquals(['Size: Large'], $variant->descriptions(true)->toArray());
     }
 
+    public function testOptionValueForNullWhenNoAssignment(): void
+    {
+        $product = Product::factory()->create([
+            'category_id' => $this->_category->id,
+        ]);
+        $colourOption = $product->variantOptions()->create(['name' => 'Color']);
+        $sizeOption = $product->variantOptions()->create(['name' => 'Size']);
+
+        $variant = $product->variants()->create([
+            'sku' => 'SKU-1',
+            'stock' => 10,
+            'price' => 10_00,
+            'box_size' => 4,
+        ]);
+
+        $this->assertNull($variant->optionValueFor($colourOption));
+        $this->assertNull($variant->optionValueFor($sizeOption));
+    }
+
+    public function testOptionValueForNullWhenOptionTrashed(): void
+    {
+        $product = Product::factory()->create([
+            'category_id' => $this->_category->id,
+        ]);
+        $colourOption = $product->variantOptions()->create(['name' => 'Color']);
+        $sizeOption = $product->variantOptions()->create(['name' => 'Size']);
+
+        $redValue = $colourOption->values()->create(['value' => 'Red']);
+        $largeValue = $sizeOption->values()->create(['value' => 'Large']);
+
+        $variant = $product->variants()->create([
+            'sku' => 'SKU-1',
+            'stock' => 10,
+            'price' => 10_00,
+            'box_size' => 4,
+        ]);
+
+        $variant->optionValueAssignments()->createMany([
+            [
+                'product_variant_option_id' => $colourOption->id,
+                'product_variant_option_value_id' => $redValue->id,
+            ],
+            [
+                'product_variant_option_id' => $sizeOption->id,
+                'product_variant_option_value_id' => $largeValue->id,
+            ],
+        ]);
+
+        $colourOption->delete();
+
+        $this->assertNull($variant->optionValueFor($colourOption));
+    }
+
+    public function testOptionValueForNullWhenValueTrashed(): void
+    {
+        $product = Product::factory()->create([
+            'category_id' => $this->_category->id,
+        ]);
+        $colourOption = $product->variantOptions()->create(['name' => 'Color']);
+        $sizeOption = $product->variantOptions()->create(['name' => 'Size']);
+
+        $redValue = $colourOption->values()->create(['value' => 'Red']);
+        $largeValue = $sizeOption->values()->create(['value' => 'Large']);
+
+        $variant = $product->variants()->create([
+            'sku' => 'SKU-1',
+            'stock' => 10,
+            'price' => 10_00,
+            'box_size' => 4,
+        ]);
+
+        $variant->optionValueAssignments()->createMany([
+            [
+                'product_variant_option_id' => $colourOption->id,
+                'product_variant_option_value_id' => $redValue->id,
+            ],
+            [
+                'product_variant_option_id' => $sizeOption->id,
+                'product_variant_option_value_id' => $largeValue->id,
+            ],
+        ]);
+
+        $redValue->delete();
+
+        $this->assertNull($variant->optionValueFor($colourOption));
+    }
+
+    public function testOptionValueFor(): void
+    {
+        $product = Product::factory()->create([
+            'category_id' => $this->_category->id,
+        ]);
+        $colourOption = $product->variantOptions()->create(['name' => 'Color']);
+        $sizeOption = $product->variantOptions()->create(['name' => 'Size']);
+
+        $redValue = $colourOption->values()->create(['value' => 'Red']);
+        $largeValue = $sizeOption->values()->create(['value' => 'Large']);
+
+        $variant = $product->variants()->create([
+            'sku' => 'SKU-1',
+            'stock' => 10,
+            'price' => 10_00,
+            'box_size' => 4,
+        ]);
+
+        $variant->optionValueAssignments()->createMany([
+            [
+                'product_variant_option_id' => $colourOption->id,
+                'product_variant_option_value_id' => $redValue->id,
+            ],
+            [
+                'product_variant_option_id' => $sizeOption->id,
+                'product_variant_option_value_id' => $largeValue->id,
+            ],
+        ]);
+
+        $this->assertEquals($redValue->id, $variant->optionValueFor($colourOption)->id);
+        $this->assertEquals($largeValue->id, $variant->optionValueFor($sizeOption)->id);
+    }
+
     public function testStockOverrideAttributeReadFromProduct(): void
     {
         $product = Product::factory()->create([
