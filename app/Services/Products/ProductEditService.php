@@ -26,6 +26,7 @@ class ProductEditService extends HttpService
 
         $product->update([
             'name' => $request->name,
+            'sku' => $request->sku,
             'price' => $request->price,
             'category_id' => $request->category_id,
             'stock' => $stock,
@@ -44,7 +45,7 @@ class ProductEditService extends HttpService
     public function redirect(): RedirectResponse
     {
         return match ($this->getResult()) {
-            self::RESULT_SUCCESS => redirect()->route('products_list')->with('success', $this->getMessage()),
+            self::RESULT_SUCCESS => redirect()->route('products_view', $this->_product)->with('success', $this->getMessage()),
             default => redirect()->back()->withInput()->withErrors($this->getMessage()),
         };
     }

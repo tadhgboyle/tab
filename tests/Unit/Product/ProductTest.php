@@ -3,17 +3,10 @@
 namespace Tests\Unit\Product;
 
 use Tests\TestCase;
-use App\Models\Role;
-use App\Models\User;
-use App\Models\Order;
 use Cknow\Money\Money;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Settings;
-use App\Models\UserLimit;
-use App\Models\OrderProduct;
-use App\Helpers\RotationHelper;
-use Database\Seeders\RotationSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ProductTest extends TestCase
@@ -87,7 +80,7 @@ class ProductTest extends TestCase
         $product = Product::factory()->create([
             'unlimited_stock' => false,
             'stock_override' => false,
-            'stock' => 10,
+            'stock' => 0,
             'category_id' => Category::factory()->create()->id,
         ]);
 
@@ -100,7 +93,7 @@ class ProductTest extends TestCase
         $product = Product::factory()->create([
             'unlimited_stock' => false,
             'stock_override' => true,
-            'stock' => 10,
+            'stock' => 0,
             'category_id' => Category::factory()->create()->id,
         ]);
 
@@ -212,199 +205,5 @@ class ProductTest extends TestCase
 
         $product->addBox(-4);
         $this->assertSame(6, $product->stock);
-    }
-
-    public function testFindSoldCount(): void
-    {
-        $this->createFakeRecords();
-
-        $current_rotation = resolve(RotationHelper::class)->getRotations()->first()->id;
-
-        foreach ([['Skittles', 2], ['Hat', 1], ['Sweater', 1], ['Coffee', 2]] as $product) {
-            [$name, $sold_count] = $product;
-            $this->assertEquals($sold_count, Product::firstWhere('name', $name)->findSold($current_rotation));
-        }
-
-        foreach ([['Skittles', 4], ['Hat', 2], ['Sweater', 2], ['Coffee', 4]] as $product) {
-            [$name, $sold_count] = $product;
-            $this->assertEquals($sold_count, Product::firstWhere('name', $name)->findSold('*'));
-        }
-    }
-
-    /** @return Role[] */
-    private function createRoles(): array
-    {
-        $superadmin_role = Role::factory()->create();
-
-        $camper_role = Role::factory()->create([
-            'name' => 'Camper',
-            'staff' => false,
-            'superuser' => false,
-            'order' => 2
-        ]);
-
-        return [$superadmin_role, $camper_role];
-    }
-
-    private function createSuperadminUser(Role $superadmin_role): User
-    {
-        return User::factory()->create([
-            'role_id' => $superadmin_role->id
-        ]);
-    }
-
-    private function createFakeRecords(): array
-    {
-        app(RotationSeeder::class)->run();
-
-        [$superadmin_role] = $this->createRoles();
-
-        $user = $this->createSuperadminUser($superadmin_role);
-
-        [$food_category, $merch_category] = $this->createFakeCategories();
-
-        UserLimit::factory()->create([
-            'user_id' => $user->id,
-            'category_id' => $food_category->id,
-            'limit' => 15,
-            'duration' => UserLimit::LIMIT_DAILY
-        ]);
-
-        UserLimit::factory()->create([
-            'user_id' => $user->id,
-            'category_id' => $merch_category->id,
-            'limit' => -1
-        ]);
-
-        [$skittles, $sweater, $coffee, $hat] = $this->createFakeProducts($food_category->id, $merch_category->id);
-
-        $rotation = resolve(RotationHelper::class)->getRotations()->first()->id;
-
-        $order1 = Order::factory()->create([
-            'purchaser_id' => $user->id,
-            'cashier_id' => $user->id,
-            'rotation_id' => $rotation,
-            'total_price' => 3_15, // TODO
-            'purchaser_amount' => 3_15,
-            'gift_card_amount' => 0_00,
-        ]);
-
-        $skittles_product = OrderProduct::from($skittles, 2, 5);
-        $skittles_product->order_id = $order1->id;
-        $hat_product = OrderProduct::from($hat, 1, 5);
-        $hat_product->order_id = $order1->id;
-
-        $order1->products()->saveMany([
-            $skittles_product,
-            $hat_product,
-        ]);
-
-        $order2 = Order::factory()->create([
-            'purchaser_id' => $user->id,
-            'cashier_id' => $user->id,
-            'rotation_id' => $rotation,
-            'total_price' => 44_79, // TODO
-            'purchaser_amount' => 44_79,
-            'gift_card_amount' => 0_00,
-        ]);
-
-        $sweater_product = OrderProduct::from($sweater, 1, 5, 7);
-        $sweater_product->order_id = $order2->id;
-        $coffee_product = OrderProduct::from($coffee, 2, 5, 7);
-        $coffee_product->order_id = $order2->id;
-
-        $order2->products()->saveMany([
-            $sweater_product,
-            $coffee_product,
-        ]);
-
-        $rotation = resolve(RotationHelper::class)->getRotations()->last()->id;
-
-        $order3 = Order::factory()->create([
-            'purchaser_id' => $user->id,
-            'cashier_id' => $user->id,
-            'rotation_id' => $rotation,
-            'total_price' => 3_15, // TODO
-            'purchaser_amount' => 3_15,
-            'gift_card_amount' => 0_00,
-        ]);
-
-        $skittles_product = OrderProduct::from($skittles, 2, 5);
-        $skittles_product->order_id = $order1->id;
-        $hat_product = OrderProduct::from($hat, 1, 5);
-        $hat_product->order_id = $order1->id;
-
-        $order3->products()->saveMany([
-            $skittles_product,
-            $hat_product,
-        ]);
-
-        $order4 = Order::factory()->create([
-            'purchaser_id' => $user->id,
-            'cashier_id' => $user->id,
-            'rotation_id' => $rotation,
-            'total_price' => 44_79, // TODO
-            'purchaser_amount' => 44_79,
-            'gift_card_amount' => 0_00,
-        ]);
-
-        $sweater_product = OrderProduct::from($sweater, 1, 5, 7);
-        $sweater_product->order_id = $order2->id;
-        $coffee_product = OrderProduct::from($coffee, 2, 5, 7);
-        $coffee_product->order_id = $order2->id;
-
-        $order4->products()->saveMany([
-            $sweater_product,
-            $coffee_product,
-        ]);
-        return [$user, $food_category, $merch_category];
-    }
-
-    /** @return Category[] */
-    private function createFakeCategories(): array
-    {
-        $food_category = Category::factory()->create([
-            'name' => 'Food'
-        ]);
-
-        $merch_category = Category::factory()->create([
-            'name' => 'Merch'
-        ]);
-
-        return [$food_category, $merch_category];
-    }
-
-    /** @return Product[] */
-    private function createFakeProducts($food_category_id, $merch_category_id): array
-    {
-        $skittles = Product::factory()->create([
-            'name' => 'Skittles',
-            'price' => 1.50,
-            'pst' => false,
-            'category_id' => $food_category_id
-        ]);
-
-        $sweater = Product::factory()->create([
-            'name' => 'Sweater',
-            'price' => 39.99,
-            'pst' => true,
-            'category_id' => $merch_category_id
-        ]);
-
-        $coffee = Product::factory()->create([
-            'name' => 'Coffee',
-            'price' => 3.99,
-            'pst' => true,
-            'category_id' => $food_category_id
-        ]);
-
-        $hat = Product::factory()->create([
-            'name' => 'Hat',
-            'price' => 15.00,
-            'pst' => false,
-            'category_id' => $merch_category_id
-        ]);
-
-        return [$skittles, $sweater, $coffee, $hat];
     }
 }

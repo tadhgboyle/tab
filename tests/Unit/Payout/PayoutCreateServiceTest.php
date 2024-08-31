@@ -20,34 +20,61 @@ class PayoutCreateServiceTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function testCantMakePayoutIfAmountIsNegative(): void
+    {
+        [$user] = $this->createData(false);
+
+        $payoutService = new PayoutCreateService(new PayoutRequest([
+            'identifier' => '#1',
+            'amount' => -5_00,
+        ]), $user);
+
+        $this->assertSame(PayoutCreateService::RESULT_INVALID_AMOUNT, $payoutService->getResult());
+        $this->assertStringContainsString('Amount must be above $0.00', $payoutService->getMessage());
+    }
     public function testCantMakePayoutIfNothingOwing(): void
     {
         [$user] = $this->createData(false);
 
         $payoutService = new PayoutCreateService(new PayoutRequest([
             'identifier' => '#1',
-            'amount' => 10_00,
+            'amount' => 5_00,
         ]), $user);
 
         $this->assertSame(PayoutCreateService::RESULT_NOTHING_OWED, $payoutService->getResult());
         $this->assertStringContainsString('User does not owe anything.', $payoutService->getMessage());
     }
 
+    public function testCantMakePayoutIfWouldOverPay(): void
+    {
+        [$user] = $this->createData();
+
+        $payoutService = new PayoutCreateService(new PayoutRequest([
+            'identifier' => '#1',
+            'amount' => 6_00,
+        ]), $user);
+
+        $this->assertSame(PayoutCreateService::RESULT_OVER_OWED, $payoutService->getResult());
+        $this->assertStringContainsString('Amount exceeds what user owes.', $payoutService->getMessage());
+    }
+
     public function testCanCreatePayout(): void
     {
         [$user, $admin] = $this->createData();
 
+        $this->assertEquals(Money::parse(5_00), $user->refresh()->findOwing());
+
         $payoutService = new PayoutCreateService(new PayoutRequest([
             'identifier' => '#1',
-            'amount' => 10_00,
+            'amount' => 5_00,
         ]), $user);
 
         $this->assertSame(PayoutCreateService::RESULT_SUCCESS, $payoutService->getResult());
 
         $payout = $payoutService->getPayout();
 
-        $this->assertEquals(Money::parse(10_00), $payout->amount);
-        $this->assertEquals(Money::parse(5_00), $user->findOwing());
+        $this->assertEquals(Money::parse(5_00), $payout->amount);
+        $this->assertEquals(Money::parse(0_00), $user->refresh()->findOwing());
         $this->assertSame('#1', $payout->identifier);
         $this->assertSame($admin->id, $payout->cashier->id);
         $this->assertSame($user->id, $payout->user->id);
@@ -61,11 +88,11 @@ class PayoutCreateServiceTest extends TestCase
 
         $payoutService = new PayoutCreateService(new PayoutRequest([
             'identifier' => '#1',
-            'amount' => 10_00,
+            'amount' => 5_00,
         ]), $user);
 
         $this->assertSame(PayoutCreateService::RESULT_SUCCESS, $payoutService->getResult());
-        $this->assertStringContainsString("Successfully created payout of $10.00 for {$user->full_name}", $payoutService->getMessage());
+        $this->assertEquals("Successfully created payout of $5.00 for {$user->full_name}.", $payoutService->getMessage());
 
         $payout = $payoutService->getPayout();
         $this->assertEquals($owing_before_payout->subtract($payout->amount), $user->refresh()->findOwing());

@@ -113,11 +113,24 @@
                         <tbody>
                             @foreach($order->products as $orderProduct)
                                 <tr>
-                                    <td class="has-text-left column-25">{{ $orderProduct->product->name }}</td>
+                                    <td class="has-text-left column-25">
+                                        @if($orderProduct->productVariant)
+                                            {{ $orderProduct->productVariant->description(false) }}
+                                        @else
+                                            {{ $orderProduct->product->name }}
+                                        @endif
+                                    </td>
                                     <td class="has-text-left column-25">{{ $orderProduct->category->name }}</td>
                                     <td class="has-text-left column-10">{{ $orderProduct->quantity }}</td>
                                     <td class="has-text-left column-10">{{ $orderProduct->returned }}</td>
-                                    <td class="has-text-right column-15">{{ $orderProduct->product->price }}</td>
+                                    <td class="has-text-right column-15">
+                                        <!-- TODO: This will be inaccurate if price changes after. We need to store price per unit on orderProducts -->
+                                        @if($orderProduct->productVariant)
+                                            {{ $orderProduct->productVariant->price }}
+                                        @else
+                                            {{ $orderProduct->product->price }}
+                                        @endif
+                                    </td>
                                     <td class="has-text-right column-8">{{ number_format($orderProduct->pst, 2) }}</td>
                                     <td class="has-text-right column-8">{{ number_format($orderProduct->gst, 2) }}</td>
                                     <td class="has-text-right column-20">
@@ -213,12 +226,12 @@
                 <table>
                     <tbody>
                         <tr>
-                            <td class="has-text-italic column-25">Total Spent</td>
-                            <td class="has-text-right has-text-weight-bold column-20">{{ $user->findSpent() }}</td>
+                            <td class="has-text-italic column-25">Total Spent (in cash)</td>
+                            <td class="has-text-right has-text-weight-bold column-20">{{ $user->findSpentInCash() }}</td>
                         </tr>
                         <tr>
-                            <td class="has-text-italic column-25">Total Returned</td>
-                            <td class="has-text-right has-text-weight-bold column-20">-{{ $user->findReturned() }}</td>
+                            <td class="has-text-italic column-25">Total Returned (to cash)</td>
+                            <td class="has-text-right has-text-weight-bold column-20">-{{ $user->findReturnedToCash() }}</td>
                         </tr>
                         <tr>
                             <td class="has-text-italic column-25">Total Payouts</td>

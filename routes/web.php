@@ -12,7 +12,7 @@
 */
 
 use App\Helpers\Permission;
-use App\Http\Controllers\GiftCardAssignmentController;
+use App\Http\Controllers\ProductVariantOptionValueController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -27,6 +27,9 @@ use App\Http\Controllers\GiftCardController;
 use App\Http\Controllers\RotationController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProductVariantController;
+use App\Http\Controllers\GiftCardAssignmentController;
+use App\Http\Controllers\ProductVariantOptionController;
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'login'])->name('login');
@@ -61,7 +64,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/orders/create/{user}', [OrderController::class, 'store'])->name('orders_store');
 
         // Get product metadata via JS fetch
-        Route::get('/products/{product}', [ProductController::class, 'ajaxGetInfo'])->whereNumber('product')->name('products_show');
+        Route::get('/products/{product}/info', [ProductController::class, 'ajaxGetInfo'])->name('products_show');
 
         // Check user limit via JS fetch
         Route::get('/users/{user}/check-limit/{category}', [UserController::class, 'ajaxCheckLimit'])->name('users_check_limit');
@@ -76,7 +79,6 @@ Route::middleware('auth')->group(function () {
     Route::group(['middleware' => 'permission:' . Permission::ORDERS, 'prefix' => '/orders'], static function () {
         Route::group(['middleware' => 'permission:' . Permission::ORDERS_LIST], static function () {
             Route::get('/', [OrderController::class, 'index'])->name('orders_list');
-            Route::get('/{order}/products', [OrderController::class, 'ajaxGetProducts'])->name('orders_products');
         });
 
         Route::group(['middleware' => 'permission:' . Permission::ORDERS_VIEW], static function () {
@@ -124,18 +126,39 @@ Route::middleware('auth')->group(function () {
             Route::get('/', [ProductController::class, 'index'])->name('products_list');
         });
 
+        Route::group(['middleware' => 'permission:' . Permission::PRODUCTS_VIEW], static function () {
+            Route::get('/{product}', [ProductController::class, 'show'])->whereNumber('product')->name('products_view');
+        });
+
         Route::group(['middleware' => 'permission:' . Permission::PRODUCTS_MANAGE], static function () {
             Route::get('/create', [ProductController::class, 'create'])->name('products_create');
             Route::post('/create', [ProductController::class, 'store'])->name('products_store');
             Route::get('/{product}/edit', [ProductController::class, 'edit'])->name('products_edit');
             Route::put('/{product}/edit', [ProductController::class, 'update'])->name('products_update');
             Route::delete('/{product}', [ProductController::class, 'delete'])->name('products_delete');
+
+            Route::get('/{product}/variant/create', [ProductVariantController::class, 'create'])->name('products_variants_create');
+            Route::post('/{product}/variant/create', [ProductVariantController::class, 'store'])->name('products_variants_store');
+            // TODO: scopeBindings()
+            Route::get('/{product}/variant/{productVariant}/edit', [ProductVariantController::class, 'edit'])->name('products_variants_edit');
+            Route::put('/{product}/variant/{productVariant}/edit', [ProductVariantController::class, 'update'])->name('products_variants_update');
+            Route::delete('/{product}/variant/{productVariant}', [ProductVariantController::class, 'destroy'])->name('products_variants_delete');
+
+            Route::get('/{product}/variant-options/create', [ProductVariantOptionController::class, 'create'])->name('products_variant-options_create');
+            Route::post('/{product}/variant-options/create', [ProductVariantOptionController::class, 'store'])->name('products_variant-options_store');
+            Route::get('/{product}/variant-options/{productVariantOption}/edit', [ProductVariantOptionController::class, 'edit'])->name('products_variant-options_edit');
+            Route::put('/{product}/variant-options/{productVariantOption}/edit', [ProductVariantOptionController::class, 'update'])->name('products_variant-options_update');
+            Route::delete('/{product}/variant-options/{productVariantOption}', [ProductVariantOptionController::class, 'destroy'])->name('products_variant-options_delete');
+
+            Route::post('/{product}/variant-options/{productVariantOption}/values/create', [ProductVariantOptionValueController::class, 'store'])->name('products_variant-options_values_store');
+            Route::put('/{product}/variant-options/{productVariantOption}/values/{productVariantOptionValue}', [ProductVariantOptionValueController::class, 'update'])->name('products_variant-options_values_update');
+            Route::delete('/{product}/variant-options/{productVariantOption}/values/{productVariantOptionValue}', [ProductVariantOptionValueController::class, 'destroy'])->name('products_variant-options_values_delete');
         });
 
         Route::group(['middleware' => 'permission:' . Permission::PRODUCTS_LEDGER], static function () {
             Route::get('/ledger', [ProductController::class, 'adjustList'])->name('products_ledger');
             Route::get('/ledger/{product}', [ProductController::class, 'ajaxGetPage'])->name('products_ledger_ajax');
-            Route::patch('/ledger/{product}', [ProductController::class, 'adjustStock'])->name('products_ledger_form');
+            Route::patch('/ledger/{product}/{productVariant?}', [ProductController::class, 'adjustStock'])->name('products_ledger_form');
         });
     });
 

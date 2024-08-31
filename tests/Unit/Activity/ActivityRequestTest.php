@@ -66,6 +66,11 @@ class ActivityRequestTest extends FormRequestTestCase
             'unlimited_slots' => true,
         ]));
 
+        $this->assertNotHaveErrors('slots', new ActivityRequest([
+            'slots' => -1,
+            'unlimited_slots' => true,
+        ]));
+
         $this->assertHasErrors('slots', new ActivityRequest([
             'slots' => null,
         ]));

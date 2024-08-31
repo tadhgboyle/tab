@@ -22,13 +22,13 @@
             <div class="field">
                 <label class="label">Start<sup style="color: red">*</sup></label>
                 <div class="control">
-                    <input type="text" name="start" id="start" class="input" required>
+                    <input type="datetime-local" name="start" value="{{ $rotation->start ?? old('start') }}" id="start" class="input" required>
                 </div>
             </div>
             <div class="field">
                 <label class="label">End<sup style="color: red">*</sup></label>
                 <div class="control">
-                    <input type="text" name="end" id="end" class="input" required>
+                    <input type="datetime-local" name="end" value="{{ $rotation->end ?? old('end') }}" id="end" class="input" required>
                 </div>
             </div>
             <div class="control">
@@ -87,32 +87,5 @@
             modal.classList.remove('is-active');
         }
     @endisset
-
-    let endMinDate = null;
-
-    function startChange(e) {
-        endMinDate = new Date(e);
-        createEndDatepicker(null, endMinDate);
-    }
-
-    $(document).ready(function() {
-        const startDate = new Date('{{ $start }}');
-        const endDate = new Date('{{ $end }}');
-
-        flatpickr('#start', { defaultDate: startDate, onChange: startChange, ...flatpickrOptions() });
-        createEndDatepicker(endDate, startDate);
-    });
-
-    function createEndDatepicker(endDate = null, endMinDate) {
-        flatpickr('#end', { defaultDate: endDate, minDate: endMinDate, ...flatpickrOptions() });
-    }
-
-    function flatpickrOptions() {
-        return {
-            enableTime: true,
-            altInput: true,
-            altFormat: 'F j, Y h:i K',
-        }
-    }
 </script>
 @stop

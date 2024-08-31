@@ -46,6 +46,7 @@ class ActivityController extends Controller
     public function create(CategoryHelper $categoryHelper)
     {
         $start = request()->route('date') !== null ? Carbon::parse(request()->route('date')) : Carbon::now();
+        $start->setTimeFrom(now()->setHour(9)->setMinute(0)->setSeconds(0));
         $end = $start->copy()->addHour();
 
         return view('pages.activities.form', [

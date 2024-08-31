@@ -61,14 +61,14 @@
             <div class="field">
                 <label class="label">Start Time<sup style="color: red">*</sup></label>
                 <div class="control">
-                    <input type="text" name="start" id="start" class="input" required>
+                    <input type="datetime-local" name="start" value="{{ $start }}" id="start" class="input" required>
                 </div>
             </div>
 
             <div class="field">
                 <label class="label">End Time<sup style="color: red">*</sup></label>
                 <div class="control">
-                    <input type="text" name="end" id="end" class="input" required>
+                    <input type="datetime-local" name="end" value="{{ $end }}" id="end" class="input" required>
                 </div>
             </div>
 
@@ -87,7 +87,7 @@
                     <span class="icon is-small is-left">
                         <i class="fas fa-hashtag"></i>
                     </span>
-                    <input type="number" step="1.00" name="slots" min="1" placeholder="10" class="input" value="{{ $activity->slots ?? old('slots') }}">
+                    <input type="number" step="1.00" name="slots" @unless(isset($activity) && $activity->unlimited_slots) min="1" @endunless placeholder="10" class="input" value="{{ $activity->slots ?? old('slots') }}">
                 </div>
             </div>
 
@@ -156,34 +156,9 @@
 @endisset
 
 <script type="text/javascript">
-    let endMinDate = null;
-
-    function startChange(e) {
-        endMinDate = new Date(e);
-        createEndDatepicker(null, endMinDate);
-    }
-
     $(document).ready(function() {
-        const startDate = new Date('{{ $start }}');
-        const endDate = new Date('{{ $end }}');
-
-        flatpickr('#start', { defaultDate: startDate, onChange: startChange, ...flatpickrOptions() });
-        createEndDatepicker(endDate, startDate);
-
         updatedUnlimitedSlots($('input[type=checkbox][name=unlimited_slots]').prop('checked'));
     });
-
-    function createEndDatepicker(endDate = null, endMinDate) {
-        flatpickr('#end', { defaultDate: endDate, minDate: endMinDate, ...flatpickrOptions() });
-    }
-
-    function flatpickrOptions() {
-        return {
-            enableTime: true,
-            altInput: true,
-            altFormat: 'F j, Y h:i K',
-        }
-    }
 
     $('input[type=checkbox][name=unlimited_slots]').change(function() {
         updatedUnlimitedSlots($(this).prop('checked'))

@@ -8,21 +8,21 @@ use App\Models\OrderProduct;
 class TaxHelper
 {
     // TODO add test
-    public static function forOrderProduct(OrderProduct $product, int $quantity): Money
+    public static function forOrderProduct(OrderProduct $orderProduct, int $quantity): Money
     {
         return self::calculateFor(
-            $product->price,
+            $orderProduct->price,
             $quantity,
-            $product->pst !== null,
+            $orderProduct->pst !== null,
             [
-                'pst' => $product->pst,
-                'gst' => $product->gst,
+                'pst' => $orderProduct->pst,
+                'gst' => $orderProduct->gst,
             ]
         );
     }
 
     /**
-     * Calculate the tax for a given price and quantity.
+     * Calculate a price after tax for a specific quantity.
      *
      * @param Money $price The base price of the product/activity
      * @param int $quantity Quantity to calculate tax for

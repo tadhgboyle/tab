@@ -34,14 +34,18 @@ class OrderSeeder extends Seeder
                 $cashier = $users->shuffle()->whereIn('role_id', [1, 2, 4])->first();
                 Auth::login($cashier);
 
-                $product_ids = $products_all->random(random_int(1, 7))->pluck('id');
+                $order_products = $products_all->random(random_int(1, 7));
 
                 $products = [];
-                foreach ($product_ids as $product_id) {
-                    $products[] = [
-                        'id' => $product_id,
+                foreach ($order_products as $product) {
+                    $data = [
+                        'id' => $product->id,
                         'quantity' => random_int(1, 4),
                     ];
+                    if ($product->hasVariants()) {
+                        $data['variantId'] = $product->variants->random()->id;
+                    }
+                    $products[] = $data;
                 }
 
                 /** @var Rotation $rotation */

@@ -21,7 +21,6 @@ class CreatePayoutsTable extends Migration
             $table->foreign('cashier_id')->references('id')->on('users');
             $table->integer('amount');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

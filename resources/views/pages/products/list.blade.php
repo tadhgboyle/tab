@@ -14,8 +14,9 @@
                     <th>Category</th>
                     <th>Price</th>
                     <th>Stock</th>
-                    <th>Stock Override</th>
-                    <th>PST</th>
+                    @permission(\App\Helpers\Permission::PRODUCTS_VIEW)
+                    <th></th>
+                    @endpermission
                     @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)
                     <th></th>
                     @endpermission
@@ -31,17 +32,16 @@
                         <div>{{ $product->category->name }}</div>
                     </td>
                     <td>
-                        <div>{!! $product->price->isZero() ? '<i>Free</i>' :  $product->price !!}</div>
+                        <div>{{ $product->hasVariants() ? $product->getVariantPriceRange() : $product->price }}</div>
                     </td>
                     <td>
                         <div>{!! $product->getStock() !!}</div>
                     </td>
+                    @permission(\App\Helpers\Permission::PRODUCTS_VIEW)
                     <td>
-                        <div>{{ $product->stock_override ? "✅" : "❌" }}</div>
+                        <div><a href="{{ route('products_view', $product->id) }}">View</a></div>
                     </td>
-                    <td>
-                        <div>{{ $product->pst ? "✅" : "❌" }}</div>
-                    </td>
+                    @endpermission
                     @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)
                     <td>
                         <div><a href="{{ route('products_edit', $product->id) }}">Edit</a></div>
@@ -63,11 +63,14 @@
                 "orderable": false,
                 "searchable": false,
                 "targets": [
-                    4,
-                    5,
-                    @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)
-                    6,
-                    @endpermission
+                    @if(hasPermission(\App\Helpers\Permission::PRODUCTS_VIEW) && hasPermission(\App\Helpers\Permission::PRODUCTS_MANAGE))
+                        4,
+                        5
+                    @elseif(hasPermission(\App\Helpers\Permission::PRODUCTS_VIEW) && !hasPermission(\App\Helpers\Permission::PRODUCTS_MANAGE))
+                        5
+                    @elseif(!hasPermission(\App\Helpers\Permission::PRODUCTS_VIEW) && hasPermission(\App\Helpers\Permission::PRODUCTS_MANAGE))
+                        5
+                    @endif
                 ]
             }]
         });

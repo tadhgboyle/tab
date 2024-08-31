@@ -39,13 +39,15 @@ class GiftCardAssignmentControllerTest extends TestCase
             Permission::SETTINGS_GIFT_CARDS_MANAGE,
         ]);
 
-        $giftCard = GiftCard::factory()->create();
+        $giftCard = GiftCard::factory()->create([
+            'expires_at' => null,
+        ]);
 
         $this->actingAs($this->_superuser)
             ->get(route('settings_gift-cards_assign', [$giftCard->id, $this->_superuser->id]))
             ->assertRedirect(route('settings_gift-cards_view', $giftCard->id))
             ->assertSessionHas('success', "Assigned gift card to {$this->_superuser->full_name}.");
-        
+
         $giftCardAssignment = $giftCard->assignments()->first();
         $this->assertEquals($this->_superuser->id, $giftCardAssignment->user_id);
         $this->assertEquals($this->_superuser->id, $giftCardAssignment->assigner_id);
@@ -69,7 +71,7 @@ class GiftCardAssignmentControllerTest extends TestCase
             ->get(route('settings_gift-cards_assign', [$giftCard->id, $this->_superuser->id]))
             ->assertRedirect(route('settings_gift-cards_view', $giftCard->id))
             ->assertSessionHas('error', 'Cannot assign an expired gift card.');
-        
+
         $this->assertEmpty($giftCard->assignments);
         $this->assertNotContains($giftCard, $this->_superuser->giftCards);
     }

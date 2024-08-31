@@ -16,6 +16,10 @@ class ProductRequest extends FormRequest implements FormRequestContract
                 'required',
                 ValidationRule::unique('products')->ignore($this->get('product_id')),
             ],
+            'sku' => [
+                'nullable',
+                ValidationRule::unique('products')->ignore($this->get('product_id')),
+            ],
             'price' => [
                 'required',
                 'numeric',

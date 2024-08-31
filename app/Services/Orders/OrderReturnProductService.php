@@ -2,8 +2,8 @@
 
 namespace App\Services\Orders;
 
-use App\Models\Order;
 use Cknow\Money\Money;
+use App\Enums\OrderStatus;
 use App\Helpers\TaxHelper;
 use App\Models\OrderProduct;
 use App\Services\HttpService;
@@ -122,7 +122,11 @@ class OrderReturnProductService extends HttpService
     private function restoreStock(): void
     {
         if ($this->_orderProduct->product->restore_stock_on_return) {
-            $this->_orderProduct->product->adjustStock(1);
+            if ($this->_orderProduct->productVariant) {
+                $this->_orderProduct->productVariant->adjustStock(1);
+            } else {
+                $this->_orderProduct->product->adjustStock(1);
+            }
         }
     }
 
@@ -133,8 +137,8 @@ class OrderReturnProductService extends HttpService
 
         $this->_order->update([
             'status' => $this->_order->products->sum->returned === $this->_order->products->sum->quantity
-                ? Order::STATUS_FULLY_RETURNED
-                : Order::STATUS_PARTIAL_RETURNED,
+                ? OrderStatus::FullyReturned
+                : OrderStatus::PartiallyReturned,
         ]);
     }
 

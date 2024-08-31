@@ -151,10 +151,10 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
 - Let orders use multiple gift cards
 - When editing entities, correctly return back to the list/show page the user was previously on upon success
 - Add "cost" to products and display margins
-- Add product variants
-- Create `Cart` model to represent an in-flight order
+- Create `Cart` model to represent an in-flight order, then use to implement cashier functionality with livewire and get rid of the fuckin item-sidebar.js
 - Ability to mark products as final sale/cannot be returned
 - Add returns to user timelines
+- Dedicated returns page for orders where they can return n of each product at once or the whole thing
 
 ## Issues/Bugs
 - When cashier page refreshed with gift card, ensure it still has balance + update balance in table row

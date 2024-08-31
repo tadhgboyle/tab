@@ -1,7 +1,7 @@
 @extends('layouts.default', ['page' => 'products'])
 @section('content')
 <h2 class="title has-text-weight-bold">{{ isset($product) ? 'Edit' : 'Create' }} Product</h2>
-@if(isset($product)) <h4 class="subtitle"><strong>Product:</strong> {{ $product->name }}</h4> @endif
+@if(isset($product)) <h4 class="subtitle"><strong>Product:</strong> {{ $product->name }} @permission(\App\Helpers\Permission::PRODUCTS_VIEW)<a href="{{ route('products_view', $product->id) }}">(View)</a>@endpermission</h4> @endif
 <form action="{{ isset($product) ? route('products_update', $product->id) : route('products_store') }}" id="product_form" method="POST" class="form-horizontal">
     @csrf
 
@@ -20,6 +20,13 @@
                 <label class="label">Name<sup style="color: red">*</sup></label>
                 <div class="control">
                     <input type="text" name="name" class="input" placeholder="Name" required value="{{ $product->name ?? old('name') }}">
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">SKU</label>
+                <div class="control">
+                    <input type="text" name="sku" class="input" placeholder="SKU" value="{{ $product->sku ?? old('sku') }}">
                 </div>
             </div>
 
@@ -153,10 +160,8 @@
             </footer>
         </div>
     </div>
-@endisset
 
-<script type="text/javascript">
-    @isset($product)
+    <script type="text/javascript">
         const modal = document.querySelector('.modal');
 
         function openModal() {
@@ -166,6 +171,6 @@
         function closeModal() {
             modal.classList.remove('is-active');
         }
-    @endisset
-</script>
+    </script>
+@endisset
 @endsection

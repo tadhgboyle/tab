@@ -10,6 +10,7 @@ class OrderProduct extends Model
 {
     protected $fillable = [
         'product_id',
+        'product_variant_id',
         'category_id',
         'quantity',
         'price',
@@ -32,19 +33,20 @@ class OrderProduct extends Model
 
     public static function from(
         Product $product,
+        ?ProductVariant $productVariant = null,
         int $quantity,
         float $gst,
         ?float $pst = null,
-        int $returned = 0
     ): OrderProduct {
         return new OrderProduct([
             'product_id' => $product->id,
+            'product_variant_id' => $productVariant?->id,
             'category_id' => $product->category_id,
             'quantity' => $quantity,
-            'price' => $product->price,
+            'price' => $productVariant?->price ?? $product->price,
             'gst' => $gst,
             'pst' => $pst,
-            'returned' => $returned,
+            'returned' => 0,
         ]);
     }
 
@@ -55,7 +57,12 @@ class OrderProduct extends Model
 
     public function product(): BelongsTo
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class)->withTrashed();
+    }
+
+    public function productVariant(): BelongsTo
+    {
+        return $this->belongsTo(ProductVariant::class)->withTrashed();
     }
 
     public function category(): BelongsTo

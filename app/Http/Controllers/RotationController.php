@@ -30,7 +30,6 @@ class RotationController extends Controller
 
     public function edit(Rotation $rotation)
     {
-        // TODO: use flatpickr disabled dates to block off other rotations? problem is that it can't handle times, only dates
         return view('pages.settings.rotations.form', [
             'rotation' => $rotation,
             'start' => $rotation->start,

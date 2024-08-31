@@ -24,47 +24,55 @@ window.onload = () => {
     render();
 };
 
-const addProduct = async (productId) => {
+const addProduct = async (productId, variantId = 0) => {
     // TODO: check stock and don't add if it would be over the limit
-    await fetch(`/products/${productId}`)
+    await fetch(`/products/${productId}/info?variantId=${variantId}`)
         .then(resp => resp.json())
         .then(async (product) => {
             let quantity = 1;
 
-            const existingIndex = indexByProductId(productId);
+            let existingIndex;
+            if (variantId === 0) {
+                existingIndex = indexByProductId(productId);
+            } else {
+                existingIndex = indexByProductIdAndVariantId(productId, variantId);
+            }
             if (existingIndex !== -1) {
                 quantity += ITEMS[existingIndex].quantity;
             }
 
             const products = {};
 
-            productsByCategory(product.category_id).forEach(item => {
-                products[item.id] = item.quantity;
+            productsByCategory(product.categoryId).forEach(item => {
+                products[item.id] = {};
+                products[item.id][item.variantId] = item.quantity;
             });
 
-            products[productId] = quantity;
+            products[productId] = {};
+            products[productId][variantId] = quantity;
 
-            console.log(products);
-
-            await fetch(`/users/${PURCHASER_ID}/check-limit/${product.category_id}?products=${JSON.stringify(products)}`)
+            await fetch(`/users/${PURCHASER_ID}/check-limit/${product.categoryId}?products=${JSON.stringify(products)}`)
                 .then(resp => resp.json())
                 .then(data => {
-                    console.log(data);
                     if (data.can_spend) {
-                        ITEMS = ITEMS.filter(item => item.id !== productId);
+                        if (existingIndex !== -1) {
+                            ITEMS[existingIndex].quantity = quantity;
+                        } else {
+                            ITEMS.push({
+                                id: product.id,
+                                variantId: variantId,
+                                variantDescription: product.variantDescription,
+                                categoryId: product.categoryId,
+                                name: product.name,
+                                price: product.price,
+                                tax: {
+                                    pst: product.pst,
+                                    gst: product.gst,
+                                },
+                                quantity: quantity,
+                            });    
+                        }
 
-                        ITEMS.push({
-                            id: product.id,
-                            category_id: product.category_id,
-                            name: product.name,
-                            price: product.price,
-                            tax: {
-                                pst: product.pst,
-                                gst: product.gst,
-                            },
-                            quantity: quantity,
-                        });
-            
                         cacheItems();
                         render();
                     } else {
@@ -78,12 +86,22 @@ const indexByProductId = (productId) => {
     return ITEMS.findIndex(item => item.id === productId);
 };
 
-const productsByCategory = (categoryId) => {
-    return ITEMS.filter(item => item.category_id === categoryId);
+const indexByProductIdAndVariantId = (productId, variantId) => {
+    return ITEMS.findIndex(item => item.id === productId && item.variantId === variantId);
 };
 
-const removeProductSingle = (productId) => {
-    const index = indexByProductId(productId);
+const productsByCategory = (categoryId) => {
+    return ITEMS.filter(item => item.categoryId === categoryId);
+};
+
+const removeProductSingle = (productId, variantId) => {
+    let index;
+    if (variantId === 0) {
+        index = indexByProductId(productId);
+    } else {
+        index = indexByProductIdAndVariantId(productId, variantId);
+    }
+
     if (index === -1) {
         return;
     }
@@ -94,7 +112,7 @@ const removeProductSingle = (productId) => {
     const newQuantity = currentQuantity - REMOVING;
 
     if (newQuantity === 0) {
-        removeProductAll(productId);
+        removeProductAll(productId, variantId);
         return;
     }
 
@@ -104,13 +122,19 @@ const removeProductSingle = (productId) => {
     render();
 };
 
-const removeProductAll = (productId) => {
-    const index = indexByProductId(productId);
+const removeProductAll = (productId, variantId) => {
+    let index;
+    if (variantId === 0) {
+        index = indexByProductId(productId);
+    } else {
+        index = indexByProductIdAndVariantId(productId, variantId);
+    }
+
     if (index === -1) {
         return;
     }
 
-    ITEMS = ITEMS.filter(item => item.id !== productId);
+    ITEMS = ITEMS.filter(item => item.id !== productId || item.variantId !== variantId);
 
     cacheItems();
     render();
@@ -121,6 +145,7 @@ const handleSubmit = () => {
         ITEMS.map(item => {
             return {
                 id: item.id,
+                variantId: item.variantId,
                 quantity: item.quantity,
             }
         }),
@@ -155,13 +180,13 @@ const render = () => {
             tr.classList.add('item-row');
 
             const nameTd = document.createElement('td');
-            nameTd.innerText = item.name;
+            nameTd.innerText = (item.variantId ? item.variantDescription : item.name);
             tr.appendChild(nameTd);
             const quantityTd = document.createElement('td');
             quantityTd.innerText = `${item.quantity} `;
 
             const removeSingleButton = document.createElement('button');
-            removeSingleButton.setAttribute('onclick', `removeProductSingle(${item.id});`);
+            removeSingleButton.setAttribute('onclick', `removeProductSingle(${item.id}, ${item.variantId});`);
             removeSingleButton.classList.add('button', 'is-small');
             const removeSingleButtonIconSpan = document.createElement('span');
             removeSingleButtonIconSpan.classList.add('icon', 'is-small');
@@ -172,7 +197,7 @@ const render = () => {
             quantityTd.appendChild(removeSingleButton);
 
             const removeAllButton = document.createElement('button');
-            removeAllButton.setAttribute('onclick', `removeProductAll(${item.id});`);
+            removeAllButton.setAttribute('onclick', `removeProductAll(${item.id}, ${item.variantId});`);
             removeAllButton.classList.add('button', 'is-small');
             const removeAllButtonIconSpan = document.createElement('span');
             removeAllButtonIconSpan.classList.add('icon', 'is-small');

@@ -4,35 +4,37 @@ namespace App\Models;
 
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
+use App\Traits\InteractsWithStock;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Collection;
 
 class Product extends Model
 {
     use HasFactory;
     use SoftDeletes;
 
+    use InteractsWithStock;
+
     protected $casts = [
         'name' => 'string',
         'price' => MoneyIntegerCast::class,
         'pst' => 'boolean',
         'stock' => 'integer',
-        'unlimited_stock' => 'boolean', // stock is never checked
-        'stock_override' => 'boolean', // stock can go negative
+        'unlimited_stock' => 'boolean', 
+        'stock_override' => 'boolean',
         'box_size' => 'integer',
         'restore_stock_on_return' => 'boolean',
     ];
 
-    protected $with = [
-        'category',
-    ];
-
     protected $fillable = [
         'name',
+        'sku',
         'price',
         'category_id',
         'stock',
@@ -48,67 +50,66 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function variants(): HasMany
+    {
+        return $this->hasMany(ProductVariant::class);
+    }
+
+    public function variantOptions(): HasMany
+    {
+        return $this->hasMany(ProductVariantOption::class);
+    }
+
+    public function orders(): HasManyThrough
+    {
+        return $this->hasManyThrough(Order::class, OrderProduct::class, null, 'id', 'id', 'order_id');
+    }
+
+    public function hasVariants(): bool
+    {
+        return $this->variants->isNotEmpty();
+    }
+
+    public function hasAllVariantCombinations(): bool
+    {
+        return $this->variants->count() === $this->variantOptions->reduce(function ($carry, ProductVariantOption $option) {
+            return $carry * $option->values->count();
+        }, 1);
+    }
+
+    // TODO: could this be getPriceAttribute()?
+    public function getVariantPriceRange(): string
+    {
+        if ($this->hasVariants()) {
+            $min = $this->variants->min('price');
+            $max = $this->variants->max('price');
+
+            if ($min === $max) {
+                return $min;
+            }
+
+            return "{$min} - {$max}";
+        }
+
+        return $this->price;
+    }
+
     public function getPriceAfterTax(): Money
     {
         return TaxHelper::calculateFor($this->price, 1, $this->pst);
     }
 
-    // Used to check if items in order have enough stock BEFORE using removeStock() to remove it.
-    // If we didn't use this, then stock would be adjusted and then the order could fail, resulting in inaccurate stock.
-    public function hasStock(int $quantity): bool
+    public function getStockAttribute(int $baseStock): int
     {
-        if ($this->unlimited_stock) {
-            return true;
+        if ($this->hasVariants()) {
+            return $this->variants->sum('stock');
         }
 
-        if ($this->stock >= $quantity || $this->stock_override) {
-            return true;
-        }
-
-        return false;
+        return $baseStock;
     }
 
-    public function getStock(): int|string
+    public function recentOrders(): Collection
     {
-        if ($this->unlimited_stock) {
-            return '<i>Unlimited</i>';
-        }
-
-        return $this->stock;
-    }
-
-    public function removeStock(int $remove_stock): bool
-    {
-        if ($this->unlimited_stock) {
-            return true;
-        }
-
-        if ($this->stock_override || ($this->getStock() >= $remove_stock)) {
-            $this->decrement('stock', $remove_stock);
-            return true;
-        }
-
-        return false;
-    }
-
-    public function adjustStock(int $new_stock): false|int
-    {
-        return $this->increment('stock', $new_stock);
-    }
-
-    public function addBox(int $box_count): bool|int
-    {
-        return $this->adjustStock($box_count * $this->box_size);
-    }
-
-    public function findSold(string|int $rotation_id): int
-    {
-        return OrderProduct::when($rotation_id !== '*', static function (Builder $query) use ($rotation_id) {
-            $query->whereHas('order', function (Builder $query) use ($rotation_id) {
-                $query->where('rotation_id', $rotation_id);
-            });
-        })->where('product_id', $this->id)->chunkMap(static function (OrderProduct $orderProduct) {
-            return $orderProduct->quantity - $orderProduct->returned;
-        })->sum();
+        return $this->orders()->latest()->limit(10)->get();
     }
 }

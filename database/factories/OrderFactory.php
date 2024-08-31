@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Order;
+use App\Enums\OrderStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class OrderFactory extends Factory
@@ -16,7 +16,7 @@ class OrderFactory extends Factory
     {
         return [
             'gift_card_amount' => 0_00,
-            'status' => Order::STATUS_NOT_RETURNED,
+            'status' => OrderStatus::NotReturned,
             'created_at' => now()
         ];
     }

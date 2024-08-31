@@ -10,8 +10,10 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\GiftCard;
 use App\Models\Settings;
+use App\Enums\OrderStatus;
 use Illuminate\Http\Request;
 use Database\Seeders\RotationSeeder;
+use App\Enums\GiftCardAdjustmentType;
 use App\Services\Orders\OrderCreateService;
 use App\Services\Orders\OrderReturnService;
 use App\Services\Orders\OrderReturnProductService;
@@ -28,7 +30,7 @@ class OrderReturnServiceTest extends TestCase
         $orderService = (new OrderReturnService($order));
         $this->assertSame(OrderReturnService::RESULT_SUCCESS, $orderService->getResult());
 
-        $this->assertSame(Order::STATUS_FULLY_RETURNED, $order->status);
+        $this->assertSame(OrderStatus::FullyReturned, $order->status);
         $this->assertTrue($order->isReturned());
     }
 
@@ -40,7 +42,7 @@ class OrderReturnServiceTest extends TestCase
         $orderService = (new OrderReturnService($order));
         $this->assertSame(OrderReturnService::RESULT_SUCCESS, $orderService->getResult());
 
-        $this->assertSame(Order::STATUS_FULLY_RETURNED, $order->status);
+        $this->assertSame(OrderStatus::FullyReturned, $order->status);
         $this->assertTrue($order->isReturned());
         $this->assertEquals(
             $balance_before->add($order->purchaser_amount),
@@ -67,7 +69,7 @@ class OrderReturnServiceTest extends TestCase
         $orderService = new OrderReturnService($order);
 
         $this->assertSame(OrderReturnService::RESULT_SUCCESS, $orderService->getResult());
-        $this->assertSame(Order::STATUS_FULLY_RETURNED, $order->status);
+        $this->assertSame(OrderStatus::FullyReturned, $order->status);
         $this->assertTrue($order->isReturned());
 
         $this->assertEquals(
@@ -77,7 +79,7 @@ class OrderReturnServiceTest extends TestCase
 
         $giftCardAdjustment = $giftCard->adjustments->last();
         $this->assertEquals($order->gift_card_amount, $giftCardAdjustment->amount);
-        $this->assertEquals('refund', $giftCardAdjustment->type);
+        $this->assertEquals(GiftCardAdjustmentType::Refund, $giftCardAdjustment->type);
         $this->assertEquals($order->id, $giftCardAdjustment->order_id);
     }
 
@@ -105,7 +107,7 @@ class OrderReturnServiceTest extends TestCase
         $orderService = new OrderReturnService($order->refresh());
 
         $this->assertSame(OrderReturnService::RESULT_SUCCESS, $orderService->getResult());
-        $this->assertSame(Order::STATUS_FULLY_RETURNED, $order->status);
+        $this->assertSame(OrderStatus::FullyReturned, $order->status);
         $this->assertTrue($order->isReturned());
 
         $this->assertEquals(
@@ -116,7 +118,7 @@ class OrderReturnServiceTest extends TestCase
 
         $giftCardAdjustment = $giftCard->adjustments->last();
         $this->assertEquals($giftCardAmountRefunded, $giftCardAdjustment->amount);
-        $this->assertEquals('refund', $giftCardAdjustment->type);
+        $this->assertEquals(GiftCardAdjustmentType::Refund, $giftCardAdjustment->type);
         $this->assertEquals($order->id, $giftCardAdjustment->order_id);
 
         $orderReturn = $order->return;
@@ -150,7 +152,7 @@ class OrderReturnServiceTest extends TestCase
         $orderService2 = (new OrderReturnService($order));
         $this->assertSame(OrderReturnService::RESULT_ALREADY_RETURNED, $orderService2->getResult());
 
-        $this->assertSame(Order::STATUS_FULLY_RETURNED, $order->status);
+        $this->assertSame(OrderStatus::FullyReturned, $order->status);
         $this->assertEquals($order->total_price, $user->findReturned());
     }
 

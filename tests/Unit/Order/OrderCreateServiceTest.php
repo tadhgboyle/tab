@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Order;
 
+use App\Models\ProductVariant;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
@@ -43,6 +44,16 @@ class OrderCreateServiceTest extends TestCase
         $this->assertSame('Please select at least one item.', $orderService->getMessage());
     }
 
+    public function testCannotMakeOrderWithNoVariantSelectedForProductWithVariants(): void
+    {
+        [$camper_user] = $this->createFakeRecords();
+
+        $orderService = new OrderCreateService($this->createFakeRequest($camper_user, with_no_variant_selected: true), $camper_user);
+
+        $this->assertSame(OrderCreateService::RESULT_MUST_SELECT_VARIANT, $orderService->getResult());
+        $this->assertSame('You must select a variant for item Sweater', $orderService->getMessage());
+    }
+
     public function testCannotMakeOrderWithLessThanZeroQuantity(): void
     {
         [$camper_user] = $this->createFakeRecords();
@@ -61,6 +72,16 @@ class OrderCreateServiceTest extends TestCase
 
         $this->assertSame(OrderCreateService::RESULT_NO_STOCK, $orderService->getResult());
         $this->assertSame('Not enough Chips in stock. Only 2 remaining.', $orderService->getMessage());
+    }
+
+    public function testCannotMakeOrderWithOutOfStockProductVariant(): void
+    {
+        [$camper_user] = $this->createFakeRecords();
+
+        $orderService = new OrderCreateService($this->createFakeRequest($camper_user, with_variant_selected: true, with_no_variant_stock: true), $camper_user);
+
+        $this->assertSame(OrderCreateService::RESULT_NO_STOCK, $orderService->getResult());
+        $this->assertSame('Not enough Sweater: Size: Small in stock. Only 0 remaining.', $orderService->getMessage());
     }
 
     public function testCannotMakeOrderWithoutEnoughBalance(): void
@@ -100,19 +121,25 @@ class OrderCreateServiceTest extends TestCase
     {
         [$camper_user, $staff_user] = $this->createFakeRecords();
 
-        $orderService = new OrderCreateService($this->createFakeRequest($camper_user), $camper_user);
+        $orderService = new OrderCreateService($this->createFakeRequest($camper_user, with_variant_selected: true), $camper_user);
 
         $this->assertSame(OrderCreateService::RESULT_SUCCESS, $orderService->getResult());
-        $this->assertStringContainsString('now has $962.44', $orderService->getMessage());
+        $this->assertStringContainsString('now has $936.19', $orderService->getMessage());
         $this->assertCount(1, Order::all());
         $this->assertCount(1, $camper_user->refresh()->orders);
         $this->assertEquals($camper_user->id, $orderService->getOrder()->purchaser->id);
         $this->assertEquals($staff_user->id, $orderService->getOrder()->cashier->id);
         $this->assertEquals(resolve(RotationHelper::class)->getCurrentRotation()->id, $orderService->getOrder()->rotation->id);
         $this->assertEquals($orderService->getOrder()->total_price, $camper_user->findSpent());
+
         $this->assertEquals('Chips', $orderService->getOrder()->products->first()->product->name);
         $this->assertEquals($orderService->getOrder()->products->first()->order->id, $orderService->getOrder()->id);
         $this->assertEquals(1, Product::firstWhere('name', 'Chips')->stock);
+
+        $this->assertEquals('Sweater', $orderService->getOrder()->products->last()->product->name);
+        $this->assertEquals(ProductVariant::first()->id, $orderService->getOrder()->products->last()->product_variant_id);
+        $this->assertEquals(4, ProductVariant::first()->stock);
+
         $this->assertEquals(null, $orderService->getOrder()->gift_card_id);
         $this->assertEquals(Money::parse(0), $orderService->getOrder()->gift_card_amount);
     }
@@ -253,6 +280,9 @@ class OrderCreateServiceTest extends TestCase
         bool $over_balance = false,
         bool $over_category_limit = false,
         string $gift_card_code = '',
+        bool $with_no_variant_selected = false,
+        bool $with_variant_selected = false,
+        bool $with_no_variant_stock = false
     ): Request {
         app(RotationSeeder::class)->run();
 
@@ -262,26 +292,41 @@ class OrderCreateServiceTest extends TestCase
             $this->createFakeCategoryLimits($purchaser, $food_category, $merch_category);
         }
 
-        [$chips, $hat, $coffee] = $this->createFakeProducts($over_balance, $food_category, $merch_category);
+        [$chips, $hat, $coffee, $sweater] = $this->createFakeProducts($over_balance, $food_category, $merch_category, $with_no_variant_stock);
 
+        $data = [
+            'purchaser_id' => $purchaser->id,
+        ];
         if ($with_products) {
-            $data = [
-                'products' => json_encode([
-                    [
-                        'id' => $chips->id,
-                        'quantity' => $negative_product ? -1 : ($over_stock ? 100 : 1),
-                    ],
-                    [
-                        'id' => $hat->id,
-                        'quantity' => 2,
-                    ],
-                    [
-                        'id' => $coffee->id,
-                        'quantity' => 1,
-                    ],
-                ]),
-                'purchaser_id' => $purchaser->id,
+            $products = [
+                [
+                    'id' => $chips->id,
+                    'quantity' => $negative_product ? -1 : ($over_stock ? 100 : 1),
+                ],
+                [
+                    'id' => $hat->id,
+                    'quantity' => 2,
+                ],
+                [
+                    'id' => $coffee->id,
+                    'quantity' => 1,
+                ],
             ];
+
+            if ($with_no_variant_selected) {
+                $products[] = [
+                    'id' => $sweater->id,
+                    'quantity' => 1,
+                ];
+            } else if ($with_variant_selected) {
+                $products[] = [
+                    'id' => $sweater->id,
+                    'quantity' => 1,
+                    'variantId' => $sweater->variants->first()->id,
+                ];
+            }
+
+            $data['products'] = json_encode($products);
 
             if ($gift_card_code) {
                 $data['gift_card_code'] = $gift_card_code;
@@ -326,7 +371,7 @@ class OrderCreateServiceTest extends TestCase
     }
 
     /** @return Product[] */
-    private function createFakeProducts(bool $over_balance, Category $food_category, Category $merch_category): array
+    private function createFakeProducts(bool $over_balance, Category $food_category, Category $merch_category, bool $with_no_variant_stock): array
     {
         $chips = Product::factory()->create([
             'name' => 'Chips',
@@ -352,6 +397,34 @@ class OrderCreateServiceTest extends TestCase
             'category_id' => $food_category->id
         ]);
 
-        return [$chips, $hat, $coffee];
+        $sweater = Product::factory()->create([
+            'name' => 'Sweater',
+            'price' => 25_00,
+            'pst' => false,
+            'stock_override' => false,
+            'unlimited_stock' => false,
+            'category_id' => $merch_category->id
+        ]);
+
+        $option = $sweater->variantOptions()->create([
+            'name' => 'Size',
+        ]);
+
+        $value = $option->values()->create([
+            'value' => 'Small',
+        ]);
+
+        $variant = $sweater->variants()->create([
+            'sku' => 'SWEATER_SMALL',
+            'price' => 25_00,
+            'stock' => $with_no_variant_stock ? 0 : 5,
+        ]);
+
+        $variant->optionValueAssignments()->create([
+            'product_variant_option_id' => $option->id,
+            'product_variant_option_value_id' => $value->id,
+        ]);
+
+        return [$chips, $hat, $coffee, $sweater];
     }
 }

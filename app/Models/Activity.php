@@ -45,6 +45,10 @@ class Activity extends Model implements HasTimeline
         'end' => 'datetime',
     ];
 
+    protected $with = [
+        'attendants',
+    ];
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);

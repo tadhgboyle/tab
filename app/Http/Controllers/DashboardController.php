@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Payout;
 use App\Models\User;
 use App\Models\Order;
+use App\Models\Payout;
 use Cknow\Money\Money;
 use App\Models\Product;
 use App\Models\Activity;
@@ -17,6 +17,7 @@ use App\Models\GiftCardAdjustment;
 use App\Models\OrderProductReturn;
 use Illuminate\Support\Collection;
 use App\Models\ActivityRegistration;
+use App\Enums\GiftCardAdjustmentType;
 
 class DashboardController extends Controller
 {
@@ -129,7 +130,7 @@ class DashboardController extends Controller
         $data['totalRevenue'] = $data['orderRevenue']->add($data['activityRevenue']);
         // Total revenue from gift cards
         // TODO Subtract refunds?
-        $data['giftCardRevenue'] = Money::parse(GiftCardAdjustment::where('type', GiftCardAdjustment::TYPE_CHARGE)->sum('amount'));
+        $data['giftCardRevenue'] = Money::parse(GiftCardAdjustment::where('type', GiftCardAdjustmentType::Charge)->sum('amount'));
         // Average order value
         $data['averageOrderValue'] = Money::parse(Order::avg('total_price'))->divide(100);
         // Average cash payment value
@@ -250,6 +251,7 @@ class DashboardController extends Controller
             ->limit(10)
             ->get();
         // Products with low stock
+        // TODO: support variants
         $data['lowStockProducts'] = Product::query()
             ->where('unlimited_stock', false)
             ->where('stock', '<=', 10)

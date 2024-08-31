@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use Cknow\Money\Money;
+use App\Enums\OrderStatus;
 use App\Concerns\Timeline\HasTimeline;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use App\Concerns\Timeline\TimelineEntry;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Lab404\Impersonate\Models\Impersonate;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class User extends Authenticatable implements HasTimeline
 {
@@ -126,13 +127,9 @@ class User extends Authenticatable implements HasTimeline
     {
         $returned = Money::parse(0);
 
-        $this->orders->each(function (Order $order) use (&$returned) {
+        $this->orders()->whereNot('status', OrderStatus::NotReturned)->get()->each(function (Order $order) use (&$returned) {
             if ($order->isReturned()) {
                 $returned = $returned->add($order->total_price);
-                return;
-            }
-
-            if ($order->status === Order::STATUS_NOT_RETURNED) {
                 return;
             }
 
@@ -148,21 +145,17 @@ class User extends Authenticatable implements HasTimeline
         return $returned;
     }
 
-    public function findReturnedInCash(): Money
+    public function findReturnedToCash(): Money
     {
         $returned = Money::parse(0);
 
-        $this->orders->each(function (Order $order) use (&$returned) {
-            if ($order->status === Order::STATUS_NOT_RETURNED) {
-                return;
-            }
-
+        $this->orders()->whereNot('status', OrderStatus::NotReturned)->get()->each(function (Order $order) use (&$returned) {
             if ($order->isReturned()) {
                 $returned = $returned->add($order->purchaser_amount);
                 return;
             }
 
-            $returned = $returned->add($order->getReturnedTotalInCash());
+            $returned = $returned->add($order->getReturnedTotalToCash());
         });
 
         $returned = $returned->add(
@@ -176,12 +169,12 @@ class User extends Authenticatable implements HasTimeline
 
     /**
      * Find how much money a user owes.
-     * Taking their amount spent and subtracting the amount they have returned and sum of their payouts.
+     * Taking their amount spent in cash and subtracting the amount they have returned to cash and sum of their payouts.
      */
     public function findOwing(): Money
     {
         return $this->findSpentInCash()
-            ->subtract($this->findReturnedInCash())
+            ->subtract($this->findReturnedToCash())
             ->subtract($this->findPaidOut());
     }
 

@@ -4,6 +4,7 @@ namespace App\Services\Orders;
 
 use App\Models\Order;
 use Cknow\Money\Money;
+use App\Enums\OrderStatus;
 use App\Models\OrderProduct;
 use App\Services\HttpService;
 use Illuminate\Http\RedirectResponse;
@@ -30,7 +31,7 @@ class OrderReturnService extends HttpService
         [$purchaserAmount, $giftCardAmount] = $this->refundPurchaser();
         $this->createOrderReturn($purchaserAmount, $giftCardAmount);
 
-        $this->_order->update(['status' => Order::STATUS_FULLY_RETURNED]);
+        $this->_order->update(['status' => OrderStatus::FullyReturned]);
 
         $this->_result = self::RESULT_SUCCESS;
         $this->_message = 'Successfully returned order #' . $this->_order->id . ' for ' . $this->_order->purchaser->full_name;
@@ -42,9 +43,16 @@ class OrderReturnService extends HttpService
             $returned = $orderProduct->returned;
             $orderProduct->update(['returned' => $orderProduct->quantity]);
             if ($orderProduct->product->restore_stock_on_return) {
-                $orderProduct->product->adjustStock(
-                    $orderProduct->quantity - $returned
-                );
+                $amountToRestore = $orderProduct->quantity - $returned;
+                if ($orderProduct->productVariant) {
+                    $orderProduct->productVariant->adjustStock(
+                        $amountToRestore
+                    );
+                } else {
+                    $orderProduct->product->adjustStock(
+                        $amountToRestore
+                    );
+                }
             }
         });
     }

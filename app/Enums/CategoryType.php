@@ -2,7 +2,8 @@
 
 namespace App\Enums;
 
-enum CategoryType: int {
+enum CategoryType: int
+{
     case ProductsActivities = 1;
     case Products = 2;
     case Activities = 3;

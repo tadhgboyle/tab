@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Cknow\Money\Money;
+use App\Enums\OrderStatus;
 use App\Concerns\Timeline\HasTimeline;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
@@ -14,12 +15,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Order extends Model implements HasTimeline
 {
-    public const STATUS_NOT_RETURNED = 0;
-
-    public const STATUS_PARTIAL_RETURNED = 1;
-
-    public const STATUS_FULLY_RETURNED = 2;
-
     use HasFactory;
 
     protected $fillable = [
@@ -27,6 +22,7 @@ class Order extends Model implements HasTimeline
     ];
 
     protected $casts = [
+        'status' => OrderStatus::class,
         'total_price' => MoneyIntegerCast::class,
         'purchaser_amount' => MoneyIntegerCast::class,
         'gift_card_amount' => MoneyIntegerCast::class,
@@ -34,7 +30,7 @@ class Order extends Model implements HasTimeline
 
     public function purchaser(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->withTrashed();
     }
 
     public function cashier(): BelongsTo
@@ -67,13 +63,32 @@ class Order extends Model implements HasTimeline
         return $this->hasMany(OrderProductReturn::class);
     }
 
+    // TODO: make this a column in the database along with total_tax = total_price
+    // TODO: test
+    public function subtotal(): Money
+    {
+        $subtotal = Money::parse(0);
+
+        foreach ($this->products as $product) {
+            $subtotal = $subtotal->add($product->price->multiply($product->quantity));
+        }
+
+        return $subtotal;
+    }
+
+    // TODO: test
+    public function totalTax(): Money
+    {
+        return $this->total_price->subtract($this->subtotal());
+    }
+
     public function getReturnedTotal(): Money
     {
         if ($this->isReturned()) {
             return $this->total_price;
         }
 
-        if ($this->status === self::STATUS_NOT_RETURNED) {
+        if ($this->status === OrderStatus::NotReturned) {
             return Money::parse(0);
         }
 
@@ -98,13 +113,13 @@ class Order extends Model implements HasTimeline
         return Money::sum(Money::parse(0), ...$this->productReturns->map->gift_card_amount);
     }
 
-    public function getReturnedTotalInCash(): Money
+    public function getReturnedTotalToCash(): Money
     {
         if ($this->isReturned()) {
             return $this->purchaser_amount;
         }
 
-        if ($this->status === self::STATUS_NOT_RETURNED) {
+        if ($this->status === OrderStatus::NotReturned) {
             return Money::parse(0);
         }
 
@@ -113,15 +128,15 @@ class Order extends Model implements HasTimeline
 
     public function isReturned(): bool
     {
-        return $this->status === self::STATUS_FULLY_RETURNED;
+        return $this->status === OrderStatus::FullyReturned;
     }
 
     public function getStatusHtml(): string
     {
         return match ($this->status) {
-            self::STATUS_FULLY_RETURNED => '<span class="tag is-medium">🚨 Returned</span>',
-            self::STATUS_PARTIAL_RETURNED => '<span class="tag is-medium">⚠️ Semi Returned</span>',
-            self::STATUS_NOT_RETURNED => '<span class="tag is-medium">👌 Not Returned</span>',
+            OrderStatus::FullyReturned => '<span class="tag is-medium">🚨 Returned</span>',
+            OrderStatus::PartiallyReturned => '<span class="tag is-medium">⚠️ Partially Returned</span>',
+            OrderStatus::NotReturned => '<span class="tag is-medium">👌 Not Returned</span>',
         };
     }
 
@@ -138,7 +153,10 @@ class Order extends Model implements HasTimeline
 
         $events = [];
         foreach ($this->productReturns()->with('orderProduct')->get() as $productReturn) {
-            $description = "Returned {$productReturn->orderProduct->product->name}";
+            $productName = $productReturn->orderProduct->productVariant
+                ? $productReturn->orderProduct->productVariant->description()
+                : $productReturn->orderProduct->product->name;
+            $description = "Returned {$productName}";
             if ($hasCashReturn = $productReturn->purchaser_amount->isPositive()) {
                 $description .= " in cash as {$productReturn->purchaser_amount}";
             }
