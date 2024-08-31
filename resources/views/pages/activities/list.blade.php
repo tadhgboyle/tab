@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     calendar.render();
-
 });
 </script>
 @endsection
