@@ -44,17 +44,33 @@ class ProductVariant extends Model
      */
     public function descriptions(bool $excludeTrashedOptions): Collection
     {
-        $this->loadMissing('optionValueAssignments.productVariantOption', 'optionValueAssignments.productVariantOptionValue');
-
         return $this->optionValueAssignments->filter(function (ProductVariantOptionValueAssignment $assignment) use ($excludeTrashedOptions) {
             if ($excludeTrashedOptions) {
-                return !$assignment->productVariantOption->trashed();
+                return !$assignment->productVariantOption->trashed() && !$assignment->productVariantOptionValue->trashed();
             }
 
             return true;
         })->map(function (ProductVariantOptionValueAssignment $assignment) {
             return $assignment->productVariantOption->name . ': ' . $assignment->productVariantOptionValue->value;
         })->values();
+    }
+
+    public function optionValueFor(ProductVariantOption $option): ?ProductVariantOptionValue
+    {
+        $assignment = $this->optionValueAssignments->where('product_variant_option_id', $option->id)->first();
+        if (!$assignment) {
+            return null;
+        }
+
+        if ($assignment->productVariantOption->trashed()) {
+            return null;
+        }
+
+        if ($assignment->productVariantOptionValue->trashed()) {
+            return null;
+        }
+
+        return $assignment->productVariantOptionValue;
     }
 
     public function getStockOverrideAttribute(): bool

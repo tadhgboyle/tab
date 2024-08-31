@@ -14,11 +14,13 @@
                 <div class="column">
                     <h4 class="title has-text-weight-bold is-4">Variants</h4>
                 </div>
-                <div class="column">
-                    <a class="button is-light is-pulled-right is-small" href="{{ route('products_variants_create', $product) }}" @if($product->variantOptions->isEmpty() || $product->hasAllVariantCombinations()) disabled @endif>
-                        ➕ Create
-                    </a>
-                </div>
+                @if(!$product->variantOptions->isEmpty() && !$product->hasAllVariantCombinations())
+                    <div class="column">
+                        <a class="button is-light is-pulled-right is-small" href="{{ route('products_variants_create', $product) }}">
+                            ➕ Create
+                        </a>
+                    </div>
+                @endif
             </div>
 
             <table id="variants_list">
@@ -39,12 +41,9 @@
                     <tr>
                         <td><code>{{ $variant->sku }}</code></td>
                         @foreach ($product->variantOptions as $option)
-                            @php
-                                $optionValueAssignment = $variant->optionValueAssignments->firstWhere('product_variant_option_id', $option->id);
-                            @endphp
                             <td>
-                                @if ($optionValueAssignment)
-                                    <div class="tag">{{ $optionValueAssignment->productVariantOptionValue->value }}</div>
+                                @if ($optionValue = $variant->optionValueFor($option))
+                                    <div class="tag">{{ $optionValue->value }}</div>
                                 @else
                                     <i>Not set</i>
                                 @endif
@@ -126,6 +125,17 @@
                 <p><strong>Stock override:</strong> {{ $product->stock_override ? '✅' : '❌' }}</p>
             @endunless
             <p><strong>Restore stock on return:</strong> {{ $product->restore_stock_on_return ? '✅' : '❌' }}</p>
+        </div>
+
+        <div class="box">
+            <p><strong>Recent orders</strong></p>
+            <ul>
+                @foreach($product->recentOrders() as $order)
+                    <li>
+                        <a href="{{ route('orders_view', $order->id) }}">#{{ $order->id }}</a> - {{ $order->created_at->diffForHumans() }}
+                    </li>
+                @endforeach
+            </ul>
         </div>
     </div>
 </div>

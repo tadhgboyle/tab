@@ -16,8 +16,6 @@ return new class() extends Migration {
             $table->string('value');
             $table->timestamps();
             $table->softDeletes();
-
-            $table->unique(['product_variant_option_id', 'value'], name: 'unique_option_value');
         });
     }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductVariant;
 use App\Models\ProductVariantOptionValue;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -17,7 +18,7 @@ class ProductVariantOptionValueController extends Controller
                 'required',
                 'string',
                 Rule::unique('product_variant_option_values')
-                    // ->withoutTrashed()
+                    ->withoutTrashed()
                     ->where('product_variant_option_id', $productVariantOption->id)
             ],
         ]);
@@ -34,7 +35,7 @@ class ProductVariantOptionValueController extends Controller
                 'required',
                 'string',
                 Rule::unique('product_variant_option_values')
-                    // ->withoutTrashed()
+                    ->withoutTrashed()
                     ->where('product_variant_option_id', $productVariantOption->id)
                     ->ignoreModel($productVariantOptionValue)
             ],
@@ -47,8 +48,28 @@ class ProductVariantOptionValueController extends Controller
 
     public function destroy(Product $product, ProductVariantOption $productVariantOption, ProductVariantOptionValue $productVariantOptionValue)
     {
+        if ($this->wouldHaveNonUniqueVariantsIfDeleted($product, $productVariantOptionValue)) {
+            return redirect()->route('products_variant-options_edit', [$product, $productVariantOption])->with('error', 'Product variant option value cannot be deleted because it would result in non-unique variants.');
+        }
+
         $productVariantOptionValue->delete();
 
         return redirect()->route('products_variant-options_edit', [$product, $productVariantOption])->with('success', 'Product variant option value deleted.');
+    }
+
+    private function wouldHaveNonUniqueVariantsIfDeleted(Product $product, ProductVariantOptionValue $productVariantOptionValue): bool
+    {
+        $variantOptionCombinations = $product->variants->map(function (ProductVariant $variant) use ($productVariantOptionValue) {
+            return $variant->optionValueAssignments()
+                    ->join('product_variant_options', 'product_variant_option_value_assignments.product_variant_option_id', '=', 'product_variant_options.id')
+                    ->join('product_variant_option_values', 'product_variant_option_value_assignments.product_variant_option_value_id', '=', 'product_variant_option_values.id')
+                    ->whereNot('product_variant_option_value_assignments.product_variant_option_value_id', $productVariantOptionValue->id)
+                    ->whereNull('product_variant_options.deleted_at')
+                    ->whereNull('product_variant_option_values.deleted_at')
+                    ->pluck('product_variant_option_value_assignments.product_variant_option_value_id')
+                    ->sort();
+        });
+
+        return $variantOptionCombinations->count() !== $variantOptionCombinations->unique()->count();
     }
 }

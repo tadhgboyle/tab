@@ -61,10 +61,10 @@
                     <div class="control">
                         <div class="select is-fullwidth">
                             <select name="option_values[{{ $option->id }}]">
-                                <option value="" disabled {{ !isset($productVariant) || !$productVariant->optionValueAssignments->contains('product_variant_option_id', $option->id) && old("option_values.{$option->id}") === null ? "selected" : "" }}>Select {{ $option->name }}</option>
+                                <option value="" disabled {{ !isset($productVariant) || !$productVariant->optionValueFor($option) && old("option_values.{$option->id}") === null ? "selected" : "" }}>Select {{ $option->name }}</option>
 
                                 @foreach($option->values as $value)
-                                    <option value="{{ $value->id }}" @if(isset($productVariant) && $productVariant->optionValueAssignments->contains('product_variant_option_value_id', $value->id) || old("option_values.{$option->id}") == $value->id) selected @endif>{{ $value->value }}</option>
+                                    <option value="{{ $value->id }}" @if(isset($productVariant) && $productVariant->optionValueFor($option)?->id === $value->id || old("option_values.{$option->id}") == $value->id) selected @endif>{{ $value->value }}</option>
                                 @endforeach
                             </select>
                         </div>

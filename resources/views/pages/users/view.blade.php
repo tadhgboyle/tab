@@ -315,13 +315,13 @@
                             </tr>
                             @break
                         @case(\App\Enums\OrderStatus::PartiallyReturned)
-                                @if($order->getReturnedTotalInCash()->isPositive())
+                                @if($order->getReturnedTotalToCash()->isPositive())
                                     <tr>
                                         <td>
                                             <div>Partial Return (#{{ $order->id }})</div>
                                         </td>
                                         <td>
-                                            <div>-{{ $order->getReturnedTotalInCash() }}</div>
+                                            <div>-{{ $order->getReturnedTotalToCash() }}</div>
                                         </td>
                                     </tr>
                                 @endif

@@ -137,11 +137,92 @@ class ProductSeeder extends Seeder
                 'Size' => ['1 scoop', '2 scoops', '3 scoops'],
                 'Flavour' => ['Vanilla', 'Chocolate', 'Strawberry']
             ],
+            'variants' => [
+                [
+                    'price' => 3_00,
+                    'sku' => 'Ice Cream-1 scoop-Vanilla',
+                    'option_value_assignments' => [
+                        ['option' => 'Size', 'value' => '1 scoop'],
+                        ['option' => 'Flavour', 'value' => 'Vanilla'],
+                    ],
+                ],
+                [
+                    'price' => 3_00,
+                    'sku' => 'Ice Cream-1 scoop-Chocolate',
+                    'option_value_assignments' => [
+                        ['option' => 'Size', 'value' => '1 scoop'],
+                        ['option' => 'Flavour', 'value' => 'Chocolate'],
+                    ],
+                ],
+                [
+                    'price' => 3_00,
+                    'sku' => 'Ice Cream-1 scoop-Strawberry',
+                    'option_value_assignments' => [
+                        ['option' => 'Size', 'value' => '1 scoop'],
+                        ['option' => 'Flavour', 'value' => 'Strawberry'],
+                    ],
+                ],
+                [
+                    'price' => 5_00,
+                    'sku' => 'Ice Cream-2 scoops-Vanilla',
+                    'option_value_assignments' => [
+                        ['option' => 'Size', 'value' => '2 scoops'],
+                        ['option' => 'Flavour', 'value' => 'Vanilla'],
+                    ],
+                ],
+                [
+                    'price' => 5_00,
+                    'sku' => 'Ice Cream-2 scoops-Chocolate',
+                    'option_value_assignments' => [
+                        ['option' => 'Size', 'value' => '2 scoops'],
+                        ['option' => 'Flavour', 'value' => 'Chocolate'],
+                    ],
+                ],
+                [
+                    'price' => 5_00,
+                    'sku' => 'Ice Cream-2 scoops-Strawberry',
+                    'option_value_assignments' => [
+                        ['option' => 'Size', 'value' => '2 scoops'],
+                        ['option' => 'Flavour', 'value' => 'Strawberry'],
+                    ],
+                ],
+                [
+                    'price' => 7_00,
+                    'sku' => 'Ice Cream-3 scoops-Vanilla',
+                    'option_value_assignments' => [
+                        ['option' => 'Size', 'value' => '3 scoops'],
+                        ['option' => 'Flavour', 'value' => 'Vanilla'],
+                    ],
+                ],
+            ],
         ],
         'Wakeboard Rental' => [
             'category' => 'General',
             'variant_options' => [
                 'Duration' => ['1 hour', '2 hours', '3 hours'],
+            ],
+            'variants' => [
+                [
+                    'price' => 20_00,
+                    'sku' => 'Wakeboard Rental-1 hour',
+                    'option_value_assignments' => [
+                        ['option' => 'Duration', 'value' => '1 hour'],
+                    ],
+                ],
+                [
+                    'price' => 35_00,
+                    'sku' => 'Wakeboard Rental-2 hours',
+                    'option_value_assignments' => [
+                        ['option' => 'Duration', 'value' => '2 hours'],
+                    ],
+                ],
+                [
+                    'price' => 50_00,
+                    'sku' => 'Wakeboard Rental-3 hours',
+                    'option_value_assignments' => [
+                        ['option' => 'Duration', 'value' => '3 hours'],
+                    ],
+                ],
             ],
         ],
         'Candle' => [

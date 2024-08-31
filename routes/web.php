@@ -150,7 +150,7 @@ Route::middleware('auth')->group(function () {
             Route::put('/{product}/variant-options/{productVariantOption}/edit', [ProductVariantOptionController::class, 'update'])->name('products_variant-options_update');
             Route::delete('/{product}/variant-options/{productVariantOption}', [ProductVariantOptionController::class, 'destroy'])->name('products_variant-options_delete');
 
-            Route::post('/{product}/variant-options/{productVariantOption}/values/create', [ProductVariantOptionValueController::class, 'store'])->name('products_variant-options_values_create');
+            Route::post('/{product}/variant-options/{productVariantOption}/values/create', [ProductVariantOptionValueController::class, 'store'])->name('products_variant-options_values_store');
             Route::put('/{product}/variant-options/{productVariantOption}/values/{productVariantOptionValue}', [ProductVariantOptionValueController::class, 'update'])->name('products_variant-options_values_update');
             Route::delete('/{product}/variant-options/{productVariantOption}/values/{productVariantOptionValue}', [ProductVariantOptionValueController::class, 'destroy'])->name('products_variant-options_values_delete');
         });

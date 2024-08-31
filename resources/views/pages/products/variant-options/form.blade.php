@@ -115,7 +115,7 @@
                 <p class="modal-card-title">Create Value</p>
             </header>
             <section class="modal-card-body">
-                <form action="{{ route('products_variant-options_values_create', [$product, $productVariantOption]) }}" id="createValueForm" method="POST">
+                <form action="{{ route('products_variant-options_values_store', [$product, $productVariantOption]) }}" id="createValueForm" method="POST">
                     @csrf
                     @method('POST')
                     <div class="field">

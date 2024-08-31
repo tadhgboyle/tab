@@ -7,10 +7,12 @@ use App\Helpers\TaxHelper;
 use App\Traits\InteractsWithStock;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Collection;
 
 class Product extends Model
 {
@@ -58,6 +60,11 @@ class Product extends Model
         return $this->hasMany(ProductVariantOption::class);
     }
 
+    public function orders(): HasManyThrough
+    {
+        return $this->hasManyThrough(Order::class, OrderProduct::class, null, 'id', 'id', 'order_id');
+    }
+
     public function hasVariants(): bool
     {
         return $this->variants->isNotEmpty();
@@ -99,5 +106,10 @@ class Product extends Model
         }
 
         return $baseStock;
+    }
+
+    public function recentOrders(): Collection
+    {
+        return $this->orders()->latest()->limit(10)->get();
     }
 }

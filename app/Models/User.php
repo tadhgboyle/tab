@@ -145,7 +145,7 @@ class User extends Authenticatable implements HasTimeline
         return $returned;
     }
 
-    public function findReturnedInCash(): Money
+    public function findReturnedToCash(): Money
     {
         $returned = Money::parse(0);
 
@@ -155,7 +155,7 @@ class User extends Authenticatable implements HasTimeline
                 return;
             }
 
-            $returned = $returned->add($order->getReturnedTotalInCash());
+            $returned = $returned->add($order->getReturnedTotalToCash());
         });
 
         $returned = $returned->add(
@@ -169,12 +169,12 @@ class User extends Authenticatable implements HasTimeline
 
     /**
      * Find how much money a user owes.
-     * Taking their amount spent and subtracting the amount they have returned and sum of their payouts.
+     * Taking their amount spent in cash and subtracting the amount they have returned to cash and sum of their payouts.
      */
     public function findOwing(): Money
     {
         return $this->findSpentInCash()
-            ->subtract($this->findReturnedInCash())
+            ->subtract($this->findReturnedToCash())
             ->subtract($this->findPaidOut());
     }
 

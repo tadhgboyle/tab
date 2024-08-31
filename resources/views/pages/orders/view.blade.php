@@ -163,7 +163,7 @@
                             </div>
                             <div class="column">
                                 <div class="is-pulled-right">
-                                    {{ $order->getReturnedTotalInCash() }}
+                                    {{ $order->getReturnedTotalToCash() }}
                                 </div>
                             </div>
                         </div>

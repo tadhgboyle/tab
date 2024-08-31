@@ -79,7 +79,7 @@ class ProductVariantOptionController extends Controller
                     ->join('product_variant_option_values', 'product_variant_option_value_assignments.product_variant_option_value_id', '=', 'product_variant_option_values.id')
                     ->whereNot('product_variant_option_value_assignments.product_variant_option_id', $productVariantOption->id)
                     ->whereNull('product_variant_options.deleted_at')
-                    // ->whereNull('product_variant_option_values.deleted_at')
+                    ->whereNull('product_variant_option_values.deleted_at')
                     ->pluck('product_variant_option_value_assignments.product_variant_option_value_id')
                     ->sort();
         });

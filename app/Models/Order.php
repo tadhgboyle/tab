@@ -113,7 +113,7 @@ class Order extends Model implements HasTimeline
         return Money::sum(Money::parse(0), ...$this->productReturns->map->gift_card_amount);
     }
 
-    public function getReturnedTotalInCash(): Money
+    public function getReturnedTotalToCash(): Money
     {
         if ($this->isReturned()) {
             return $this->purchaser_amount;
