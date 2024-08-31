@@ -5,14 +5,14 @@ namespace App\Models;
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
 use App\Traits\InteractsWithStock;
+use Illuminate\Support\Collection;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Product extends Model
 {
@@ -26,7 +26,7 @@ class Product extends Model
         'price' => MoneyIntegerCast::class,
         'pst' => 'boolean',
         'stock' => 'integer',
-        'unlimited_stock' => 'boolean', 
+        'unlimited_stock' => 'boolean',
         'stock_override' => 'boolean',
         'box_size' => 'integer',
         'restore_stock_on_return' => 'boolean',

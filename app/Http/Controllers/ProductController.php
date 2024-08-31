@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Helpers\CategoryHelper;
 use App\Models\ProductVariant;
+use App\Helpers\CategoryHelper;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\ProductRequest;
 use Illuminate\Http\RedirectResponse;

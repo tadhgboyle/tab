@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Order;
 
-use App\Models\ProductVariant;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
@@ -14,6 +13,7 @@ use App\Models\GiftCard;
 use App\Models\Settings;
 use App\Models\UserLimit;
 use Illuminate\Http\Request;
+use App\Models\ProductVariant;
 use App\Helpers\RotationHelper;
 use Database\Seeders\RotationSeeder;
 use App\Services\Orders\OrderCreateService;

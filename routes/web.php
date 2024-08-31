@@ -12,7 +12,6 @@
 */
 
 use App\Helpers\Permission;
-use App\Http\Controllers\ProductVariantOptionValueController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -30,6 +29,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductVariantController;
 use App\Http\Controllers\GiftCardAssignmentController;
 use App\Http\Controllers\ProductVariantOptionController;
+use App\Http\Controllers\ProductVariantOptionValueController;
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'login'])->name('login');

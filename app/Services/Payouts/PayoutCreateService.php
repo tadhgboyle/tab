@@ -4,9 +4,9 @@ namespace App\Services\Payouts;
 
 use App\Models\User;
 use App\Models\Payout;
+use Cknow\Money\Money;
 use App\Services\HttpService;
 use App\Http\Requests\PayoutRequest;
-use Cknow\Money\Money;
 use Illuminate\Http\RedirectResponse;
 
 class PayoutCreateService extends HttpService

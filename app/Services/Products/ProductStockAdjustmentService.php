@@ -3,8 +3,8 @@
 namespace App\Services\Products;
 
 use App\Models\Product;
-use App\Models\ProductVariant;
 use App\Services\HttpService;
+use App\Models\ProductVariant;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\ProductStockAdjustmentRequest;
 
