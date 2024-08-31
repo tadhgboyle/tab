@@ -2,13 +2,13 @@
 
 namespace Tests\Unit\Product;
 
-use App\Helpers\Permission;
-use App\Models\Category;
-use App\Models\Product;
+use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Product;
+use App\Models\Category;
+use App\Helpers\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
 class ProductVariantOptionControllerTest extends TestCase
 {

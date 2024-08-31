@@ -3,10 +3,10 @@
 namespace App\Http\Requests;
 
 use App\Helpers\CategoryHelper;
+use Illuminate\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule as ValidationRule;
 use App\Http\Requests\FormRequest as FormRequestContract;
-use Illuminate\Validation\Validator;
 
 class ActivityRequest extends FormRequest implements FormRequestContract
 {

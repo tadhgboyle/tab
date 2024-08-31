@@ -17,7 +17,7 @@ class ProductVariantTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        
+
         $this->_category = Category::factory()->create();
     }
 

@@ -39,7 +39,8 @@ class ProductVariant extends Model
     }
 
     /**
-     * Get a collection of descriptions for the variant, IE: Color: Red, Size: Large
+     * Get a collection of descriptions for the variant, IE: Color: Red, Size: Large.
+     *
      * @param bool $excludeTrashedOptions Whether or not to exclude trashed options, `true` for cashier page, `false` when viewing historic orders
      */
     public function descriptions(bool $excludeTrashedOptions): Collection

@@ -79,7 +79,7 @@ class ProductControllerTest extends TestCase
             ->assertViewIs('pages.products.form')
             ->assertViewHas('categories');
     }
-    
+
     public function testCanViewEditPage(): void
     {
         $this->expectPermissionChecks([

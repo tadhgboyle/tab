@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Models\ProductVariant;
-use App\Models\ProductVariantOptionValue;
 use Illuminate\Http\Request;
+use App\Models\ProductVariant;
 use Illuminate\Validation\Rule;
 use App\Models\ProductVariantOption;
+use App\Models\ProductVariantOptionValue;
 
 class ProductVariantOptionValueController extends Controller
 {

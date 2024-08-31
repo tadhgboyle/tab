@@ -32,6 +32,7 @@ class PayoutCreateServiceTest extends TestCase
         $this->assertSame(PayoutCreateService::RESULT_INVALID_AMOUNT, $payoutService->getResult());
         $this->assertStringContainsString('Amount must be above $0.00', $payoutService->getMessage());
     }
+
     public function testCantMakePayoutIfNothingOwing(): void
     {
         [$user] = $this->createData(false);

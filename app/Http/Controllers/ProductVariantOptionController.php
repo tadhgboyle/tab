@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Models\ProductVariant;
 use Illuminate\Http\Request;
+use App\Models\ProductVariant;
 use Illuminate\Validation\Rule;
 use App\Models\ProductVariantOption;
 
