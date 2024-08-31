@@ -105,4 +105,68 @@ class ProductVariantOptionControllerTest extends TestCase
             ->assertRedirect(route('products_variant-options_edit', [$this->_product, $this->_product->variantOptions()->first()]))
             ->assertSessionHas('success', 'Product variant option created, you can now add values.');
     }
+
+    public function testCanViewEditPage(): void
+    {
+        $option = $this->_product->variantOptions()->create([
+            'name' => 'Test',
+        ]);
+
+        $this->get(route('products_variant-options_edit', [$this->_product, $option]))
+            ->assertOk()
+            ->assertViewIs('pages.products.variant-options.form')
+            ->assertViewHas('product', $this->_product)
+            ->assertViewHas('productVariantOption', $option);
+    }
+
+    public function testCanDelete(): void
+    {
+        $option = $this->_product->variantOptions()->create([
+            'name' => 'Test',
+        ]);
+
+        $this
+            ->delete(route('products_variant-options_delete', [$this->_product, $option]))
+            ->assertRedirect(route('products_view', $this->_product))
+            ->assertSessionHas('success', 'Product variant option deleted.');
+    }
+
+    public function testCannotDeleteIfWouldResultInNonUniqueVariants(): void
+    {
+        $option = $this->_product->variantOptions()->create([
+            'name' => 'Size',
+        ]);
+
+        $values = $option->values()->createMany([
+            ['value' => 'S'],
+            ['value' => 'M'],
+        ]);
+
+        $variant_one = $this->_product->variants()->create([
+            'sku' => '123',
+            'price' => 1_00,
+            'stock' => 0,
+        ]);
+
+        $variant_one->optionValueAssignments()->create([
+            'product_variant_option_id' => $option->id,
+            'product_variant_option_value_id' => $values->first()->id,
+        ]);
+
+        $variant_two = $this->_product->variants()->create([
+            'sku' => '456',
+            'price' => 2_00,
+            'stock' => 0,
+        ]);
+
+        $variant_two->optionValueAssignments()->create([
+            'product_variant_option_id' => $option->id,
+            'product_variant_option_value_id' => $values->last()->id,
+        ]);
+
+        $this
+            ->delete(route('products_variant-options_delete', [$this->_product, $option]))
+            ->assertRedirect(route('products_variant-options_edit', [$this->_product, $option]))
+            ->assertSessionHas('error', 'Product variant option cannot be deleted because it would result in non-unique variants.');
+    }
 }

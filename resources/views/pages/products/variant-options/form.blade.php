@@ -108,10 +108,6 @@
         </div>
     </div>
 
-    <script type="text/javascript">
-
-    </script>
-
     <div class="modal" id="create-value-modal">
         <div class="modal-background" onclick="closeCreateValueModal();"></div>
         <div class="modal-card">
@@ -158,6 +154,17 @@
             <footer class="modal-card-foot">
                 <button class="button is-success" type="submit" form="editForm">Submit</button>
                 <button class="button" onclick="closeEditValueModal();">Cancel</button>
+
+                <form id="deleteVariantOptionValueForm" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button class="button is-danger is-outlined" type="submit">
+                        <span>Delete</span>
+                        <span class="icon is-small">
+                            <i class="fas fa-times"></i>
+                        </span>
+                    </button>
+                </form>
             </footer>
         </div>
     </div>
@@ -186,7 +193,10 @@
         const editValueModal = document.getElementById('edit-value-modal');
 
         function openEditValueModal(valueId, value) {
-            document.getElementById('editForm').action = `/products/{{ $product->id }}/variant-options/{{ $productVariantOption->id }}/values/${valueId}`;
+            const url = `/products/{{ $product->id }}/variant-options/{{ $productVariantOption->id }}/values/${valueId}`;
+            document.getElementById('editForm').action = url;
+            document.getElementById('deleteVariantOptionValueForm').action = url;
+
             document.getElementById('edit-value').value = value;
 
             editValueModal.classList.add('is-active');

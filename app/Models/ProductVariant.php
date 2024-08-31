@@ -54,7 +54,7 @@ class ProductVariant extends Model
             return true;
         })->map(function (ProductVariantOptionValueAssignment $assignment) {
             return $assignment->productVariantOption->name . ': ' . $assignment->productVariantOptionValue->value;
-        });
+        })->values();
     }
 
     public function getStockOverrideAttribute(): bool

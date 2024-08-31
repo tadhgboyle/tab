@@ -153,7 +153,10 @@ class Order extends Model implements HasTimeline
 
         $events = [];
         foreach ($this->productReturns()->with('orderProduct')->get() as $productReturn) {
-            $description = "Returned {$productReturn->orderProduct->product->name}";
+            $productName = $productReturn->orderProduct->productVariant
+                ? $productReturn->orderProduct->productVariant->description()
+                : $productReturn->orderProduct->product->name;
+            $description = "Returned {$productName}";
             if ($hasCashReturn = $productReturn->purchaser_amount->isPositive()) {
                 $description .= " in cash as {$productReturn->purchaser_amount}";
             }

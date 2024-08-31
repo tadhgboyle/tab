@@ -140,6 +140,7 @@ class ProductVariantTest extends TestCase
         $colourOption->delete();
 
         $this->assertEquals(['Color: Red', 'Size: Large'], $variant->descriptions(false)->toArray());
+        $this->assertEquals(['Size: Large'], $variant->descriptions(true)->toArray());
     }
 
     public function testStockOverrideAttributeReadFromProduct(): void
