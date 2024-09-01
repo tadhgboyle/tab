@@ -36,10 +36,6 @@ class User extends Authenticatable implements HasTimeline
         'balance' => MoneyIntegerCast::class,
     ];
 
-    protected $with = [
-        // 'userLimits',
-    ];
-
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
