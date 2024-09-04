@@ -399,41 +399,4 @@ class RoleControllerTest extends TestCase
             'permissions' => '[]',
         ]);
     }
-
-    public function testCanReorderRoles(): void
-    {
-        $params = [
-            'roles' => json_encode([
-                $this->_camper_role->id,
-                $this->_cashier_role->id,
-                $this->_manager_role->id,
-                $this->_superadmin_role->id,
-            ]),
-        ];
-
-        $this->actingAs($this->_superuser)
-            ->put(route('settings_roles_order_ajax'), $params)
-            ->assertOk();
-
-        $this->assertDatabaseHas(Role::class, [
-            'id' => $this->_camper_role->id,
-            'order' => 1,
-        ]);
-
-        $this->assertDatabaseHas(Role::class, [
-            'id' => $this->_cashier_role->id,
-            'order' => 2,
-        ]);
-
-        $this->assertDatabaseHas(Role::class, [
-            'id' => $this->_manager_role->id,
-            'order' => 3,
-        ]);
-
-        // Superadmin roles cannot have their order changed
-        $this->assertDatabaseHas(Role::class, [
-            'id' => $this->_superadmin_role->id,
-            'order' => 1,
-        ]);
-    }
 }

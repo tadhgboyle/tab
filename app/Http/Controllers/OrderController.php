@@ -18,11 +18,7 @@ class OrderController extends Controller
 {
     public function index()
     {
-        return view('pages.orders.list', [
-            'orders' => Order::orderBy('created_at', 'DESC')
-                ->with('purchaser', 'cashier')
-                ->get(),
-        ]);
+        return view('pages.orders.list');
     }
 
     public function show(Order $order)

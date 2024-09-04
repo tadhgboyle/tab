@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\UserLimitDuration;
 use Cknow\Money\Money;
 use App\Enums\OrderStatus;
 use App\Concerns\Timeline\HasTimeline;
@@ -88,7 +89,7 @@ class User extends Authenticatable implements HasTimeline
             'category_id' => $category->id,
         ], [
             'limit' => Money::parse(-1_00),
-            'duration' => UserLimit::LIMIT_DAILY,
+            'duration' => UserLimitDuration::Daily,
         ]);
     }
 

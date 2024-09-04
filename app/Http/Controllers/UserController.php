@@ -14,57 +14,18 @@ use Illuminate\Http\RedirectResponse;
 use App\Services\Users\UserEditService;
 use App\Services\Users\UserCreateService;
 use App\Services\Users\UserDeleteService;
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 class UserController extends Controller
 {
-    public function index(RotationHelper $rotationHelper)
+    public function index()
     {
-        $user_list_rotation_id = $rotationHelper->getUserListRotationId();
-
-        if ($user_list_rotation_id === null) {
-            $data = [
-                'cannot_view_users' => true,
-            ];
-        } else {
-            $users = User::query()->when($user_list_rotation_id !== '*', function (EloquentBuilder $query) use ($user_list_rotation_id) {
-                $query->whereHas('rotations', function (EloquentBuilder $query) use ($user_list_rotation_id) {
-                    return $query->where('rotation_id', $user_list_rotation_id);
-                });
-            })->with('role', 'rotations')->get();
-
-            $data = [
-                'rotations' => $rotationHelper->getRotations(),
-                'users' => $users,
-                'user_list_rotation_id' => $user_list_rotation_id,
-            ];
-        }
-
-        return view('pages.users.list', $data);
+        return view('pages.users.list');
     }
 
-    public function show(CategoryHelper $categoryHelper, User $user)
+    public function show(User $user)
     {
-        $categories = $categoryHelper->getCategories()->mapWithKeys(function ($category) use ($user) {
-            $userLimit = $user->limitFor($category);
-
-            return [
-                $category->id => [
-                    'name' => $category->name,
-                    'limit' => $userLimit->limit,
-                    'duration' => $userLimit->duration(),
-                    'spent' => $userLimit->findSpent(),
-                ],
-            ];
-        });
-
         return view('pages.users.view', [
             'user' => $user,
-            'is_self' => $user->id === auth()->id(),
-            'can_interact' => auth()->user()->role->canInteract($user->role),
-            'activity_registrations' => $user->activityRegistrations,
-            'categories' => $categories,
-            'rotations' => $user->rotations,
         ]);
     }
 

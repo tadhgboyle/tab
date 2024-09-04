@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\RotationStatus;
 use App\Helpers\RotationHelper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -10,10 +11,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Rotation extends Model
 {
-    public const STATUS_PRESENT = 0;
-    public const STATUS_FUTURE = 1;
-    public const STATUS_PAST = 2;
-
     use HasFactory;
     use SoftDeletes;
 
@@ -35,37 +32,33 @@ class Rotation extends Model
 
     public function isPresent(): bool
     {
-        return $this->getStatus() === self::STATUS_PRESENT;
+        return $this->getStatus() === RotationStatus::Present;
     }
 
     public function isFuture(): bool
     {
-        return $this->getStatus() === self::STATUS_FUTURE;
+        return $this->getStatus() === RotationStatus::Future;
     }
 
-    public function getStatus(): int
+    public function getStatus(): RotationStatus
     {
         if (resolve(RotationHelper::class)->getCurrentRotation()?->id === $this->id) {
-            return self::STATUS_PRESENT;
+            return RotationStatus::Present;
         }
 
         if ($this->start->isFuture()) {
-            return self::STATUS_FUTURE;
+            return RotationStatus::Future;
         }
 
-        if ($this->end->isPast()) {
-            return self::STATUS_PAST;
-        }
-
-        return -1;
+        return RotationStatus::Past;
     }
 
     public function getStatusHtml(): string
     {
         return match ($this->getStatus()) {
-            self::STATUS_PRESENT => '<span class="tag is-medium">✅ Present</span>',
-            self::STATUS_FUTURE => '<span class="tag is-medium">🔮 Future</span>',
-            self::STATUS_PAST => '<span class="tag is-medium">🕐 Past</span>',
+            RotationStatus::Present => '<span class="tag is-medium">✅ Present</span>',
+            RotationStatus::Future => '<span class="tag is-medium">🔮 Future</span>',
+            RotationStatus::Past => '<span class="tag is-medium">🕐 Past</span>',
         };
     }
     // cashier page:

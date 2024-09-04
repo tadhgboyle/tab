@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\User;
 
+use App\Enums\UserLimitDuration;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
@@ -171,7 +172,7 @@ class UserLimitTest extends TestCase
             'user_id' => $user->id,
             'category_id' => $food_category->id,
             'limit' => 15_00,
-            'duration' => UserLimit::LIMIT_DAILY
+            'duration' => UserLimitDuration::Daily
         ]);
 
         UserLimit::factory()->create([

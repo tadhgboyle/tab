@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\UserLimitDuration;
 use Carbon\Carbon;
 use Cknow\Money\Money;
 use App\Enums\OrderStatus;
@@ -13,9 +14,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class UserLimit extends Model
 {
-    public const LIMIT_DAILY = 0;
-    public const LIMIT_WEEKLY = 1;
-
     use HasFactory;
 
     protected $fillable = [
@@ -27,6 +25,7 @@ class UserLimit extends Model
 
     protected $casts = [
         'limit' => MoneyIntegerCast::class,
+        'duration' => UserLimitDuration::class,
     ];
 
     public function user(): BelongsTo
@@ -41,7 +40,7 @@ class UserLimit extends Model
 
     public function duration(): string
     {
-        return $this->duration === self::LIMIT_DAILY ? 'day' : 'week';
+        return $this->duration->label();
     }
 
     public function isUnlimited(): bool
@@ -58,12 +57,17 @@ class UserLimit extends Model
         return $this->findSpent()->add($spending)->lessThanOrEqual($this->limit);
     }
 
+    public function remaining(): Money
+    {
+        return $this->limit->subtract($this->findSpent());
+    }
+
     public function findSpent(): Money
     {
         // If they have unlimited money (no limit set) for this category,
         // get all their orders, as they have no limit set we dont need to worry about
         // when the order was created_at.
-        $carbon_string = Carbon::now()->subDays($this->duration === self::LIMIT_DAILY ? 1 : 7)->toDateTimeString();
+        $carbon_string = Carbon::now()->subDays($this->duration === UserLimitDuration::Daily ? 1 : 7)->toDateTimeString();
 
         $orders = $this->user->orders()
             ->with('products')

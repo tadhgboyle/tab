@@ -48,8 +48,7 @@ class ProductControllerTest extends TestCase
         $this
             ->get(route('products_list'))
             ->assertOk()
-            ->assertViewIs('pages.products.list')
-            ->assertViewHas('products');
+            ->assertViewIs('pages.products.list');
     }
 
     public function testCanViewShowPage(): void

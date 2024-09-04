@@ -1,7 +1,7 @@
 @extends('layouts.default', ['page' => 'activities'])
 @section('content')
 <h2 class="title has-text-weight-bold">View Activity</h2>
-<h4 class="subtitle"><strong>Activity:</strong> {{ $activity->name }} @if($activities_manage)<a href="{{ route('activities_edit', $activity->id) }}">(Edit)</a>@endif</h4>
+<h4 class="subtitle"><strong>Activity:</strong> {{ $activity->name }} @permission(\App\Helpers\Permission::ACTIVITIES_MANAGE)<a href="{{ route('activities_edit', $activity->id) }}">(Edit)</a>@endpermission</h4>
 <div class="columns box">
     <div class="column">
         @include('includes.messages')
@@ -17,9 +17,6 @@
     <div class="column">
         <div class="columns">
             <div class="column">
-                <h4 class="title has-text-weight-bold is-4">Attendees</h4>
-            </div>
-            <div class="column">
                 @if($can_register)
                     <button class="button is-light is-pulled-right is-small" onclick="openModal();">
                         ➕ Add Attendee
@@ -27,33 +24,7 @@
                 @endif
             </div>
         </div>
-        <div id="loading" align="center">
-            <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
-        </div>
-        <div id="table_container" style="visibility: hidden;">
-            <table id="attendee_list">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($activity->attendants as $user)
-                    <tr>
-                        <td>
-                            <div>
-                                @permission(\App\Helpers\Permission::USERS_VIEW)
-                                <a href="{{ route('users_view', $user) }}">{{ $user->full_name }}</a>
-                                @else
-                                {{ $user->full_name }}
-                                @endpermission
-                            </div>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+        <livewire:activities.registrations-list :activity="$activity" />
     </div>
 </div>
 <x-entity-timeline :timeline="$activity->timeline()" />
@@ -87,19 +58,6 @@
 @endif
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#attendee_list').DataTable({
-            "paging": false,
-            "scrollY": "49vh",
-            "scrollCollapse": true,
-            "language": {
-                "emptyTable": "No attendees"
-            },
-            "searching": false,
-            "bInfo": false,
-        });
-        $('#loading').hide();
-        $('#table_container').css('visibility', 'visible');
-
         @if($can_register)
             $('#search_table').DataTable({
                 "paging": false,

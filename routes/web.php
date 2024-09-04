@@ -211,8 +211,6 @@ Route::middleware('auth')->group(function () {
             Route::get('/{role}/edit', [RoleController::class, 'edit'])->name('settings_roles_edit');
             Route::put('/{role}/edit', [RoleController::class, 'update'])->name('settings_roles_update');
             Route::delete('/{role}', [RoleController::class, 'delete'])->name('settings_roles_delete');
-
-            Route::put('/order', [RoleController::class, 'order'])->name('settings_roles_order_ajax');
         });
 
         /*

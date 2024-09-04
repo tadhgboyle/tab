@@ -1,0 +1,50 @@
+<?php
+
+namespace App\Livewire;
+
+use App\Models\Role;
+use Filament\Tables\Actions\Action;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Tables\Columns\BooleanColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Table;
+use Livewire\Component;
+
+class RolesList extends Component implements HasTable, HasForms
+{
+    use InteractsWithTable;
+    use InteractsWithForms;
+
+    public function table(Table $table): Table
+    {
+        return $table
+            ->heading('Roles')
+            ->query(Role::query())
+            ->headerActions([
+                Action::make('create')
+                    ->url(route('settings_roles_create')),
+            ])
+            ->columns([
+                TextColumn::make('name'),
+                BooleanColumn::make('staff'),
+                TextColumn::make('users_count')->counts('users')->numeric()->sortable(),
+            ])
+            ->filters([
+                // ...
+            ])
+            ->actions([
+                Action::make('edit')
+                    ->url(fn (Role $role) => route('settings_roles_edit', $role)),
+            ])
+            ->bulkActions([
+                // ...
+            ])
+            ->reorderable('order')
+            // ->authorizeReorder(fn (Role $role) => !$role->superuser)
+            ->defaultSort('order')
+            ->paginated(false);
+    }
+}

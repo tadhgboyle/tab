@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Activity;
 
+use App\Enums\UserLimitDuration;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
@@ -105,7 +106,7 @@ class ActivityRegistrationCreateServiceTest extends TestCase
             'user_id' => $this->_user->id,
             'category_id' => $this->_activities_category->id,
             'limit' => 0_00,
-            'duration' => UserLimit::LIMIT_WEEKLY,
+            'duration' => UserLimitDuration::Weekly,
         ]);
 
         $service = (new ActivityRegistrationCreateService($this->_activity, $this->_user));

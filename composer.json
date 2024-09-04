@@ -7,6 +7,7 @@
         "ext-intl": "*",
         "barryvdh/laravel-dompdf": "^2.0",
         "cknow/laravel-money": "^8.0",
+        "filament/tables": "^3.2",
         "lab404/laravel-impersonate": "^1.7",
         "laravel/framework": "^11.0"
     },
@@ -24,7 +25,7 @@
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,
-        "allow-plugins": {}
+        "allow-plugins": []
     },
     "extra": {
         "laravel": {
@@ -51,7 +52,8 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@php artisan filament:upgrade"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
