@@ -2,13 +2,12 @@
 
 namespace Tests\Unit\User;
 
-use App\Enums\UserLimitDuration;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
 use Cknow\Money\Money;
 use App\Models\Category;
-use App\Models\UserLimit;
+use App\Enums\UserLimitDuration;
 use App\Http\Requests\UserRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Services\Users\UserLimits\UserLimitUpsertService;

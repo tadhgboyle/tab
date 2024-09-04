@@ -2,19 +2,19 @@
 
 namespace App\Livewire;
 
-use App\Models\GiftCard;
-use Filament\Forms\Components\Select;
-use Filament\Support\Enums\FontFamily;
-use Filament\Tables\Actions\Action;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Filters\Filter;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
+use App\Models\GiftCard;
+use Filament\Tables\Table;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Support\Enums\FontFamily;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Contracts\HasTable;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Tables\Concerns\InteractsWithTable;
 
 class GiftCardsList extends Component implements HasTable, HasForms
 {

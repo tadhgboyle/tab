@@ -2,17 +2,17 @@
 
 namespace App\Livewire;
 
-use App\Helpers\Permission;
 use App\Models\User;
-use Filament\Forms\Concerns\InteractsWithForms;
+use Livewire\Component;
+use Filament\Tables\Table;
+use App\Helpers\Permission;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Livewire\Component;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Tables\Concerns\InteractsWithTable;
 
 class CashierList extends Component implements HasTable, HasForms
 {
@@ -54,6 +54,6 @@ class CashierList extends Component implements HasTable, HasForms
             ->defaultSort('full_name')
             ->recordUrl(
                 fn (User $user): string => route('orders_create', $user),
-            );;
+            );
     }
 }

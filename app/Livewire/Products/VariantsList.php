@@ -2,18 +2,18 @@
 
 namespace App\Livewire\Products;
 
-use App\Helpers\Permission;
 use App\Models\Product;
+use Livewire\Component;
+use Filament\Tables\Table;
+use App\Helpers\Permission;
 use App\Models\ProductVariant;
-use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Tables\Actions\Action;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Enums\FontFamily;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Table;
-use Livewire\Component;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Tables\Concerns\InteractsWithTable;
 
 class VariantsList extends Component implements HasTable, HasForms
 {

@@ -2,11 +2,11 @@
 
 namespace Tests\Unit\Rotation;
 
-use App\Enums\RotationStatus;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Rotation;
+use App\Enums\RotationStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RotationTest extends TestCase

@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use App\Enums\UserLimitDuration;
 use Carbon\Carbon;
 use Cknow\Money\Money;
 use App\Enums\OrderStatus;
 use App\Helpers\TaxHelper;
+use App\Enums\UserLimitDuration;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
