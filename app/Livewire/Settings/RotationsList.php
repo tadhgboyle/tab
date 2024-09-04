@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Settings;
 
 use Livewire\Component;
 use App\Models\Rotation;
@@ -29,7 +29,7 @@ class RotationsList extends Component implements HasTable, HasForms
             ])
             ->columns([
                 TextColumn::make('name'),
-                TextColumn::make('users_count')->counts('users')->numeric()->sortable(),
+                TextColumn::make('users_count')->counts('users')->label('Users')->numeric()->sortable(),
                 TextColumn::make('start')->dateTime('M jS Y h:ia')->sortable(),
                 TextColumn::make('end')->dateTime('M jS Y h:ia')->sortable(),
                 TextColumn::make('status')->badge()->state(function (Rotation $rotation) {

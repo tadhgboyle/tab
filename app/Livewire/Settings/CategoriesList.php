@@ -1,19 +1,18 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Settings;
 
-use App\Models\Role;
 use Livewire\Component;
+use App\Models\Category;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Columns\BooleanColumn;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
-class RolesList extends Component implements HasTable, HasForms
+class CategoriesList extends Component implements HasTable, HasForms
 {
     use InteractsWithTable;
     use InteractsWithForms;
@@ -21,30 +20,29 @@ class RolesList extends Component implements HasTable, HasForms
     public function table(Table $table): Table
     {
         return $table
-            ->heading('Roles')
-            ->query(Role::query())
+            ->heading('Categories')
+            ->query(Category::query())
             ->headerActions([
                 Action::make('create')
-                    ->url(route('settings_roles_create')),
+                    ->url(route('settings_categories_create')),
             ])
             ->columns([
                 TextColumn::make('name'),
-                BooleanColumn::make('staff'),
-                TextColumn::make('users_count')->counts('users')->numeric()->sortable(),
+                TextColumn::make('type')->badge()->state(function (Category $category) {
+                    return $category->type->getName();
+                })->color('gray'),
             ])
             ->filters([
                 // ...
             ])
             ->actions([
                 Action::make('edit')
-                    ->url(fn (Role $role) => route('settings_roles_edit', $role)),
+                    ->url(fn (Category $category) => route('settings_categories_edit', $category)),
             ])
             ->bulkActions([
                 // ...
             ])
-            ->reorderable('order')
-            // ->authorizeReorder(fn (Role $role) => !$role->superuser)
-            ->defaultSort('order')
+            ->defaultSort('name')
             ->paginated(false);
     }
 }

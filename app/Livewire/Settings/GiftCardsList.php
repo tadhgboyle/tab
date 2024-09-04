@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Settings;
 
 use Livewire\Component;
 use App\Models\GiftCard;
