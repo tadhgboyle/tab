@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Activity;
 
-use App\Enums\UserLimitDuration;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
@@ -14,6 +13,7 @@ use App\Models\Settings;
 use App\Models\UserLimit;
 use Mockery\MockInterface;
 use App\Enums\CategoryType;
+use App\Enums\UserLimitDuration;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Services\Activities\ActivityRegistrationCreateService;
 

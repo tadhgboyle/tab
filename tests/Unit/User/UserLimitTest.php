@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\User;
 
-use App\Enums\UserLimitDuration;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
@@ -15,6 +14,7 @@ use App\Models\Settings;
 use App\Models\UserLimit;
 use App\Models\OrderProduct;
 use App\Helpers\RotationHelper;
+use App\Enums\UserLimitDuration;
 use Database\Seeders\RotationSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Services\Activities\ActivityRegistrationCreateService;

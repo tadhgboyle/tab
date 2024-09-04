@@ -2,18 +2,18 @@
 
 namespace App\Livewire;
 
-use App\Enums\OrderStatus;
-use App\Helpers\Permission;
 use App\Models\Order;
+use Livewire\Component;
+use App\Enums\OrderStatus;
+use Filament\Tables\Table;
+use App\Helpers\Permission;
 use Filament\Tables\Actions\Action;
-use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Table;
-use Livewire\Component;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Tables\Concerns\InteractsWithTable;
 
 class OrdersList extends Component implements HasTable, HasForms
 {

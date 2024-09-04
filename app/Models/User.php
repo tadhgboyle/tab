@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Enums\UserLimitDuration;
 use Cknow\Money\Money;
 use App\Enums\OrderStatus;
+use App\Enums\UserLimitDuration;
 use App\Concerns\Timeline\HasTimeline;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use App\Concerns\Timeline\TimelineEntry;

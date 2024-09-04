@@ -2,17 +2,17 @@
 
 namespace App\Livewire\Products;
 
-use App\Helpers\Permission;
 use App\Models\Product;
-use App\Models\ProductVariantOption;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Table;
 use Livewire\Component;
+use Filament\Tables\Table;
+use App\Helpers\Permission;
+use Filament\Tables\Actions\Action;
+use App\Models\ProductVariantOption;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Tables\Concerns\InteractsWithTable;
 
 class VariantOptionsList extends Component implements HasTable, HasForms
 {

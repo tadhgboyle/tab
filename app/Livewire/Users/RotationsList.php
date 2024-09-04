@@ -2,16 +2,16 @@
 
 namespace App\Livewire\Users;
 
-use App\Enums\RotationStatus;
-use App\Models\Rotation;
 use App\Models\User;
-use Filament\Forms\Concerns\InteractsWithForms;
+use Livewire\Component;
+use App\Models\Rotation;
+use Filament\Tables\Table;
+use App\Enums\RotationStatus;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Table;
-use Livewire\Component;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Tables\Concerns\InteractsWithTable;
 
 class RotationsList extends Component implements HasTable, HasForms
 {

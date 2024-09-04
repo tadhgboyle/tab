@@ -2,15 +2,14 @@
 
 namespace App\Livewire\Activities;
 
-use App\Models\Activity;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Table;
 use Livewire\Component;
+use App\Models\Activity;
+use Filament\Tables\Table;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Tables\Concerns\InteractsWithTable;
 
 class RegistrationsList extends Component implements HasTable, HasForms
 {

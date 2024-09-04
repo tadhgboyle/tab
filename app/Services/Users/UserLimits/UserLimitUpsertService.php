@@ -2,12 +2,12 @@
 
 namespace App\Services\Users\UserLimits;
 
-use App\Enums\UserLimitDuration;
 use App\Models\User;
 use Cknow\Money\Money;
 use App\Models\Category;
 use App\Models\UserLimit;
 use App\Services\Service;
+use App\Enums\UserLimitDuration;
 use App\Http\Requests\UserRequest;
 use App\Services\Users\UserService;
 
