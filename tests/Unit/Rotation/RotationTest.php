@@ -6,6 +6,7 @@ use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Rotation;
+use App\Enums\RotationStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RotationTest extends TestCase
@@ -59,7 +60,7 @@ class RotationTest extends TestCase
             'end' => now()->addDays(2),
         ]);
 
-        $this->assertEquals(Rotation::STATUS_PRESENT, $this->_rotation->getStatus());
+        $this->assertEquals(RotationStatus::Present, $this->_rotation->getStatus());
     }
 
     public function testGetStatusReturnsFutureIfStartIsInFuture(): void
@@ -69,7 +70,7 @@ class RotationTest extends TestCase
             'end' => now()->addWeeks(2),
         ]);
 
-        $this->assertEquals(Rotation::STATUS_FUTURE, $this->_rotation->getStatus());
+        $this->assertEquals(RotationStatus::Future, $this->_rotation->getStatus());
     }
 
     public function testGetStatusReturnsPastIfEndIsInPast(): void
@@ -79,6 +80,6 @@ class RotationTest extends TestCase
             'end' => now()->subWeek(),
         ]);
 
-        $this->assertEquals(Rotation::STATUS_PAST, $this->_rotation->getStatus());
+        $this->assertEquals(RotationStatus::Past, $this->_rotation->getStatus());
     }
 }

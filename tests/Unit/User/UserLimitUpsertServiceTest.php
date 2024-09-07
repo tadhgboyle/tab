@@ -7,7 +7,7 @@ use App\Models\Role;
 use App\Models\User;
 use Cknow\Money\Money;
 use App\Models\Category;
-use App\Models\UserLimit;
+use App\Enums\UserLimitDuration;
 use App\Http\Requests\UserRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Services\Users\UserLimits\UserLimitUpsertService;
@@ -122,7 +122,7 @@ class UserLimitUpsertServiceTest extends TestCase
         ]));
 
         $this->assertSame(UserLimitUpsertService::RESULT_SUCCESS, $userLimitUpsertService->getResult());
-        $this->assertSame(UserLimit::LIMIT_DAILY, $user->limitFor($merch_category)->duration);
+        $this->assertSame(UserLimitDuration::Daily, $user->limitFor($merch_category)->duration);
         $this->assertSame('day', $user->limitFor($merch_category)->duration());
     }
 
@@ -148,15 +148,15 @@ class UserLimitUpsertServiceTest extends TestCase
                 $candy_category->id => 10_00
             ],
             'durations' => [
-                $merch_category->id => UserLimit::LIMIT_WEEKLY,
-                $candy_category->id => UserLimit::LIMIT_DAILY
+                $merch_category->id => UserLimitDuration::Weekly,
+                $candy_category->id => UserLimitDuration::Daily
             ]
         ]));
 
         $this->assertSame(UserLimitUpsertService::RESULT_SUCCESS, $userLimitUpsertService->getResult());
-        $this->assertSame(UserLimit::LIMIT_WEEKLY, $user->limitFor($merch_category)->duration);
+        $this->assertSame(UserLimitDuration::Weekly, $user->limitFor($merch_category)->duration);
         $this->assertSame('week', $user->limitFor($merch_category)->duration());
-        $this->assertSame(UserLimit::LIMIT_DAILY, $user->limitFor($candy_category)->duration);
+        $this->assertSame(UserLimitDuration::Daily, $user->limitFor($candy_category)->duration);
         $this->assertSame('day', $user->limitFor($candy_category)->duration());
     }
 

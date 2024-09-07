@@ -45,44 +45,7 @@
     </div>
     <div class="column">
         <div class="box">
-            <div class="columns">
-                <div class="column">
-                    <h4 class="title has-text-weight-bold is-4">Users</h4>
-                </div>
-                <div class="column">
-                    <button class="button is-light is-pulled-right is-small" onclick="openModal();" {{ $giftCard->expired() ? "disabled" : "" }}>
-                        ➕ Add User
-                    </button>
-                </div>
-            </div>
-            <table id="user_list">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Total use</th>
-                        <th>Assigned by</th>
-                        <th>Given at</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($giftCard->assignments as $assignment)
-                        <tr>
-                            <td>
-                                <div>{{ $assignment->user->full_name }}</div>
-                            </td>
-                            <td>
-                                <div>{{ $giftCard->usageBy($assignment->user) }}</div>
-                            </td>
-                            <td>
-                                <div>{{ $assignment->assigner->full_name }}</div>
-                            </td>
-                            <td>
-                                <div>{{ $assignment->created_at->format('M jS Y h:ia') }}</div>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            <livewire:settings.gift-cards.users-list :gift-card="$giftCard" />
         </div>
     </div>
 </div>
@@ -113,15 +76,6 @@
 </div>
 
 <script>
-$('#user_list').DataTable({
-    "paging": false,
-    "bInfo": false,
-    "searching": false,
-    "language": {
-        "emptyTable": "No users assigned, anyone can use"
-    },
-});
-
 @unless($giftCard->expired())
     $('#search_table').DataTable({
         "paging": false,

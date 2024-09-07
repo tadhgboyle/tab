@@ -13,6 +13,7 @@ use App\Models\Settings;
 use App\Models\UserLimit;
 use Mockery\MockInterface;
 use App\Enums\CategoryType;
+use App\Enums\UserLimitDuration;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Services\Activities\ActivityRegistrationCreateService;
 
@@ -105,7 +106,7 @@ class ActivityRegistrationCreateServiceTest extends TestCase
             'user_id' => $this->_user->id,
             'category_id' => $this->_activities_category->id,
             'limit' => 0_00,
-            'duration' => UserLimit::LIMIT_WEEKLY,
+            'duration' => UserLimitDuration::Weekly,
         ]);
 
         $service = (new ActivityRegistrationCreateService($this->_activity, $this->_user));

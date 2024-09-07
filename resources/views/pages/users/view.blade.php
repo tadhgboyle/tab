@@ -2,7 +2,7 @@
 @section('content')
 <h2 class="title has-text-weight-bold">View User</h2>
 <h4 class="subtitle">
-    {{ $user->full_name }} @if(hasPermission(\App\Helpers\Permission::USERS_MANAGE) && $can_interact)<a href="{{ route('users_edit', $user->id) }}">(Edit)</a>@endif
+    {{ $user->full_name }} @if(hasPermission(\App\Helpers\Permission::USERS_MANAGE) && auth()->user()->role->canInteract($user->role))<a href="{{ route('users_edit', $user->id) }}">(Edit)</a>@endif
 </h4>
 
 @canImpersonate
@@ -54,104 +54,17 @@
     </nav>
 </div>
 
-<div id="loading" align="center">
-    <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
-</div>
-
-<div class="columns" id="table_container" style="visibility: hidden;">
+<div class="columns">
     <div class="column">
         <div class="columns is-multiline">
             <div class="column">
                 <div class="box">
-                    <div class="columns">
-                        <div class="column">
-                            <h4 class="title has-text-weight-bold is-4">Orders</h4>
-                        </div>
-                        <div class="column">
-                            @if(hasPermission($is_self ? \App\Helpers\Permission::CASHIER_SELF_PURCHASES : \App\Helpers\Permission::CASHIER_CREATE))
-                                <a class="button is-light is-pulled-right is-small" href="{{ route('orders_create', $user) }}">
-                                    ➕ Create
-                                </a>
-                            @endif
-                        </div>
-                    </div>
-                    <table id="order_list">
-                        <thead>
-                            <th>Time</th>
-                            <th>Cashier</th>
-                            <th>Total Price</th>
-                            <th>Status</th>
-                            @permission(\App\Helpers\Permission::ORDERS_VIEW)
-                            <th></th>
-                            @endpermission
-                        </thead>
-                        <tbody>
-                            @foreach($user->orders()->with('cashier')->orderBy('created_at', 'desc')->get() as $order)
-                            <tr>
-                                <td>
-                                    <div>{{ $order->created_at->format('M jS Y h:ia') }}</div>
-                                </td>
-                                <td>
-                                    <div>{{ $order->cashier->full_name }}</div>
-                                </td>
-                                <td>
-                                    <div>{{ $order->total_price }}</div>
-                                </td>
-                                <td>
-                                    <div>{!! $order->getStatusHtml() !!}</div>
-                                </td>
-                                @permission(\App\Helpers\Permission::ORDERS_VIEW)
-                                <td>
-                                    <div><a href="{{ route('orders_view', $order->id) }}">View</a></div>
-                                </td>
-                                @endpermission
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <livewire:users.orders-list :user="$user" />
                 </div>
             </div>
             <div class="column is-full">
                 <div class="box">
-                    <h4 class="title has-text-weight-bold is-4">Activity Registrations</h4>
-                    <table id="activity_list">
-                        <thead>
-                            <tr>
-                                <th>Time</th>
-                                <th>Cashier</th>
-                                <th>Activity</th>
-                                <th>Total Price</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($activity_registrations as $registration)
-                            <tr>
-                                <td>
-                                    <div>{{ $registration->created_at->format('M jS Y h:ia') }}</div>
-                                </td>
-                                <td>
-                                    <div>{{ $registration->cashier->full_name }}</div>
-                                </td>
-                                <td>
-                                    <div>
-                                        @permission(\App\Helpers\Permission::ACTIVITIES_VIEW)
-                                            <a href="{{ route('activities_view', $registration->activity->id) }}">{{ $registration->activity->name }}</a>
-                                        @else
-                                            {{ $registration->activity->name }}
-                                        @endpermission
-                                    </div>
-                                </td>
-                                <td>
-                                    <div>{!! $registration->total_price->isNegative() ? '<i>Free</i>' : $registration->total_price !!}</div>
-                                </td>
-                                <td>
-                                    <div>{!! $registration->getStatusHtml() !!}</div>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <livewire:users.activity-registrations-list :user="$user" />
                 </div>
             </div>
             <div class="column">
@@ -167,113 +80,17 @@
         <div class="columns is-multiline">
             <div class="column">
                 <div class="box">
-                    <h4 class="title has-text-weight-bold is-4">Category Limits</h4>
-                    <table id="category_list">
-                        <thead>
-                            <tr>
-                                <th>Category</th>
-                                <th>Limit</th>
-                                <th>Spent</th>
-                                <th>Remaining</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($categories as $category)
-                                <tr>
-                                    <td>
-                                        <div>{{ $category['name'] }}</div>
-                                    </td>
-{{--                                    TODO: display "none" for limits of $0--}}
-                                    <td>
-                                        <div>{!! $category['limit']->isNegative() ? "<i>Unlimited</i>" : $category['limit'] . "/" . $category['duration'] !!}</div>
-                                    </td>
-                                    <td>
-                                        <div>{{ $category['spent'] }}</div>
-                                    </td>
-                                    <td>
-                                        <div>{!! $category['limit']->isNegative() ? "<i>Unlimited</i>" : $category['limit']->subtract($category['spent']) !!}</div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <livewire:users.category-limits-list :user="$user" />
                 </div>
             </div>
             <div class="column">
                 <div class="box">
-                    <h4 class="title has-text-weight-bold is-4">Rotations</h4>
-                    <table id="rotation_list">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Start</th>
-                                <th>End</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($user->rotations as $rotation)
-                                <tr>
-                                    <td>
-                                        <div>{{ $rotation->name }}</div>
-                                    </td>
-                                    <td>
-                                        <div>{{ $rotation->start->format('M jS Y h:ia') }}</div>
-                                    </td>
-                                    <td>
-                                        <div>{{ $rotation->end->format('M jS Y h:ia') }}</div>
-                                    </td>
-                                    <td>
-                                        <div>{!! $rotation->getStatusHtml() !!}</div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <livewire:users.rotations-list :user="$user" />
                 </div>
             </div>
-            <div class="column">
+            <div class="column is-full">
                 <div class="box">
-                    <div class="columns">
-                        <div class="column">
-                            <h4 class="title has-text-weight-bold is-4">Payouts</h4>
-                        </div>
-                        <div class="column">
-                            @if(hasPermission(\App\Helpers\Permission::USERS_PAYOUTS_CREATE))
-                                <a class="button is-light is-pulled-right is-small" href="{{ route('users_payout_create', $user) }}" @if($owing->isZero()) disabled @endif>
-                                    ➕ Create
-                                </a>
-                            @endif
-                        </div>
-                    </div>
-                    <table id="payouts_list">
-                        <thead>
-                            <tr>
-                                <th>Identifier</th>
-                                <th>Amount</th>
-                                <th>Cashier</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($user->payouts->sortByDesc('created_at') as $payout)
-                            <tr>
-                                <td>
-                                    <div>{{ $payout->identifier }}</div>
-                                </td>
-                                <td>
-                                    <div>{{ $payout->amount }}</div>
-                                </td>
-                                <td>
-                                    <div>{{ $payout->cashier->full_name }}</div>
-                                </td>
-                                <td>
-                                    <div>{{ $payout->created_at->format('M jS Y h:ia') }}</div>
-                                </td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
+                    <livewire:users.payouts-list :user="$user" />
                 </div>
             </div>
         </div>
@@ -342,7 +159,7 @@
                         <strong>Activities</strong>
                     </td>
                 </tr>
-                @forelse($activity_registrations as $registration)
+                @forelse($user->activityRegistrations as $registration)
                     <tr>
                         <td>
                             <div>Activity ({{ $registration->activity->name }})</div>
@@ -416,61 +233,5 @@
     const closeOwingModal = () => {
         owingModal.classList.remove('is-active');
     }
-
-    $(document).ready(function() {
-        $('#order_list').DataTable({
-            "order": [],
-            "paging": false,
-            "searching": false,
-            "scrollY": "49vh",
-            "scrollCollapse": true,
-            "bInfo": false,
-            "columnDefs": [{
-                "orderable": false,
-                "searchable": false,
-                "targets": [
-                    3,
-                    @permission(\App\Helpers\Permission::ORDERS_VIEW)
-                    4
-                    @endpermission
-                ]
-            }]
-        });
-        $('#activity_list').DataTable({
-            "order": [],
-            "paging": false,
-            "searching": false,
-            "scrollY": "33vh",
-            "scrollCollapse": true,
-            "bInfo": false,
-            "columnDefs": [{
-                "orderable": false,
-                "searchable": false,
-                "targets": 4
-            }]
-        });
-        $('#rotation_list').DataTable({
-            "searching": false,
-            "paging": false,
-            "bInfo": false,
-            "columnDefs": [{
-                "orderable": false,
-                "searchable": false,
-                "targets": [0, 1, 2]
-            }]
-        });
-        $('#payouts_list').DataTable({
-            "paging": false,
-            "bInfo": false,
-            "searching": false,
-        });
-        $('#category_list').DataTable({
-            "searching": false,
-            "paging": false,
-            "bInfo": false,
-        });
-        $('#loading').hide();
-        $('#table_container').css('visibility', 'visible');
-    });
 </script>
 @endsection

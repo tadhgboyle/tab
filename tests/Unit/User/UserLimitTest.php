@@ -14,6 +14,7 @@ use App\Models\Settings;
 use App\Models\UserLimit;
 use App\Models\OrderProduct;
 use App\Helpers\RotationHelper;
+use App\Enums\UserLimitDuration;
 use Database\Seeders\RotationSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Services\Activities\ActivityRegistrationCreateService;
@@ -171,7 +172,7 @@ class UserLimitTest extends TestCase
             'user_id' => $user->id,
             'category_id' => $food_category->id,
             'limit' => 15_00,
-            'duration' => UserLimit::LIMIT_DAILY
+            'duration' => UserLimitDuration::Daily
         ]);
 
         UserLimit::factory()->create([

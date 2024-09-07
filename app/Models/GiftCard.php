@@ -111,11 +111,11 @@ class GiftCard extends Model implements HasTimeline
 
         $events = [];
 
-        foreach ($this->adjustments as $adjustment) {
+        foreach ($this->adjustments()->with('order', 'order.purchaser')->get() as $adjustment) {
             $events[] = new TimelineEntry(
                 description: $adjustment->type === GiftCardAdjustmentType::Charge
                     ? "Used to purchase {$adjustment->amount} worth of items"
-                    : "Refunded {$adjustment->amount}",
+                    : "Returned {$adjustment->amount}",
                 emoji: '🧾',
                 time: $adjustment->created_at,
                 actor: $adjustment->order->purchaser,
@@ -123,7 +123,7 @@ class GiftCard extends Model implements HasTimeline
             );
         }
 
-        foreach ($this->assignments as $assignment) {
+        foreach ($this->assignments()->with('user', 'assigner')->get() as $assignment) {
             $events[] = new TimelineEntry(
                 description: "Assigned to {$assignment->user->full_name}",
                 emoji: '👤',

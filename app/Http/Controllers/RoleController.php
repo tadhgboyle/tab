@@ -116,22 +116,4 @@ class RoleController extends Controller
 
         return redirect()->route('settings')->with('success', $message);
     }
-
-    public function order()
-    {
-        $roles = json_decode(request()->get('roles'));
-
-        $i = 1;
-        foreach ($roles as $role) {
-            $role = Role::find($role);
-            if ($role->superuser) {
-                continue;
-            }
-
-            $role->update(['order' => $i]);
-            $i++;
-        }
-
-        return $roles;
-    }
 }
