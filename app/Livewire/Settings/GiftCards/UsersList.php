@@ -2,11 +2,11 @@
 
 namespace App\Livewire\Settings\GiftCards;
 
-use App\Models\GiftCardAssignment;
-use Filament\Tables\Actions\Action;
 use Livewire\Component;
 use App\Models\GiftCard;
 use Filament\Tables\Table;
+use App\Models\GiftCardAssignment;
+use Filament\Tables\Actions\Action;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;

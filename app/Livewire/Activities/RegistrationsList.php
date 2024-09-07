@@ -2,11 +2,11 @@
 
 namespace App\Livewire\Activities;
 
-use App\Helpers\Permission;
-use Filament\Tables\Actions\Action;
 use Livewire\Component;
 use App\Models\Activity;
 use Filament\Tables\Table;
+use App\Helpers\Permission;
+use Filament\Tables\Actions\Action;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;

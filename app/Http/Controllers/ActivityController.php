@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\NotificationHelper;
 use App\Models\User;
 use App\Models\Activity;
 use App\Helpers\Permission;
 use Illuminate\Support\Carbon;
 use App\Helpers\CategoryHelper;
+use App\Helpers\NotificationHelper;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\ActivityRequest;
 use App\Services\Activities\ActivityRegistrationCreateService;

@@ -3,8 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Filament\Notifications\Notification;
 use Illuminate\Http\Request;
+use Filament\Notifications\Notification;
 
 class EnqueueNotifications
 {
