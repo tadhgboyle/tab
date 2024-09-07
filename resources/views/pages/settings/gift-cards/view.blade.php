@@ -45,13 +45,6 @@
     </div>
     <div class="column">
         <div class="box">
-            <div class="columns">
-                <div class="column">
-                    <button class="button is-light is-pulled-right is-small" onclick="openModal();" {{ $giftCard->expired() ? "disabled" : "" }}>
-                        ➕ Add User
-                    </button>
-                </div>
-            </div>
             <livewire:settings.gift-cards.users-list :gift-card="$giftCard" />
         </div>
     </div>

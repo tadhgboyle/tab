@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Activities;
 
+use App\Helpers\Permission;
+use Filament\Tables\Actions\Action;
 use Livewire\Component;
 use App\Models\Activity;
 use Filament\Tables\Table;
@@ -22,6 +24,14 @@ class RegistrationsList extends Component implements HasTable, HasForms
     {
         return $table
             ->heading('Registrations')
+            ->headerActions([
+                Action::make('register')
+                    ->label('Register')
+                    ->alpineClickHandler('openModal')
+                    ->disabled(function () {
+                        return $this->activity->end->isPast() || !$this->activity->hasSlotsAvailable() || !hasPermission(Permission::ACTIVITIES_REGISTER_USER);
+                    }),
+            ])
             ->query($this->activity->registrations()->getQuery())
             ->columns([
                 TextColumn::make('user.full_name')->label('Name'),
@@ -37,6 +47,7 @@ class RegistrationsList extends Component implements HasTable, HasForms
             ->bulkActions([
                 // ...
             ])
+            ->defaultSort('created_at', 'desc')
             ->paginated(false);
     }
 }

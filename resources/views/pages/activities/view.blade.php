@@ -15,15 +15,6 @@
         <p><strong>Status:</strong> {!! $activity->getStatusHtml() !!}</p>
     </div>
     <div class="column">
-        <div class="columns">
-            <div class="column">
-                @if($can_register)
-                    <button class="button is-light is-pulled-right is-small" onclick="openModal();">
-                        ➕ Add Attendee
-                    </button>
-                @endif
-            </div>
-        </div>
         <livewire:activities.registrations-list :activity="$activity" />
     </div>
 </div>

@@ -3,6 +3,7 @@
 namespace App\Livewire\Settings\GiftCards;
 
 use App\Models\GiftCardAssignment;
+use Filament\Tables\Actions\Action;
 use Livewire\Component;
 use App\Models\GiftCard;
 use Filament\Tables\Table;
@@ -23,6 +24,12 @@ class UsersList extends Component implements HasTable, HasForms
     {
         return $table
             ->heading('Users')
+            ->headerActions([
+                Action::make('add_user')
+                    ->label('Add user')
+                    ->alpineClickHandler('openModal')
+                    ->disabled($this->giftCard->expired()),
+            ])
             ->query($this->giftCard->assignments()->getQuery())
             ->columns([
                 TextColumn::make('user.full_name'),
