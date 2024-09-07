@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\NotificationHelper;
 use App\Models\User;
 use App\Models\Activity;
 use App\Helpers\Permission;
@@ -15,6 +16,12 @@ use App\Services\Activities\ActivityRegistrationCreateService;
 // TODO: fix - add pst check box
 class ActivityController extends Controller
 {
+    public function __construct(
+        private NotificationHelper $notificationHelper
+    ) {
+        // ...
+    }
+
     public function index()
     {
         $activities = Activity::all(['id', 'name', 'start', 'end']);
@@ -70,7 +77,11 @@ class ActivityController extends Controller
         $activity->end = $request->end;
         $activity->save();
 
-        return redirect()->route('activities_list')->with('success', 'Created activity ' . $request->name . '.');
+        $this->notificationHelper->sendSuccessNotification('Activity Created', "Created activity $activity->name", [
+            ['name' => 'view_activity', 'url' => route('activities_view', $activity->id)],
+        ]);
+
+        return redirect()->route('activities_list');
     }
 
     public function edit(CategoryHelper $categoryHelper, Activity $activity)
@@ -102,14 +113,18 @@ class ActivityController extends Controller
             'end' => $request->end,
         ]);
 
-        return redirect()->route('activities_view', $request->activity_id)->with('success', 'Updated activity.');
+        $this->notificationHelper->sendSuccessNotification('Activity Updated', "Updated activity $activity->name", [
+            ['name' => 'view_activity', 'url' => route('activities_view', $activity->id)],
+        ]);
+
+        return redirect()->route('activities_view', $request->activity_id);
     }
 
     public function delete(Activity $activity)
     {
         $activity->delete();
 
-        return redirect()->route('activities_list')->with('success', 'Deleted activity ' . $activity->name . '.');
+        return redirect()->route('activities_list')->with('success', "Deleted activity $activity->name");
     }
 
     // TODO: livewire

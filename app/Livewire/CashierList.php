@@ -53,7 +53,7 @@ class CashierList extends Component implements HasTable, HasForms
             ])
             ->defaultSort('full_name')
             ->recordUrl(
-                fn (User $user): string => route('orders_create', $user),
+                fn (User $user) => route('orders_create', $user),
             );
     }
 }

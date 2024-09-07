@@ -20,7 +20,7 @@ class CategoryController extends Controller
         $category->type = $request->type;
         $category->save();
 
-        return redirect()->route('settings')->with('success', "Created new category $category->name.");
+        return redirect()->route('settings')->with('success', "Created category $category->name.");
     }
 
     public function edit(Category $category)

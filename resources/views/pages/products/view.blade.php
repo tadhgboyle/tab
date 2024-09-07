@@ -5,8 +5,6 @@
     {{ $product->name }} @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)<a href="{{ route('products_edit', $product->id) }}">(Edit)</a>@endpermission
 </h4>
 
-@include('includes.messages')
-
 <div class="columns">
     <div class="column is-two-thirds">
         <div class="box">

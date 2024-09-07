@@ -7,8 +7,6 @@
 <div class="columns">
     <div class="column"></div>
     <div class="column box">
-        @include('includes.messages')
-
         <form action="{{ route('settings_gift-cards_store') }}" method="POST">
             @csrf
 

@@ -11,7 +11,6 @@
 
 <div class="columns">
     <div class="column">
-        @include('includes.messages')
         <div class="box">
             <nav class="level">
                 <div class="level-item has-text-centered">

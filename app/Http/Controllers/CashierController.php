@@ -4,13 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Helpers\Permission;
-use Illuminate\Http\Request;
 use App\Helpers\RotationHelper;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 class CashierController extends Controller
 {
-    public function __invoke(Request $request, RotationHelper $rotationHelper)
+    public function __invoke(RotationHelper $rotationHelper)
     {
         // TODO: similar handling of rotation selection/invalidity to statistics page
         return view('pages.cashier', [

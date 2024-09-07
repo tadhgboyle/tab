@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use Filament\Notifications\Livewire\Notifications;
+use Filament\Support\Enums\VerticalAlignment;
 use NumberFormatter;
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
@@ -81,6 +83,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // ...
+        Notifications::verticalAlignment(VerticalAlignment::End);
     }
 }

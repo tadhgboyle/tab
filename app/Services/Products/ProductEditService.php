@@ -46,7 +46,7 @@ class ProductEditService extends HttpService
     {
         return match ($this->getResult()) {
             self::RESULT_SUCCESS => redirect()->route('products_view', $this->_product)->with('success', $this->getMessage()),
-            default => redirect()->back()->withInput()->withErrors($this->getMessage()),
+            default => redirect()->back()->withInput()->with('error', $this->getMessage()),
         };
     }
 }

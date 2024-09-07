@@ -15,7 +15,6 @@
         <div class="column is-1"></div>
 
         <div class="column is-5">
-            @include('includes.messages')
             <div class="field">
                 <label class="label">Name<sup style="color: red">*</sup></label>
                 <div class="control">

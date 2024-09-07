@@ -2,6 +2,7 @@
 
 namespace App\Services\Orders;
 
+use App\Helpers\NotificationHelper;
 use App\Models\User;
 use App\Models\Order;
 use Cknow\Money\Money;
@@ -10,6 +11,8 @@ use App\Models\GiftCard;
 use App\Helpers\TaxHelper;
 use App\Helpers\Permission;
 use App\Models\OrderProduct;
+use Filament\Notifications\Actions\Action;
+use Filament\Notifications\Notification;
 use Illuminate\Http\Request;
 use App\Services\HttpService;
 use App\Helpers\RotationHelper;
@@ -216,19 +219,29 @@ class OrderCreateService extends HttpService
         $purchaser->update(['balance' => $remaining_balance]);
 
         $this->_result = self::RESULT_SUCCESS;
-        $this->_message = 'Order #' . $order->id . '. ' . $purchaser->full_name . ' now has ' . $remaining_balance;
+        $this->_message = $purchaser->full_name . ' now has ' . $remaining_balance;
         $this->_order = $order->refresh();
     }
 
     public function redirect(): RedirectResponse
     {
+        $this->buildNotification();
+
         return match ($this->getResult()) {
             self::RESULT_NO_SELF_PURCHASE => redirect()->route('cashier')->with('error', $this->getMessage()),
             self::RESULT_SUCCESS => redirect()->route('cashier')->with([
-                'success' => $this->getMessage(),
                 'last_purchaser_id' => $this->_order->purchaser_id,
             ]),
             default => redirect()->back()->with('error', $this->getMessage()),
         };
+    }
+
+    private function buildNotification(): void
+    {
+        if ($this->getResult() === self::RESULT_SUCCESS) {
+            app(NotificationHelper::class)->sendSuccessNotification('Order Created', $this->getMessage(), [
+                ['name' => 'view_order', 'url' => route('orders_view', $this->_order)]
+            ]);
+        }
     }
 }

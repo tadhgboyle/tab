@@ -5,7 +5,6 @@
 <div class="columns">
     <div class="column"></div>
     <div class="column box">
-        @include('includes.messages')
         <form action="{{ isset($rotation) ? route('settings_rotations_update', $rotation->id) : route('settings_rotations_store') }}" method="POST">
             @csrf
             @isset($rotation)

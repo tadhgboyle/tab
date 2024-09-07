@@ -4,7 +4,6 @@
 <div class="columns">
     <div class="column">
         <div class="box">
-            @include('includes.messages')
             <livewire:users-list />
         </div>
     </div>

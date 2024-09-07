@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Order;
 
+use Filament\Notifications\Notification;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;

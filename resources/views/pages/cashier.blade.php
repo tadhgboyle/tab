@@ -3,7 +3,6 @@
 <h2 class="title has-text-weight-bold">Cashier</h2>
 <div class="columns">
     <div class="column box">
-        @include('includes.messages')
         <livewire:cashier-list />
     </div>
 </div>

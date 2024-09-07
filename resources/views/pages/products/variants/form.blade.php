@@ -9,8 +9,6 @@
 <div class="columns">
     <div class="column"></div>
     <div class="column box">
-        @include('includes.messages')
-
         <form action="{{ isset($productVariant) ? route('products_variants_update', [$product, $productVariant]) : route('products_variants_store', $product) }}" method="POST" class="form-horizontal">
             @csrf
 

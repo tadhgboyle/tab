@@ -21,8 +21,6 @@
     </div>
 </div>
 
-@include('includes.messages')
-
 <div class="columns">
     <div class="column is-two-thirds">
         <div class="card">

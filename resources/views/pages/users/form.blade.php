@@ -12,7 +12,6 @@
 
     <div class="columns">
         <div class="column is-5">
-            @include('includes.messages')
             <div class="box">
                 <h4 class="title has-text-weight-bold is-4">General</h4>
                 <div class="field">

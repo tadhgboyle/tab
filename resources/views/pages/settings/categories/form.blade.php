@@ -7,7 +7,6 @@ use App\Enums\CategoryType
 <div class="columns">
     <div class="column"></div>
     <div class="column box">
-        @include('includes.messages')
         <form action="{{ isset($category) ? route('settings_categories_update', $category->id) : route('settings_categories_store') }}" method="POST">
             @csrf
             @isset($category)

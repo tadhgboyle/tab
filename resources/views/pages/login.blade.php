@@ -4,7 +4,6 @@
 <div class="columns">
     <div class="column"></div>
     <div class="column box">
-        @include('includes.messages')
         <form action="{{ route('login_auth') }}" method="post">
             @csrf
             <div class="field">

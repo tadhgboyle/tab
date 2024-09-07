@@ -2,10 +2,13 @@
 
 namespace App\Services\Users;
 
+use App\Helpers\NotificationHelper;
 use App\Models\User;
 use App\Helpers\RoleHelper;
 use App\Services\HttpService;
 use App\Http\Requests\UserRequest;
+use Filament\Notifications\Actions\Action;
+use Filament\Notifications\Notification;
 use Illuminate\Http\RedirectResponse;
 use App\Services\Users\UserLimits\UserLimitUpsertService;
 
@@ -63,9 +66,20 @@ class UserCreateService extends HttpService
 
     public function redirect(): RedirectResponse
     {
+        $this->buildNotification();
+
         return match ($this->getResult()) {
-            self::RESULT_SUCCESS => redirect()->route('users_list')->with('success', $this->getMessage()),
+            self::RESULT_SUCCESS => redirect()->route('users_list'),
             default => redirect()->back()->with('error', $this->getMessage()),
         };
+    }
+
+    private function buildNotification(): void
+    {
+        if ($this->getResult() === self::RESULT_SUCCESS) {
+            app(NotificationHelper::class)->sendSuccessNotification('User Created', $this->getMessage(), [
+                ['name' => 'view_user', 'url' => route('users_view', $this->_user)]
+            ]);
+        }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Services\Activities;
 
+use App\Helpers\NotificationHelper;
 use App\Models\User;
 use App\Models\Activity;
 use App\Services\HttpService;
@@ -70,9 +71,7 @@ class ActivityRegistrationCreateService extends HttpService
     public function redirect(): RedirectResponse
     {
         return match ($this->getResult()) {
-            self::RESULT_SUCCESS => redirect()->back()->with([
-                'success' => $this->getMessage(),
-            ]),
+            self::RESULT_SUCCESS => redirect()->back()->with('success', $this->getMessage()),
             default => redirect()->back()->with('error', $this->getMessage()),
         };
     }

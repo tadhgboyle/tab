@@ -17,8 +17,6 @@
 
 @php $owing = $user->findOwing(); @endphp
 
-@include('includes.messages')
-
 <div class="box">
     <nav class="level">
         <div class="level-item has-text-centered">

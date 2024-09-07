@@ -4,7 +4,6 @@
 <h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @permission(\App\Helpers\Permission::USERS_VIEW)<a href="{{ route('users_view', $user) }}">(View)</a>@endpermission</h4>
 <div class="columns box">
     <div class="column is-two-thirds">
-        @include('includes.messages')
         <div id="loading" align="center">
             <img src="{{ url('img/loader.gif') }}" alt="Loading..." class="loading-spinner" />
         </div>

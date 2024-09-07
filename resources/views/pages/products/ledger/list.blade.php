@@ -69,7 +69,6 @@
         </table>
     </div>
     <div class="column">
-        @include('includes.messages')
         <div id="adjust_product">
             @if(session()->has('last_product'))
                 @if(session()->has('last_product_variant'))

@@ -1,7 +1,6 @@
 @extends('layouts.default', ['page' => 'settings'])
 @section('content')
 <h2 class="title has-text-weight-bold">Settings</h2>
-@include('includes.messages')
 <div class="columns">
     @permission(\App\Helpers\Permission::SETTINGS_GENERAL)
     <div class="column">

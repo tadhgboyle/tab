@@ -63,7 +63,7 @@ class GiftCardsList extends Component implements HasTable, HasForms
             ])
             ->actions([
                 Action::make('view')
-                    ->url(fn (GiftCard $giftCard): string => route('settings_gift-cards_view', $giftCard)),
+                    ->url(fn (GiftCard $giftCard) => route('settings_gift-cards_view', $giftCard)),
             ])
             ->bulkActions([
                 // ...

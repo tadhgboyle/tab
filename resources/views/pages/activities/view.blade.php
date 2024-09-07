@@ -4,7 +4,6 @@
 <h4 class="subtitle"><strong>Activity:</strong> {{ $activity->name }} @permission(\App\Helpers\Permission::ACTIVITIES_MANAGE)<a href="{{ route('activities_edit', $activity->id) }}">(Edit)</a>@endpermission</h4>
 <div class="columns box">
     <div class="column">
-        @include('includes.messages')
         <p><strong>Category:</strong> {{ $activity->category->name }}</p>
         <p><strong>Start time:</strong> {{ $activity->start->format('M jS Y h:ia') }}</p>
         <p><strong>End time:</strong> {{ $activity->end->format('M jS Y h:ia') }}</p>

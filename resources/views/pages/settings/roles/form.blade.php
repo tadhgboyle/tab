@@ -15,7 +15,6 @@
     <div class="columns">
         <div class="column">
             <div class="box">
-                @include('includes.messages')
                 <div class="field">
                     <label class="label">Name<sup style="color: red">*</sup></label>
                     <div class="control">

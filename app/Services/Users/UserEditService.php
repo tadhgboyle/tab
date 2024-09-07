@@ -2,11 +2,14 @@
 
 namespace App\Services\Users;
 
+use App\Helpers\NotificationHelper;
 use App\Models\Role;
 use App\Models\User;
 use App\Helpers\RoleHelper;
 use App\Services\HttpService;
 use App\Http\Requests\UserRequest;
+use Filament\Notifications\Actions\Action;
+use Filament\Notifications\Notification;
 use Illuminate\Http\RedirectResponse;
 use App\Services\Users\UserLimits\UserLimitUpsertService;
 
@@ -89,9 +92,20 @@ class UserEditService extends HttpService
 
     public function redirect(): RedirectResponse
     {
+        $this->buildNotification();
+
         return match ($this->getResult()) {
-            self::RESULT_SUCCESS_IGNORED_PASSWORD, self::RESULT_SUCCESS_APPLIED_PASSWORD => redirect()->route('users_list')->with('success', $this->getMessage()),
+            self::RESULT_SUCCESS_IGNORED_PASSWORD, self::RESULT_SUCCESS_APPLIED_PASSWORD => redirect()->route('users_list'),
             default => redirect()->back()->with('error', $this->getMessage()),
         };
+    }
+
+    private function buildNotification(): void
+    {
+        if (in_array($this->getResult(), [self::RESULT_SUCCESS_IGNORED_PASSWORD, self::RESULT_SUCCESS_APPLIED_PASSWORD])) {
+            app(NotificationHelper::class)->sendSuccessNotification('User Updated', $this->getMessage(), [
+                ['name' => 'view_user', 'url' => route('users_view', $this->_user)]
+            ]);
+        }
     }
 }

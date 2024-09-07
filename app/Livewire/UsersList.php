@@ -54,10 +54,10 @@ class UsersList extends Component implements HasTable, HasForms
             ])
             ->actions([
                 Action::make('view')
-                    ->url(fn (User $record): string => route('users_view', $record))
+                    ->url(fn (User $record) => route('users_view', $record))
                     ->visible(hasPermission(Permission::USERS_VIEW)),
                 Action::make('edit')
-                    ->url(fn (User $record): string => route('users_edit', $record))
+                    ->url(fn (User $record) => route('users_edit', $record))
                     ->visible(hasPermission(Permission::USERS_MANAGE)),
             ])
             ->bulkActions([

@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\EnqueueNotifications;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\TrustProxies;
@@ -57,6 +58,7 @@ class Kernel extends HttpKernel
             ShareErrorsFromSession::class,
             VerifyCsrfToken::class,
             SubstituteBindings::class,
+            EnqueueNotifications::class,
         ],
 
         'api' => [

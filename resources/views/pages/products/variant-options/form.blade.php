@@ -7,8 +7,6 @@
     @if(isset($productVariantOption))<strong>Variant Option:</strong> {{ $productVariantOption->name }} @endif
 </h4>
 
-@include('includes.messages')
-
 <div class="columns">
     <div class="column">
         <div class="box">

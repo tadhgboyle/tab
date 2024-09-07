@@ -179,7 +179,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/create', [ActivityController::class, 'store'])->name('activities_store');
             Route::get('/{activity}/edit', [ActivityController::class, 'edit'])->name('activities_edit');
             Route::put('/{activity}/edit', [ActivityController::class, 'update'])->name('activities_update');
-            Route::post('/{activity}', [ActivityController::class, 'delete'])->name('activities_delete');
+            Route::delete('/{activity}', [ActivityController::class, 'delete'])->name('activities_delete');
         });
 
         Route::group(['middleware' => 'permission:' . Permission::ACTIVITIES_REGISTER_USER], static function () {

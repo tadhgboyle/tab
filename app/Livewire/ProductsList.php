@@ -55,10 +55,10 @@ class ProductsList extends Component implements HasTable, HasForms
             ])
             ->actions([
                 Action::make('view')
-                    ->url(fn (Product $product): string => route('products_view', $product))
+                    ->url(fn (Product $product) => route('products_view', $product))
                     ->visible(hasPermission(Permission::PRODUCTS_VIEW)),
                 Action::make('edit')
-                    ->url(fn (Product $product): string => route('products_edit', $product))
+                    ->url(fn (Product $product) => route('products_edit', $product))
                     ->visible(hasPermission(Permission::PRODUCTS_MANAGE)),
             ])
             ->bulkActions([

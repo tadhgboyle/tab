@@ -6,14 +6,14 @@
         "build": "vite build"
     },
     "devDependencies": {
-        "@tailwindcss/forms": "^0.5.8",
+        "@tailwindcss/forms": "^0.5.9",
         "@tailwindcss/typography": "^0.5.15",
         "autoprefixer": "^10.4.20",
         "axios": "^0.21",
         "cross-env": "^7.0",
         "laravel-vite-plugin": "^1.0.5",
         "lodash": "^4.17.19",
-        "postcss": "^8.4.43",
+        "postcss": "^8.4.45",
         "postcss-nesting": "^13.0.0",
         "resolve-url-loader": "^3.1.0",
         "sass": "^1.15.2",
