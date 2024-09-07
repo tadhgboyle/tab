@@ -2,17 +2,17 @@
 
 namespace App\Livewire\Products;
 
-use App\Enums\CategoryType;
-use App\Models\Category;
-use App\Models\Proxies\ProductsVariantsProxy;
-use Filament\Support\Enums\FontFamily;
-use Filament\Tables\Columns\BooleanColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Livewire\Component;
+use App\Models\Category;
 use Filament\Tables\Table;
+use App\Enums\CategoryType;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Support\Enums\FontFamily;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Columns\BooleanColumn;
+use App\Models\Proxies\ProductsVariantsProxy;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 

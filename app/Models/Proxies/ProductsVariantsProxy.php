@@ -1,11 +1,12 @@
 <?php
 
 namespace App\Models\Proxies;
+
+use Sushi\Sushi;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Sushi\Sushi;
 
 class ProductsVariantsProxy extends Model
 {
@@ -42,7 +43,7 @@ class ProductsVariantsProxy extends Model
                     ];
                 });
             }
-    
+
             return [
                 [
                     'product_id' => $product->id,
@@ -56,6 +57,6 @@ class ProductsVariantsProxy extends Model
                     'box_size' => $product->box_size === -1 ? 'N/A' : $product->box_size,
                 ]
             ];
-        })->toArray();    
+        })->toArray();
     }
 }

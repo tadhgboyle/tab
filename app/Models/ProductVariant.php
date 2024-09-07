@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use App\Traits\InteractsWithStock;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -56,8 +56,8 @@ class ProductVariant extends Model
                 (:exclude_trashed_options = 0 OR (o.deleted_at IS NULL AND v.deleted_at IS NULL))
                 AND a.product_variant_id = :product_variant_id
             ", [
-                'exclude_trashed_options' => $excludeTrashedOptions,
-                'product_variant_id' => $this->id,
+            'exclude_trashed_options' => $excludeTrashedOptions,
+            'product_variant_id' => $this->id,
         ]);
 
         return collect($results)->pluck('option_value_assignment');

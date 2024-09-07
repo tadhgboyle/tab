@@ -2,7 +2,6 @@
 
 namespace App\Services\Activities;
 
-use App\Helpers\NotificationHelper;
 use App\Models\User;
 use App\Models\Activity;
 use App\Services\HttpService;

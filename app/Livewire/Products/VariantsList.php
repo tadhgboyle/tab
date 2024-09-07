@@ -42,11 +42,12 @@ class VariantsList extends Component implements HasTable, HasForms
 
         return $table
             ->heading('Variants')
-            ->query($this->product->variants()->with(
-                    'optionValueAssignments',
-                    'optionValueAssignments.productVariantOption',
-                    'optionValueAssignments.productVariantOptionValue'
-                )->getQuery()
+            ->query(
+                $this->product->variants()->with(
+                'optionValueAssignments',
+                'optionValueAssignments.productVariantOption',
+                'optionValueAssignments.productVariantOptionValue'
+            )->getQuery()
             )
             ->headerActions([
                 Action::make('create')

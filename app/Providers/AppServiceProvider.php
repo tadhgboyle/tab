@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use Filament\Notifications\Livewire\Notifications;
-use Filament\Support\Enums\VerticalAlignment;
 use NumberFormatter;
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
@@ -12,6 +10,8 @@ use App\Helpers\CategoryHelper;
 use App\Helpers\RotationHelper;
 use App\Helpers\SettingsHelper;
 use Illuminate\Support\ServiceProvider;
+use Filament\Support\Enums\VerticalAlignment;
+use Filament\Notifications\Livewire\Notifications;
 
 class AppServiceProvider extends ServiceProvider
 {
