@@ -43,7 +43,10 @@ class UsersList extends Component implements HasTable, HasForms
                 // ...
             ])
             ->actions([
-                // ...
+                Action::make('revoke')
+                    ->alpineClickHandler(function (GiftCardAssignment $giftCardAssignment) {
+                        return "openRemoveUserModal('{$giftCardAssignment->user->id}', '{$giftCardAssignment->user->full_name}')";
+                    })
             ])
             ->bulkActions([
                 // ...

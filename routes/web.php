@@ -245,7 +245,7 @@ Route::middleware('auth')->group(function () {
 
             // TODO: make POST
             Route::get('/{giftCard}/assign/{user}', [GiftCardAssignmentController::class, 'store'])->name('settings_gift-cards_assign');
-            Route::get('/{giftCard}/unassign/{user}', [GiftCardAssignmentController::class, 'destroy'])->name('settings_gift-cards_unassign');
+            Route::delete('/{giftCard}/unassign/{user}', [GiftCardAssignmentController::class, 'destroy'])->name('settings_gift-cards_unassign');
 
             Route::get('/{giftCard}/search', [GiftCardAssignmentController::class, 'ajaxUserSearch'])->name('settings_gift-cards_assign_search');
         });

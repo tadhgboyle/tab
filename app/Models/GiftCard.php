@@ -123,7 +123,7 @@ class GiftCard extends Model implements HasTimeline
             );
         }
 
-        foreach ($this->assignments()->with('user', 'assigner')->get() as $assignment) {
+        foreach ($this->assignments()->withTrashed()->with('user', 'assigner')->get() as $assignment) {
             $events[] = new TimelineEntry(
                 description: "Assigned to {$assignment->user->full_name}",
                 emoji: '👤',
@@ -131,6 +131,16 @@ class GiftCard extends Model implements HasTimeline
                 actor: $assignment->assigner,
                 link: route('users_view', $assignment->user),
             );
+
+            if ($assignment->trashed()) {
+                $events[] = new TimelineEntry(
+                    description: "Unassigned from {$assignment->user->full_name}",
+                    emoji: '👤',
+                    time: $assignment->deleted_at,
+                    actor: $assignment->deletedBy,
+                    link: route('users_view', $assignment->user),
+                );
+            }
         }
 
         if ($this->expired()) {

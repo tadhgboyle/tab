@@ -23,7 +23,9 @@ class GiftCardAssignmentController extends Controller
 
     public function destroy(GiftCard $giftCard, User $user)
     {
-        $giftCard->assignments()->where('user_id', $user->id)->delete();
+        $assignment = $giftCard->assignments()->where('user_id', $user->id);
+        $assignment->update(['deleted_by' => auth()->id()]);
+        $assignment->delete();
 
         return redirect()->route('settings_gift-cards_view', $giftCard)->with('success', "Unassigned gift card from {$user->full_name}.");
     }

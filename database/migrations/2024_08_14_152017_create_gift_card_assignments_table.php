@@ -17,6 +17,9 @@ return new class() extends Migration {
             $table->unsignedBigInteger('assigner_id');
             $table->foreign('assigner_id')->references('id')->on('users');
             $table->timestamps();
+            $table->softDeletes();
+            $table->unsignedBigInteger('deleted_by')->nullable();
+            $table->foreign('deleted_by')->references('id')->on('users');
 
             $table->unique(['gift_card_id', 'user_id']);
         });

@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class GiftCardAssignment extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'user_id',
         'assigner_id',
@@ -24,5 +27,10 @@ class GiftCardAssignment extends Model
     public function assigner()
     {
         return $this->belongsTo(User::class, 'assigner_id');
+    }
+
+    public function deletedBy()
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
     }
 }
