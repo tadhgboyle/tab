@@ -52,36 +52,7 @@
     <div class="column">
         @isset($productVariantOption)
         <div class="box">
-            <div class="columns">
-                <div class="column">
-                    <h4 class="title has-text-weight-bold is-4">Values</h4>
-                </div>
-                <div class="column">
-                    <a class="button is-light is-pulled-right is-small" onclick="openCreateValueModal();">
-                        ➕ Create
-                    </a>
-                </div>
-            </div>
-            <table id="value_list">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if(isset($productVariantOption))
-                        @foreach($productVariantOption->values as $value)
-                            <tr>
-                                <td>{{ $value->value }}</td>
-                                <td>
-                                    <a onclick="openEditValueModal('{{ $value->id }}', '{{ $value->value }}')">Edit</a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    @endif
-                </tbody>
-            </table>
+            <livewire:products.variant-options.values-list :productVariantOption="$productVariantOption" />
         </div>
         @endisset
     </div>
@@ -193,6 +164,7 @@
         const editValueModal = document.getElementById('edit-value-modal');
 
         function openEditValueModal(valueId, value) {
+            console.log(valueId, value);
             const url = `/products/{{ $product->id }}/variant-options/{{ $productVariantOption->id }}/values/${valueId}`;
             document.getElementById('editForm').action = url;
             document.getElementById('deleteVariantOptionValueForm').action = url;
@@ -207,16 +179,4 @@
         }
     </script>
 @endisset
-
-<script>
-$(document).ready(function() {
-    $('#value_list').DataTable({
-        "paging": false,
-        "info": false,
-        "searching": false,
-        "ordering": false
-    });
-});
-</script>
-
 @stop

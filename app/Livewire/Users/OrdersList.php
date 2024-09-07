@@ -57,7 +57,9 @@ class OrdersList extends Component implements HasTable, HasForms
                 // ...
             ])
             ->actions([
-                // ...
+                Action::make('view')
+                    ->url(fn (Order $order)=> route('orders_view', $order))
+                    ->visible(hasPermission(Permission::ORDERS_VIEW)),
             ])
             ->bulkActions([
                 // ...

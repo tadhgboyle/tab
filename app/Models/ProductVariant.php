@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\InteractsWithStock;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
@@ -45,15 +46,21 @@ class ProductVariant extends Model
      */
     public function descriptions(bool $excludeTrashedOptions): Collection
     {
-        return $this->optionValueAssignments->filter(function (ProductVariantOptionValueAssignment $assignment) use ($excludeTrashedOptions) {
-            if ($excludeTrashedOptions) {
-                return !$assignment->productVariantOption->trashed() && !$assignment->productVariantOptionValue->trashed();
-            }
+        $results = DB::select("
+            SELECT 
+                CONCAT(o.name, ': ', v.value) AS option_value_assignment
+            FROM product_variant_option_value_assignments a
+            JOIN product_variant_options o ON a.product_variant_option_id = o.id
+            JOIN product_variant_option_values v ON a.product_variant_option_value_id = v.id
+            WHERE 
+                (:exclude_trashed_options = 0 OR (o.deleted_at IS NULL AND v.deleted_at IS NULL))
+                AND a.product_variant_id = :product_variant_id
+            ", [
+                'exclude_trashed_options' => $excludeTrashedOptions,
+                'product_variant_id' => $this->id,
+        ]);
 
-            return true;
-        })->map(function (ProductVariantOptionValueAssignment $assignment) {
-            return $assignment->productVariantOption->name . ': ' . $assignment->productVariantOptionValue->value;
-        })->values();
+        return collect($results)->pluck('option_value_assignment');
     }
 
     public function optionValueFor(ProductVariantOption $option): ?ProductVariantOptionValue
