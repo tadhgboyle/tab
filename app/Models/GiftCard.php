@@ -123,7 +123,7 @@ class GiftCard extends Model implements HasTimeline
             );
         }
 
-        foreach ($this->assignments()->withTrashed()->with('user', 'assigner')->get() as $assignment) {
+        foreach ($this->assignments()->withTrashed()->with('user', 'assigner', 'deletedBy')->get() as $assignment) {
             $events[] = new TimelineEntry(
                 description: "Assigned to {$assignment->user->full_name}",
                 emoji: '👤',

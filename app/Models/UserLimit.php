@@ -8,6 +8,7 @@ use App\Enums\OrderStatus;
 use App\Helpers\TaxHelper;
 use App\Enums\UserLimitDuration;
 use Cknow\Money\Casts\MoneyIntegerCast;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,6 +16,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class UserLimit extends Model
 {
     use HasFactory;
+
+    private Money $_spent;
 
     protected $fillable = [
         'user_id',
@@ -64,6 +67,10 @@ class UserLimit extends Model
 
     public function findSpent(): Money
     {
+        if (isset($this->_spent)) {
+            return $this->_spent;
+        }
+
         // If they have unlimited money (no limit set) for this category,
         // get all their orders, as they have no limit set we dont need to worry about
         // when the order was created_at.
@@ -71,7 +78,7 @@ class UserLimit extends Model
 
         $orders = $this->user->orders()
             ->with('products')
-            ->unless($this->isUnlimited(), fn ($query) => $query->where('created_at', '>=', $carbon_string))
+            ->unless($this->isUnlimited(), fn (Builder $query) => $query->where('created_at', '>=', $carbon_string))
             ->with('products', function ($query) {
                 $query->where('category_id', $this->category->id);
             })
@@ -79,7 +86,7 @@ class UserLimit extends Model
             ->get();
 
         $activity_registrations = $this->user->activityRegistrations()
-            ->unless($this->isUnlimited(), fn ($query) => $query->where('created_at', '>=', $carbon_string))
+            ->unless($this->isUnlimited(), fn (Builder $query) => $query->where('created_at', '>=', $carbon_string))
             ->where('category_id', $this->category->id)
             ->where('returned', false)
             ->get();
@@ -90,6 +97,6 @@ class UserLimit extends Model
                 TaxHelper::forOrderProduct($product, $product->quantity - $product->returned)
             ), Money::parse(0));
 
-        return $spent->add(...$activity_registrations->map->total_price);
+        return $this->_spent = $spent->add(...$activity_registrations->map->total_price);
     }
 }

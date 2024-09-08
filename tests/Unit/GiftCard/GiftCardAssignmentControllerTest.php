@@ -75,4 +75,28 @@ class GiftCardAssignmentControllerTest extends TestCase
         $this->assertEmpty($giftCard->assignments);
         $this->assertNotContains($giftCard, $this->_superuser->giftCards);
     }
+
+    public function testCanDeleteGiftCardAssignment(): void
+    {
+        $this->expectPermissionChecks([
+            Permission::SETTINGS,
+            Permission::SETTINGS_GIFT_CARDS_MANAGE,
+        ]);
+
+        $giftCard = GiftCard::factory()->create();
+        $giftCardAssignment = $giftCard->assignments()->create([
+            'user_id' => $this->_superuser->id,
+            'assigner_id' => $this->_superuser->id,
+        ]);
+
+        $this->actingAs($this->_superuser)
+            ->delete(route('settings_gift-cards_unassign', [$giftCard->id, $this->_superuser->id]))
+            ->assertRedirect(route('settings_gift-cards_view', $giftCard->id))
+            ->assertSessionHas('success', "Unassigned gift card from {$this->_superuser->full_name}.");
+
+        $this->assertEmpty($giftCard->assignments);
+        $this->assertNotContains($giftCard, $this->_superuser->giftCards);
+        $this->assertTrue($giftCardAssignment->refresh()->trashed());
+        $this->assertEquals($this->_superuser->id, $giftCardAssignment->refresh()->deleted_by);
+    }
 }

@@ -10,7 +10,7 @@
         @if(!is_null($activity->description))<p><strong>Description:</strong> {{ $activity->description }}</p>@endif
         @if(!is_null($activity->location))<p><strong>Location:</strong> {{ $activity->location }}</p>@endif
         <p><strong>Slots:</strong> @if($activity->unlimited_slots) <i>Unlimited</i> @else {{ $activity->slots }} (Available: {{ $activity->slotsAvailable() }})@endif</p>
-        <p><strong>Price:</strong> {!! $activity->price->isZero() ? '<i>Free</i>' : $activity->price . " (After tax: {$activity->getPriceAfterTax()})" !!}</p>
+        <p><strong>Price:</strong> {!! $activity->price->isZero() ? '<i>Free</i>' : $activity->price !!}</p>
         <p><strong>Status:</strong> {!! $activity->getStatusHtml() !!}</p>
     </div>
     <div class="column">
