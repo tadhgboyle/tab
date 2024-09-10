@@ -16,7 +16,7 @@ class CreateCategoriesTable extends Migration
         Schema::create('categories', static function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->integer('type'); // 1 = products + activities, 2 = products only, 3 = activities only
+            $table->tinyInteger('type');
             $table->timestamps();
             $table->softDeletes();
         });

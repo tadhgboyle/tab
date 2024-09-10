@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ProductStatus;
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
 use App\Traits\InteractsWithStock;
@@ -23,6 +24,8 @@ class Product extends Model
 
     protected $casts = [
         'name' => 'string',
+        'sku' => 'string',
+        'status' => ProductStatus::class,
         'price' => MoneyIntegerCast::class,
         'pst' => 'boolean',
         'stock' => 'integer',
@@ -35,6 +38,7 @@ class Product extends Model
     protected $fillable = [
         'name',
         'sku',
+        'status',
         'price',
         'category_id',
         'stock',
@@ -92,6 +96,11 @@ class Product extends Model
         }
 
         return $this->price;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === ProductStatus::Active;
     }
 
     public function getPriceAfterTax(): Money

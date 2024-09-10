@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Order;
 
+use App\Enums\ProductStatus;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
@@ -64,6 +65,16 @@ class OrderCreateServiceTest extends TestCase
         $this->assertSame('Quantity must be >= 1 for item Chips', $orderService->getMessage());
     }
 
+    public function testCannotMakeOrderNonActiveItem(): void
+    {
+        [$camper_user] = $this->createFakeRecords();
+
+        $orderService = new OrderCreateService($this->createFakeRequest($camper_user, draft_product: true), $camper_user);
+
+        $this->assertSame(OrderCreateService::RESULT_PRODUCT_NOT_ACTIVE, $orderService->getResult());
+        $this->assertSame('Product Chips is not active.', $orderService->getMessage());
+    }
+
     public function testCannotMakeOrderWithOutOfStockItem(): void
     {
         [$camper_user] = $this->createFakeRecords();
@@ -124,6 +135,7 @@ class OrderCreateServiceTest extends TestCase
         $orderService = new OrderCreateService($this->createFakeRequest($camper_user, with_variant_selected: true), $camper_user);
 
         $this->assertSame(OrderCreateService::RESULT_SUCCESS, $orderService->getResult());
+        $this->assertEquals("#1", $orderService->getOrder()->identifier);
         $this->assertStringContainsString('now has $936.19', $orderService->getMessage());
         $this->assertCount(1, Order::all());
         $this->assertCount(1, $camper_user->refresh()->orders);
@@ -276,6 +288,7 @@ class OrderCreateServiceTest extends TestCase
         User $purchaser,
         bool $with_products = true,
         bool $negative_product = false,
+        bool $draft_product = false,
         bool $over_stock = false,
         bool $over_balance = false,
         bool $over_category_limit = false,
@@ -292,7 +305,7 @@ class OrderCreateServiceTest extends TestCase
             $this->createFakeCategoryLimits($purchaser, $food_category, $merch_category);
         }
 
-        [$chips, $hat, $coffee, $sweater] = $this->createFakeProducts($over_balance, $food_category, $merch_category, $with_no_variant_stock);
+        [$chips, $hat, $coffee, $sweater] = $this->createFakeProducts($draft_product, $over_balance, $food_category, $merch_category, $with_no_variant_stock);
 
         $data = [
             'purchaser_id' => $purchaser->id,
@@ -371,7 +384,7 @@ class OrderCreateServiceTest extends TestCase
     }
 
     /** @return Product[] */
-    private function createFakeProducts(bool $over_balance, Category $food_category, Category $merch_category, bool $with_no_variant_stock): array
+    private function createFakeProducts(bool $draft_product, bool $over_balance, Category $food_category, Category $merch_category, bool $with_no_variant_stock): array
     {
         $chips = Product::factory()->create([
             'name' => 'Chips',
@@ -380,7 +393,8 @@ class OrderCreateServiceTest extends TestCase
             'category_id' => $food_category->id,
             'stock' => 2,
             'unlimited_stock' => false,
-            'stock_override' => false
+            'stock_override' => false,
+            'status' => $draft_product ? ProductStatus::Draft : ProductStatus::Active,
         ]);
 
         $hat = Product::factory()->create([

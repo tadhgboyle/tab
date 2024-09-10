@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ProductStatus;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Product;
@@ -36,7 +37,7 @@ class OrderController extends Controller
 
         return view('pages.orders.order', [
             'user' => $user,
-            'products' => Product::orderBy('name', 'ASC')->with(
+            'products' => Product::where('status', ProductStatus::Active)->with(
                 'category',
                 'variantOptions',
                 'variants',
@@ -44,7 +45,7 @@ class OrderController extends Controller
                 'variants.optionValueAssignments',
                 'variants.optionValueAssignments.productVariantOption',
                 'variants.optionValueAssignments.productVariantOptionValue',
-            )->get(),
+            )->orderBy('name')->get(),
             'current_gst' => $settingsHelper->getGst() / 100,
             'current_pst' => $settingsHelper->getPst() / 100,
         ]);

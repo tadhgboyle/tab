@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Product;
 
+use App\Enums\ProductStatus;
 use Tests\TestCase;
 use Cknow\Money\Money;
 use App\Models\Product;
@@ -73,6 +74,21 @@ class ProductTest extends TestCase
         ]);
 
         $this->assertEquals(Money::parse(10_50), $product->getPriceAfterTax());
+    }
+
+    public function testIsActive(): void
+    {
+        $category = Category::factory()->create();
+        $product = Product::factory()->create([
+            'status' => ProductStatus::Active,
+            'category_id' => $category->id,
+        ]);
+
+        $this->assertTrue($product->isActive());
+
+        $product->status = ProductStatus::Draft;
+
+        $this->assertFalse($product->isActive());
     }
 
     public function testHasStockOnNormalProduct(): void

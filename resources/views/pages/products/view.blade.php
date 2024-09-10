@@ -16,14 +16,16 @@
         </div>
     </div>
     <div class="column">
-        <div class="box">
+
+        <x-detail-card title="Details">
+            <p><strong>Status:</strong> {{ $product->status->getWord() }}</p>
             <p><strong>Category:</strong> {{ $product->category->name }}</p>
             @if(!$product->hasVariants() && $product->sku)
                 <p><strong>SKU:</strong> {{ $product->sku }}</p>
             @endif
-        </div>
+        </x-detail-card>
 
-        <div class="box">
+        <x-detail-card title="Pricing">
             <p>
                 <strong>Price:</strong>
                 @if($product->hasVariants())
@@ -33,26 +35,25 @@
                 @endif
             </p>
             <p><strong>PST:</strong> {{ $product->pst ? '✅' : '❌' }}</p>
-        </div>
+        </x-detail-card>
 
-        <div class="box">
+        <x-detail-card title="Inventory">
             <p><strong>Stock:</strong> {!! $product->getStock() !!} @if(!$product->unlimited_stock && $product->hasVariants()) (across {{ $product->variants->count() }} variants)</p> @endif
             @unless($product->unlimited_stock)
                 <p><strong>Stock override:</strong> {{ $product->stock_override ? '✅' : '❌' }}</p>
             @endunless
             <p><strong>Restore stock on return:</strong> {{ $product->restore_stock_on_return ? '✅' : '❌' }}</p>
-        </div>
+        </x-detail-card>
 
-        <div class="box">
-            <p><strong>Recent orders</strong></p>
+        <x-detail-card title="Recent Orders">
             <ul>
                 @foreach($product->recentOrders() as $order)
                     <li>
-                        <a href="{{ route('orders_view', $order->id) }}">#{{ $order->id }}</a> - {{ $order->created_at->diffForHumans() }}
+                        <a href="{{ route('orders_view', $order->id) }}">{{ $order->identifier }}</a> - {{ $order->created_at->diffForHumans() }}
                     </li>
                 @endforeach
             </ul>
-        </div>
+        </x-detail-card>
     </div>
 </div>
 @endsection

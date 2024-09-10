@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\SettingsHelper;
 use Cknow\Money\Money;
 use App\Enums\OrderStatus;
 use App\Concerns\Timeline\HasTimeline;
@@ -27,6 +28,24 @@ class Order extends Model implements HasTimeline
         'purchaser_amount' => MoneyIntegerCast::class,
         'gift_card_amount' => MoneyIntegerCast::class,
     ];
+
+    public static function boot(): void
+    {
+        parent::boot();
+
+        static::created(function (Order $order) {
+            $order->identifier = self::formatOrderIdentifier($order->id);
+            $order->save();
+        });
+    }
+
+    private static function formatOrderIdentifier(int $id): string
+    {
+        $prefix = app(SettingsHelper::class)->getOrderPrefix();
+        $suffix = app(SettingsHelper::class)->getOrderSuffix();
+
+        return "{$prefix}{$id}{$suffix}";
+    }
 
     public function purchaser(): BelongsTo
     {

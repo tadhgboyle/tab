@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\ProductStatus;
 use App\Helpers\CategoryHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule as ValidationRule;
@@ -19,6 +20,10 @@ class ProductRequest extends FormRequest implements FormRequestContract
             'sku' => [
                 'nullable',
                 ValidationRule::unique('products')->ignore($this->get('product_id')),
+            ],
+            'status' => [
+                'required',
+                ValidationRule::enum(ProductStatus::class),  
             ],
             'price' => [
                 'required',

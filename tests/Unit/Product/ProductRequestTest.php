@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Product;
 
+use App\Enums\ProductStatus;
 use App\Models\Product;
 use App\Models\Category;
 use Tests\FormRequestTestCase;
@@ -66,6 +67,29 @@ class ProductRequestTest extends FormRequestTestCase
         $this->assertNotHaveErrors('sku', new ProductRequest([
             'product_id' => $product->id,
             'sku' => $product->sku,
+        ]));
+    }
+
+    public function testStatusIsRequiredAndOfProductStatusEnum(): void
+    {
+        $this->assertHasErrors('status', new ProductRequest([
+            'status' => null
+        ]));
+
+        $this->assertHasErrors('status', new ProductRequest([
+            'status' => 'string'
+        ]));
+
+        $this->assertHasErrors('status', new ProductRequest([
+            'status' => '2'
+        ]));
+
+        $this->assertNotHaveErrors('status', new ProductRequest([
+            'status' => ProductStatus::Active
+        ]));
+
+        $this->assertNotHaveErrors('status', new ProductRequest([
+            'status' => ProductStatus::Draft
         ]));
     }
 

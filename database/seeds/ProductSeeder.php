@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\ProductStatus;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Database\Seeder;
@@ -330,21 +331,24 @@ class ProductSeeder extends Seeder
         foreach (self::$foodNames as $name) {
             Product::factory()->state([
                 'name' => $name,
-                'category_id' => $food_category
+                'category_id' => $food_category,
+                'status' => random_int(0, 3) === 1 ? ProductStatus::Draft : ProductStatus::Active,
             ])->create();
         }
 
         foreach (self::$merchNames as $name) {
             Product::factory()->state([
                 'name' => $name,
-                'category_id' => $merch_category
+                'category_id' => $merch_category,
+                'status' => random_int(0, 3) === 1 ? ProductStatus::Draft : ProductStatus::Active,
             ])->create();
         }
 
         foreach (self::$generalNames as $name) {
             Product::factory()->state([
                 'name' => $name,
-                'category_id' => $general_category
+                'category_id' => $general_category,
+                'status' => random_int(0, 3) === 1 ? ProductStatus::Draft : ProductStatus::Active,
             ])->create();
         }
 

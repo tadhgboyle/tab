@@ -35,6 +35,8 @@ class PermissionHelper
         ]);
 
         $this->register('Product Management', Permission::PRODUCTS, [
+            Permission::PRODUCTS_VIEW => 'View specific Product information',
+            Permission::PRODUCTS_VIEW_DRAFT => 'View draft Products',
             Permission::PRODUCTS_LIST => 'List all Products',
             Permission::PRODUCTS_MANAGE => 'Edit/Create/Delete Products',
             Permission::PRODUCTS_LEDGER => 'Adjust stock for Products',

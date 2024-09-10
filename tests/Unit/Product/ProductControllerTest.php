@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Product;
 
+use App\Enums\ProductStatus;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
@@ -14,6 +15,7 @@ class ProductControllerTest extends TestCase
 {
     use RefreshDatabase;
     private Product $_product;
+    private User $_manager;
 
     public function setUp(): void
     {
@@ -28,6 +30,24 @@ class ProductControllerTest extends TestCase
         $superuser = User::factory()->create([
             'full_name' => 'Superuser User',
             'role_id' => $superadmin_role->id,
+        ]);
+
+        $manager_role = Role::factory()->create([
+            'name' => 'Manager',
+            'order' => 2,
+            'superuser' => false,
+            'permissions' => [
+                Permission::PRODUCTS,
+                Permission::PRODUCTS_LIST,
+                Permission::PRODUCTS_VIEW,
+                Permission::PRODUCTS_MANAGE,
+                Permission::PRODUCTS_LEDGER,
+            ],
+        ]);
+
+        $this->_manager = User::factory()->create([
+            'full_name' => 'Manager User',
+            'role_id' => $manager_role->id,
         ]);
 
         $this->actingAs($superuser);
@@ -63,6 +83,26 @@ class ProductControllerTest extends TestCase
             ->assertOk()
             ->assertViewIs('pages.products.view')
             ->assertViewHas('product');
+    }
+
+    public function testCannotViewDraftProductWithoutPermission(): void
+    {
+        $this->expectPermissionChecks([
+            Permission::PRODUCTS,
+            Permission::PRODUCTS_VIEW,
+        ]);
+
+        $draftProduct = Product::factory()->create([
+            'status' => ProductStatus::Draft,
+            'category_id' => Category::factory()->create(),
+        ]);
+
+        $this->actingAs($this->_manager);
+
+        $this
+            ->get(route('products_view', $draftProduct))
+            ->assertRedirect(route('products_list'))
+            ->assertSessionHas('error', 'You cannot view draft products.');
     }
 
     public function testCanViewCreatePage(): void

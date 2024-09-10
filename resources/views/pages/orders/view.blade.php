@@ -4,7 +4,7 @@
 <div class="columns">
     <div class="column">
         <h4 class="subtitle">
-            #{{ $order->id }} {!! $order->getStatusHtml() !!}
+            {{ $order->identifier }} {!! $order->getStatusHtml() !!}
         </h4>
     </div>
     <div class="column">

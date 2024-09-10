@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Enums\ProductStatus;
 use App\Models\Product;
 use Livewire\Component;
 use Filament\Tables\Table;
@@ -27,6 +28,7 @@ class ProductsList extends Component implements HasTable, HasForms
             ->query(
                 Product::query()
                     ->with('variants')
+                    ->unless(hasPermission(Permission::PRODUCTS_VIEW_DRAFT), fn ($query) => $query->where('status', ProductStatus::Active))
             )
             ->columns([
                 TextColumn::make('name')->sortable()->searchable(),
@@ -40,6 +42,10 @@ class ProductsList extends Component implements HasTable, HasForms
                 BooleanColumn::make('has_variants')->label('Has Variants')->state(function (Product $product) {
                     return $product->hasVariants();
                 }),
+                // TODO, hide if they cannot view draft products?
+                TextColumn::make('status')->badge()->state(fn (Product $product) => $product->status->getWord())->color(function (Product $product) {
+                    return $product->isActive() ? 'success' : 'gray';
+                }),
             ])
             ->filters([
                 SelectFilter::make('Category')
@@ -52,6 +58,11 @@ class ProductsList extends Component implements HasTable, HasForms
                         true: fn ($query) => $query->whereHas('variants'),
                         false: fn ($query) => $query->whereDoesntHave('variants'),
                     ),
+                SelectFilter::make('status')
+                    ->options([
+                        ProductStatus::Active->value => 'Active',
+                        ProductStatus::Draft->value => 'Draft',
+                    ])->visible(hasPermission(Permission::PRODUCTS_VIEW_DRAFT)),
             ])
             ->actions([
                 Action::make('view')

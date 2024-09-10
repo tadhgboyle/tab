@@ -27,6 +27,7 @@ class OrderCreateService extends HttpService
     public const RESULT_NO_ITEMS_SELECTED = 'NO_ITEMS_SELECTED';
     public const RESULT_MUST_SELECT_VARIANT = 'MUST_SELECT_VARIANT';
     public const RESULT_NEGATIVE_QUANTITY = 'NEGATIVE_QUANTITY';
+    public const RESULT_PRODUCT_NOT_ACTIVE = 'PRODUCT_NOT_ACTIVE';
     public const RESULT_NO_STOCK = 'NO_STOCK';
     public const RESULT_NOT_ENOUGH_BALANCE = 'NOT_ENOUGH_BALANCE';
     public const RESULT_NOT_ENOUGH_CATEGORY_BALANCE = 'NOT_ENOUGH_CATEGORY_BALANCE';
@@ -81,6 +82,12 @@ class OrderCreateService extends HttpService
             if ($quantity < 1) {
                 $this->_result = self::RESULT_NEGATIVE_QUANTITY;
                 $this->_message = "Quantity must be >= 1 for item {$product->name}";
+                return;
+            }
+
+            if (!$product->isActive()) {
+                $this->_result = self::RESULT_PRODUCT_NOT_ACTIVE;
+                $this->_message = "Product {$product->name} is not active.";
                 return;
             }
 

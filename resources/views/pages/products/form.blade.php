@@ -29,6 +29,24 @@
             </div>
 
             <div class="field">
+                <label class="label">Status<sup style="color: red">*</sup></label>
+                <div class="control">
+                    <div class="select is-fullwidth">
+                        <select name="status" required>
+                            <option value="{{ \App\Enums\ProductStatus::Active->value }}"
+                                {{ (isset($product) && $product->isActive()) || old('status') === \App\Enums\ProductStatus::Active->value  ? 'selected' : '' }}>
+                                Active
+                            </option>
+                            <option value="{{ \App\Enums\ProductStatus::Draft->value }}"
+                                {{ (isset($product) && !$product->isActive()) || old('status') === \App\Enums\ProductStatus::Draft->value  ? 'selected' : '' }}>
+                                Draft
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
                 <label class="label">Price<sup style="color: red">*</sup></label>
                 <div class="control has-icons-left">
                     <span class="icon is-small is-left">

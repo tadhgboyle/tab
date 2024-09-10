@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Permission;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Helpers\CategoryHelper;
@@ -23,6 +24,10 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
+        if (!$product->isActive() && !hasPermission(Permission::PRODUCTS_VIEW_DRAFT)) {
+            return redirect()->route('products_list')->with('error', 'You cannot view draft products.');
+        }
+
         return view('pages.products.view', [
             'product' => $product,
         ]);

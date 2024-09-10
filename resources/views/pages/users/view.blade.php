@@ -112,7 +112,7 @@
                 @forelse($user->orders->sortByDesc('created_at') as $order)
                     <tr>
                         <td>
-                            <div>Order (#{{ $order->id }})</div>
+                            <div>Order ({{ $order->identifier }})</div>
                         </td>
                         <td>
                             <div>+{{ $order->purchaser_amount }}</div>
@@ -122,7 +122,7 @@
                     @case(\App\Enums\OrderStatus::FullyReturned)
                             <tr>
                                 <td>
-                                    <div>Return (#{{ $order->id }})</div>
+                                    <div>Return ({{ $order->identifier }})</div>
                                 </td>
                                 <td>
                                     <div>-{{ $order->purchaser_amount }}</div>
@@ -133,7 +133,7 @@
                                 @if($order->getReturnedTotalToCash()->isPositive())
                                     <tr>
                                         <td>
-                                            <div>Partial Return (#{{ $order->id }})</div>
+                                            <div>Partial Return ({{ $order->identifier }})</div>
                                         </td>
                                         <td>
                                             <div>-{{ $order->getReturnedTotalToCash() }}</div>

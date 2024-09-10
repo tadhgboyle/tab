@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Product;
 
+use App\Enums\ProductStatus;
 use Tests\TestCase;
 use Cknow\Money\Money;
 use App\Models\Product;
@@ -24,6 +25,7 @@ class ProductEditTest extends TestCase
             'product_id' => $product->id,
             'name' => 'Test Product',
             'sku' => 'SKU-123',
+            'status' => ProductStatus::Draft,
             'price' => 10_50,
             'category_id' => $category->id,
             'box_size' => 22,
@@ -37,6 +39,8 @@ class ProductEditTest extends TestCase
         $this->assertModelExists($product);
         $this->assertSame('Test Product', $product->name);
         $this->assertSame('SKU-123', $product->sku);
+        $this->assertSame(ProductStatus::Draft, $product->status);
+        $this->assertFalse($product->isActive());
         $this->assertEquals(Money::parse(10_50), $product->price);
         $this->assertSame($category->id, $product->category_id);
         $this->assertSame(10, $product->stock);
@@ -56,6 +60,7 @@ class ProductEditTest extends TestCase
         $productService = new ProductEditService(new ProductRequest([
             'product_id' => $product->id,
             'name' => 'Test Product',
+            'status' => ProductStatus::Active,
             'price' => 10_50,
             'category_id' => $category2->id,
         ]), $product);
@@ -78,6 +83,7 @@ class ProductEditTest extends TestCase
         $productService = new ProductEditService(new ProductRequest([
             'product_id' => $product->id,
             'name' => 'Test Product',
+            'status' => ProductStatus::Active,
             'price' => 10_50,
             'category_id' => $product->category_id,
         ]), $product);

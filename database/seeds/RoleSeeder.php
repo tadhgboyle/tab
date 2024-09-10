@@ -37,6 +37,8 @@ class RoleSeeder extends Seeder
                 Permission::USERS_MANAGE,
                 Permission::PRODUCTS,
                 Permission::PRODUCTS_LIST,
+                Permission::PRODUCTS_VIEW,
+                Permission::PRODUCTS_VIEW_DRAFT,
                 Permission::PRODUCTS_MANAGE,
                 Permission::ACTIVITIES,
                 Permission::ACTIVITIES_LIST,
