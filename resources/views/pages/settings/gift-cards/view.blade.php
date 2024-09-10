@@ -37,15 +37,10 @@
 </div>
 <div class="columns">
     <div class="column">
-        <div class="box">
-            <h4 class="title has-text-weight-bold is-4">Timeline</h4>
-            <x-entity-timeline :timeline="$giftCard->timeline()" />
-        </div>
+        <x-entity-timeline :timeline="$giftCard->timeline()" />
     </div>
     <div class="column">
-        <div class="box">
-            <livewire:settings.gift-cards.users-list :gift-card="$giftCard" />
-        </div>
+        <livewire:settings.gift-cards.users-list :gift-card="$giftCard" />
     </div>
 </div>
 

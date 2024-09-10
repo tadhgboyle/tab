@@ -68,9 +68,7 @@
 
     @permission(\App\Helpers\Permission::SETTINGS_CATEGORIES_MANAGE)
     <div class="column">
-        <div class="box">
-            <livewire:settings.categories-list />
-        </div>
+        <livewire:settings.categories-list />
     </div>
     @endpermission
 </div>
@@ -78,17 +76,13 @@
 <div class="columns">
     @permission(\App\Helpers\Permission::SETTINGS_ROLES_MANAGE)
     <div class="column is-6">
-        <div class="box">
-            <livewire:settings.roles-list />
-        </div>
+        <livewire:settings.roles-list />
     </div>
     @endpermission
 
     @permission(\App\Helpers\Permission::SETTINGS_ROTATIONS_MANAGE)
     <div class="column is-6">
-        <div class="box">
-            <livewire:settings.rotations-list />
-        </div>
+        <livewire:settings.rotations-list />
     </div>
     @endpermission
 </div>
@@ -96,9 +90,7 @@
 <div class="columns">
     @permission(\App\Helpers\Permission::SETTINGS_GIFT_CARDS_MANAGE)
     <div class="column">
-        <div class="box">
-            <livewire:settings.gift-cards-list />
-        </div>
+        <livewire:settings.gift-cards-list />
     </div>
     @endpermission
 </div>

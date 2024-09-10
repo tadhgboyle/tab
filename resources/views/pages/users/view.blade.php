@@ -56,20 +56,13 @@
     <div class="column">
         <div class="columns is-multiline">
             <div class="column">
-                <div class="box">
-                    <livewire:users.orders-list :user="$user" />
-                </div>
+                <livewire:users.orders-list :user="$user" />
             </div>
             <div class="column is-full">
-                <div class="box">
-                    <livewire:users.activity-registrations-list :user="$user" />
-                </div>
+                <livewire:users.activity-registrations-list :user="$user" />
             </div>
             <div class="column">
-                <div class="box">
-                    <h4 class="title has-text-weight-bold is-4">Timeline</h4>
-                    <x-entity-timeline :timeline="$user->timeline()" />
-                </div>
+                <x-entity-timeline :timeline="$user->timeline()" />
             </div>
         </div>
     </div>
@@ -77,19 +70,13 @@
     <div class="column">
         <div class="columns is-multiline">
             <div class="column">
-                <div class="box">
-                    <livewire:users.category-limits-list :user="$user" />
-                </div>
+                <livewire:users.category-limits-list :user="$user" />
             </div>
             <div class="column">
-                <div class="box">
-                    <livewire:users.rotations-list :user="$user" />
-                </div>
+                <livewire:users.rotations-list :user="$user" />
             </div>
             <div class="column is-full">
-                <div class="box">
-                    <livewire:users.payouts-list :user="$user" />
-                </div>
+                <livewire:users.payouts-list :user="$user" />
             </div>
         </div>
     </div>

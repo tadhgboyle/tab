@@ -53,14 +53,6 @@ class Rotation extends Model
         return RotationStatus::Past;
     }
 
-    public function getStatusHtml(): string
-    {
-        return match ($this->getStatus()) {
-            RotationStatus::Present => '<span class="tag is-medium">✅ Present</span>',
-            RotationStatus::Future => '<span class="tag is-medium">🔮 Future</span>',
-            RotationStatus::Past => '<span class="tag is-medium">🕐 Past</span>',
-        };
-    }
     // cashier page:
     // -- dropdown selector if they have perm, otherwise current/alert if current is null
 

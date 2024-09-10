@@ -95,16 +95,40 @@ class Activity extends Model implements HasTimeline
 
     public function getStatusHtml(): string
     {
-        if ($this->end->isPast()) {
+        if ($this->ended()) {
             return '<span class="tag is-medium">🕐 Over</span>';
         }
 
-        if ($this->start->isPast()) {
+        if ($this->inProgress()) {
             return '<span class="tag is-medium">✅ In Progress</span>';
         }
 
-        $starts_in_words = $this->start->diffForHumans(now(), CarbonInterface::DIFF_ABSOLUTE, false, 3);
-        return '<span class="tag is-medium">🔮 Starts in ' . $starts_in_words . '</span>';
+        return '<span class="tag is-medium">🔮 Waiting</span>';
+    }
+
+    public function inProgress(): bool
+    {
+        return $this->started() && !$this->ended();
+    }
+
+    public function started(): bool
+    {
+        return $this->start->isPast();
+    }
+
+    public function ended(): bool
+    {
+        return $this->end->isPast();
+    }
+
+    public function countdown(): string
+    {
+        return now()->diffForHumans($this->start, CarbonInterface::DIFF_ABSOLUTE, false, 3);
+    }
+
+    public function duration(): string
+    {
+        return $this->start->diffForHumans($this->end, CarbonInterface::DIFF_ABSOLUTE, false, 3);
     }
 
     public function timeline(): array
@@ -117,7 +141,7 @@ class Activity extends Model implements HasTimeline
             ),
         ];
 
-        if ($this->start->isPast()) {
+        if ($this->started()) {
             $timeline[] = new TimelineEntry(
                 description: 'Started',
                 emoji: '🚀',
@@ -125,7 +149,7 @@ class Activity extends Model implements HasTimeline
             );
         }
 
-        if ($this->end->isPast()) {
+        if ($this->ended()) {
             $timeline[] = new TimelineEntry(
                 description: 'Ended',
                 emoji: '🏁',

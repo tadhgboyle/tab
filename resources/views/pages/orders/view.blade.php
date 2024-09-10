@@ -203,7 +203,7 @@
         </div>
     </div>
     <div class="column">
-        <div class="box">
+        <x-detail-card title="Details">
             <p><strong>Date:</strong> {{ $order->created_at->format('M jS Y h:ia') }}</p>
             <p><strong>Rotation:</strong> {{ $order->rotation->name }}</p>
             <p>
@@ -216,10 +216,8 @@
                     - {{ $order->purchaser->orders()->count() }} orders
             </p>
             <p><strong>Cashier:</strong> @permission(\App\Helpers\Permission::USERS_VIEW) <a href="{{ route('users_view', $order->cashier_id) }}">{{ $order->cashier->full_name }}</a> @else {{ $order->cashier->full_name }} @endpermission</p>
-        </div>
-        <div class="box">
-            <x-entity-timeline :timeline="$order->timeline()" />
-        </div>
+        </x-detail-card>
+        <x-entity-timeline :timeline="$order->timeline()" />
     </div>
 </div>
 

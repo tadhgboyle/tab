@@ -46,6 +46,27 @@ class ActivityTest extends TestCase
         ]);
     }
 
+    public function testCountdown(): void
+    {
+        $activity = Activity::factory()->create([
+            'category_id' => $this->_activities_category->id,
+            'start' => now()->addWeek()->addHours(2)->addMinutes(7),
+        ]);
+
+        $this->assertEquals('1 week 2 hours 6 minutes', $activity->countdown());
+    }
+
+    public function testDuration(): void
+    {
+        $activity = Activity::factory()->create([
+            'category_id' => $this->_activities_category->id,
+            'start' => now(),
+            'end' => now()->addDay()->addHour()->addMinutes(5),
+        ]);
+
+        $this->assertEquals('1 day 1 hour 5 minutes', $activity->duration());
+    }
+
     public function testSlotsAvailableReturnsNegativeOneIfUnlimitedSlots(): void
     {
         $activity = Activity::factory()->create([

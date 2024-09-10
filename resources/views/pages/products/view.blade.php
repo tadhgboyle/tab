@@ -7,16 +7,13 @@
 
 <div class="columns">
     <div class="column is-two-thirds">
-        <div class="box">
+        <div class="mb-5">
             <livewire:products.variants-list :product="$product" />
         </div>
 
-        <div class="box">
-            <livewire:products.variant-options-list :product="$product" />
-        </div>
+        <livewire:products.variant-options-list :product="$product" />
     </div>
     <div class="column">
-
         <x-detail-card title="Details">
             <p><strong>Status:</strong> {{ $product->status->getWord() }}</p>
             <p><strong>Category:</strong> {{ $product->category->name }}</p>

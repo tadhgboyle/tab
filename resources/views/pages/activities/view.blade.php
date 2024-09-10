@@ -2,22 +2,33 @@
 @section('content')
 <h2 class="title has-text-weight-bold">View Activity</h2>
 <h4 class="subtitle"><strong>Activity:</strong> {{ $activity->name }} @permission(\App\Helpers\Permission::ACTIVITIES_MANAGE)<a href="{{ route('activities_edit', $activity->id) }}">(Edit)</a>@endpermission</h4>
-<div class="columns box">
-    <div class="column">
-        <p><strong>Category:</strong> {{ $activity->category->name }}</p>
-        <p><strong>Start time:</strong> {{ $activity->start->format('M jS Y h:ia') }}</p>
-        <p><strong>End time:</strong> {{ $activity->end->format('M jS Y h:ia') }}</p>
-        @if(!is_null($activity->description))<p><strong>Description:</strong> {{ $activity->description }}</p>@endif
-        @if(!is_null($activity->location))<p><strong>Location:</strong> {{ $activity->location }}</p>@endif
-        <p><strong>Slots:</strong> @if($activity->unlimited_slots) <i>Unlimited</i> @else {{ $activity->slots }} (Available: {{ $activity->slotsAvailable() }})@endif</p>
-        <p><strong>Price:</strong> {!! $activity->price->isZero() ? '<i>Free</i>' : $activity->price !!}</p>
-        <p><strong>Status:</strong> {!! $activity->getStatusHtml() !!}</p>
-    </div>
-    <div class="column">
+<div class="columns">
+    <div class="column is-two-thirds">
         <livewire:activities.registrations-list :activity="$activity" />
     </div>
+    <div class="column">
+        <x-detail-card title="Details">
+            <p><strong>Category:</strong> {{ $activity->category->name }}</p>
+            @if(!is_null($activity->description))<p><strong>Description:</strong> {{ $activity->description }}</p>@endif
+            @if(!is_null($activity->location))<p><strong>Location:</strong> {{ $activity->location }}</p>@endif
+            <p><strong>Slots:</strong> @if($activity->unlimited_slots) <i>Unlimited</i> @else {{ $activity->slots }} (Available: {{ $activity->slotsAvailable() }})@endif</p>
+            <p><strong>Status:</strong> {!! $activity->getStatusHtml() !!}</p>
+        </x-detail-card>
+        <x-detail-card title="Timing">
+            @unless($activity->ended())
+                <p><strong>Starts in:</strong> {{ $activity->countdown() }}</p>
+            @endunless
+            <p><strong>Starts at:</strong> {{ $activity->start->format('M jS Y h:ia') }}</p>
+            <p><strong>Ends at:</strong> {{ $activity->end->format('M jS Y h:ia') }}</p>
+            <p><strong>Duration:</strong> {{ $activity->duration() }}</p>
+        </x-detail-card>
+        <x-detail-card title="Pricing">
+            <p><strong>Price:</strong> {!! $activity->price->isZero() ? '<i>Free</i>' : $activity->price !!}</p>
+            <p><strong>PST:</strong> {{ $activity->pst ? '✅' : '❌' }}</p>
+        </x-detail-card>
+        <x-entity-timeline :timeline="$activity->timeline()" />
+    </div>
 </div>
-<x-entity-timeline :timeline="$activity->timeline()" />
 
 @if($can_register)
 <div class="modal">

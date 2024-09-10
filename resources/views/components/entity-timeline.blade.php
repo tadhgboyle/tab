@@ -1,22 +1,22 @@
-@foreach($timeline as $entry)
-    <article class="media">
-        <figure class="media-left">
-            {{ $entry->emoji }}
-        </figure>
-        <div class="media-content">
-            <div class="content">
-                @if($entry->actor)
-                    <strong>{{ $entry->actor->full_name }}</strong>
-                    <br />
+<x-detail-card title="Timeline">
+    <ol class="relative border-s border-gray-200">
+        @foreach($timeline as $entry)                
+        <li class="mb-2 ms-4">
+            <div class="absolute w-3 h-3 bg-gray-200 rounded-full mt-1.5 -start-1.5 border border-white"></div>
+            <span class="mb-1 text-sm font-normal leading-none text-gray-600" title="{{ $entry->time->format('M jS Y h:ia') }}">
+                {{ $entry->time->diffForHumans() }}
+            </span>
+            @if($entry->actor)
+                <h3 class="text-sm font-semibold text-gray-900">{{ $entry->emoji }} {{ $entry->actor->full_name }}</h3>
+            @endif
+            <p class="text-sm font-normal text-gray-800">{{ !$entry->actor ? $entry->emoji : '' }}
+                @if($entry->link)
+                    <a href="{{ $entry->link }}" class="hover:underline">{{ $entry->description }}</a>
+                @else
+                    {{ $entry->description }}
                 @endif
-                <span>
-                    @if($entry->link)
-                        <a href="{{ $entry->link }}">{{ $entry->description }}</a>
-                    @else
-                        {{ $entry->description }}
-                    @endif
-                    • <small title="{{ $entry->time->format('M jS Y h:ia') }}">{{ $entry->time->diffForHumans() }}</small></span>
-            </div>
-        </div>
-    </article>
-@endforeach
+            </p>
+        </li>
+        @endforeach
+    </ol>
+</x-detail-card>

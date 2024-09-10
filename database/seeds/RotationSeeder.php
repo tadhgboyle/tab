@@ -41,14 +41,23 @@ class RotationSeeder extends Seeder
 
         foreach ($users as $user) {
             if (random_int(0, 3) == 3) {
-                $user->rotations()->attach(Rotation::all()->random(1));
+                $rotation = Rotation::all()->random();
+                if (!$user->rotations()->get()->contains($rotation)) {
+                	$user->rotations()->attach($rotation);
+                }
             }
 
             if (random_int(0, 6) == 6) {
-                $user->rotations()->attach(Rotation::all()->random(1));
+                $rotation = Rotation::all()->random();
+                if (!$user->rotations()->get()->contains($rotation)) {
+                	$user->rotations()->attach($rotation);
+                }
             }
 
-            $user->rotations()->attach(Rotation::all()->random(1));
+            $rotation = Rotation::all()->random();
+            if (!$user->rotations()->get()->contains($rotation)) {
+                $user->rotations()->attach($rotation);
+            }
         }
     }
 }

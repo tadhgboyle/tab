@@ -32,13 +32,18 @@ class ActivityFactory extends Factory
         $start_date = Carbon::instance($this->faker->dateTimeThisMonth)->addDays($this->faker->numberBetween(14, 31));
         $end_date = $start_date->copy()->addMinutes($this->faker->numberBetween(0, 500));
 
+        $price = $this->faker->boolean(5) ? 0_00 : $this->faker->numberBetween(0, 50_00);
+        // round to nearest $0.50
+        $price = round($price / 50) * 50;
+        $price = $price / 100;
+
         return [
             'name' => $this->faker->unique()->randomElement(self::$activityNames),
             'location' => $this->faker->address,
             'description' => $this->faker->text(75),
             'unlimited_slots' => random_int(0, 3) === 0,
             'slots' => $this->faker->numberBetween(3, 30),
-            'price' => $this->faker->numberBetween(0, 50_00),
+            'price' => $price,
             'pst' => $this->faker->boolean,
             'start' => $start_date,
             'end' => $end_date

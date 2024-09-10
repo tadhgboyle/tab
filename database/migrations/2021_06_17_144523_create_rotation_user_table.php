@@ -16,6 +16,8 @@ class CreateRotationUserTable extends Migration
         Schema::create('rotation_user', static function (Blueprint $table) {
             $table->foreignId('rotation_id')->constrained();
             $table->foreignId('user_id')->constrained();
+
+            $table->unique(['rotation_id', 'user_id']);
         });
     }
 

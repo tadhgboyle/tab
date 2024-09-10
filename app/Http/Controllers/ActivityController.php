@@ -45,7 +45,7 @@ class ActivityController extends Controller
     {
         return view('pages.activities.view', [
             'activity' => $activity,
-            'can_register' => !$activity->end->isPast() && $activity->hasSlotsAvailable() && hasPermission(Permission::ACTIVITIES_REGISTER_USER),
+            'can_register' => !$activity->ended() && $activity->hasSlotsAvailable() && hasPermission(Permission::ACTIVITIES_REGISTER_USER),
         ]);
     }
 
