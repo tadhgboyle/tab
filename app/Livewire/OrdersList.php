@@ -25,6 +25,7 @@ class OrdersList extends Component implements HasTable, HasForms
         return $table
             ->query(Order::query())
             ->columns([
+                TextColumn::make('identifier')->searchable()->sortable(),
                 TextColumn::make('created_at')->label('Time')->dateTime('M jS Y h:ia')->sortable(),
                 TextColumn::make('purchaser.full_name')->searchable()->sortable()
                     ->url(fn (Order $order) => route('users_view', $order->purchaser)),
@@ -48,10 +49,13 @@ class OrdersList extends Component implements HasTable, HasForms
                     OrderStatus::FullyReturned->value => OrderStatus::FullyReturned->getWord(),
                 ])->multiple(),
             ])
+            ->recordUrl(function (Order $order) {
+                if (hasPermission(Permission::ORDERS_VIEW)) {
+                    return route('orders_view', $order);
+                }
+            })
             ->actions([
-                Action::make('view')
-                    ->url(fn (Order $order) => route('orders_view', $order))
-                    ->visible(hasPermission(Permission::ORDERS_VIEW)),
+                // ...
             ])
             ->bulkActions([
                 // ...

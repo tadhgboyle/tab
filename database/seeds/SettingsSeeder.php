@@ -23,6 +23,14 @@ class SettingsSeeder extends Seeder
                 'setting' => 'pst',
                 'value' => '7.00',
             ],
+            [
+                'setting' => 'order_prefix',
+                'value' => '#',
+            ],
+            [
+                'setting' => 'order_suffix',
+                'value' => '',
+            ],
         ]);
     }
 }

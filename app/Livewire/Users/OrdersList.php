@@ -33,6 +33,7 @@ class OrdersList extends Component implements HasTable, HasForms
                     ->visible(hasPermission($this->user->id === auth()->id() ? Permission::CASHIER_SELF_PURCHASES : Permission::CASHIER_CREATE)),
             ])
             ->columns([
+                TextColumn::make('identifier')->sortable(),
                 TextColumn::make('created_at')->label('Time')->dateTime()->sortable(),
                 TextColumn::make('cashier.full_name')
                     ->url(function (Order $order) {
@@ -53,13 +54,16 @@ class OrdersList extends Component implements HasTable, HasForms
                     };
                 }),
             ])
+            ->recordUrl(function (Order $order) {
+                if (hasPermission(Permission::ORDERS_VIEW)) {
+                    return route('orders_view', $order);
+                }
+            })
             ->filters([
                 // ...
             ])
             ->actions([
-                Action::make('view')
-                    ->url(fn (Order $order) => route('orders_view', $order))
-                    ->visible(hasPermission(Permission::ORDERS_VIEW)),
+                // ...
             ])
             ->bulkActions([
                 // ...

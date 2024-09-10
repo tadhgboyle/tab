@@ -13,8 +13,10 @@ class SettingsController extends Controller
     {
         Settings::where('setting', 'gst')->update(['value' => $request->gst]);
         Settings::where('setting', 'pst')->update(['value' => $request->pst]);
+        Settings::where('setting', 'order_prefix')->update(['value' => $request->order_prefix ?? '']);
+        Settings::where('setting', 'order_suffix')->update(['value' => $request->order_suffix ?? '']);
 
-        return redirect()->route('settings')->with('success', 'Updated tax settings.');
+        return redirect()->route('settings')->with('success', 'Updated settings.');
     }
 
     public function view(
@@ -25,6 +27,8 @@ class SettingsController extends Controller
         if (hasPermission(Permission::SETTINGS_GENERAL)) {
             $vars['gst'] = $settingsHelper->getGst();
             $vars['pst'] = $settingsHelper->getPst();
+            $vars['orderPrefix'] = $settingsHelper->getOrderPrefix();
+            $vars['orderSuffix'] = $settingsHelper->getOrderSuffix();
         }
 
         return view('pages.settings.settings', $vars);

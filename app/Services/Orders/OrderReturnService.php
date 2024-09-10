@@ -34,7 +34,7 @@ class OrderReturnService extends HttpService
         $this->_order->update(['status' => OrderStatus::FullyReturned]);
 
         $this->_result = self::RESULT_SUCCESS;
-        $this->_message = 'Successfully returned order #' . $this->_order->id . ' for ' . $this->_order->purchaser->full_name;
+        $this->_message = 'Successfully returned order ' . $this->_order->identifier . ' for ' . $this->_order->purchaser->full_name;
     }
 
     private function updateOrderProductAttributes(): void

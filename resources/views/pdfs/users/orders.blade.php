@@ -93,7 +93,7 @@
             <section>
                 <h3 class="section-header">Orders</h3>
                 @foreach($user->orders as $order)
-                    <p>Order ID: {{ $order->id }}</p>
+                    <p>Order: {{ $order->identifier }}</p>
                     <p>Date: {{ $order->created_at->format('M jS Y h:ia') }}</p>
 
                     <table>

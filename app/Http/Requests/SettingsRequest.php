@@ -17,6 +17,8 @@ class SettingsRequest extends FormRequest implements FormRequestContract
         return [
             'gst' => 'required|numeric',
             'pst' => 'required|numeric',
+            'order_prefix' => 'nullable|string',
+            'order_suffix' => 'nullable|string',
         ];
     }
 }
