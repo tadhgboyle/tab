@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\RequiresFamily;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\TrustProxies;
@@ -86,6 +87,7 @@ class Kernel extends HttpKernel
         'throttle' => ThrottleRequests::class,
         'verified' => EnsureEmailIsVerified::class,
         'permission' => HasPermission::class,
+        'requires_family' => RequiresFamily::class,
     ];
 
     /**

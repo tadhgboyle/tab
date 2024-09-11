@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Enums\FamilyMembershipRole;
 use Cknow\Money\Money;
 use App\Enums\OrderStatus;
 use App\Enums\UserLimitDuration;
 use App\Concerns\Timeline\HasTimeline;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use App\Concerns\Timeline\TimelineEntry;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Lab404\Impersonate\Models\Impersonate;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -40,6 +43,21 @@ class User extends Authenticatable implements HasTimeline
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function family(): HasOneThrough
+    {
+        return $this->hasOneThrough(Family::class, FamilyMembership::class, null, 'id', null, 'family_id');
+    }
+
+    public function familyMembership(): HasOne
+    {
+        return $this->hasOne(FamilyMembership::class);
+    }
+
+    public function familyRole(): FamilyMembershipRole
+    {
+        return $this->familyMembership->role;
     }
 
     public function orders(): HasMany
@@ -124,7 +142,7 @@ class User extends Authenticatable implements HasTimeline
     {
         $returned = Money::parse(0);
 
-        $this->orders()->whereNot('status', OrderStatus::NotReturned)->get()->each(function (Order $order) use (&$returned) {
+        $this->orders->where('status', '!=', OrderStatus::NotReturned)->each(function (Order $order) use (&$returned) {
             if ($order->isReturned()) {
                 $returned = $returned->add($order->total_price);
                 return;
@@ -146,7 +164,7 @@ class User extends Authenticatable implements HasTimeline
     {
         $returned = Money::parse(0);
 
-        $this->orders()->whereNot('status', OrderStatus::NotReturned)->get()->each(function (Order $order) use (&$returned) {
+        $this->orders->where('status', '!=', OrderStatus::NotReturned)->each(function (Order $order) use (&$returned) {
             if ($order->isReturned()) {
                 $returned = $returned->add($order->purchaser_amount);
                 return;

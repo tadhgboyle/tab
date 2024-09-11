@@ -2,9 +2,15 @@
     <div class="container">
         <div class="navbar-menu">
             <div class="navbar-start">
+                @if(auth()->user()->family)
+                    <a class="navbar-item {{ page('family', @$page) }}" href="{{ route('family') }}">
+                        🏠 Family
+                    </a>
+                @endif
+
                 @permission(\App\Helpers\Permission::DASHBOARD)
                     <a class="navbar-item {{ page('dashboard', @$page) }}" href="{{ route('dashboard') }}">
-                        🏠 Dashboard
+                        📊 Dashboard
                     </a>
                 @endpermission
 

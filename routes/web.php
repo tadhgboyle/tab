@@ -13,24 +13,26 @@
 
 use App\Helpers\Permission;
 use App\Http\Controllers\ActivityRegistrationsController;
+use App\Http\Controllers\User\FamilyMembershipController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\OrderController;
-use App\Http\Controllers\PayoutController;
-use App\Http\Controllers\CashierController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\ActivityController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\GiftCardController;
-use App\Http\Controllers\RotationController;
-use App\Http\Controllers\SettingsController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ProductVariantController;
-use App\Http\Controllers\GiftCardAssignmentController;
-use App\Http\Controllers\ProductVariantOptionController;
-use App\Http\Controllers\ProductVariantOptionValueController;
+use App\Http\Controllers\User\FamilyController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\PayoutController;
+use App\Http\Controllers\Admin\CashierController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ActivityController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\GiftCardController;
+use App\Http\Controllers\Admin\RotationController;
+use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ProductVariantController;
+use App\Http\Controllers\Admin\GiftCardAssignmentController;
+use App\Http\Controllers\Admin\ProductVariantOptionController;
+use App\Http\Controllers\Admin\ProductVariantOptionValueController;
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'login'])->name('login');
@@ -41,11 +43,22 @@ Route::middleware('auth')->group(function () {
     Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
     Route::get('/', static function () {
+        $staffRoute = hasPermission(Permission::DASHBOARD)
+            ? 'dashboard'
+            : 'cashier';
         return redirect(route(
-            hasPermission(Permission::DASHBOARD)
-                ? 'dashboard'
-                : 'cashier'
+            auth()->user()->role->staff ? $staffRoute : 'family'
         ));
+    });
+
+    /*
+     * Family
+     */
+    Route::group(['middleware' => 'requires_family', 'prefix' => '/family'], static function () {
+        Route::get('/', [FamilyController::class, 'show'])->name('family');
+        Route::get('/pdf', [FamilyController::class, 'downloadPdf'])->name('family_pdf');
+        Route::get('/{familyMembership}', [FamilyMembershipController::class, 'show'])->name('families_user_view');
+        Route::get('/{familyMembership}/pdf', [FamilyMembershipController::class, 'downloadPdf'])->name('family_membership_pdf');
     });
 
     /*

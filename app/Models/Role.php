@@ -119,6 +119,10 @@ class Role extends Model
      */
     public function hasPermission(string|array $permissions): bool
     {
+        if (!$this->staff) {
+            return false;
+        }
+
         if ($this->superuser) {
             return true;
         }
