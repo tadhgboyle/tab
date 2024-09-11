@@ -43,7 +43,7 @@ class RoleSeeder extends Seeder
                 Permission::ACTIVITIES,
                 Permission::ACTIVITIES_LIST,
                 Permission::ACTIVITIES_VIEW,
-                Permission::ACTIVITIES_REGISTER_USER,
+                Permission::ACTIVITIES_MANAGE_REGISTRATIONS,
                 Permission::ACTIVITIES_MANAGE,
                 Permission::ORDERS,
                 Permission::ORDERS_LIST,
@@ -93,7 +93,7 @@ class RoleSeeder extends Seeder
                 Permission::ACTIVITIES,
                 Permission::ACTIVITIES_LIST,
                 Permission::ACTIVITIES_VIEW,
-                Permission::ACTIVITIES_REGISTER_USER,
+                Permission::ACTIVITIES_MANAGE_REGISTRATIONS,
             ]
         ]);
 

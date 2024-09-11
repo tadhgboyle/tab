@@ -3,6 +3,8 @@
 namespace App\Livewire\Activities;
 
 use App\Models\ActivityRegistration;
+use Filament\Tables\Columns\BooleanColumn;
+use Filament\Tables\Filters\TernaryFilter;
 use Livewire\Component;
 use App\Models\Activity;
 use Filament\Tables\Table;
@@ -28,12 +30,12 @@ class RegistrationsList extends Component implements HasTable, HasForms
             ->headerActions([
                 Action::make('register')
                     ->label('Register')
-                    ->alpineClickHandler('openModal')
+                    ->alpineClickHandler('openSearchUsersModal')
                     ->disabled(function () {
-                        return $this->activity->ended() || !$this->activity->hasSlotsAvailable() || !hasPermission(Permission::ACTIVITIES_REGISTER_USER);
+                        return $this->activity->ended() || !$this->activity->hasSlotsAvailable() || !hasPermission(Permission::ACTIVITIES_MANAGE_REGISTRATIONS);
                     }),
             ])
-            ->query($this->activity->registrations()->getQuery())
+            ->query($this->activity->registrations(false)->getQuery())
             ->columns([
                 TextColumn::make('user.full_name')->label('Name')->url(function (ActivityRegistration $registration) {
                     if (hasPermission(Permission::USERS_VIEW)) {
@@ -46,12 +48,23 @@ class RegistrationsList extends Component implements HasTable, HasForms
                     }
                 }),
                 TextColumn::make('created_at')->label('Registered At')->sortable(),
+                BooleanColumn::make('returned')->trueColor('danger')->falseColor('success'),
             ])
             ->filters([
-                // ...
+                TernaryFilter::make('returned')
+                    ->label('Returned')
+                    ->options([
+                        true => 'Returned',
+                        false => 'Not Returned',
+                    ])->default(false),
             ])
             ->actions([
-                // ...
+                Action::make('remove')
+                    ->alpineClickHandler(function (ActivityRegistration $activityRegistration) {
+                        return "openRemoveUserModal({$this->activity->id}, {$activityRegistration->id})";
+                    })->hidden(function (ActivityRegistration $activityRegistration) {
+                        return $activityRegistration->returned;
+                    }),
             ])
             ->bulkActions([
                 // ...

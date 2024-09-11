@@ -27,6 +27,7 @@ class ProductCreateService extends HttpService
         $product = new Product();
         $product->name = $request->name;
         $product->sku = $request->sku;
+        $product->status = $request->status;
         $product->price = $request->price;
         $product->category_id = $request->category_id;
         $product->stock = $stock;
@@ -38,14 +39,14 @@ class ProductCreateService extends HttpService
         $product->save();
 
         $this->_result = self::RESULT_SUCCESS;
-        $this->_message = "Successfully created {$product->name}";
+        $this->_message = "Created {$product->name}";
         $this->_product = $product;
     }
 
     public function redirect(): RedirectResponse
     {
         return match ($this->getResult()) {
-            self::RESULT_SUCCESS => redirect()->route('products_list')->with('success', $this->getMessage()),
+            self::RESULT_SUCCESS => redirect()->route('products_view', $this->getProduct())->with('success', $this->getMessage()),
             default => redirect()->back()->with('error', 'Error creating product')
         };
     }

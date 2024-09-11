@@ -60,6 +60,9 @@
                         <p class="navbar-link is-arrowless {{ page('activities', @$page) }}">🗓 Activities</p>
                         <div class="navbar-dropdown is-boxed">
                             @permission(\App\Helpers\Permission::ACTIVITIES_LIST)
+                                <a class="navbar-item" href="{{ route('activities_calendar') }}">
+                                    Calendar
+                                </a>
                                 <a class="navbar-item" href="{{ route('activities_list') }}">
                                     List
                                 </a>

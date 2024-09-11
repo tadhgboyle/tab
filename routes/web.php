@@ -12,6 +12,7 @@
 */
 
 use App\Helpers\Permission;
+use App\Http\Controllers\ActivityRegistrationsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -167,7 +168,8 @@ Route::middleware('auth')->group(function () {
      */
     Route::group(['middleware' => 'permission:' . Permission::ACTIVITIES, 'prefix' => '/activities'], static function () {
         Route::group(['middleware' => 'permission:' . Permission::ACTIVITIES_LIST], static function () {
-            Route::get('/', [ActivityController::class, 'index'])->name('activities_list');
+            Route::get('/', [ActivityController::class, 'calendar'])->name('activities_calendar');
+            Route::get('/list', [ActivityController::class, 'index'])->name('activities_list');
         });
 
         Route::group(['middleware' => 'permission:' . Permission::ACTIVITIES_VIEW], static function () {
@@ -182,10 +184,11 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{activity}', [ActivityController::class, 'delete'])->name('activities_delete');
         });
 
-        Route::group(['middleware' => 'permission:' . Permission::ACTIVITIES_REGISTER_USER], static function () {
-            Route::get('/{activity}/search', [ActivityController::class, 'ajaxUserSearch'])->name('activities_user_search');
+        Route::group(['middleware' => 'permission:' . Permission::ACTIVITIES_MANAGE_REGISTRATIONS], static function () {
+            Route::get('/{activity}/search', [ActivityRegistrationsController::class, 'ajaxUserSearch'])->name('activities_user_search');
             // TODO: make POST
-            Route::get('/{activity}/add/{user}', [ActivityController::class, 'registerUser'])->name('activities_user_add');
+            Route::get('/{activity}/register/{user}', [ActivityRegistrationsController::class, 'store'])->name('activities_register_user');
+            Route::delete('/{activity}/remove/{activityRegistration}', [ActivityRegistrationsController::class, 'delete'])->name('activities_remove_user');
         });
     });
 

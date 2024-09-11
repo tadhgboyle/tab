@@ -30,10 +30,11 @@ class ActivityFactory extends Factory
     public function definition()
     {
         $start_date = Carbon::instance($this->faker->dateTimeThisMonth)->addDays($this->faker->numberBetween(14, 31));
-        $end_date = $start_date->copy()->addMinutes($this->faker->numberBetween(0, 500));
+        $start_date->minute = (int) round($start_date->minute / 15) * 15;
+        $hour_zero = $this->faker->boolean;
+        $end_date = $start_date->copy()->addHours($this->faker->numberBetween($hour_zero ? 0 : 1, 5))->addMinutes($this->faker->numberBetween($hour_zero ? 1 : 0, 3) * 15);
 
         $price = $this->faker->boolean(5) ? 0_00 : $this->faker->numberBetween(0, 50_00);
-        // round to nearest $0.50
         $price = round($price / 50) * 50;
         $price = $price / 100;
 

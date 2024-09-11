@@ -37,7 +37,7 @@ class Permission
     public const ACTIVITIES_LIST = 'activities_list';
     public const ACTIVITIES_VIEW = 'activities_view';
     public const ACTIVITIES_MANAGE = 'activities_manage';
-    public const ACTIVITIES_REGISTER_USER = 'activities_register_user';
+    public const ACTIVITIES_MANAGE_REGISTRATIONS = 'activities_manage_registrations';
 
     public const ORDERS = 'orders';
     public const ORDERS_LIST = 'orders_list';

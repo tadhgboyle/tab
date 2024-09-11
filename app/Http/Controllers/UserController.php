@@ -33,7 +33,7 @@ class UserController extends Controller
     {
         $timestamp = now()->timestamp;
 
-        return Pdf::loadView('pdfs.users.orders', [
+        return Pdf::loadView('pdfs.user', [
             'user' => $user,
         ])->stream("user-{$user->id}-{$timestamp}.pdf");
     }

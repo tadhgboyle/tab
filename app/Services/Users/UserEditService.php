@@ -7,7 +7,6 @@ use App\Models\User;
 use App\Helpers\RoleHelper;
 use App\Services\HttpService;
 use App\Http\Requests\UserRequest;
-use App\Helpers\NotificationHelper;
 use Illuminate\Http\RedirectResponse;
 use App\Services\Users\UserLimits\UserLimitUpsertService;
 
@@ -48,7 +47,7 @@ class UserEditService extends HttpService
         }
 
         foreach ($request->rotations as $rotation_id) {
-            if (!in_array($rotation_id, $user->rotations->pluck('id')->toArray(), true)) {
+            if (!in_array($rotation_id, $user->rotations()->pluck('id')->toArray(), true)) {
                 $user->rotations()->attach($rotation_id);
             }
         }
@@ -90,20 +89,9 @@ class UserEditService extends HttpService
 
     public function redirect(): RedirectResponse
     {
-        $this->buildNotification();
-
         return match ($this->getResult()) {
-            self::RESULT_SUCCESS_IGNORED_PASSWORD, self::RESULT_SUCCESS_APPLIED_PASSWORD => redirect()->route('users_list'),
+            self::RESULT_SUCCESS_IGNORED_PASSWORD, self::RESULT_SUCCESS_APPLIED_PASSWORD => redirect()->route('users_view', $this->_user)->with('success', $this->getMessage()),
             default => redirect()->back()->with('error', $this->getMessage()),
         };
-    }
-
-    private function buildNotification(): void
-    {
-        if (in_array($this->getResult(), [self::RESULT_SUCCESS_IGNORED_PASSWORD, self::RESULT_SUCCESS_APPLIED_PASSWORD])) {
-            app(NotificationHelper::class)->sendSuccessNotification('User Updated', $this->getMessage(), [
-                ['name' => 'view_user', 'url' => route('users_view', $this->_user)]
-            ]);
-        }
     }
 }

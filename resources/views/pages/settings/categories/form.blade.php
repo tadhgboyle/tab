@@ -1,7 +1,7 @@
 @extends('layouts.default', ['page' => 'settings'])
 @section('content')
 @php
-use App\Enums\CategoryType
+use App\Enums\CategoryType;
 @endphp
 <h2 class="title has-text-weight-bold">{{ isset($category) ? 'Edit' : 'Create' }} Category</h2>
 <div class="columns">
@@ -23,7 +23,7 @@ use App\Enums\CategoryType
             <div class="field">
                 <label class="label">Type<sup style="color: red">*</sup></label>
                 <div class="control">
-                    <div class="select" id="type">
+                    <div class="select is-fullwidth" id="type">
                         <select name="type" class="input" required>
                             {!! !isset($category) ? "<option value=\"\" disabled selected>Select Type...</option>" : '' !!}
                             <option value="1" {{ (isset($category) && $category->type === CategoryType::ProductsActivities) || old('type') === CategoryType::ProductsActivities->value ? "selected" : "" }}>

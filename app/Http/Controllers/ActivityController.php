@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Models\Activity;
 use App\Helpers\Permission;
 use Illuminate\Support\Carbon;
@@ -10,10 +9,7 @@ use App\Helpers\CategoryHelper;
 use App\Helpers\NotificationHelper;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\ActivityRequest;
-use App\Services\Activities\ActivityRegistrationCreateService;
 
-// TODO: add return/cancel functionality
-// TODO: fix - add pst check box
 class ActivityController extends Controller
 {
     public function __construct(
@@ -23,6 +19,11 @@ class ActivityController extends Controller
     }
 
     public function index()
+    {
+        return view('pages.activities.list');
+    }
+
+    public function calendar()
     {
         $activities = Activity::all(['id', 'name', 'start', 'end']);
         $return = [];
@@ -36,7 +37,7 @@ class ActivityController extends Controller
             ];
         }
 
-        return view('pages.activities.list', [
+        return view('pages.activities.calendar', [
             'activities' => json_encode($return),
         ]);
     }
@@ -45,7 +46,8 @@ class ActivityController extends Controller
     {
         return view('pages.activities.view', [
             'activity' => $activity,
-            'can_register' => !$activity->ended() && $activity->hasSlotsAvailable() && hasPermission(Permission::ACTIVITIES_REGISTER_USER),
+            'can_register' => !$activity->ended() && $activity->hasSlotsAvailable() && hasPermission(Permission::ACTIVITIES_MANAGE_REGISTRATIONS),
+            'can_remove' => !$activity->started() && hasPermission(Permission::ACTIVITIES_MANAGE_REGISTRATIONS),
         ]);
     }
 
@@ -81,7 +83,7 @@ class ActivityController extends Controller
             ['name' => 'view_activity', 'url' => route('activities_view', $activity->id)],
         ]);
 
-        return redirect()->route('activities_list');
+        return redirect()->route('activities_calendar');
     }
 
     public function edit(CategoryHelper $categoryHelper, Activity $activity)
@@ -124,35 +126,6 @@ class ActivityController extends Controller
     {
         $activity->delete();
 
-        return redirect()->route('activities_list')->with('success', "Deleted activity $activity->name");
-    }
-
-    // TODO: livewire
-    public function ajaxUserSearch(Activity $activity): string
-    {
-        $users = User::query()
-                        ->where('full_name', 'LIKE', '%' . request('search') . '%')
-                        ->limit(7)
-                        ->get()
-                        ->all();
-        $output = '';
-
-        foreach ($users as $user) {
-            $output .=
-                '<tr>' .
-                    '<td>' . $user->full_name . '</td>' .
-                    '<td>' . $user->balance . '</td>' .
-                    (($user->balance < $activity->getPriceAfterTax() || $activity->isAttending($user))
-                        ? '<td><button class="button is-success is-small" disabled>Add</button></td>'
-                        : '<td><a href="' . route('activities_user_add', [$activity->id, $user->id]) . '" class="button is-success is-small">Add</a></td>') .
-                '</tr>';
-        }
-
-        return $output;
-    }
-
-    public function registerUser(Activity $activity, User $user): RedirectResponse
-    {
-        return (new ActivityRegistrationCreateService($activity, $user))->redirect();
+        return redirect()->route('activities_calendar')->with('success', "Deleted activity $activity->name");
     }
 }

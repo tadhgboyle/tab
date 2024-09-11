@@ -78,6 +78,10 @@ class ActivityRegistrationCreateServiceTest extends TestCase
     public function testCannotRegisterUserIfTheActivityDoesNotHaveSlotsAvailable(): void
     {
         $activity = $this->partialMock(Activity::class, function (MockInterface $mock) {
+            $mock->shouldReceive('isAttending')
+                ->with($this->_user)
+                ->andReturnFalse();
+
             $mock->shouldReceive('hasSlotsAvailable')
                 ->andReturnFalse();
         });

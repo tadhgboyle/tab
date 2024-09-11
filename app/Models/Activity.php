@@ -7,13 +7,13 @@ use App\Helpers\TaxHelper;
 use Carbon\CarbonInterface;
 use App\Concerns\Timeline\HasTimeline;
 use Cknow\Money\Casts\MoneyIntegerCast;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use App\Concerns\Timeline\TimelineEntry;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Activity extends Model implements HasTimeline
 {
@@ -45,10 +45,6 @@ class Activity extends Model implements HasTimeline
         'end' => 'datetime',
     ];
 
-    protected $with = [
-        'attendants',
-    ];
-
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
@@ -60,7 +56,7 @@ class Activity extends Model implements HasTimeline
             return -1;
         }
 
-        return $this->slots - $this->attendants->count();
+        return $this->slots - $this->registrations()->count();
     }
 
     public function hasSlotsAvailable(int $count = 1): bool
@@ -69,8 +65,8 @@ class Activity extends Model implements HasTimeline
             return true;
         }
 
-        $current_attendees = $this->attendants->count();
-        return ($this->slots - ($current_attendees + $count)) >= 0;
+        $current_registrations = $this->registrations()->count();
+        return ($this->slots - ($current_registrations + $count)) >= 0;
     }
 
     public function getPriceAfterTax(): Money
@@ -78,19 +74,14 @@ class Activity extends Model implements HasTimeline
         return TaxHelper::calculateFor($this->price, 1, $this->pst);
     }
 
-    public function attendants(): HasManyThrough
+    public function registrations(bool $withoutReturned = true): HasMany
     {
-        return $this->hasManyThrough(User::class, ActivityRegistration::class, null, 'id', null, 'user_id');
-    }
-
-    public function registrations(): HasMany
-    {
-        return $this->hasMany(ActivityRegistration::class);
+        return $this->hasMany(ActivityRegistration::class)->when($withoutReturned, fn (Builder $query) => $query->where('returned', false));
     }
 
     public function isAttending(User $user): bool
     {
-        return $this->attendants->contains($user);
+        return $this->registrations()->where('user_id', $user->id)->exists();
     }
 
     public function getStatusHtml(): string

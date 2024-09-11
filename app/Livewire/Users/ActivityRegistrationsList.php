@@ -3,6 +3,8 @@
 namespace App\Livewire\Users;
 
 use App\Models\User;
+use Filament\Tables\Columns\BooleanColumn;
+use Filament\Tables\Filters\TernaryFilter;
 use Livewire\Component;
 use Filament\Tables\Table;
 use App\Helpers\Permission;
@@ -27,24 +29,16 @@ class ActivityRegistrationsList extends Component implements HasTable, HasForms
             ->query($this->user->activityRegistrations()->getQuery())
             ->columns([
                 TextColumn::make('created_at')->label('Time')->dateTime()->sortable(),
-                TextColumn::make('activity.name')
-                    ->url(function (ActivityRegistration $activityRegistration) {
-                        if (!hasPermission(Permission::ACTIVITIES_VIEW)) {
-                            return null;
-                        }
-
-                        return route('activities_view', $activityRegistration->activity);
-                    }),
-                TextColumn::make('cashier.full_name')
-                    ->url(function (ActivityRegistration $activityRegistration) {
-                        if (!hasPermission(Permission::USERS_VIEW)) {
-                            return null;
-                        }
-
-                        return route('users_view', $activityRegistration->cashier);
-                    }),
+                TextColumn::make('activity.name'),
+                TextColumn::make('cashier.full_name'),
                 TextColumn::make('total_price')->sortable(),
+                BooleanColumn::make('returned')->trueColor('danger')->falseColor('success'),
             ])
+            ->recordUrl(function (ActivityRegistration $activityRegistration) {
+                if (hasPermission(Permission::ACTIVITIES_VIEW)) {
+                    return route('activities_view', $activityRegistration->activity);
+                }
+            })
             ->filters([
                 // ...
             ])

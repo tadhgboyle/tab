@@ -11,7 +11,7 @@
             <p><strong>Category:</strong> {{ $activity->category->name }}</p>
             @if(!is_null($activity->description))<p><strong>Description:</strong> {{ $activity->description }}</p>@endif
             @if(!is_null($activity->location))<p><strong>Location:</strong> {{ $activity->location }}</p>@endif
-            <p><strong>Slots:</strong> @if($activity->unlimited_slots) <i>Unlimited</i> @else {{ $activity->slots }} (Available: {{ $activity->slotsAvailable() }})@endif</p>
+            <p><strong>Slots:</strong> @if($activity->unlimited_slots) <i>Unlimited</i> @else {{ $activity->slots }} - {{ $activity->slotsAvailable() }} available @endif</p>
             <p><strong>Status:</strong> {!! $activity->getStatusHtml() !!}</p>
         </x-detail-card>
         <x-detail-card title="Timing">
@@ -31,8 +31,8 @@
 </div>
 
 @if($can_register)
-<div class="modal">
-    <div class="modal-background" onclick="closeModal();"></div>
+<div class="modal" id="search-users-modal">
+    <div class="modal-background" onclick="closeSearchUsersModal();"></div>
     <div class="modal-card">
         <header class="modal-card-head">
             <p class="modal-card-title">Add Attendee</p>
@@ -52,11 +52,35 @@
             </table>
         </section>
         <footer class="modal-card-foot">
-            <button class="button" onclick="closeModal();">Cancel</button>
+            <button class="button" onclick="closeSearchUsersModal();">Cancel</button>
         </footer>
     </div>
 </div>
 @endif
+
+@if($can_remove)
+<div class="modal" id="remove-user-modal">
+    <div class="modal-background" onclick="closeRemoveUserModal();"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Remove Attendee</p>
+        </header>
+        <section class="modal-card-body">
+            <p>Are you sure you want to remove this user from the activity?</p>
+        </section>
+        <footer class="modal-card-foot">
+            <form method="POST" id="remove-user-form">
+                @csrf
+                @method('DELETE')
+                <input type="hidden" name="user_id" id="user_id" value="">
+                <button type="submit" class="button is-danger">Remove</button>
+                <button type="button" class="button" onclick="closeRemoveUserModal();">Cancel</button>
+            </form>
+        </footer>
+    </div>
+</div>
+@endif
+
 <script type="text/javascript">
     $(document).ready(function() {
         @if($can_register)
@@ -104,14 +128,27 @@
             });
         });
 
-        const modal = document.querySelector('.modal');
+        const searchUsersModal = document.getElementById('search-users-modal');
 
-        function openModal() {
-            modal.classList.add('is-active');
+        function openSearchUsersModal() {
+            searchUsersModal.classList.add('is-active');
         }
 
-        function closeModal() {
-            modal.classList.remove('is-active');
+        function closeSearchUsersModal() {
+            searchUsersModal.classList.remove('is-active');
+        }
+    @endif
+
+    @if($can_remove)
+        const removeUserModal = document.getElementById('remove-user-modal');
+
+        function openRemoveUserModal(activityId, activityRegistrationId) {
+            document.getElementById('remove-user-form').action = `/activities/${activityId}/remove/${activityRegistrationId}`;
+            removeUserModal.classList.add('is-active');
+        }
+
+        function closeRemoveUserModal() {
+            removeUserModal.classList.remove('is-active');
         }
     @endif
 </script>

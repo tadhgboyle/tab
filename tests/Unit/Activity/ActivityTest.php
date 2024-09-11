@@ -77,12 +77,27 @@ class ActivityTest extends TestCase
         $this->assertEquals(-1, $activity->slotsAvailable());
     }
 
-    public function testSlotsAvailableReturnsProperlyIfSlots(): void
+    public function testSlotsAvailableReturnsProperlyIfSlotsIsSet(): void
     {
         $activity = Activity::factory()->create([
             'category_id' => $this->_activities_category->id,
             'unlimited_slots' => false,
             'slots' => 1,
+        ]);
+
+        ActivityRegistration::factory()->create([
+            'user_id' => $this->_user->id,
+            'cashier_id' => $this->_user->id,
+            'activity_id' => $activity->id,
+            'category_id' => $this->_activities_category->id,
+            'activity_price' => $activity->price,
+            'activity_gst' => 7_00,
+            'activity_pst' => $activity->pst,
+            'total_price' => $activity->getPriceAfterTax(),
+            'rotation_id' => Rotation::factory()->create([
+                'name' => 'Test Rotation',
+            ])->id,
+            'returned' => true,
         ]);
 
         $this->assertEquals(1, $activity->slotsAvailable());
@@ -155,7 +170,7 @@ class ActivityTest extends TestCase
         $this->assertFalse($activity->hasSlotsAvailable(2));
     }
 
-    public function testHasSlotsAvailableReturnsFalseIfSlotsAvailableWhenUsersRegistered(): void
+    public function testHasSlotsAvailableReturnsFalseIfUsersRegistered(): void
     {
         $activity = Activity::factory()->create([
             'category_id' => $this->_activities_category->id,
@@ -177,6 +192,32 @@ class ActivityTest extends TestCase
         ]);
 
         $this->assertFalse($activity->hasSlotsAvailable());
+    }
+
+    public function testHasSlotsAvailableReturnsTrueIfUsersRegisteredButReturned(): void
+    {
+        $activity = Activity::factory()->create([
+            'category_id' => $this->_activities_category->id,
+            'unlimited_slots' => false,
+            'slots' => 1,
+        ]);
+
+        ActivityRegistration::factory()->create([
+            'user_id' => $this->_user->id,
+            'cashier_id' => $this->_user->id,
+            'activity_id' => $activity->id,
+            'category_id' => $this->_activities_category->id,
+            'activity_price' => $activity->price,
+            'activity_gst' => 7_00,
+            'activity_pst' => $activity->pst,
+            'total_price' => $activity->getPriceAfterTax(),
+            'rotation_id' => Rotation::factory()->create([
+                'name' => 'Test Rotation',
+            ])->id,
+            'returned' => true,
+        ]);
+
+        $this->assertTrue($activity->hasSlotsAvailable());
     }
 
     public function testGetPriceAfterTaxReturnsProperlyWhenNoPst(): void

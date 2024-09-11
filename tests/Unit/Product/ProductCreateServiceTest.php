@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Product;
 
+use App\Enums\ProductStatus;
 use Tests\TestCase;
 use Cknow\Money\Money;
 use App\Models\Category;
@@ -19,6 +20,7 @@ class ProductCreateServiceTest extends TestCase
         $productService = new ProductCreateService(new ProductRequest([
             'name' => 'Test Product',
             'sku' => 'SKU-123',
+            'status' => ProductStatus::Active,
             'price' => 10_50,
             'category_id' => $category->id,
             'box_size' => 22,
@@ -33,6 +35,7 @@ class ProductCreateServiceTest extends TestCase
         $this->assertModelExists($product);
         $this->assertSame('Test Product', $product->name);
         $this->assertSame('SKU-123', $product->sku);
+        $this->assertSame(ProductStatus::Active, $product->status);
         $this->assertEquals(Money::parse(10_50), $product->price);
         $this->assertSame($category->id, $product->category->id);
         $this->assertSame(10, $product->stock);
@@ -47,6 +50,7 @@ class ProductCreateServiceTest extends TestCase
         $category = Category::factory()->create();
         $productService = new ProductCreateService(new ProductRequest([
             'name' => 'Test Product',
+            'status' => ProductStatus::Active,
             'price' => 10_50,
             'category_id' => $category->id,
             'box_size' => 22,
@@ -73,6 +77,7 @@ class ProductCreateServiceTest extends TestCase
         $productService = new ProductCreateService(new ProductRequest([
             'name' => 'Test Product',
             'price' => 10_50,
+            'status' => ProductStatus::Active,
             'category_id' => Category::factory()->create()->id,
             'stock' => null,
             'restore_stock_on_return' => true,
@@ -91,6 +96,7 @@ class ProductCreateServiceTest extends TestCase
         $productService = new ProductCreateService(new ProductRequest([
             'name' => 'Test Product',
             'price' => 10_50,
+            'status' => ProductStatus::Active,
             'category_id' => Category::factory()->create()->id,
             'restore_stock_on_return' => true,
         ]));

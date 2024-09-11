@@ -34,17 +34,12 @@ class Order extends Model implements HasTimeline
         parent::boot();
 
         static::created(function (Order $order) {
-            $order->identifier = self::formatOrderIdentifier($order->id);
+            $prefix = app(SettingsHelper::class)->getOrderPrefix();
+            $suffix = app(SettingsHelper::class)->getOrderSuffix();
+    
+            $order->identifier = "{$prefix}{$order->id}{$suffix}";
             $order->save();
         });
-    }
-
-    private static function formatOrderIdentifier(int $id): string
-    {
-        $prefix = app(SettingsHelper::class)->getOrderPrefix();
-        $suffix = app(SettingsHelper::class)->getOrderSuffix();
-
-        return "{$prefix}{$id}{$suffix}";
     }
 
     public function purchaser(): BelongsTo

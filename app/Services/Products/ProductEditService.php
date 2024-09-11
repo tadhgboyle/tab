@@ -40,7 +40,7 @@ class ProductEditService extends HttpService
 
         $this->_product = $product;
         $this->_result = self::RESULT_SUCCESS;
-        $this->_message = "Successfully edited {$product->name}.";
+        $this->_message = "Updated {$product->name}.";
     }
 
     public function redirect(): RedirectResponse

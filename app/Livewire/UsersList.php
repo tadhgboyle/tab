@@ -40,6 +40,11 @@ class UsersList extends Component implements HasTable, HasForms
                 TextColumn::make('role.name')->badge()->color('gray'),
                 TextColumn::make('rotations.name')->badge()->color('gray'),
             ])
+            ->recordUrl(function (User $record) {
+                if (hasPermission(Permission::USERS_VIEW)) {
+                    return route('users_view', $record);
+                }
+            })
             ->filters([
                 SelectFilter::make('Role')
                     ->multiple()
@@ -53,12 +58,7 @@ class UsersList extends Component implements HasTable, HasForms
                     ->visible(hasPermission(Permission::USERS_LIST_SELECT_ROTATION)),
             ])
             ->actions([
-                Action::make('view')
-                    ->url(fn (User $record) => route('users_view', $record))
-                    ->visible(hasPermission(Permission::USERS_VIEW)),
-                Action::make('edit')
-                    ->url(fn (User $record) => route('users_edit', $record))
-                    ->visible(hasPermission(Permission::USERS_MANAGE)),
+                // ...
             ])
             ->bulkActions([
                 // ...

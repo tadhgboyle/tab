@@ -44,6 +44,7 @@ class GiftCardsList extends Component implements HasTable, HasForms
                 TextColumn::make('issuer.full_name')->searchable()->sortable(),
                 TextColumn::make('created_at')->label('Created')->dateTime('M jS Y h:ia')->sortable(),
             ])
+            ->recordUrl(fn (GiftCard $giftCard) => route('settings_gift-cards_view', $giftCard))
             ->filters([
                 Filter::make('status')
                     ->form([
@@ -62,8 +63,7 @@ class GiftCardsList extends Component implements HasTable, HasForms
                     }),
             ])
             ->actions([
-                Action::make('view')
-                    ->url(fn (GiftCard $giftCard) => route('settings_gift-cards_view', $giftCard)),
+                // ...
             ])
             ->bulkActions([
                 // ...

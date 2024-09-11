@@ -21,47 +21,47 @@ class PermissionHelper
         ]);
 
         $this->register('Cashier', Permission::CASHIER, [
-            Permission::CASHIER_CREATE => 'Create Orders',
+            Permission::CASHIER_CREATE => 'Create orders',
             Permission::CASHIER_SELF_PURCHASES => 'Create orders for themselves',
-            Permission::CASHIER_USERS_OTHER_ROTATIONS => 'Create orders for users from other Rotations',
+            Permission::CASHIER_USERS_OTHER_ROTATIONS => 'Create orders for users from other rotations',
         ]);
 
         $this->register('Users', Permission::USERS, [
-            Permission::USERS_LIST => 'List all Users',
-            Permission::USERS_VIEW => 'View specific User information',
-            Permission::USERS_MANAGE => 'Edit/Create/Delete Users',
-            Permission::USERS_PAYOUTS_CREATE => 'Create Payouts',
-            Permission::USERS_LIST_SELECT_ROTATION => 'View Users from other Rotations',
+            Permission::USERS_LIST => 'List all users',
+            Permission::USERS_VIEW => 'View specific user information',
+            Permission::USERS_MANAGE => 'Edit/Create/Delete users',
+            Permission::USERS_PAYOUTS_CREATE => 'Create payouts',
+            Permission::USERS_LIST_SELECT_ROTATION => 'View users from other rotations',
         ]);
 
         $this->register('Product Management', Permission::PRODUCTS, [
-            Permission::PRODUCTS_VIEW => 'View specific Product information',
-            Permission::PRODUCTS_VIEW_DRAFT => 'View draft Products',
-            Permission::PRODUCTS_LIST => 'List all Products',
-            Permission::PRODUCTS_MANAGE => 'Edit/Create/Delete Products',
-            Permission::PRODUCTS_LEDGER => 'Adjust stock for Products',
+            Permission::PRODUCTS_VIEW => 'View specific product information',
+            Permission::PRODUCTS_VIEW_DRAFT => 'View draft products',
+            Permission::PRODUCTS_LIST => 'List all products',
+            Permission::PRODUCTS_MANAGE => 'Edit/Create/Delete products',
+            Permission::PRODUCTS_LEDGER => 'Adjust stock for products',
         ]);
 
         $this->register('Activity Management', Permission::ACTIVITIES, [
-            Permission::ACTIVITIES_LIST => 'List all Activities',
-            Permission::ACTIVITIES_VIEW => 'View specific Activity information',
-            Permission::ACTIVITIES_MANAGE => 'Edit/Create/Delete Activities',
-            Permission::ACTIVITIES_REGISTER_USER => 'Register Users for Activities',
+            Permission::ACTIVITIES_LIST => 'List all activities',
+            Permission::ACTIVITIES_VIEW => 'View specific activity information',
+            Permission::ACTIVITIES_MANAGE => 'Edit/Create/Delete activities',
+            Permission::ACTIVITIES_MANAGE_REGISTRATIONS => 'Register/Remove activity users',
         ]);
 
         $this->register('Order Management', Permission::ORDERS, [
-            Permission::ORDERS_LIST => 'List all Orders',
-            Permission::ORDERS_LIST_SELECT_ROTATION => 'View Orders from other Rotations',
-            Permission::ORDERS_VIEW => 'View specific Order information',
-            Permission::ORDERS_RETURN => 'Return whole Orders or individual items',
+            Permission::ORDERS_LIST => 'List all orders',
+            Permission::ORDERS_LIST_SELECT_ROTATION => 'View orders from other rotations',
+            Permission::ORDERS_VIEW => 'View specific order information',
+            Permission::ORDERS_RETURN => 'Return whole orders or individual items',
         ]);
 
         $this->register('Settings', Permission::SETTINGS, [
             Permission::SETTINGS_GENERAL => 'Edit tax rates',
-            Permission::SETTINGS_CATEGORIES_MANAGE => 'Edit/Create/Delete Categories',
-            Permission::SETTINGS_ROLES_MANAGE => 'Edit/Create/Delete Roles',
-            Permission::SETTINGS_ROTATIONS_MANAGE => 'Edit/Create/Delete Rotations',
-            Permission::SETTINGS_GIFT_CARDS_MANAGE => 'Edit/Create/Delete Gift Cards',
+            Permission::SETTINGS_CATEGORIES_MANAGE => 'Edit/Create/Delete categories',
+            Permission::SETTINGS_ROLES_MANAGE => 'Edit/Create/Delete roles',
+            Permission::SETTINGS_ROTATIONS_MANAGE => 'Edit/Create/Delete rotations',
+            Permission::SETTINGS_GIFT_CARDS_MANAGE => 'View/Edit/Create/Delete gift Cards',
         ]);
     }
 

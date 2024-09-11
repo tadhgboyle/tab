@@ -47,6 +47,11 @@ class ProductsList extends Component implements HasTable, HasForms
                     return $product->isActive() ? 'success' : 'gray';
                 }),
             ])
+            ->recordUrl(function (Product $product) {
+                if (hasPermission(Permission::PRODUCTS_VIEW)) {
+                    return route('products_view', $product);
+                }
+            })
             ->filters([
                 SelectFilter::make('Category')
                     ->multiple()
@@ -65,12 +70,7 @@ class ProductsList extends Component implements HasTable, HasForms
                     ])->visible(hasPermission(Permission::PRODUCTS_VIEW_DRAFT)),
             ])
             ->actions([
-                Action::make('view')
-                    ->url(fn (Product $product) => route('products_view', $product))
-                    ->visible(hasPermission(Permission::PRODUCTS_VIEW)),
-                Action::make('edit')
-                    ->url(fn (Product $product) => route('products_edit', $product))
-                    ->visible(hasPermission(Permission::PRODUCTS_MANAGE)),
+                // ...
             ])
             ->bulkActions([
                 // ...
