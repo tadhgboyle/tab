@@ -15,8 +15,6 @@
     @endCanBeImpersonated
 @endCanImpersonate
 
-@php $owing = $user->findOwing(); @endphp
-
 <div class="box">
     <nav class="level">
         <div class="level-item has-text-centered">
@@ -46,7 +44,7 @@
         <div class="level-item has-text-centered">
             <div>
                 <p class="heading">Total owing</p>
-                <a class="title" title="View PDF" style="text-decoration: underline;" href="{{ route('users_pdf', $user) }}" target="_blank">{{ $owing }}</a>
+                <a class="title" title="View PDF" style="text-decoration: underline;" href="{{ route('users_pdf', $user) }}" target="_blank">{{ $user->findOwing() }}</a>
             </div>
         </div>
     </nav>

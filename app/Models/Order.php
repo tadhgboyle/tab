@@ -166,7 +166,7 @@ class Order extends Model implements HasTimeline
         ];
 
         $events = [];
-        foreach ($this->productReturns()->with('orderProduct')->get() as $productReturn) {
+        foreach ($this->productReturns()->with('returner', 'orderProduct')->get() as $productReturn) {
             $productName = $productReturn->orderProduct->productVariant
                 ? $productReturn->orderProduct->productVariant->description()
                 : $productReturn->orderProduct->product->name;

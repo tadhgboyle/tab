@@ -1,5 +1,5 @@
 <x-detail-card title="Timeline">
-    <ol class="relative border-s border-gray-200">
+    <ol class="relative border-s border-gray-200 ml-1">
         @foreach($timeline as $entry)                
         <li class="mb-2 ms-4">
             <div class="absolute w-3 h-3 bg-gray-200 rounded-full mt-1.5 -start-1.5 border border-white"></div>

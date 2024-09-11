@@ -8,7 +8,6 @@ use App\Models\Activity;
 use App\Services\Activities\ActivityRegistrationCreateService;
 use App\Services\Activities\ActivityRegistrationDeleteService;
 
-// TODO: add return/cancel functionality
 class ActivityRegistrationsController extends Controller
 {
     public function store(Activity $activity, User $user)
