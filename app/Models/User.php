@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\FamilyMembershipRole;
+use App\Enums\FamilyMemberRole;
 use Cknow\Money\Money;
 use App\Enums\OrderStatus;
 use App\Enums\UserLimitDuration;
@@ -47,17 +47,17 @@ class User extends Authenticatable implements HasTimeline
 
     public function family(): HasOneThrough
     {
-        return $this->hasOneThrough(Family::class, FamilyMembership::class, null, 'id', null, 'family_id');
+        return $this->hasOneThrough(Family::class, FamilyMember::class, null, 'id', null, 'family_id');
     }
 
-    public function familyMembership(): HasOne
+    public function familyMember(): HasOne
     {
-        return $this->hasOne(FamilyMembership::class);
+        return $this->hasOne(FamilyMember::class);
     }
 
-    public function familyRole(): FamilyMembershipRole
+    public function familyRole(): FamilyMemberRole
     {
-        return $this->familyMembership->role;
+        return $this->familyMember->role;
     }
 
     public function orders(): HasMany

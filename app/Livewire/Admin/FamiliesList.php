@@ -24,7 +24,7 @@ class FamiliesList extends Component implements HasTable, HasForms
             ->columns([
                 TextColumn::make('created_at')->label('Created')->dateTime()->sortable(),
                 TextColumn::make('name')->sortable()->searchable(),
-                TextColumn::make('memberships_count')->label('Members')->counts('memberships')->sortable(),
+                TextColumn::make('members_count')->label('Members')->counts('members')->sortable(),
             ])
             ->recordUrl(function (Family $family) {
                 if (hasPermission(Permission::FAMILIES_VIEW)) {

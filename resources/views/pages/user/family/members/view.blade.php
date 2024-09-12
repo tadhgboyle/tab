@@ -3,7 +3,7 @@
 <h2 class="title has-text-weight-bold">Family Member</h2>
 <h4 class="subtitle">
     {{ $user->full_name }}
-    <p><strong>Role:</strong> {{ ucfirst($familyMembership->role->value) }}</p>
+    <p><strong>Role:</strong> {{ ucfirst($familyMember->role->value) }}</p>
 </h4>
 
 <div class="box">
@@ -35,7 +35,7 @@
         <div class="level-item has-text-centered">
             <div>
                 <p class="heading">Total owing</p>
-                <a class="title" title="View PDF" style="text-decoration: underline;" href="{{ route('family_membership_pdf', $familyMembership) }}" target="_blank">{{ $user->findOwing() }}</a>
+                <a class="title" title="View PDF" style="text-decoration: underline;" href="{{ route('family_member_pdf', $familyMember) }}" target="_blank">{{ $user->findOwing() }}</a>
             </div>
         </div>
     </nav>

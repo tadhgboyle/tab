@@ -13,8 +13,8 @@
 
 use App\Helpers\Permission;
 use App\Http\Controllers\ActivityRegistrationsController;
-use App\Http\Controllers\Admin\FamilyMembershipsController;
-use App\Http\Controllers\User\FamilyMembershipController;
+use App\Http\Controllers\Admin\FamilyMembersController;
+use App\Http\Controllers\User\FamilyMemberController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
@@ -59,8 +59,8 @@ Route::middleware('auth')->group(function () {
     Route::group(['middleware' => 'requires_family', 'prefix' => '/family'], static function () {
         Route::get('/', [FamilyController::class, 'show'])->name('family');
         Route::get('/pdf', [FamilyController::class, 'downloadPdf'])->name('family_pdf');
-        Route::get('/{familyMembership}', [FamilyMembershipController::class, 'show'])->name('families_user_view');
-        Route::get('/{familyMembership}/pdf', [FamilyMembershipController::class, 'downloadPdf'])->name('family_membership_pdf');
+        Route::get('/{familyMember}', [FamilyMemberController::class, 'show'])->name('families_user_view');
+        Route::get('/{familyMember}/pdf', [FamilyMemberController::class, 'downloadPdf'])->name('family_member_pdf');
     });
 
     Route::prefix('/admin')->group(static function () {
@@ -155,9 +155,9 @@ Route::middleware('auth')->group(function () {
                 Route::put('/{family}/edit', [AdminFamilyController::class, 'update'])->name('families_update');
                 Route::delete('/{family}', [AdminFamilyController::class, 'delete'])->name('families_delete');
 
-                Route::get('/{family}/search', [FamilyMembershipsController::class, 'ajaxUserSearch'])->name('families_user_search');
-                Route::get('/{family}/add/{user}', [FamilyMembershipsController::class, 'store'])->name('families_user_add');
-                Route::delete('/{family}/remove/{familyMembership}', [FamilyMembershipsController::class, 'delete'])->name('families_user_remove');
+                Route::get('/{family}/search', [FamilyMembersController::class, 'ajaxUserSearch'])->name('families_user_search');
+                Route::get('/{family}/add/{user}', [FamilyMembersController::class, 'store'])->name('families_user_add');
+                Route::delete('/{family}/remove/{familyMember}', [FamilyMembersController::class, 'delete'])->name('families_user_remove');
             });
         });
 

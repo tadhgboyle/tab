@@ -5,33 +5,36 @@ namespace App\Models;
 use App\Concerns\Timeline\HasTimeline;
 use App\Concerns\Timeline\TimelineEntry;
 use Cknow\Money\Money;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Family extends Model implements HasTimeline
 {
+    use HasFactory;
+
     protected $fillable = [
         'name',
     ];
 
-    public function memberships(): HasMany
+    public function members(): HasMany
     {
-        return $this->hasMany(FamilyMembership::class);
+        return $this->hasMany(FamilyMember::class);
     }
 
     public function totalSpent(): Money
     {
-        return Money::sum(Money::parse(0), ...$this->membershipsWithUserRelations->map->user->map->findSpentInCash());
+        return Money::sum(Money::parse(0), ...$this->membersWithUserRelations->map->user->map->findSpentInCash());
     }
 
     public function totalOwing(): Money
     {
-        return Money::sum(Money::parse(0), ...$this->membershipsWithUserRelations->map->user->map->findOwing());
+        return Money::sum(Money::parse(0), ...$this->membersWithUserRelations->map->user->map->findOwing());
     }
 
-    public function membershipsWithUserRelations(): HasMany
+    public function membersWithUserRelations(): HasMany
     {
-        return $this->memberships()->with('user', 'user.orders', 'user.activityRegistrations');
+        return $this->members()->with('user', 'user.orders', 'user.activityRegistrations');
     }
 
     public function timeline(): array
@@ -44,12 +47,12 @@ class Family extends Model implements HasTimeline
             ),
         ];
 
-        foreach ($this->memberships()->with('user')->get() as $membership) {
+        foreach ($this->members()->with('user')->get() as $member) {
             $events[] = new TimelineEntry(
-                description: "{$membership->user->full_name} joined",
+                description: "{$member->user->full_name} joined",
                 emoji: '👨‍👩‍👧‍👦',
-                time: $membership->created_at,
-                link: route('families_user_view', $membership->user),
+                time: $member->created_at,
+                link: route('families_user_view', $member->user),
             );
         }
 

@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Livewire\User\Family;
+namespace App\Livewire\Admin\Families;
 
+use App\Helpers\Permission;
 use App\Models\Family;
-use App\Models\FamilyMembership;
+use App\Models\FamilyMember;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\SelectFilter;
 use Livewire\Component;
@@ -14,7 +15,7 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
-class MembershipsList extends Component implements HasTable, HasForms
+class MembersList extends Component implements HasTable, HasForms
 {
     use InteractsWithTable;
     use InteractsWithForms;
@@ -25,22 +26,24 @@ class MembershipsList extends Component implements HasTable, HasForms
     {
         return $table
             ->heading('Users')
-            ->query($this->family->memberships()->with('user.orders', 'user.activityRegistrations')->getQuery())
+            ->query($this->family->members()->with('user.orders', 'user.activityRegistrations')->getQuery())
             ->columns([
                 TextColumn::make('user.full_name')->sortable()->searchable(),
-                TextColumn::make('role')->badge()->color('gray')->state(function (FamilyMembership $familyMembership) {
-                    return ucfirst($familyMembership->role->value);
+                TextColumn::make('role')->badge()->color('gray')->state(function (FamilyMember $familyMember) {
+                    return ucfirst($familyMember->role->value);
                 }),
-                TextColumn::make('total_spent')->sortable()->state(function (FamilyMembership $familyMembership) {
-                    return $familyMembership->user->findSpent();
+                TextColumn::make('total_spent')->sortable()->state(function (FamilyMember $familyMember) {
+                    return $familyMember->user->findSpent();
                 }),
-                TextColumn::make('total_owing')->sortable()->state(function (FamilyMembership $familyMembership) {
-                    return $familyMembership->user->findOwing();
+                TextColumn::make('total_owing')->sortable()->state(function (FamilyMember $familyMember) {
+                    return $familyMember->user->findOwing();
                 }),
             ])
-            ->recordUrl(
-                fn (FamilyMembership $familyMembership) => route('families_user_view', $familyMembership)
-            )
+            ->recordUrl(function (FamilyMember $familyMember) {
+                if (hasPermission(Permission::USERS_VIEW)) {
+                    return route('users_view', $familyMember->user);
+                }
+            })
             ->filters([
                 SelectFilter::make('role')->options([
                     'admin' => 'Admin',
@@ -48,6 +51,10 @@ class MembershipsList extends Component implements HasTable, HasForms
                 ]),
             ])
             ->headerActions([
+                Action::make('add_user')
+                    ->label('Add User')
+                    ->alpineClickHandler('openSearchUsersModal')
+                    ->visible(hasPermission(Permission::FAMILIES_MANAGE)),
                 Action::make('pdf')
                     ->label('PDF')
                     ->button()
@@ -60,7 +67,7 @@ class MembershipsList extends Component implements HasTable, HasForms
                     ->label('PDF')
                     ->button()
                     ->icon('heroicon-m-arrow-down-tray')
-                    ->url(fn (FamilyMembership $familyMembership) => route('family_membership_pdf', $familyMembership))
+                    ->url(fn (FamilyMember $familyMember) => route('family_member_pdf', $familyMember))
                     ->openUrlInNewTab(),
             ])
             ->bulkActions([

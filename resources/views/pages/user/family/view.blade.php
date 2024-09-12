@@ -4,7 +4,7 @@
 
 <div class="columns">
     <div class="column is-two-thirds">
-        <livewire:user.family.memberships-list :family="$family" />
+        <livewire:user.family.members-list :family="$family" />
     </div>
     <div class="column">
         <x-detail-card title="Details">

@@ -1,12 +1,12 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-use App\Enums\FamilyMembershipRole;
+use App\Enums\FamilyMemberRole;
 use App\Models\Family;
-use App\Models\FamilyMembership;
+use App\Models\FamilyMember;
 use App\Models\User;
 
-class FamilyMembershipsController
+class FamilyMembersController
 {
     public function store(Family $family, User $user)
     {
@@ -14,19 +14,19 @@ class FamilyMembershipsController
             return redirect()->back()->with('error', "$user->full_name is already in a family.");
         }
 
-        $family->memberships()->create([
+        $family->members()->create([
             'user_id' => $user->id,
-            'role' => FamilyMembershipRole::Member,
+            'role' => FamilyMemberRole::Member,
         ]);
 
         return redirect()->back()->with('success', "$user->full_name added to $family->name.");
     }
 
-    public function delete(FamilyMembership $familyMembership)
+    public function delete(FamilyMember $familyMember)
     {
-        $familyMembership->delete();
+        $familyMember->delete();
 
-        return redirect()->back()->with('success', "{$familyMembership->user->full_name} removed from {$familyMembership->family->name}.");
+        return redirect()->back()->with('success', "{$familyMember->user->full_name} removed from {$familyMember->family->name}.");
     }
 
     // TODO: livewire

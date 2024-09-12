@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use App\Enums\FamilyMembershipRole;
+use App\Enums\FamilyMemberRole;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class FamilyMembership extends Model
+class FamilyMember extends Model
 {
     protected $fillable = [
         'family_id',
@@ -15,7 +15,7 @@ class FamilyMembership extends Model
     ];
 
     protected $casts = [
-        'role' => FamilyMembershipRole::class,
+        'role' => FamilyMemberRole::class,
     ];
 
     public function family(): BelongsTo
