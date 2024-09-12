@@ -162,7 +162,7 @@
         const editValueModal = document.getElementById('edit-value-modal');
 
         function openEditValueModal(valueId, value) {
-            const url = `/products/{{ $product->id }}/variant-options/{{ $productVariantOption->id }}/values/${valueId}`;
+            const url = `/admin/products/{{ $product->id }}/variant-options/{{ $productVariantOption->id }}/values/${valueId}`;
             document.getElementById('editForm').action = url;
             document.getElementById('deleteVariantOptionValueForm').action = url;
 

@@ -93,7 +93,7 @@
     const removeUserModal = document.getElementById('remove-user-modal');
 
     function openRemoveUserModal(userId, user) {
-        const url = `/settings/gift-cards/{{ $giftCard->id }}/unassign/${userId}`;
+        const url = `/admin/settings/gift-cards/{{ $giftCard->id }}/unassign/${userId}`;
         document.getElementById('removeUserForm').action = url;
         document.getElementById('remove-user-name').innerText = user;
 

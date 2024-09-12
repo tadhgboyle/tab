@@ -26,7 +26,7 @@ window.onload = () => {
 
 const addProduct = async (productId, variantId = 0) => {
     // TODO: check stock and don't add if it would be over the limit
-    await fetch(`/products/${productId}/info?variantId=${variantId}`)
+    await fetch(`/admin/products/${productId}/info?variantId=${variantId}`)
         .then(resp => resp.json())
         .then(async (product) => {
             let quantity = 1;
@@ -51,7 +51,7 @@ const addProduct = async (productId, variantId = 0) => {
             products[productId] = {};
             products[productId][variantId] = quantity;
 
-            await fetch(`/users/${PURCHASER_ID}/check-limit/${product.categoryId}?products=${JSON.stringify(products)}`)
+            await fetch(`/admin/users/${PURCHASER_ID}/check-limit/${product.categoryId}?products=${JSON.stringify(products)}`)
                 .then(resp => resp.json())
                 .then(data => {
                     if (data.can_spend) {
@@ -332,7 +332,7 @@ const toggleGiftCardApplyButton = () => {
 const addGiftCard = async () => {
     const giftCardCode = GIFT_CARD_CODE_INPUT.value;
 
-    await fetch(`/gift-cards/check-validity?code=${giftCardCode}&purchaser_id=${PURCHASER_ID}`)
+    await fetch(`/admin/gift-cards/check-validity?code=${giftCardCode}&purchaser_id=${PURCHASER_ID}`)
         .then(response => response.json())
         .then(data => {
             if (data.valid) {

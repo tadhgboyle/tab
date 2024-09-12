@@ -143,7 +143,7 @@
         const removeUserModal = document.getElementById('remove-user-modal');
 
         function openRemoveUserModal(activityId, activityRegistrationId) {
-            document.getElementById('remove-user-form').action = `/activities/${activityId}/remove/${activityRegistrationId}`;
+            document.getElementById('remove-user-form').action = `/admin/activities/${activityId}/remove/${activityRegistrationId}`;
             removeUserModal.classList.add('is-active');
         }
 
