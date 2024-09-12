@@ -8,6 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class FamilyMembership extends Model
 {
+    protected $fillable = [
+        'family_id',
+        'user_id',
+        'role',
+    ];
+
     protected $casts = [
         'role' => FamilyMembershipRole::class,
     ];

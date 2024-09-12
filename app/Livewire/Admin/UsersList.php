@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\User;
+use Filament\Tables\Filters\TernaryFilter;
 use Livewire\Component;
 use Filament\Tables\Table;
 use App\Helpers\Permission;
@@ -57,6 +58,12 @@ class UsersList extends Component implements HasTable, HasForms
                     ->preload()
                     ->label('Rotations')
                     ->visible(hasPermission(Permission::USERS_LIST_SELECT_ROTATION)),
+                TernaryFilter::make('in_family')
+                    ->label('In Family')
+                    ->queries(
+                        true: fn ($query) => $query->whereHas('family'),
+                        false: fn ($query) => $query->whereDoesntHave('family'),
+                ),
             ])
             ->actions([
                 // ...

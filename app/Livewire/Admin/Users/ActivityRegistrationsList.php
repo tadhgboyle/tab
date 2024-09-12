@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin\Users;
 
+use App\Models\Activity;
 use App\Models\User;
 use Filament\Tables\Columns\BooleanColumn;
 use Livewire\Component;
@@ -31,6 +32,19 @@ class ActivityRegistrationsList extends Component implements HasTable, HasForms
                 TextColumn::make('activity.name'),
                 TextColumn::make('cashier.full_name'),
                 TextColumn::make('total_price')->sortable(),
+                TextColumn::make('status')->badge()->state(function (ActivityRegistration $activityRegistration) {
+                    return match(true) {
+                        $activityRegistration->activity->ended() => 'Ended',
+                        $activityRegistration->activity->inProgress() => 'In Progress',
+                        default => 'Upcoming',
+                    };
+                })->color(function (ActivityRegistration $activityRegistration) {
+                    return match(true) {
+                        $activityRegistration->activity->ended() => 'danger',
+                        $activityRegistration->activity->inProgress() => 'success',
+                        default => 'gray',
+                    };
+                }),
                 BooleanColumn::make('returned')->trueColor('danger')->falseColor('success'),
             ])
             ->recordUrl(function (ActivityRegistration $activityRegistration) {

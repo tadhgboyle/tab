@@ -2,6 +2,7 @@
 
 namespace App\Livewire\User\Family\Members;
 
+use App\Models\ActivityRegistration;
 use App\Models\User;
 use Filament\Tables\Columns\BooleanColumn;
 use Livewire\Component;
@@ -28,6 +29,19 @@ class ActivityRegistrationsList extends Component implements HasTable, HasForms
                 TextColumn::make('created_at')->label('Time')->dateTime()->sortable(),
                 TextColumn::make('activity.name'),
                 TextColumn::make('total_price')->sortable(),
+                TextColumn::make('status')->badge()->state(function (ActivityRegistration $activityRegistration) {
+                    return match(true) {
+                        $activityRegistration->activity->ended() => 'Ended',
+                        $activityRegistration->activity->inProgress() => 'In Progress',
+                        default => 'Upcoming',
+                    };
+                })->color(function (ActivityRegistration $activityRegistration) {
+                    return match(true) {
+                        $activityRegistration->activity->ended() => 'danger',
+                        $activityRegistration->activity->inProgress() => 'success',
+                        default => 'gray',
+                    };
+                }),
                 BooleanColumn::make('returned')->trueColor('danger')->falseColor('success'),
             ])
             ->filters([

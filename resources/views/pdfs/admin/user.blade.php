@@ -166,7 +166,7 @@
                             <tr>
                                 <td colspan="7" class="has-text-italic">Total</td>
                                 <td class="money-column">{{ $order->total_price }}</td>
-                                <td class="has-text-weight-bold money-column">{{ $order->getOwingTotal() }}</td>
+                                <td class="has-text-weight-bold money-column">{{ $order->getPurchaserOwingTotal() }}</td>
                             </tr>
                         </tbody>
                     </table>

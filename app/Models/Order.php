@@ -114,6 +114,11 @@ class Order extends Model implements HasTimeline
         return $this->total_price->subtract($this->getReturnedTotal());
     }
 
+    public function getPurchaserOwingTotal(): Money
+    {
+        return $this->purchaser_amount->subtract($this->getReturnedTotalToCash());
+    }
+
     public function getReturnedTotalToGiftCard(): Money
     {
         if ($this->isReturned()) {

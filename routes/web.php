@@ -13,12 +13,14 @@
 
 use App\Helpers\Permission;
 use App\Http\Controllers\ActivityRegistrationsController;
+use App\Http\Controllers\Admin\FamilyMembershipsController;
 use App\Http\Controllers\User\FamilyMembershipController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\User\FamilyController;
+use App\Http\Controllers\Admin\FamilyController as AdminFamilyController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PayoutController;
 use App\Http\Controllers\Admin\CashierController;
@@ -129,6 +131,32 @@ Route::middleware('auth')->group(function () {
                 Route::get('/{user}/payout', [PayoutController::class, 'create'])->name('users_payout_create');
                 Route::post('/{user}/payout', [PayoutController::class, 'store'])->name('users_payout_store');
             });
+        });
+    });
+
+    /*
+     * Families
+     */
+    Route::group(['middleware' => 'permission:' . Permission::FAMILIES, 'prefix' => '/families'], static function () {
+        Route::group(['middleware' => 'permission:' . Permission::FAMILIES_LIST], static function () {
+            Route::get('/', [AdminFamilyController::class, 'index'])->name('families_list');
+        });
+
+        Route::group(['middleware' => 'permission:' . Permission::FAMILIES_VIEW], static function () {
+            Route::get('/{family}', [AdminFamilyController::class, 'show'])->whereNumber('family')->name('families_view');
+            Route::get('/{family}/pdf', [AdminFamilyController::class, 'downloadPdf'])->name('families_pdf');
+        });
+
+        Route::group(['middleware' => 'permission:' . Permission::FAMILIES_MANAGE], static function () {
+            Route::get('/create', [AdminFamilyController::class, 'create'])->name('families_create');
+            Route::post('/create', [AdminFamilyController::class, 'store'])->name('families_store');
+            Route::get('/{family}/edit', [AdminFamilyController::class, 'edit'])->name('families_edit');
+            Route::put('/{family}/edit', [AdminFamilyController::class, 'update'])->name('families_update');
+            Route::delete('/{family}', [AdminFamilyController::class, 'delete'])->name('families_delete');
+
+            Route::get('/{family}/search', [FamilyMembershipsController::class, 'ajaxUserSearch'])->name('families_user_search');
+            Route::get('/{family}/add/{user}', [FamilyMembershipsController::class, 'store'])->name('families_user_add');
+            Route::delete('/{family}/remove/{familyMembership}', [FamilyMembershipsController::class, 'delete'])->name('families_user_remove');
         });
     });
 

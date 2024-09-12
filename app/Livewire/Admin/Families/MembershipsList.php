@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Livewire\User\Family;
+namespace App\Livewire\Admin\Families;
 
+use App\Helpers\Permission;
 use App\Models\Family;
 use App\Models\FamilyMembership;
 use Filament\Tables\Actions\Action;
@@ -38,9 +39,11 @@ class MembershipsList extends Component implements HasTable, HasForms
                     return $familyMembership->user->findOwing();
                 }),
             ])
-            ->recordUrl(
-                fn (FamilyMembership $familyMembership) => route('families_user_view', $familyMembership)
-            )
+            ->recordUrl(function (FamilyMembership $familyMembership) {
+                if (hasPermission(Permission::USERS_VIEW)) {
+                    return route('users_view', $familyMembership->user);
+                }
+            })
             ->filters([
                 SelectFilter::make('role')->options([
                     'admin' => 'Admin',
@@ -48,6 +51,10 @@ class MembershipsList extends Component implements HasTable, HasForms
                 ]),
             ])
             ->headerActions([
+                Action::make('add_user')
+                    ->label('Add User')
+                    ->alpineClickHandler('openSearchUsersModal')
+                    ->visible(hasPermission(Permission::FAMILIES_MANAGE)),
                 Action::make('pdf')
                     ->label('PDF')
                     ->button()

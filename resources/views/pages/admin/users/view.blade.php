@@ -54,7 +54,7 @@
     <div class="column">
         <div class="columns is-multiline">
             @if($user->family)
-                <div class="column">
+                <div class="column is-full">
                     <x-detail-card title="Family">
                         <p><strong>Name:</strong> {{ $user->family->name }}</p>
                         <p><strong>Role:</strong> {{ $user->familyRole() }}</p>

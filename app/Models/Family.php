@@ -10,6 +10,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Family extends Model implements HasTimeline
 {
+    protected $fillable = [
+        'name',
+    ];
+
     public function memberships(): HasMany
     {
         return $this->hasMany(FamilyMembership::class);

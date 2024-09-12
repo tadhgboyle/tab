@@ -26,7 +26,13 @@ class CategoryLimitsList extends Component implements HasTable, HasForms
             ->query($this->user->userLimits()->getQuery())
             ->columns([
                 TextColumn::make('category.name')->label('Category')->badge()->color('gray'),
-                TextColumn::make('limit')->label('Limit')->sortable(),
+                TextColumn::make('limit')->label('Limit')->sortable()->state(function (UserLimit $userLimit) {
+                    if ($userLimit->isUnlimited()) {
+                        return '<i>Unlimited</i>';
+                    } else {
+                        return $userLimit->limit;
+                    }
+                })->html(),
                 TextColumn::make('duration')->badge()->color('gray')
                     ->state(fn (UserLimit $userLimit) => ucfirst($userLimit->duration->label())),
                 TextColumn::make('spent')->state(fn (UserLimit $userLimit) => $userLimit->findSpent())

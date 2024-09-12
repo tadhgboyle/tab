@@ -25,6 +25,11 @@ class Permission
     public const USERS_PAYOUTS_CREATE = 'users_payouts_create';
     public const USERS_LIST_SELECT_ROTATION = 'users_list_select_rotation';
 
+    public const FAMILIES = 'families';
+    public const FAMILIES_LIST = 'families_list';
+    public const FAMILIES_VIEW = 'families_view';
+    public const FAMILIES_MANAGE = 'families_manage';
+
     public const PRODUCTS = 'products';
     public const PRODUCTS_LIST = 'products_list';
     public const PRODUCTS_VIEW = 'products_view';
