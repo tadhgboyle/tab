@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\User\Family\Members;
+namespace App\Livewire\Common\Users;
 
 use App\Models\User;
 use Livewire\Component;

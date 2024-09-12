@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin\Users;
+namespace App\Livewire\Common\Users;
 
 use App\Models\User;
 use Livewire\Component;
@@ -19,6 +19,7 @@ class PayoutsList extends Component implements HasTable, HasForms
     use InteractsWithForms;
 
     public User $user;
+    public string $context;
 
     public function table(Table $table): Table
     {
@@ -29,12 +30,18 @@ class PayoutsList extends Component implements HasTable, HasForms
                 Action::make('create')
                     ->url(route('users_payout_create', $this->user))
                     ->visible(hasPermission(Permission::USERS_PAYOUTS_CREATE))
-                    ->disabled($this->user->findOwing()->isZero()),
+                    ->disabled($this->context === 'family' || $this->user->findOwing()->isZero()),
             ])
             ->columns([
                 TextColumn::make('identifier')->searchable(),
                 TextColumn::make('amount')->sortable(),
-                TextColumn::make('cashier.full_name'),
+                TextColumn::make('cashier.full_name')
+                    ->url(function ($payout) {
+                        if (hasPermission(Permission::USERS_VIEW)) {
+                            return route('users_view', $payout->cashier);
+                        }
+                    })
+                    ->hidden($this->context === 'family'),
                 TextColumn::make('created_at')->label('Date')->sortable(),
             ])
             ->filters([

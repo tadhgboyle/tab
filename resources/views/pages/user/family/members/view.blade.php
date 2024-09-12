@@ -43,14 +43,14 @@
 
 <div class="columns">
     <div class="column">
-        <livewire:user.family.members.orders-list :user="$user" />
+        <livewire:common.users.orders-list :user="$user" context="family" />
         <div class="mt-5"></div>
-        <livewire:user.family.members.activity-registrations-list :user="$user" />
+        <livewire:common.users.activity-registrations-list :user="$user" context="family" />
     </div>
     <div class="column">
-        <livewire:user.family.members.category-limits-list :user="$user" />
+        <livewire:common.users.category-limits-list :user="$user" />
         <div class="mt-5"></div>
-        <livewire:user.family.members.payouts-list :user="$user" />
+        <livewire:common.users.payouts-list :user="$user" context="family" />
     </div>
 </div>
 @endsection

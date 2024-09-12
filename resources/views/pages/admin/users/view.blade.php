@@ -62,10 +62,10 @@
                 </div>
             @endif
             <div class="column">
-                <livewire:admin.users.orders-list :user="$user" />
+                <livewire:common.users.orders-list :user="$user" context="admin" />
             </div>
             <div class="column is-full">
-                <livewire:admin.users.activity-registrations-list :user="$user" />
+                <livewire:common.users.activity-registrations-list :user="$user" context="admin" />
             </div>
             <div class="column">
                 <x-entity-timeline :timeline="$user->timeline()" />
@@ -76,13 +76,13 @@
     <div class="column">
         <div class="columns is-multiline">
             <div class="column">
-                <livewire:admin.users.category-limits-list :user="$user" />
+                <livewire:common.users.category-limits-list :user="$user" />
             </div>
             <div class="column">
                 <livewire:admin.users.rotations-list :user="$user" />
             </div>
             <div class="column is-full">
-                <livewire:admin.users.payouts-list :user="$user" />
+                <livewire:common.users.payouts-list :user="$user" context="admin" />
             </div>
         </div>
     </div>

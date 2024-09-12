@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin\Users;
+namespace App\Livewire\Common\Users;
 
 use App\Models\User;
 use App\Models\Order;
@@ -21,6 +21,7 @@ class OrdersList extends Component implements HasTable, HasForms
     use InteractsWithForms;
 
     public User $user;
+    public string $context;
 
     public function table(Table $table): Table
     {
@@ -30,7 +31,8 @@ class OrdersList extends Component implements HasTable, HasForms
             ->headerActions([
                 Action::make('create')
                     ->url(route('orders_create', $this->user))
-                    ->visible(hasPermission($this->user->id === auth()->id() ? Permission::CASHIER_SELF_PURCHASES : Permission::CASHIER_CREATE)),
+                    ->visible(hasPermission($this->user->id === auth()->id() ? Permission::CASHIER_SELF_PURCHASES : Permission::CASHIER_CREATE))
+                    ->hidden($this->context === 'family'),
             ])
             ->columns([
                 TextColumn::make('identifier')->sortable(),
@@ -42,7 +44,8 @@ class OrdersList extends Component implements HasTable, HasForms
                         }
 
                         return route('users_view', $order->cashier);
-                    }),
+                    })
+                    ->hidden($this->context === 'family'),
                 TextColumn::make('total_price')->sortable(),
                 TextColumn::make('status')->badge()->state(function (Order $order) {
                     return $order->status->getWord();
@@ -55,6 +58,10 @@ class OrdersList extends Component implements HasTable, HasForms
                 }),
             ])
             ->recordUrl(function (Order $order) {
+                if ($this->context === 'family') {
+                    return null;
+                }
+
                 if (hasPermission(Permission::ORDERS_VIEW)) {
                     return route('orders_view', $order);
                 }
