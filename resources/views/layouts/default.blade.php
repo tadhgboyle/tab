@@ -31,9 +31,9 @@
                 <div class="has-text-centered has-background-light py-2">
                     <p>
                         @if(\Str::contains(request()->url(), '/admin'))
-                            🧑‍💼️ You're in an admin context, <a href="{{ route('family_view', auth()->user()->family) }}">click here to view your family</a>
+                            🏛 You're in an admin context, <a href="{{ route('family_view', auth()->user()->family) }}">click here to view your family</a>
                         @else
-                            🏛 You're in a family context
+                            🧑‍💼️ You're in a family context
                         @endif
                     </p>
                 </div>

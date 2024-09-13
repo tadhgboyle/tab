@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class FamilyMember extends Model
 {
+    // TODO softdeletes for Family timeline
+
     protected $fillable = [
         'family_id',
         'user_id',

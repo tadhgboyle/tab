@@ -53,7 +53,7 @@ class MembersList extends Component implements HasTable, HasForms
                 }),
             ])
             ->recordUrl(function (FamilyMember $familyMember) {
-                if ($this->context === 'family' && auth()->user()->isFamilyAdmin($this->family) || auth()->user()->id === $familyMember->user_id) {
+                if ($this->context === 'family' && (auth()->user()->isFamilyAdmin($this->family) || auth()->user()->id === $familyMember->user_id)) {
                     return route('families_member_view', [$this->family, $familyMember]);
                 } else if ($this->context === 'admin' && hasPermission(Permission::USERS_VIEW)) {
                     return route('users_view', $familyMember->user);

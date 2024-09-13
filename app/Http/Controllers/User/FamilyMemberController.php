@@ -16,6 +16,21 @@ class FamilyMemberController extends Controller
         ]);
     }
 
+    public function edit(Family $family, FamilyMember $familyMember)
+    {
+        return view('pages.user.family.members.edit', [
+            'familyMember' => $familyMember,
+            'user' => $familyMember->user,
+        ]);
+    }
+
+    public function update(Family $family, FamilyMember $familyMember)
+    {
+        $familyMember->update(request()->only('role'));
+
+        return redirect()->route('families_member_view', [$family, $familyMember])->with('success', 'Family member updated.');
+    }
+
     public function downloadPdf(Family $family, FamilyMember $familyMember)
     {
         $user = $familyMember->user;

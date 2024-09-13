@@ -3,7 +3,12 @@
 <h2 class="title has-text-weight-bold">Family Member</h2>
 <h4 class="subtitle">
     {{ $user->full_name }}
-    <p><strong>Role:</strong> {{ ucfirst($familyMember->role->value) }}</p>
+    <p>
+        <strong>Role:</strong> {{ ucfirst($user->familyRole()->value) }}
+        @if(auth()->user()->isFamilyAdmin())
+            <a href="{{ route('families_member_edit', [$familyMember->family, $familyMember]) }}">(Edit)</a>
+        @endif
+    </p>
 </h4>
 
 <div class="box">

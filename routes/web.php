@@ -12,9 +12,9 @@
 */
 
 use App\Helpers\Permission;
-use App\Http\Controllers\ActivityRegistrationsController;
-use App\Http\Controllers\Admin\FamilyMembersController;
+use App\Http\Controllers\Admin\ActivityRegistrationsController;
 use App\Http\Controllers\User\FamilyMemberController;
+use App\Http\Controllers\Admin\FamilyMemberController as AdminFamilyMemberController;
 use App\Http\Middleware\RequiresFamily;
 use App\Http\Middleware\RequiresFamilyAdmin;
 use App\Http\Middleware\RequiresFamilyAdminOrSelf;
@@ -64,6 +64,8 @@ Route::middleware('auth')->group(function () {
 
         Route::group(['middleware' => RequiresFamilyAdmin::class], static function () {
             Route::get('/{family}/pdf', [FamilyController::class, 'downloadPdf'])->name('family_pdf');
+            Route::get('/{family}/members/{familyMember}/edit', [FamilyMemberController::class, 'edit'])->name('families_member_edit');
+            Route::put('/{family}/members/{familyMember}/edit', [FamilyMemberController::class, 'update'])->name('families_member_update');
         });
 
         Route::group(['middleware' => RequiresFamilyAdminOrSelf::class], static function () {
@@ -164,9 +166,9 @@ Route::middleware('auth')->group(function () {
                 Route::put('/{family}/edit', [AdminFamilyController::class, 'update'])->name('families_update');
                 Route::delete('/{family}', [AdminFamilyController::class, 'delete'])->name('families_delete');
 
-                Route::get('/{family}/search', [FamilyMembersController::class, 'ajaxUserSearch'])->name('families_user_search');
-                Route::get('/{family}/add/{user}', [FamilyMembersController::class, 'store'])->name('families_user_add');
-                Route::delete('/{family}/remove/{familyMember}', [FamilyMembersController::class, 'delete'])->name('families_user_remove');
+                Route::get('/{family}/search', [AdminFamilyMemberController::class, 'ajaxUserSearch'])->name('families_user_search');
+                Route::get('/{family}/add/{user}', [AdminFamilyMemberController::class, 'store'])->name('families_user_add');
+                Route::delete('/{family}/remove/{familyMember}', [AdminFamilyMemberController::class, 'delete'])->name('families_user_remove');
             });
         });
 

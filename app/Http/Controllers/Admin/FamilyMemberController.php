@@ -6,7 +6,7 @@ use App\Models\Family;
 use App\Models\FamilyMember;
 use App\Models\User;
 
-class FamilyMembersController
+class FamilyMemberController
 {
     public function store(Family $family, User $user)
     {
