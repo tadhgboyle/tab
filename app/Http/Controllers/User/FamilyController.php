@@ -2,20 +2,23 @@
 
 namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
+use App\Models\Family;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class FamilyController extends Controller
 {
-    public function show()
+    public function show(Family $family)
     {
         return view('pages.user.family.view', [
-            'family' => auth()->user()->family,
+            'family' => $family,
         ]);
     }
 
-    public function downloadPdf()
+    public function downloadPdf(Family $family)
     {
-        $family = auth()->user()->family;
+        if (!auth()->user()->isFamilyAdmin($family)) {
+            abort(403);
+        }
 
         $timestamp = now()->timestamp;
 

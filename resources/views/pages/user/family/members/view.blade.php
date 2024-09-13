@@ -35,7 +35,7 @@
         <div class="level-item has-text-centered">
             <div>
                 <p class="heading">Total owing</p>
-                <a class="title" title="View PDF" style="text-decoration: underline;" href="{{ route('family_member_pdf', $familyMember) }}" target="_blank">{{ $user->findOwing() }}</a>
+                <a class="title" title="View PDF" style="text-decoration: underline;" href="{{ route('family_member_pdf', [$familyMember->family, $familyMember]) }}" target="_blank">{{ $user->findOwing() }}</a>
             </div>
         </div>
     </nav>

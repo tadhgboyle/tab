@@ -53,6 +53,11 @@
 <div class="columns">
     <div class="column">
         <div class="columns is-multiline">
+            <div class="column">
+                <x-detail-card title="Details">
+                    <p><strong>Name:</strong> {{ $user->full_name }}</p>
+                </x-detail-card>
+            </div>
             @if($user->family)
                 <div class="column is-full">
                     <x-detail-card title="Family">

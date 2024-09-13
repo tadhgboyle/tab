@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
+use App\Models\Family;
 use App\Models\FamilyMember;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class FamilyMemberController extends Controller
 {
-    public function show(FamilyMember $familyMember)
+    public function show(Family $family, FamilyMember $familyMember)
     {
         return view('pages.user.family.members.view', [
             'familyMember' => $familyMember,
@@ -15,7 +16,7 @@ class FamilyMemberController extends Controller
         ]);
     }
 
-    public function downloadPdf(FamilyMember $familyMember)
+    public function downloadPdf(Family $family, FamilyMember $familyMember)
     {
         $user = $familyMember->user;
 
@@ -24,6 +25,6 @@ class FamilyMemberController extends Controller
         // TODO "common" directory needed?
         return Pdf::loadView('pdfs.admin.user', [
             'user' => $user,
-        ])->stream("user-{$user->id}-{$timestamp}.pdf");
+        ])->stream("family-{$family->id}-member-{$user->id}-{$timestamp}.pdf");
     }
 }

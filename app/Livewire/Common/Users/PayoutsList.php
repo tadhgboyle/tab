@@ -30,7 +30,8 @@ class PayoutsList extends Component implements HasTable, HasForms
                 Action::make('create')
                     ->url(route('users_payout_create', $this->user))
                     ->visible(hasPermission(Permission::USERS_PAYOUTS_CREATE))
-                    ->disabled($this->context === 'family' || $this->user->findOwing()->isZero()),
+                    ->disabled($this->user->findOwing()->isZero())
+                    ->hidden($this->context === 'family'), // TODO allow family to create payouts
             ])
             ->columns([
                 TextColumn::make('identifier')->searchable(),

@@ -52,7 +52,7 @@ class Family extends Model implements HasTimeline
                 description: "{$member->user->full_name} joined",
                 emoji: '👨‍👩‍👧‍👦',
                 time: $member->created_at,
-                link: route('families_user_view', $member->user),
+                link: route('families_member_view', [$this, $member]),
             );
         }
 

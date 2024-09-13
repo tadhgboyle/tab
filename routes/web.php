@@ -15,6 +15,9 @@ use App\Helpers\Permission;
 use App\Http\Controllers\ActivityRegistrationsController;
 use App\Http\Controllers\Admin\FamilyMembersController;
 use App\Http\Controllers\User\FamilyMemberController;
+use App\Http\Middleware\RequiresFamily;
+use App\Http\Middleware\RequiresFamilyAdmin;
+use App\Http\Middleware\RequiresFamilyAdminOrSelf;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
@@ -56,11 +59,17 @@ Route::middleware('auth')->group(function () {
     /*
      * Family
      */
-    Route::group(['middleware' => 'requires_family', 'prefix' => '/family'], static function () {
-        Route::get('/', [FamilyController::class, 'show'])->name('family');
-        Route::get('/pdf', [FamilyController::class, 'downloadPdf'])->name('family_pdf');
-        Route::get('/{familyMember}', [FamilyMemberController::class, 'show'])->name('families_user_view');
-        Route::get('/{familyMember}/pdf', [FamilyMemberController::class, 'downloadPdf'])->name('family_member_pdf');
+    Route::group(['middleware' => RequiresFamily::class, 'prefix' => '/families'], static function () {
+        Route::get('/{family}', [FamilyController::class, 'show'])->name('family_view');
+
+        Route::group(['middleware' => RequiresFamilyAdmin::class], static function () {
+            Route::get('/{family}/pdf', [FamilyController::class, 'downloadPdf'])->name('family_pdf');
+        });
+
+        Route::group(['middleware' => RequiresFamilyAdminOrSelf::class], static function () {
+            Route::get('/{family}/members/{familyMember}', [FamilyMemberController::class, 'show'])->name('families_member_view');
+            Route::get('/{family}/members/{familyMember}/pdf', [FamilyMemberController::class, 'downloadPdf'])->name('family_member_pdf');
+        });
     });
 
     Route::prefix('/admin')->group(static function () {

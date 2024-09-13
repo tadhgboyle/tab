@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin\Families;
+namespace App\Livewire\Common\Families;
 
 use App\Helpers\Permission;
 use App\Models\Family;
@@ -21,12 +21,13 @@ class MembersList extends Component implements HasTable, HasForms
     use InteractsWithForms;
 
     public Family $family;
+    public string $context;
 
     public function table(Table $table): Table
     {
         return $table
             ->heading('Users')
-            ->query($this->family->members()->with('user.orders', 'user.activityRegistrations')->getQuery())
+            ->query($this->family->members()->with(hasPermission(Permission::USERS_VIEW) || auth()->user()->isFamilyAdmin($this->family) ? ['user.orders', 'user.activityRegistrations'] : [])->getQuery())
             ->columns([
                 TextColumn::make('user.full_name')->sortable()->searchable(),
                 TextColumn::make('role')->badge()->color('gray')->state(function (FamilyMember $familyMember) {
@@ -34,13 +35,27 @@ class MembersList extends Component implements HasTable, HasForms
                 }),
                 TextColumn::make('total_spent')->sortable()->state(function (FamilyMember $familyMember) {
                     return $familyMember->user->findSpent();
+                })->visible(function () {
+                    if ($this->context === 'family') {
+                        return auth()->user()->isFamilyAdmin($this->family);
+                    }
+
+                    return hasPermission(Permission::USERS_VIEW);
                 }),
                 TextColumn::make('total_owing')->sortable()->state(function (FamilyMember $familyMember) {
                     return $familyMember->user->findOwing();
+                })->visible(function () {
+                    if ($this->context === 'family') {
+                        return auth()->user()->isFamilyAdmin($this->family);
+                    }
+
+                    return hasPermission(Permission::USERS_VIEW);
                 }),
             ])
             ->recordUrl(function (FamilyMember $familyMember) {
-                if (hasPermission(Permission::USERS_VIEW)) {
+                if ($this->context === 'family' && auth()->user()->isFamilyAdmin($this->family) || auth()->user()->id === $familyMember->user_id) {
+                    return route('families_member_view', [$this->family, $familyMember]);
+                } else if ($this->context === 'admin' && hasPermission(Permission::USERS_VIEW)) {
                     return route('users_view', $familyMember->user);
                 }
             })
@@ -53,22 +68,27 @@ class MembersList extends Component implements HasTable, HasForms
             ->headerActions([
                 Action::make('add_user')
                     ->label('Add User')
+                    ->button()
                     ->alpineClickHandler('openSearchUsersModal')
-                    ->visible(hasPermission(Permission::FAMILIES_MANAGE)),
+                    ->visible($this->context === 'admin' && hasPermission(Permission::FAMILIES_MANAGE)),
                 Action::make('pdf')
                     ->label('PDF')
                     ->button()
                     ->icon('heroicon-m-arrow-down-tray')
-                    ->url(fn () => route('family_pdf'))
-                    ->openUrlInNewTab(),
+                    ->url(fn () => route('family_pdf', $this->family))
+                    ->openUrlInNewTab()
+                    ->visible($this->context === 'admin' || auth()->user()->isFamilyAdmin($this->family)),
             ])
             ->actions([
                 Action::make('pdf')
                     ->label('PDF')
                     ->button()
                     ->icon('heroicon-m-arrow-down-tray')
-                    ->url(fn (FamilyMember $familyMember) => route('family_member_pdf', $familyMember))
-                    ->openUrlInNewTab(),
+                    ->url(fn (FamilyMember $familyMember) => route('family_member_pdf', [$this->family, $familyMember]))
+                    ->openUrlInNewTab()
+                    ->visible(function (FamilyMember $familyMember) {
+                        return $this->context === 'admin' || auth()->user()->isFamilyAdmin($this->family) || auth()->user()->id === $familyMember->user_id;
+                    }),
             ])
             ->bulkActions([
                 // ...

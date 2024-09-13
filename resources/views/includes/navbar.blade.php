@@ -3,7 +3,7 @@
         <div class="navbar-menu">
             <div class="navbar-start">
                 @if(auth()->user()->family)
-                    <a class="navbar-item {{ page('family', @$page) }}" href="{{ route('family') }}">
+                    <a class="navbar-item {{ page('family', @$page) }}" href="{{ route('family_view', auth()->user()->family) }}">
                         🏠 Family
                     </a>
                 @endif

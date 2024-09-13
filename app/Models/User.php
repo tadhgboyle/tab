@@ -60,6 +60,11 @@ class User extends Authenticatable implements HasTimeline
         return $this->familyMember->role;
     }
 
+    public function isFamilyAdmin(?Family $family = null): bool
+    {
+        return $this->family->is($family ?? $this->family) && $this->familyRole() === FamilyMemberRole::Admin;
+    }
+
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class, 'purchaser_id');
