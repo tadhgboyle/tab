@@ -17,7 +17,7 @@
                     @if($activity->location)
                         <x-detail-card-item label="Location" :value="$activity->location" />
                     @endif
-                    <x-detail-card-item label="Slots" :value="$activity->unlimited_slots ? 'Unlimited' : $activity->slots . ' - ' . $activity->slotsAvailable() . ' available'" />
+                    <x-detail-card-item label="Slots" :value="$activity->unlimited_slots ? '<i>Unlimited</i>' : $activity->slots . ' - ' . $activity->slotsAvailable() . ' available'" />
                     <x-detail-card-item label="Status" :value="$activity->getStatusHtml()" />
                 </x-detail-card-item-list>
             </x-detail-card>

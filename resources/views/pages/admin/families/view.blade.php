@@ -49,6 +49,36 @@
         </div>
     </div>
 
+    <div class="modal" id="edit-user-modal">
+        <div class="modal-background" onclick="closeEditUserModal();"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Edit User</p>
+            </header>
+            <section class="modal-card-body">
+                <p>Editing <strong id="edit-user-name"></strong></p>
+                <form id="editForm" method="POST">
+                    @csrf
+                    @method('PATCH')
+
+                    <label for="role">Role</label>
+                    <div class="control">
+                        <div class="select">
+                            <select name="role" id="role" class="input" required>
+                                <option value="{{ \App\Enums\FamilyMemberRole::Admin }}">Admin</option>
+                                <option value="{{ \App\Enums\FamilyMemberRole::Member }}">Member</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </section>
+            <footer class="modal-card-foot">
+                <button class="button is-success" type="submit" form="editForm">Submit</button>
+                <button class="button" onclick="closeEditUserModal();">Cancel</button>
+            </footer>
+        </div>
+    </div>
+
     <div class="modal" id="remove-user-modal">
         <div class="modal-background" onclick="closeRemoveUserModal();"></div>
         <div class="modal-card">
@@ -64,7 +94,7 @@
             </section>
             <footer class="modal-card-foot">
                 <button class="button is-success" type="submit" form="deleteForm">Confirm</button>
-                <button class="button" onclick="closeModal();">Cancel</button>
+                <button class="button" onclick="closeRemoveUserModal();">Cancel</button>
             </footer>
         </div>
     </div>
@@ -120,6 +150,20 @@
 
         function closeSearchUsersModal() {
             searchUsersModal.classList.remove('is-active');
+        }
+
+        const editUserModal = document.getElementById('edit-user-modal');
+
+        function openEditUserModal(familyMemberId, familyMemberName, familyMemberRole) {
+            document.getElementById('editForm').action = `/admin/families/{{ $family->id }}/edit/${familyMemberId}`;
+            document.getElementById('edit-user-name').innerText = familyMemberName;
+            document.getElementById('role').value = familyMemberRole;
+
+            editUserModal.classList.add('is-active');
+        }
+
+        function closeEditUserModal() {
+            editUserModal.classList.remove('is-active');
         }
 
         const removeUserModal = document.getElementById('remove-user-modal');

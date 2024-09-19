@@ -22,9 +22,17 @@ class FamilyMemberController
         return redirect()->back()->with('success', "$user->full_name added to $family->name.");
     }
 
+    public function update(Family $family, FamilyMember $familyMember)
+    {
+        $familyMember->update([
+            'role' => request('role'),
+        ]);
+
+        return redirect()->back()->with('success', "{$familyMember->user->full_name} role updated to " . ucfirst($familyMember->role->value) . ".");
+    }
+
     public function delete(Family $family, FamilyMember $familyMember)
     {
-        // TODO: don't allow deleting the last admin
         $familyMember->delete();
 
         return redirect()->back()->with('success', "{$familyMember->user->full_name} removed from {$family->name}.");

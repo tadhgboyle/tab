@@ -62,8 +62,8 @@ class RegistrationsList extends Component implements HasTable, HasForms
                 Action::make('remove')
                     ->alpineClickHandler(function (ActivityRegistration $activityRegistration) {
                         return "openRemoveUserModal({$this->activity->id}, {$activityRegistration->id})";
-                    })->hidden(function (ActivityRegistration $activityRegistration) {
-                        return $activityRegistration->returned;
+                    })->visible(function (ActivityRegistration $activityRegistration) {
+                        return hasPermission(Permission::ACTIVITIES_MANAGE_REGISTRATIONS) && !$this->activity->started() && !$activityRegistration->returned;
                     }),
             ])
             ->bulkActions([

@@ -80,6 +80,11 @@ class MembersList extends Component implements HasTable, HasForms
                     ->visible($this->context === 'family' && auth()->user()->isFamilyAdmin($this->family)),
             ])
             ->actions([
+                Action::make('edit')
+                    ->alpineClickHandler(function (FamilyMember $familyMember) {
+                        return "openEditUserModal('{$familyMember->id}', '{$familyMember->user->full_name}', '{$familyMember->role->value}');";
+                    })
+                    ->visible($this->context === 'admin' && hasPermission(Permission::FAMILIES_MANAGE)),
                 Action::make('remove')
                     ->alpineClickHandler(function (FamilyMember $familyMember) {
                         return "openRemoveUserModal('{$familyMember->id}', '{$familyMember->user->full_name}');";

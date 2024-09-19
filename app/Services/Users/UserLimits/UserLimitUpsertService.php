@@ -7,8 +7,8 @@ use Cknow\Money\Money;
 use App\Models\Category;
 use App\Models\UserLimit;
 use App\Services\Service;
+use Illuminate\Http\Request;
 use App\Enums\UserLimitDuration;
-use App\Http\Requests\UserRequest;
 use App\Services\Users\UserService;
 
 class UserLimitUpsertService extends Service
@@ -19,7 +19,7 @@ class UserLimitUpsertService extends Service
     public const RESULT_SUCCESS_NULL_DATA = 'SUCCESS_NULL_DATA';
     public const RESULT_NEGATIVE_LIMIT = 'RESULT_NEGATIVE_LIMIT';
 
-    public function __construct(User $user, UserRequest $data)
+    public function __construct(User $user, Request $data)
     {
         $limits_data = $data['limits'];
         $durations_data = $data['durations'];
@@ -31,9 +31,6 @@ class UserLimitUpsertService extends Service
         }
 
         foreach ($limits_data as $category_id => $limit) {
-            // Default to limit per day rather than week if not specified
-            $duration = $durations_data[$category_id] ?? UserLimitDuration::Daily;
-
             // Default to $-1.00 if limit not typed in
             if (empty($limit) && $limit !== '0') {
                 $limit = -1_00;
@@ -53,7 +50,7 @@ class UserLimitUpsertService extends Service
                 'category_id' => $category_id,
             ], [
                 'limit' => $limit,
-                'duration' => $duration,
+                'duration' => $durations_data[$category_id],
             ]);
         }
 

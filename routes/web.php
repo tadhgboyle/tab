@@ -173,6 +173,7 @@ Route::middleware('auth')->group(function () {
 
                 Route::get('/{family}/search', [AdminFamilyMemberController::class, 'ajaxUserSearch'])->name('families_user_search');
                 Route::get('/{family}/add/{user}', [AdminFamilyMemberController::class, 'store'])->name('families_user_add');
+                Route::patch('/{family}/edit/{familyMember}', [AdminFamilyMemberController::class, 'update'])->name('families_user_update');
                 Route::delete('/{family}/remove/{familyMember}', [AdminFamilyMemberController::class, 'delete'])->name('families_user_remove');
             });
         });

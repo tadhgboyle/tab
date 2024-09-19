@@ -67,6 +67,9 @@ class UserLimitUpsertServiceTest extends TestCase
         $userLimitUpsertService = new UserLimitUpsertService($user, new UserRequest([
             'limits' => [
                 $candy_category->id => '0'
+            ],
+            'durations' => [
+                $candy_category->id => UserLimitDuration::Daily
             ]
         ]));
 
@@ -94,6 +97,10 @@ class UserLimitUpsertServiceTest extends TestCase
             'limits' => [
                 $merch_category->id => 25_00,
                 $candy_category->id => null
+            ],
+            'durations' => [
+                $merch_category->id => UserLimitDuration::Daily,
+                $candy_category->id => UserLimitDuration::Daily
             ]
         ]));
 
@@ -101,29 +108,6 @@ class UserLimitUpsertServiceTest extends TestCase
         $this->assertEquals(Money::parse(25_00), $user->limitFor($merch_category)->limit);
         $this->assertEquals(Money::parse(-1_00), $user->limitFor($candy_category)->limit);
         $this->assertTrue($user->limitFor($candy_category)->isUnlimited());
-    }
-
-    public function testNoDurationProvidedDefaultsToDailyFromUserRequest(): void
-    {
-        [$superadmin_role] = $this->createRoles();
-
-        $user = $this->createSuperadminUser($superadmin_role);
-
-        $this->actingAs($user);
-
-        $merch_category = Category::factory()->create([
-            'name' => 'Merch'
-        ]);
-
-        $userLimitUpsertService = new UserLimitUpsertService($user, new UserRequest([
-            'limits' => [
-                $merch_category->id => 25_00,
-            ]
-        ]));
-
-        $this->assertSame(UserLimitUpsertService::RESULT_SUCCESS, $userLimitUpsertService->getResult());
-        $this->assertSame(UserLimitDuration::Daily, $user->limitFor($merch_category)->duration);
-        $this->assertSame('day', $user->limitFor($merch_category)->duration());
     }
 
     public function testDurationIsUsedIfPassed(): void
