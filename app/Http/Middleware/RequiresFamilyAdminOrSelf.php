@@ -9,7 +9,7 @@ class RequiresFamilyAdminOrSelf
 {
     public function handle(Request $request, Closure $next)
     {
-        if (auth()->user()->isFamilyAdmin($request->route('family')) || auth()->user()->familyMember()->is($request->route('familyMember'))) {
+        if (auth()->user()->isFamilyAdmin() || auth()->user()->id === $request->route('familyMember')->user_id) {
             return $next($request);
         }
 

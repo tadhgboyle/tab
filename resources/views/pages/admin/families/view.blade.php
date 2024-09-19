@@ -10,12 +10,16 @@
         <livewire:common.families.members-list :family="$family" context="admin" />
     </div>
     <div class="column">
-        <x-detail-card title="Details">
-            <p><strong>Total Spent:</strong> {{ $family->totalSpent() }}</p>
-            <p><strong>Total Owing:</strong> {{ $family->totalOwing() }}</p>
-        </x-detail-card>
+        <x-detail-card-stack>
+            <x-detail-card title="Details">
+                <x-detail-card-item-list>
+                    <x-detail-card-item label="Total spent" :value="$family->totalSpent()" />
+                    <x-detail-card-item label="Total owing" :value="$family->totalOwing()" />
+                </x-detail-card-item-list>
+            </x-detail-card>
 
-        <x-entity-timeline :timeline="$family->timeline()" />
+            <x-entity-timeline :timeline="$family->timeline()" />
+        </x-detail-card-stack>
     </div>
 </div>
 
@@ -41,6 +45,26 @@
             </section>
             <footer class="modal-card-foot">
                 <button class="button" onclick="closeSearchUsersModal();">Cancel</button>
+            </footer>
+        </div>
+    </div>
+
+    <div class="modal" id="remove-user-modal">
+        <div class="modal-background" onclick="closeRemoveUserModal();"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Confirmation</p>
+            </header>
+            <section class="modal-card-body">
+                <p>Are you sure you want to remove <strong id="remove-user-name"></strong> from the family?</p>
+                <form id="deleteForm" method="POST">
+                    @csrf
+                    @method('DELETE')
+                </form>
+            </section>
+            <footer class="modal-card-foot">
+                <button class="button is-success" type="submit" form="deleteForm">Confirm</button>
+                <button class="button" onclick="closeModal();">Cancel</button>
             </footer>
         </div>
     </div>
@@ -96,6 +120,19 @@
 
         function closeSearchUsersModal() {
             searchUsersModal.classList.remove('is-active');
+        }
+
+        const removeUserModal = document.getElementById('remove-user-modal');
+
+        function openRemoveUserModal(familyMemberId, familyMemberName) {
+            document.getElementById('deleteForm').action = `/admin/families/{{ $family->id }}/remove/${familyMemberId}`;
+            document.getElementById('remove-user-name').innerText = familyMemberName;
+
+            removeUserModal.classList.add('is-active');
+        }
+
+        function closeRemoveUserModal() {
+            removeUserModal.classList.remove('is-active');
         }
     </script>
 @endpermission

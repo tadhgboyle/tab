@@ -77,9 +77,14 @@ class MembersList extends Component implements HasTable, HasForms
                     ->icon('heroicon-m-arrow-down-tray')
                     ->url(fn () => route('family_pdf', $this->family))
                     ->openUrlInNewTab()
-                    ->visible($this->context === 'admin' || auth()->user()->isFamilyAdmin($this->family)),
+                    ->visible($this->context === 'family' && auth()->user()->isFamilyAdmin($this->family)),
             ])
             ->actions([
+                Action::make('remove')
+                    ->alpineClickHandler(function (FamilyMember $familyMember) {
+                        return "openRemoveUserModal('{$familyMember->id}', '{$familyMember->user->full_name}');";
+                    })
+                    ->visible($this->context === 'admin' && hasPermission(Permission::FAMILIES_MANAGE)),
                 Action::make('pdf')
                     ->label('PDF')
                     ->button()
@@ -87,7 +92,7 @@ class MembersList extends Component implements HasTable, HasForms
                     ->url(fn (FamilyMember $familyMember) => route('family_member_pdf', [$this->family, $familyMember]))
                     ->openUrlInNewTab()
                     ->visible(function (FamilyMember $familyMember) {
-                        return $this->context === 'admin' || auth()->user()->isFamilyAdmin($this->family) || auth()->user()->id === $familyMember->user_id;
+                        return $this->context === 'family' && (auth()->user()->isFamilyAdmin($this->family) || auth()->user()->id === $familyMember->user_id);
                     }),
             ])
             ->bulkActions([

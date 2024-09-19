@@ -96,27 +96,7 @@
             <div class="box">
                 <h4 class="title has-text-weight-bold is-4">Category Limits</h4>
 
-                @foreach($categories as $category)
-                    <div class="field">
-                        <label class="label">{{ $category['name'] }} Limit</label>
-                        <div class="control has-icons-left">
-                            <span class="icon is-small is-left">
-                                <i class="fas fa-dollar-sign"></i>
-                            </span>
-                            <input type="number" step="0.01" name="limits[{{ $category['id'] }}]" class="input money-input" placeholder="Limit" value="{{ isset($user) ? $category['limit']->limit->formatForInput() : ""}}">
-                        </div>
-                        <div class="control">
-                            <label class="radio">
-                                <input type="radio" name="durations[{{ $category['id'] }}]" value="0" @if((isset($user) && $category['limit']->duration() === "day") || !isset($user)) checked @endif>
-                                Day
-                            </label>
-                            <label class="radio">
-                                <input type="radio" name="durations[{{ $category['id'] }}]" value="1" @if(isset($user) && $category['limit']->duration() === "week") checked @endif>
-                                Week
-                            </label>
-                        </div>
-                    </div>
-                @endforeach
+                <x-user-limits-form :user="$user ?? null" :categories="$categories" />
             </div>
         </div>
         <div class="column is-2">

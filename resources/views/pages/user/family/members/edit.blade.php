@@ -26,6 +26,9 @@
                     </div>
                 </div>
             </div>
+
+            <x-user-limits-form :user="$user" :categories="$categories" />
+
             <div class="control">
                 <button class="button is-light" type="submit">
                     💾 Save

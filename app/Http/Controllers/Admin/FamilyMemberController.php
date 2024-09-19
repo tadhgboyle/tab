@@ -22,11 +22,12 @@ class FamilyMemberController
         return redirect()->back()->with('success', "$user->full_name added to $family->name.");
     }
 
-    public function delete(FamilyMember $familyMember)
+    public function delete(Family $family, FamilyMember $familyMember)
     {
+        // TODO: don't allow deleting the last admin
         $familyMember->delete();
 
-        return redirect()->back()->with('success', "{$familyMember->user->full_name} removed from {$familyMember->family->name}.");
+        return redirect()->back()->with('success', "{$familyMember->user->full_name} removed from {$family->name}.");
     }
 
     // TODO: livewire

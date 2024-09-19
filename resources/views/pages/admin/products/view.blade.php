@@ -14,43 +14,42 @@
         <livewire:admin.products.variant-options-list :product="$product" />
     </div>
     <div class="column">
-        <x-detail-card title="Details">
-            <p><strong>Status:</strong> {{ $product->status->getWord() }}</p>
-            <p><strong>Category:</strong> {{ $product->category->name }}</p>
-            @if(!$product->hasVariants() && $product->sku)
-                <p><strong>SKU:</strong> {{ $product->sku }}</p>
-            @endif
-        </x-detail-card>
+        <x-detail-card-stack>
+            <x-detail-card title="Details">
+                <x-detail-card-item-list>
+                    <x-detail-card-item label="Status" :value="$product->status->getWord()" />
+                    <x-detail-card-item label="Category" :value="$product->category->name" />
+                    @if(!$product->hasVariants() && $product->sku)
+                        <x-detail-card-item label="SKU" :value="$product->sku" />
+                    @endif
+                </x-detail-card-item-list>
+            </x-detail-card>
 
-        <x-detail-card title="Pricing">
-            <p>
-                <strong>Price:</strong>
-                @if($product->hasVariants())
-                    {{ $product->getVariantPriceRange() }}
-                @else
-                    {{ $product->price }}
-                @endif
-            </p>
-            <p><strong>PST:</strong> {{ $product->pst ? '✅' : '❌' }}</p>
-        </x-detail-card>
+            <x-detail-card title="Pricing">
+                <x-detail-card-item-list>
+                    <x-detail-card-item label="Price" :value="$product->hasVariants() ? $product->getVariantPriceRange() : $product->price" />
+                    <x-detail-card-item label="PST" :value="$product->pst ? '✅' : '❌'" />
+                </x-detail-card-item-list>
+            </x-detail-card>
 
-        <x-detail-card title="Inventory">
-            <p><strong>Stock:</strong> {!! $product->getStock() !!} @if(!$product->unlimited_stock && $product->hasVariants()) (across {{ $product->variants->count() }} variants)</p> @endif
-            @unless($product->unlimited_stock)
-                <p><strong>Stock override:</strong> {{ $product->stock_override ? '✅' : '❌' }}</p>
-            @endunless
-            <p><strong>Restore stock on return:</strong> {{ $product->restore_stock_on_return ? '✅' : '❌' }}</p>
-        </x-detail-card>
+            <x-detail-card title="Inventory">
+                <x-detail-card-item-list>
+                    <x-detail-card-item label="Stock" :value="$product->getStock()" />
+                    @unless($product->unlimited_stock)
+                        <x-detail-card-item label="Stock override" :value="$product->stock_override ? '✅' : '❌'" />
+                    @endunless
+                    <x-detail-card-item label="Restore stock on return" :value="$product->restore_stock_on_return ? '✅' : '❌'" />
+                </x-detail-card-item-list>
+            </x-detail-card>
 
-        <x-detail-card title="Recent Orders">
-            <ul>
-                @foreach($product->recentOrders() as $order)
-                    <li>
-                        <a href="{{ route('orders_view', $order->id) }}">{{ $order->identifier }}</a> - {{ $order->created_at->diffForHumans() }}
-                    </li>
-                @endforeach
-            </ul>
-        </x-detail-card>
+            <x-detail-card title="Recent Orders">
+                <x-detail-card-item-list>
+                        @foreach($product->recentOrders() as $order)
+                            <x-detail-card-item label="<a href='{{ route('orders_view', $order->id) }}'>{{ $order->identifier }}</a>" :value="$order->created_at->diffForHumans()" />
+                        @endforeach
+                </x-detail-card-item-list>
+            </x-detail-card>
+        </x-detail-card-stack>
     </div>
 </div>
 @endsection

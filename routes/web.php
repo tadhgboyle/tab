@@ -15,7 +15,7 @@ use App\Helpers\Permission;
 use App\Http\Controllers\Admin\ActivityRegistrationsController;
 use App\Http\Controllers\User\FamilyMemberController;
 use App\Http\Controllers\Admin\FamilyMemberController as AdminFamilyMemberController;
-use App\Http\Middleware\RequiresFamily;
+use App\Http\Middleware\RequiresOwnFamily;
 use App\Http\Middleware\RequiresFamilyAdmin;
 use App\Http\Middleware\RequiresFamilyAdminOrSelf;
 use Illuminate\Support\Facades\Route;
@@ -59,18 +59,23 @@ Route::middleware('auth')->group(function () {
     /*
      * Family
      */
-    Route::group(['middleware' => RequiresFamily::class, 'prefix' => '/families'], static function () {
+    Route::group(['middleware' => RequiresOwnFamily::class, 'prefix' => '/families'], static function () {
         Route::get('/{family}', [FamilyController::class, 'show'])->name('family_view');
 
         Route::group(['middleware' => RequiresFamilyAdmin::class], static function () {
             Route::get('/{family}/pdf', [FamilyController::class, 'downloadPdf'])->name('family_pdf');
-            Route::get('/{family}/members/{familyMember}/edit', [FamilyMemberController::class, 'edit'])->name('families_member_edit');
-            Route::put('/{family}/members/{familyMember}/edit', [FamilyMemberController::class, 'update'])->name('families_member_update');
         });
 
-        Route::group(['middleware' => RequiresFamilyAdminOrSelf::class], static function () {
-            Route::get('/{family}/members/{familyMember}', [FamilyMemberController::class, 'show'])->name('families_member_view');
-            Route::get('/{family}/members/{familyMember}/pdf', [FamilyMemberController::class, 'downloadPdf'])->name('family_member_pdf');
+        Route::group(['prefix' => '/{family}/members/{familyMember}'], static function () {
+            Route::group(['middleware' => RequiresFamilyAdminOrSelf::class], static function () {
+                Route::get('/', [FamilyMemberController::class, 'show'])->name('families_member_view');
+                Route::get('/pdf', [FamilyMemberController::class, 'downloadPdf'])->name('family_member_pdf');
+            });
+
+            Route::group(['middleware' => RequiresFamilyAdmin::class], static function () {
+                Route::get('/edit', [FamilyMemberController::class, 'edit'])->name('families_member_edit');
+                Route::put('/edit', [FamilyMemberController::class, 'update'])->name('families_member_update');
+            });
         });
     });
 

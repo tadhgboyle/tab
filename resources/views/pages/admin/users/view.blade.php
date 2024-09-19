@@ -53,16 +53,18 @@
 <div class="columns">
     <div class="column">
         <div class="columns is-multiline">
-            <div class="column">
+            <div class="column is-full">
                 <x-detail-card title="Details">
-                    <p><strong>Name:</strong> {{ $user->full_name }}</p>
+                    <x-detail-card-item label="Name" :value="$user->full_name" />
                 </x-detail-card>
             </div>
             @if($user->family)
                 <div class="column is-full">
                     <x-detail-card title="Family">
-                        <p><strong>Name:</strong> {{ $user->family->name }}</p>
-                        <p><strong>Role:</strong> {{ $user->familyRole() }}</p>
+                        <x-detail-card-item-list>
+                            <x-detail-card-item label="Name" :value="$user->family->name" />
+                            <x-detail-card-item label="Role" :value="ucfirst($user->familyRole()->value)" />
+                        </x-detail-card-item-list>
                     </x-detail-card>
                 </div>
             @endif

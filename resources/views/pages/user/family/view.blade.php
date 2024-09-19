@@ -7,16 +7,19 @@
         <livewire:common.families.members-list :family="$family" context="family" />
     </div>
     <div class="column">
-        <x-detail-card title="Details">
-            <p><strong>Name:</strong> {{ $family->name }}</p>
+        <x-detail-card-stack>
+            <x-detail-card title="Details">
+                <x-detail-card-item-list>
+                    <x-detail-card-item label="Name" :value="$family->name" />
 
-            @if(auth()->user()->isFamilyAdmin($family))
-                <p><strong>Total Spent:</strong> {{ $family->totalSpent() }}</p>
-                <p><strong>Total Owing:</strong> {{ $family->totalOwing() }}</p>
-            @endif
-        </x-detail-card>
-
-        <x-entity-timeline :timeline="$family->timeline()" />
+                    @if(auth()->user()->isFamilyAdmin())
+                        <x-detail-card-item label="Total Spent" :value="$family->totalSpent()" />
+                        <x-detail-card-item label="Total Owing" :value="$family->totalOwing()" />
+                    @endif
+                </x-detail-card-item-list>
+            </x-detail-card>
+            <x-entity-timeline :timeline="$family->timeline()" />
+        </x-detail-card-stack>
     </div>
 </div>
 @endsection

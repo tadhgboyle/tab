@@ -23,10 +23,10 @@ class CategoryLimitsList extends Component implements HasTable, HasForms
     {
         return $table
             ->heading('Category Limits')
-            ->query($this->user->userLimits()->getQuery())
+            ->query($this->user->userLimits()->withAggregate('category', 'name')->orderBy('category_name')->getQuery())
             ->columns([
                 TextColumn::make('category.name')->label('Category')->badge()->color('gray'),
-                TextColumn::make('limit')->label('Limit')->sortable()->state(function (UserLimit $userLimit) {
+                TextColumn::make('limit')->label('Limit')->state(function (UserLimit $userLimit) {
                     if ($userLimit->isUnlimited()) {
                         return '<i>Unlimited</i>';
                     } else {
@@ -35,9 +35,8 @@ class CategoryLimitsList extends Component implements HasTable, HasForms
                 })->html(),
                 TextColumn::make('duration')->badge()->color('gray')
                     ->state(fn (UserLimit $userLimit) => ucfirst($userLimit->duration->label())),
-                TextColumn::make('spent')->state(fn (UserLimit $userLimit) => $userLimit->findSpent())
-                    ->sortable(),
-                TextColumn::make('remaining')->sortable()->state(function (UserLimit $userLimit) {
+                TextColumn::make('spent')->state(fn (UserLimit $userLimit) => $userLimit->findSpent()),
+                TextColumn::make('remaining')->state(function (UserLimit $userLimit) {
                     if ($userLimit->isUnlimited()) {
                         return '<i>Unlimited</i>';
                     } else {

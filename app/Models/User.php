@@ -107,7 +107,7 @@ class User extends Authenticatable implements HasTimeline
 
     public function limitFor(Category $category): UserLimit
     {
-        return UserLimit::createOrFirst([
+        return UserLimit::firstOrCreate([
             'user_id' => $this->id,
             'category_id' => $category->id,
         ], [

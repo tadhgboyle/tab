@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Http\Controllers\User;
+use App\Helpers\CategoryHelper;
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Family;
 use App\Models\FamilyMember;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -16,11 +18,22 @@ class FamilyMemberController extends Controller
         ]);
     }
 
-    public function edit(Family $family, FamilyMember $familyMember)
+    public function edit(Family $family, FamilyMember $familyMember, CategoryHelper $categoryHelper)
     {
+        $user = $familyMember->user;
+
+        $categories = $categoryHelper->getCategories()->map(function (Category $category) use ($user) {
+            return [
+                'id' => $category->id,
+                'name' => $category->name,
+                'limit' => $user->limitFor($category),
+            ];
+        });
+
         return view('pages.user.family.members.edit', [
             'familyMember' => $familyMember,
-            'user' => $familyMember->user,
+            'user' => $user,
+            'categories' => $categories,
         ]);
     }
 

@@ -203,21 +203,30 @@
         </div>
     </div>
     <div class="column">
-        <x-detail-card title="Details">
-            <p><strong>Date:</strong> {{ $order->created_at->format('M jS Y h:ia') }}</p>
-            <p><strong>Rotation:</strong> {{ $order->rotation->name }}</p>
-            <p>
-                <strong>Purchaser:</strong>
-                    @permission(\App\Helpers\Permission::USERS_VIEW)
-                        <a href="{{ route('users_view', $order->purchaser_id) }}">{{ $order->purchaser->full_name }}</a>
-                    @else
-                        {{ $order->purchaser->full_name }}
-                    @endpermission
-                    - {{ $order->purchaser->orders()->count() }} orders
-            </p>
-            <p><strong>Cashier:</strong> @permission(\App\Helpers\Permission::USERS_VIEW) <a href="{{ route('users_view', $order->cashier_id) }}">{{ $order->cashier->full_name }}</a> @else {{ $order->cashier->full_name }} @endpermission</p>
-        </x-detail-card>
-        <x-entity-timeline :timeline="$order->timeline()" />
+        <x-detail-card-stack>
+            <x-detail-card title="Details">
+                <x-detail-card-item-list>
+                    <x-detail-card-item label="Date" :value="$order->created_at->format('M jS Y h:ia')" />
+                    <x-detail-card-item label="Rotation" :value="$order->rotation->name" />
+                    <x-detail-card-item label="Purchaser">
+                        @permission(\App\Helpers\Permission::USERS_VIEW)
+                            <a href="{{ route('users_view', $order->purchaser_id) }}">{{ $order->purchaser->full_name }}</a>
+                        @else
+                            {{ $order->purchaser->full_name }}
+                        @endpermission
+                        - {{ $order->purchaser->orders()->count() }} orders
+                    </x-detail-card-item>
+                    <x-detail-card-item label="Cashier">
+                        @permission(\App\Helpers\Permission::USERS_VIEW)
+                            <a href="{{ route('users_view', $order->cashier_id) }}">{{ $order->cashier->full_name }}</a>
+                        @else
+                            {{ $order->cashier->full_name }}
+                        @endpermission
+                    </x-detail-card-item>
+                </x-detail-card-item-list>
+            </x-detail-card>
+            <x-entity-timeline :timeline="$order->timeline()" />
+        </x-detail-card-stack>
     </div>
 </div>
 

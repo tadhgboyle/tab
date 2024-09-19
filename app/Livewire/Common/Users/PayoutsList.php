@@ -2,7 +2,9 @@
 
 namespace App\Livewire\Common\Users;
 
+use App\Models\Payout;
 use App\Models\User;
+use Filament\Support\Enums\FontFamily;
 use Livewire\Component;
 use Filament\Tables\Table;
 use App\Helpers\Permission;
@@ -34,10 +36,10 @@ class PayoutsList extends Component implements HasTable, HasForms
                     ->hidden($this->context === 'family'), // TODO allow family to create payouts
             ])
             ->columns([
-                TextColumn::make('identifier')->searchable(),
+                TextColumn::make('identifier')->searchable()->fontFamily(FontFamily::Mono),
                 TextColumn::make('amount')->sortable(),
                 TextColumn::make('cashier.full_name')
-                    ->url(function ($payout) {
+                    ->url(function (Payout $payout) {
                         if (hasPermission(Permission::USERS_VIEW)) {
                             return route('users_view', $payout->cashier);
                         }

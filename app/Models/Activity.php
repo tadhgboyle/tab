@@ -114,12 +114,12 @@ class Activity extends Model implements HasTimeline
 
     public function countdown(): string
     {
-        return now()->diffForHumans($this->start, CarbonInterface::DIFF_ABSOLUTE, false, 3);
+        return now()->diffForHumans($this->start, CarbonInterface::DIFF_ABSOLUTE, false, 2);
     }
 
     public function duration(): string
     {
-        return $this->start->diffForHumans($this->end, CarbonInterface::DIFF_ABSOLUTE, false, 3);
+        return $this->start->diffForHumans($this->end, CarbonInterface::DIFF_ABSOLUTE, false, 2);
     }
 
     public function timeline(): array
@@ -132,7 +132,13 @@ class Activity extends Model implements HasTimeline
             ),
         ];
 
-        if ($this->started()) {
+        if (!$this->started()) {
+            $timeline[] = new TimelineEntry(
+                description: 'Starting',
+                emoji: '🕐',
+                time: $this->start,
+            );
+        } else if ($this->started()) {
             $timeline[] = new TimelineEntry(
                 description: 'Started',
                 emoji: '🚀',

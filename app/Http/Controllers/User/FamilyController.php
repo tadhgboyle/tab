@@ -16,10 +16,6 @@ class FamilyController extends Controller
 
     public function downloadPdf(Family $family)
     {
-        if (!auth()->user()->isFamilyAdmin($family)) {
-            abort(403);
-        }
-
         $timestamp = now()->timestamp;
 
         // TODO "common" directory needed?

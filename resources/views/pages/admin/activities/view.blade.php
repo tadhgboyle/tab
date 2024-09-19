@@ -7,26 +7,40 @@
         <livewire:admin.activities.registrations-list :activity="$activity" />
     </div>
     <div class="column">
-        <x-detail-card title="Details">
-            <p><strong>Category:</strong> {{ $activity->category->name }}</p>
-            @if(!is_null($activity->description))<p><strong>Description:</strong> {{ $activity->description }}</p>@endif
-            @if(!is_null($activity->location))<p><strong>Location:</strong> {{ $activity->location }}</p>@endif
-            <p><strong>Slots:</strong> @if($activity->unlimited_slots) <i>Unlimited</i> @else {{ $activity->slots }} - {{ $activity->slotsAvailable() }} available @endif</p>
-            <p><strong>Status:</strong> {!! $activity->getStatusHtml() !!}</p>
-        </x-detail-card>
-        <x-detail-card title="Timing">
-            @unless($activity->ended())
-                <p><strong>Starts in:</strong> {{ $activity->countdown() }}</p>
-            @endunless
-            <p><strong>Starts at:</strong> {{ $activity->start->format('M jS Y h:ia') }}</p>
-            <p><strong>Ends at:</strong> {{ $activity->end->format('M jS Y h:ia') }}</p>
-            <p><strong>Duration:</strong> {{ $activity->duration() }}</p>
-        </x-detail-card>
-        <x-detail-card title="Pricing">
-            <p><strong>Price:</strong> {!! $activity->price->isZero() ? '<i>Free</i>' : $activity->price !!}</p>
-            <p><strong>PST:</strong> {{ $activity->pst ? '✅' : '❌' }}</p>
-        </x-detail-card>
-        <x-entity-timeline :timeline="$activity->timeline()" />
+        <x-detail-card-stack>
+            <x-detail-card title="Details">
+                <x-detail-card-item-list>
+                    <x-detail-card-item label="Category" :value="$activity->category->name" />
+                    @if($activity->description)
+                        <x-detail-card-item label="Description" :value="$activity->description" />
+                    @endif
+                    @if($activity->location)
+                        <x-detail-card-item label="Location" :value="$activity->location" />
+                    @endif
+                    <x-detail-card-item label="Slots" :value="$activity->unlimited_slots ? 'Unlimited' : $activity->slots . ' - ' . $activity->slotsAvailable() . ' available'" />
+                    <x-detail-card-item label="Status" :value="$activity->getStatusHtml()" />
+                </x-detail-card-item-list>
+            </x-detail-card>
+
+            <x-detail-card title="Timing">
+                <x-detail-card-item-list>
+                    @unless($activity->ended())
+                        <x-detail-card-item label="Starts in" :value="$activity->countdown()" />
+                    @endunless
+                    <x-detail-card-item label="Starts at" :value="$activity->start->format('M jS Y h:ia')" />
+                    <x-detail-card-item label="Ends at" :value="$activity->end->format('M jS Y h:ia')" />
+                    <x-detail-card-item label="Duration" :value="$activity->duration()" />
+                </x-detail-card-item-list>
+            </x-detail-card>
+
+            <x-detail-card title="Pricing">
+                <x-detail-card-item-list>
+                    <x-detail-card-item label="Price" :value="$activity->price->isZero() ? 'Free' : $activity->price" />
+                    <x-detail-card-item label="PST" :value="$activity->pst ? '✅' : '❌'" />
+                </x-detail-card-item-list>
+            </x-detail-card>
+            <x-entity-timeline :timeline="$activity->timeline()" />
+        </x-detail-card-stack>
     </div>
 </div>
 
