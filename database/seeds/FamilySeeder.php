@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Enums\FamilyMemberRole;
-use App\Models\Family;
 use App\Models\User;
+use App\Models\Family;
+use App\Enums\FamilyMemberRole;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 class FamilySeeder extends Seeder
 {

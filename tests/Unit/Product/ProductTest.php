@@ -2,12 +2,12 @@
 
 namespace Tests\Unit\Product;
 
-use App\Enums\ProductStatus;
 use Tests\TestCase;
 use Cknow\Money\Money;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Settings;
+use App\Enums\ProductStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ProductTest extends TestCase

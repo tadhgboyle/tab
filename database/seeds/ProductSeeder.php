@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Enums\ProductStatus;
 use App\Models\Product;
 use App\Models\Category;
+use App\Enums\ProductStatus;
 use Illuminate\Database\Seeder;
 
 class ProductSeeder extends Seeder

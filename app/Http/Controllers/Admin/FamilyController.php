@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\FamilyRequest;
+
 use App\Models\Family;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\FamilyRequest;
 
 class FamilyController extends Controller
 {

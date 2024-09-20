@@ -44,7 +44,6 @@ class GiftCardTest extends TestCase
         $this->markTestIncomplete();
     }
 
-
     public function testCanBeUsedByWhenNoUsers()
     {
         $this->markTestIncomplete();

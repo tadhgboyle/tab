@@ -4,10 +4,10 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Activity;
-use App\Services\Activities\ActivityRegistrationDeleteService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Auth;
 use App\Services\Activities\ActivityRegistrationCreateService;
+use App\Services\Activities\ActivityRegistrationDeleteService;
 
 class ActivityRegistrationSeeder extends Seeder
 {

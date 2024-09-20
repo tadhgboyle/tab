@@ -2,11 +2,11 @@
 
 namespace App\Livewire\Admin;
 
-use App\Enums\ProductStatus;
 use App\Models\Product;
 use Livewire\Component;
 use Filament\Tables\Table;
 use App\Helpers\Permission;
+use App\Enums\ProductStatus;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;

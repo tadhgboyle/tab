@@ -7,9 +7,9 @@ use App\Helpers\Permission;
 use Illuminate\Support\Carbon;
 use App\Helpers\CategoryHelper;
 use App\Helpers\NotificationHelper;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\ActivityRequest;
-use App\Http\Controllers\Controller;
 
 class ActivityController extends Controller
 {

@@ -6,8 +6,8 @@ use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Helpers\PermissionHelper;
 use App\Http\Requests\RoleRequest;
-use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 
 class RoleController extends Controller
 {

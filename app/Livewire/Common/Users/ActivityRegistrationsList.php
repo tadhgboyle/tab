@@ -3,7 +3,6 @@
 namespace App\Livewire\Common\Users;
 
 use App\Models\User;
-use Filament\Tables\Columns\BooleanColumn;
 use Livewire\Component;
 use Filament\Tables\Table;
 use App\Helpers\Permission;
@@ -11,6 +10,7 @@ use App\Models\ActivityRegistration;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Columns\BooleanColumn;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
@@ -36,16 +36,16 @@ class ActivityRegistrationsList extends Component implements HasTable, HasForms
                             return route('users_view', $activityRegistration->cashier);
                         }
                     })
-                    ->hidden(fn() => $this->context === 'family'),
+                    ->hidden(fn () => $this->context === 'family'),
                 TextColumn::make('total_price')->sortable(),
                 TextColumn::make('status')->badge()->state(function (ActivityRegistration $activityRegistration) {
-                    return match(true) {
+                    return match (true) {
                         $activityRegistration->activity->ended() => 'Ended',
                         $activityRegistration->activity->inProgress() => 'In Progress',
                         default => 'Upcoming',
                     };
                 })->color(function (ActivityRegistration $activityRegistration) {
-                    return match(true) {
+                    return match (true) {
                         $activityRegistration->activity->ended() => 'danger',
                         $activityRegistration->activity->inProgress() => 'success',
                         default => 'gray',

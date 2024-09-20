@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Category;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\CategoryRequest;
-use App\Http\Controllers\Controller;
 
 class CategoryController extends Controller
 {

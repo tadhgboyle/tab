@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Rotation;
 use Illuminate\Support\Carbon;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\RotationRequest;
-use App\Http\Controllers\Controller;
 
 class RotationController extends Controller
 {

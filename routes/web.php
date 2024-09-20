@@ -12,19 +12,14 @@
 */
 
 use App\Helpers\Permission;
-use App\Http\Controllers\Admin\ActivityRegistrationsController;
-use App\Http\Controllers\User\FamilyMemberController;
-use App\Http\Controllers\Admin\FamilyMemberController as AdminFamilyMemberController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LoginController;
 use App\Http\Middleware\RequiresOwnFamily;
 use App\Http\Middleware\RequiresFamilyAdmin;
-use App\Http\Middleware\RequiresFamilyAdminOrSelf;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\User\FamilyController;
-use App\Http\Controllers\Admin\FamilyController as AdminFamilyController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\User\FamilyController;
 use App\Http\Controllers\Admin\PayoutController;
 use App\Http\Controllers\Admin\CashierController;
 use App\Http\Controllers\Admin\ProductController;
@@ -33,11 +28,16 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\GiftCardController;
 use App\Http\Controllers\Admin\RotationController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Middleware\RequiresFamilyAdminOrSelf;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\User\FamilyMemberController;
 use App\Http\Controllers\Admin\ProductVariantController;
 use App\Http\Controllers\Admin\GiftCardAssignmentController;
 use App\Http\Controllers\Admin\ProductVariantOptionController;
+use App\Http\Controllers\Admin\ActivityRegistrationsController;
 use App\Http\Controllers\Admin\ProductVariantOptionValueController;
+use App\Http\Controllers\Admin\FamilyController as AdminFamilyController;
+use App\Http\Controllers\Admin\FamilyMemberController as AdminFamilyMemberController;
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'login'])->name('login');
@@ -51,7 +51,7 @@ Route::middleware('auth')->group(function () {
         $staffRoute = hasPermission(Permission::DASHBOARD)
             ? 'dashboard'
             : 'cashier';
-        
+
         if (auth()->user()->role->staff) {
             return redirect()->route($staffRoute);
         }

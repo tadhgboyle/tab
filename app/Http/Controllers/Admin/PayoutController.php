@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\PayoutRequest;
 use Illuminate\Http\RedirectResponse;
 use App\Services\Payouts\PayoutCreateService;
-use App\Http\Controllers\Controller;
 
 class PayoutController extends Controller
 {

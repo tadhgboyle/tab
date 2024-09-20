@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Helpers\Permission;
 use App\Models\Product;
+use App\Helpers\Permission;
 use App\Models\ProductVariant;
 use App\Helpers\CategoryHelper;
 use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
 use Illuminate\Http\RedirectResponse;
 use App\Services\Products\ProductEditService;
@@ -14,7 +15,6 @@ use App\Services\Products\ProductCreateService;
 use App\Services\Products\ProductDeleteService;
 use App\Http\Requests\ProductStockAdjustmentRequest;
 use App\Services\Products\ProductStockAdjustmentService;
-use App\Http\Controllers\Controller;
 
 class ProductController extends Controller
 {

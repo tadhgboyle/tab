@@ -6,9 +6,9 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Models\ProductVariant;
 use Illuminate\Validation\Rule;
+use App\Http\Controllers\Controller;
 use App\Models\ProductVariantOption;
 use App\Models\ProductVariantOptionValue;
-use App\Http\Controllers\Controller;
 
 class ProductVariantOptionValueController extends Controller
 {

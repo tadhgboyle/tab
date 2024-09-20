@@ -2,10 +2,10 @@
 
 namespace App\Livewire\Admin\Settings\GiftCards;
 
-use App\Helpers\Permission;
 use Livewire\Component;
 use App\Models\GiftCard;
 use Filament\Tables\Table;
+use App\Helpers\Permission;
 use App\Models\GiftCardAssignment;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Contracts\HasForms;

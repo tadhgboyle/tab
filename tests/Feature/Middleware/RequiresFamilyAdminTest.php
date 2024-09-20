@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Middleware;
 
-use App\Enums\FamilyMemberRole;
-use App\Models\Family;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Family;
+use App\Enums\FamilyMemberRole;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RequiresFamilyAdminTest extends TestCase

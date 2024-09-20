@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Activity;
 
-use App\Services\Activities\ActivityRegistrationDeleteService;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
@@ -13,6 +12,7 @@ use App\Models\Settings;
 use App\Enums\CategoryType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Services\Activities\ActivityRegistrationCreateService;
+use App\Services\Activities\ActivityRegistrationDeleteService;
 
 class ActivityRegistrationDeleteServiceTest extends TestCase
 {

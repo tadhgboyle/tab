@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Helpers\SettingsHelper;
 use Cknow\Money\Money;
 use App\Enums\OrderStatus;
+use App\Helpers\SettingsHelper;
 use App\Concerns\Timeline\HasTimeline;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
@@ -36,7 +36,7 @@ class Order extends Model implements HasTimeline
         static::created(function (Order $order) {
             $prefix = app(SettingsHelper::class)->getOrderPrefix();
             $suffix = app(SettingsHelper::class)->getOrderSuffix();
-    
+
             $order->identifier = "{$prefix}{$order->id}{$suffix}";
             $order->save();
         });

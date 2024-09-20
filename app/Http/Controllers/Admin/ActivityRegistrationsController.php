@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\ActivityRegistration;
 use App\Models\User;
 use App\Models\Activity;
+use App\Http\Controllers\Controller;
+use App\Models\ActivityRegistration;
 use App\Services\Activities\ActivityRegistrationCreateService;
 use App\Services\Activities\ActivityRegistrationDeleteService;
-use App\Http\Controllers\Controller;
 
 class ActivityRegistrationsController extends Controller
 {

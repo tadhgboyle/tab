@@ -2,17 +2,17 @@
 
 namespace App\Livewire\Admin\Activities;
 
-use App\Models\ActivityRegistration;
-use Filament\Tables\Columns\BooleanColumn;
-use Filament\Tables\Filters\TernaryFilter;
 use Livewire\Component;
 use App\Models\Activity;
 use Filament\Tables\Table;
 use App\Helpers\Permission;
 use Filament\Tables\Actions\Action;
+use App\Models\ActivityRegistration;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Columns\BooleanColumn;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 

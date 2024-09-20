@@ -10,11 +10,11 @@ use App\Helpers\CategoryHelper;
 use App\Helpers\RotationHelper;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Requests\UserRequest;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use App\Services\Users\UserEditService;
 use App\Services\Users\UserCreateService;
 use App\Services\Users\UserDeleteService;
-use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
