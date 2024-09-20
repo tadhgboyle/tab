@@ -61,5 +61,11 @@ class FamilySeeder extends Seeder
                 })->toArray()
             );
         });
+
+        $families->each(function (Family $family) {
+            if (random_int(0, 3) === 0) {
+                $family->members->random(random_int(1, 3))->map->delete();
+            }
+        });
     }
 }

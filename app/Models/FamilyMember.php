@@ -5,10 +5,11 @@ namespace App\Models;
 use App\Enums\FamilyMemberRole;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FamilyMember extends Model
 {
-    // TODO softdeletes for Family timeline
+    use SoftDeletes;
 
     protected $fillable = [
         'family_id',

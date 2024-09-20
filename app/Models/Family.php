@@ -56,13 +56,22 @@ class Family extends Model implements HasTimeline
             ),
         ];
 
-        foreach ($this->members()->with('user')->get() as $member) {
+        foreach ($this->members()->withTrashed()->with('user')->get() as $member) {
             $events[] = new TimelineEntry(
                 description: "{$member->user->full_name} joined",
                 emoji: '👨‍👩‍👧‍👦',
                 time: $member->created_at,
                 link: $this->familyMemberLink($member),
             );
+
+            if ($member->trashed()) {
+                $events[] = new TimelineEntry(
+                    description: "{$member->user->full_name} left",
+                    emoji: '👋',
+                    time: $member->deleted_at,
+                    link: $this->familyMemberLink($member),
+                );
+            }
         }
 
         usort($events, fn ($a, $b) => $a->time <=> $b->time);
