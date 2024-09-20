@@ -2,15 +2,13 @@
 
 namespace App\Models;
 
-use App\Concerns\Timeline\HasTimeline;
-use App\Concerns\Timeline\TimelineEntry;
-use App\Enums\OrderStatus;
-use App\Enums\UserLimitDuration;
-use App\Helpers\Permission;
 use Cknow\Money\Money;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Helpers\Permission;
+use App\Concerns\Timeline\HasTimeline;
 use Illuminate\Database\Eloquent\Model;
+use App\Concerns\Timeline\TimelineEntry;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Family extends Model implements HasTimeline

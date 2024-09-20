@@ -2,17 +2,17 @@
 
 namespace App\Livewire\Admin;
 
-use App\Models\Activity;
-use Filament\Tables\Columns\BooleanColumn;
-use Filament\Tables\Filters\QueryBuilder;
-use Filament\Tables\Filters\QueryBuilder\Constraints\DateConstraint;
 use Livewire\Component;
+use App\Models\Activity;
 use Filament\Tables\Table;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Filters\QueryBuilder;
+use Filament\Tables\Columns\BooleanColumn;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Filters\QueryBuilder\Constraints\DateConstraint;
 
 class ActivitiesList extends Component implements HasTable, HasForms
 {
@@ -28,13 +28,13 @@ class ActivitiesList extends Component implements HasTable, HasForms
                 TextColumn::make('start')->sortable()->dateTime('M jS Y h:ia'),
                 TextColumn::make('end')->sortable()->dateTime('M jS Y h:ia'),
                 TextColumn::make('status')->badge()->state(function (Activity $activity) {
-                    return match(true) {
+                    return match (true) {
                         $activity->ended() => 'Ended',
                         $activity->inProgress() => 'In Progress',
                         default => 'Upcoming',
                     };
                 })->color(function (Activity $activity) {
-                    return match(true) {
+                    return match (true) {
                         $activity->ended() => 'danger',
                         $activity->inProgress() => 'success',
                         default => 'gray',

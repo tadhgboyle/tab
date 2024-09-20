@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Settings;
 use App\Helpers\Permission;
 use App\Helpers\SettingsHelper;
-use App\Http\Requests\SettingsRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SettingsRequest;
 
 class SettingsController extends Controller
 {

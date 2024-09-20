@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\FamilyMemberRole;
+use App\Models\User;
 use App\Models\Family;
 use App\Models\FamilyMember;
-use App\Models\User;
+use App\Enums\FamilyMemberRole;
 
 class FamilyMemberController
 {
@@ -29,7 +29,7 @@ class FamilyMemberController
             'role' => request('role'),
         ]);
 
-        return redirect()->back()->with('success', "{$familyMember->user->full_name} role updated to " . ucfirst($familyMember->role->value) . ".");
+        return redirect()->back()->with('success', "{$familyMember->user->full_name} role updated to " . ucfirst($familyMember->role->value) . '.');
     }
 
     public function delete(Family $family, FamilyMember $familyMember)

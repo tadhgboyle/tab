@@ -3,16 +3,15 @@
 namespace App\Livewire\Admin;
 
 use App\Models\User;
-use Filament\Tables\Filters\TernaryFilter;
 use Livewire\Component;
 use Filament\Tables\Table;
 use App\Helpers\Permission;
-use Filament\Tables\Actions\Action;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
@@ -63,7 +62,7 @@ class UsersList extends Component implements HasTable, HasForms
                     ->queries(
                         true: fn ($query) => $query->whereHas('family'),
                         false: fn ($query) => $query->whereDoesntHave('family'),
-                ),
+                    ),
             ])
             ->actions([
                 // ...

@@ -2,13 +2,13 @@
 
 namespace Tests\Unit\Product;
 
-use App\Enums\ProductStatus;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Category;
 use App\Helpers\Permission;
+use App\Enums\ProductStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ProductControllerTest extends TestCase

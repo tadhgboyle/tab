@@ -2,11 +2,11 @@
 
 use App\Models\Role;
 use App\Models\User;
-use Database\Seeders\FamilySeeder;
 use Illuminate\Database\Seeder;
 use Database\Seeders\RoleSeeder;
 use Database\Seeders\UserSeeder;
 use Database\Seeders\OrderSeeder;
+use Database\Seeders\FamilySeeder;
 use Database\Seeders\PayoutSeeder;
 use Database\Seeders\ProductSeeder;
 use Illuminate\Support\Facades\App;

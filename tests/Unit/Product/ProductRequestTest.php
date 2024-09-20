@@ -2,9 +2,9 @@
 
 namespace Tests\Unit\Product;
 
-use App\Enums\ProductStatus;
 use App\Models\Product;
 use App\Models\Category;
+use App\Enums\ProductStatus;
 use Tests\FormRequestTestCase;
 use App\Http\Requests\ProductRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;

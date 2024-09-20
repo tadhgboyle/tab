@@ -16,9 +16,9 @@ use Illuminate\Http\Request;
 use App\Models\GiftCardAdjustment;
 use App\Models\OrderProductReturn;
 use Illuminate\Support\Collection;
+use App\Http\Controllers\Controller;
 use App\Models\ActivityRegistration;
 use App\Enums\GiftCardAdjustmentType;
-use App\Http\Controllers\Controller;
 
 class DashboardController extends Controller
 {

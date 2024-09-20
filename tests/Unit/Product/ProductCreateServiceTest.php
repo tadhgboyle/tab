@@ -2,10 +2,10 @@
 
 namespace Tests\Unit\Product;
 
-use App\Enums\ProductStatus;
 use Tests\TestCase;
 use Cknow\Money\Money;
 use App\Models\Category;
+use App\Enums\ProductStatus;
 use App\Http\Requests\ProductRequest;
 use App\Services\Products\ProductCreateService;
 use Illuminate\Foundation\Testing\RefreshDatabase;

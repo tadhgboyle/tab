@@ -6,9 +6,9 @@ use App\Models\User;
 use App\Models\GiftCard;
 use App\Helpers\CategoryHelper;
 use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\GiftCardRequest;
-use App\Http\Controllers\Controller;
 
 class GiftCardController extends Controller
 {

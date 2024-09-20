@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use Illuminate\Support\Collection;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductVariantRequest;
 use App\Models\ProductVariantOptionValueAssignment;
-use App\Http\Controllers\Controller;
 
 class ProductVariantController extends Controller
 {

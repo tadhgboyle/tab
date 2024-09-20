@@ -43,14 +43,14 @@ class RotationSeeder extends Seeder
             if (random_int(0, 3) == 3) {
                 $rotation = Rotation::all()->random();
                 if (!$user->rotations()->get()->contains($rotation)) {
-                	$user->rotations()->attach($rotation);
+                    $user->rotations()->attach($rotation);
                 }
             }
 
             if (random_int(0, 6) == 6) {
                 $rotation = Rotation::all()->random();
                 if (!$user->rotations()->get()->contains($rotation)) {
-                	$user->rotations()->attach($rotation);
+                    $user->rotations()->attach($rotation);
                 }
             }
 

@@ -6,8 +6,8 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Models\ProductVariant;
 use Illuminate\Validation\Rule;
-use App\Models\ProductVariantOption;
 use App\Http\Controllers\Controller;
+use App\Models\ProductVariantOption;
 
 class ProductVariantOptionController extends Controller
 {

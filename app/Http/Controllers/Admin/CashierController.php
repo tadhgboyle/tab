@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Models\User;
 use App\Helpers\Permission;
 use App\Helpers\RotationHelper;
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 class CashierController extends Controller
 {
