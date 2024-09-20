@@ -60,7 +60,7 @@ Route::middleware('auth')->group(function () {
             return redirect()->route('family_view', auth()->user()->family);
         }
 
-        return response()->view('403');
+        return abort(404);
     });
 
     /*

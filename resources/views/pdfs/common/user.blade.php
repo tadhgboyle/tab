@@ -90,7 +90,7 @@
                             <td >{{ $orderProduct->category->name }}</td>
                             <td >{{ $orderProduct->quantity }}</td>
                             <td >{{ $orderProduct->returned }}</td>
-                            <td>
+                            <td class="money-column">
                                 <!-- TODO: This will be inaccurate if price changes after. We need to store price per unit on orderProducts -->
                                 @if($orderProduct->productVariant)
                                     {{ $orderProduct->productVariant->price }}
@@ -154,7 +154,7 @@
                         <td >{{ $activityRegistration->created_at->format('M jS Y h:ia') }}</td>
                         <td >{{ $activityRegistration->category->name }}</td>
                         <td >{{ $activityRegistration->returned ? 'Yes' : 'No' }}</td>
-                        <td>{{ $activityRegistration->activity_price }}</td>
+                        <td class="money-column">{{ $activityRegistration->activity_price }}</td>
                         <td>{{ number_format($activityRegistration->activity_pst, 2) }}</td>
                         <td>{{ number_format($activityRegistration->activity_gst, 2) }}</td>
                         <td class="money-column">{{ $activityRegistration->total_price }}</td>

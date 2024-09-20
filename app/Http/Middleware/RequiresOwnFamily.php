@@ -9,10 +9,10 @@ class RequiresOwnFamily
 {
     public function handle(Request $request, Closure $next)
     {
-        if (auth()->user()->family->is($request->route('family'))) {
+        if (auth()->user()->family?->is($request->route('family'))) {
             return $next($request);
         }
 
-        return response()->view('pages.403');
+        return abort(403);
     }
 }

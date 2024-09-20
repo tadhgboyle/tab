@@ -13,6 +13,6 @@ class RequiresFamilyAdmin
             return $next($request);
         }
 
-        return response()->view('pages.403');
+        return abort(403);
     }
 }
