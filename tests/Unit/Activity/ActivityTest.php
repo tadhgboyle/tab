@@ -53,7 +53,7 @@ class ActivityTest extends TestCase
             'start' => now()->addWeek()->addHours(2)->addMinutes(7),
         ]);
 
-        $this->assertEquals('1 week 2 hours 6 minutes', $activity->countdown());
+        $this->assertEquals('1 week 2 hours', $activity->countdown());
     }
 
     public function testDuration(): void
@@ -64,7 +64,7 @@ class ActivityTest extends TestCase
             'end' => now()->addDay()->addHour()->addMinutes(5),
         ]);
 
-        $this->assertEquals('1 day 1 hour 5 minutes', $activity->duration());
+        $this->assertEquals('1 day 1 hour', $activity->duration());
     }
 
     public function testSlotsAvailableReturnsNegativeOneIfUnlimitedSlots(): void

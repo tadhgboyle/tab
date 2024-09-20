@@ -76,7 +76,7 @@ class RoleControllerTest extends TestCase
         $this->actingAs($this->_superuser)
             ->get(route('settings_roles_create'))
             ->assertOk()
-            ->assertViewIs('pages.settings.roles.form');
+            ->assertViewIs('pages.admin.settings.roles.form');
     }
 
     public function testCanCreateBasicRole(): void
@@ -200,7 +200,7 @@ class RoleControllerTest extends TestCase
         $this->actingAs($this->_superuser)
             ->get(route('settings_roles_edit', $this->_cashier_role->id))
             ->assertOk()
-            ->assertViewIs('pages.settings.roles.form')
+            ->assertViewIs('pages.admin.settings.roles.form')
             ->assertSee("<strong>Role:</strong> {$this->_cashier_role->name}", false);
     }
 
@@ -217,7 +217,7 @@ class RoleControllerTest extends TestCase
         $response = $this->actingAs($this->_superuser)
             ->get(route('settings_roles_edit', $this->_cashier_role->id))
             ->assertOk()
-            ->assertViewIs('pages.settings.roles.form')
+            ->assertViewIs('pages.admin.settings.roles.form')
             ->assertSee('<strong>1</strong> user  currently have this role.', false);
 
         $view_data = $response->getOriginalContent()->getData();
@@ -230,7 +230,7 @@ class RoleControllerTest extends TestCase
         $response = $this->actingAs($this->_superuser)
             ->get(route('settings_roles_edit', $this->_cashier_role->id))
             ->assertOk()
-            ->assertViewIs('pages.settings.roles.form');
+            ->assertViewIs('pages.admin.settings.roles.form');
 
         foreach ([$this->_manager_role, $this->_superadmin_role] as $role) {
             $response->assertSee("<option value=\"{$role->id}\">{$role->name}</option>", false);

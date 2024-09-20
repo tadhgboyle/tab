@@ -72,9 +72,9 @@
         <div id="adjust_product">
             @if(session()->has('last_product'))
                 @if(session()->has('last_product_variant'))
-                    @include('pages.products.ledger.form', ['product' => session('last_product'), 'productVariant' => session('last_product_variant')])
+                    @include('pages.admin.products.ledger.form', ['product' => session('last_product'), 'productVariant' => session('last_product_variant')])
                 @else
-                    @include('pages.products.ledger.form', ['product' => session('last_product')])
+                    @include('pages.admin.products.ledger.form', ['product' => session('last_product')])
                 @endif
             @endif
         </div>

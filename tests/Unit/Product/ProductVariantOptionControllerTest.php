@@ -42,7 +42,7 @@ class ProductVariantOptionControllerTest extends TestCase
     {
         $this->get(route('products_variant-options_create', $this->_product))
             ->assertOk()
-            ->assertViewIs('pages.products.variant-options.form')
+            ->assertViewIs('pages.admin.products.variant-options.form')
             ->assertViewHas('product', $this->_product);
     }
 
@@ -75,7 +75,7 @@ class ProductVariantOptionControllerTest extends TestCase
                 'name' => 'Test',
             ])
             //->assertRedirect(route('products_variant-options_create', $this->_product))
-            //->assertViewIs('pages.products.variant-options.form')
+            //->assertViewIs('pages.admin.products.variant-options.form')
             ->assertSessionHasInput('name')
             ->assertSessionHasErrors('name', 'The name has already been taken.');
     }
@@ -114,7 +114,7 @@ class ProductVariantOptionControllerTest extends TestCase
 
         $this->get(route('products_variant-options_edit', [$this->_product, $option]))
             ->assertOk()
-            ->assertViewIs('pages.products.variant-options.form')
+            ->assertViewIs('pages.admin.products.variant-options.form')
             ->assertViewHas('product', $this->_product)
             ->assertViewHas('productVariantOption', $option);
     }

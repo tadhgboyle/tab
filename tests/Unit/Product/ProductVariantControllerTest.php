@@ -91,7 +91,7 @@ class ProductVariantControllerTest extends TestCase
         $this
             ->get(route('products_variants_create', $this->_product))
             ->assertOk()
-            ->assertViewIs('pages.products.variants.form')
+            ->assertViewIs('pages.admin.products.variants.form')
             ->assertViewHas('product', $this->_product);
     }
 
@@ -181,7 +181,7 @@ class ProductVariantControllerTest extends TestCase
         $this
             ->get(route('products_variants_edit', [$this->_product, $variant]))
             ->assertOk()
-            ->assertViewIs('pages.products.variants.form')
+            ->assertViewIs('pages.admin.products.variants.form')
             ->assertViewHasAll([
                 'product' => $this->_product,
                 'productVariant' => $variant,

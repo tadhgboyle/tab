@@ -68,7 +68,7 @@ class ProductControllerTest extends TestCase
         $this
             ->get(route('products_list'))
             ->assertOk()
-            ->assertViewIs('pages.products.list');
+            ->assertViewIs('pages.admin.products.list');
     }
 
     public function testCanViewShowPage(): void
@@ -81,7 +81,7 @@ class ProductControllerTest extends TestCase
         $this
             ->get(route('products_view', $this->_product))
             ->assertOk()
-            ->assertViewIs('pages.products.view')
+            ->assertViewIs('pages.admin.products.view')
             ->assertViewHas('product');
     }
 
@@ -115,7 +115,7 @@ class ProductControllerTest extends TestCase
         $this
             ->get(route('products_create'))
             ->assertOk()
-            ->assertViewIs('pages.products.form')
+            ->assertViewIs('pages.admin.products.form')
             ->assertViewHas('categories');
     }
 
@@ -129,7 +129,7 @@ class ProductControllerTest extends TestCase
         $this
             ->get(route('products_edit', $this->_product))
             ->assertOk()
-            ->assertViewIs('pages.products.form')
+            ->assertViewIs('pages.admin.products.form')
             ->assertViewHas('product')
             ->assertViewHas('categories');
     }
@@ -144,7 +144,7 @@ class ProductControllerTest extends TestCase
         $this
             ->get(route('products_ledger'))
             ->assertOk()
-            ->assertViewIs('pages.products.ledger.list')
+            ->assertViewIs('pages.admin.products.ledger.list')
             ->assertViewHas('products');
     }
 
@@ -202,7 +202,7 @@ class ProductControllerTest extends TestCase
         $this
             ->get(route('products_ledger'))
             ->assertOk()
-            ->assertViewIs('pages.products.ledger.list')
+            ->assertViewIs('pages.admin.products.ledger.list')
             ->assertViewHas('products');
     }
 
@@ -216,7 +216,7 @@ class ProductControllerTest extends TestCase
         $this
             ->get(route('products_ledger_ajax', $this->_product))
             ->assertOk()
-            ->assertViewIs('pages.products.ledger.form')
+            ->assertViewIs('pages.admin.products.ledger.form')
             ->assertViewHas('product')
             ->assertViewMissing('productVariant');
     }
@@ -235,7 +235,7 @@ class ProductControllerTest extends TestCase
                 'stock' => 10,
             ])]))
             ->assertOk()
-            ->assertViewIs('pages.products.ledger.form')
+            ->assertViewIs('pages.admin.products.ledger.form')
             ->assertViewHas('product')
             ->assertViewHas('productVariant');
     }

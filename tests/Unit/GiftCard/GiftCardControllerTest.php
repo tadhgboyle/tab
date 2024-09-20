@@ -44,7 +44,7 @@ class GiftCardControllerTest extends TestCase
         $this->actingAs($this->_superuser)
             ->get(route('settings_gift-cards_view', $giftCard->id))
             ->assertOk()
-            ->assertViewIs('pages.settings.gift-cards.view');
+            ->assertViewIs('pages.admin.settings.gift-cards.view');
     }
 
     public function testCanViewGiftCardCreatePage(): void
@@ -57,7 +57,7 @@ class GiftCardControllerTest extends TestCase
         $this->actingAs($this->_superuser)
             ->get(route('settings_gift-cards_create'))
             ->assertOk()
-            ->assertViewIs('pages.settings.gift-cards.form');
+            ->assertViewIs('pages.admin.settings.gift-cards.form');
     }
 
     public function testCanCreateGiftCard(): void
