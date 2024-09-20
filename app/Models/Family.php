@@ -6,6 +6,7 @@ use App\Concerns\Timeline\HasTimeline;
 use App\Concerns\Timeline\TimelineEntry;
 use App\Enums\OrderStatus;
 use App\Enums\UserLimitDuration;
+use App\Helpers\Permission;
 use Cknow\Money\Money;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -88,12 +89,21 @@ class Family extends Model implements HasTimeline
                 description: "{$member->user->full_name} joined",
                 emoji: '👨‍👩‍👧‍👦',
                 time: $member->created_at,
-                link: route('families_member_view', [$this, $member]),
+                link: $this->familyMemberLink($member),
             );
         }
 
         usort($events, fn ($a, $b) => $a->time <=> $b->time);
 
         return $events;
+    }
+
+    private function familyMemberLink(FamilyMember $familyMember): ?string
+    {
+        if (request()->routeIs('family_view')) {
+            return auth()->user()->isFamilyAdmin($this) ? route('families_member_view', [$this, $familyMember]) : null;
+        }
+
+        return hasPermission(Permission::USERS_VIEW) ? route('users_view', $familyMember->user) : null;
     }
 }

@@ -29,7 +29,7 @@ class FamilyController extends Controller
     {
         $family = Family::create($request->validated());
 
-        return redirect()->route('families_view', $family)->with('success', 'Family created.');
+        return redirect()->route('families_view', $family)->with('success', "{$family->name} family created.");
     }
 
     public function edit(Family $family)

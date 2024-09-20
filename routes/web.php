@@ -51,9 +51,16 @@ Route::middleware('auth')->group(function () {
         $staffRoute = hasPermission(Permission::DASHBOARD)
             ? 'dashboard'
             : 'cashier';
-        return redirect(route(
-            auth()->user()->role->staff ? $staffRoute : 'family'
-        ));
+        
+        if (auth()->user()->role->staff) {
+            return redirect()->route($staffRoute);
+        }
+
+        if (auth()->user()->family) {
+            return redirect()->route('family_view', auth()->user()->family);
+        }
+
+        return response()->view('403');
     });
 
     /*
