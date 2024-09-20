@@ -22,7 +22,7 @@ class FamiliesList extends Component implements HasTable, HasForms
         return $table
             ->query(Family::query())
             ->columns([
-                TextColumn::make('created_at')->label('Created')->dateTime()->sortable(),
+                TextColumn::make('created_at')->label('Created')->dateTime('M jS Y h:ia')->sortable(),
                 TextColumn::make('name')->sortable()->searchable(),
                 TextColumn::make('members_count')->label('Members')->counts('members')->sortable(),
             ])

@@ -63,9 +63,8 @@ class FamilyMemberController extends Controller
 
         $timestamp = now()->timestamp;
 
-        // TODO "common" directory needed?
-        return Pdf::loadView('pdfs.admin.user', [
+        return Pdf::loadView('pdfs.common.user', [
             'user' => $user,
-        ])->stream("family-{$family->id}-member-{$user->id}-{$timestamp}.pdf");
+        ])->stream("user-{$user->id}-{$timestamp}.pdf");
     }
 }

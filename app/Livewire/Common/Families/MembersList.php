@@ -75,9 +75,9 @@ class MembersList extends Component implements HasTable, HasForms
                     ->label('PDF')
                     ->button()
                     ->icon('heroicon-m-arrow-down-tray')
-                    ->url(fn () => route('family_pdf', $this->family))
+                    ->url(fn () => $this->context === 'admin' ? route('families_pdf', $this->family) : route('family_pdf', $this->family))
                     ->openUrlInNewTab()
-                    ->visible($this->context === 'family' && auth()->user()->isFamilyAdmin($this->family)),
+                    ->visible($this->context === 'admin' || ($this->context === 'family' && auth()->user()->isFamilyAdmin($this->family))),
             ])
             ->actions([
                 Action::make('edit')

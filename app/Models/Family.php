@@ -11,6 +11,7 @@ use Cknow\Money\Money;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Family extends Model implements HasTimeline
 {
@@ -25,6 +26,11 @@ class Family extends Model implements HasTimeline
         return $this->hasMany(FamilyMember::class);
     }
 
+    public function users(): HasManyThrough
+    {
+        return $this->hasManyThrough(User::class, FamilyMember::class, 'family_id', 'id', 'id', 'user_id');
+    }
+
     public function totalSpent(): Money
     {
         return Money::sum(Money::parse(0), ...$this->membersWithUserRelations->map->user->map->findSpentInCash());
@@ -33,40 +39,6 @@ class Family extends Model implements HasTimeline
     public function totalOwing(): Money
     {
         return Money::sum(Money::parse(0), ...$this->membersWithUserRelations->map->user->map->findOwing());
-    }
-
-    public function dailyBudget(): Money
-    {
-        return Money::sum(Money::parse(0), ...UserLimit::whereIn('user_id', $this->members->pluck('user_id'))
-            ->where('duration', UserLimitDuration::Daily)
-            ->get()
-            ->map->limit);
-    }
-
-    public function dailyBudgetSpent(): Money
-    {
-        return Money::sum(Money::parse(0), ...Order::whereIn('purchaser_id', $this->members->pluck('user_id'))
-            ->whereNot('status', OrderStatus::FullyReturned)
-            ->whereDate('created_at', today())
-            ->get()
-            ->map->purchaser_amount);
-    }
-
-    public function weeklyBudget(): Money
-    {
-        return Money::sum(Money::parse(0), ...UserLimit::whereIn('user_id', $this->members->pluck('user_id'))
-            ->where('duration', UserLimitDuration::Weekly)
-            ->get()
-            ->map->limit);
-    }
-
-    public function weeklyBudgetSpent(): Money
-    {
-        return Money::sum(Money::parse(0), ...Order::whereIn('purchaser_id', $this->members->pluck('user_id'))
-            ->whereNot('status', OrderStatus::FullyReturned)
-            ->whereBetween('created_at', [today()->startOfWeek(), today()->endOfWeek()])
-            ->get()
-            ->map->purchaser_amount);
     }
 
     public function membersWithUserRelations(): HasMany
