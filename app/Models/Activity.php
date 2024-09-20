@@ -84,19 +84,6 @@ class Activity extends Model implements HasTimeline
         return $this->registrations()->where('user_id', $user->id)->exists();
     }
 
-    public function getStatusHtml(): string
-    {
-        if ($this->ended()) {
-            return '<span class="tag is-medium">🕐 Over</span>';
-        }
-
-        if ($this->inProgress()) {
-            return '<span class="tag is-medium">✅ In Progress</span>';
-        }
-
-        return '<span class="tag is-medium">🔮 Waiting</span>';
-    }
-
     public function inProgress(): bool
     {
         return $this->started() && !$this->ended();

@@ -63,7 +63,7 @@ class FamilyMemberController extends Controller
 
         $timestamp = now()->timestamp;
 
-        return Pdf::loadView('pdfs.common.user', [
+        return Pdf::loadView('pdfs.admin.user', [
             'user' => $user,
         ])->stream("user-{$user->id}-{$timestamp}.pdf");
     }

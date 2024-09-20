@@ -11,51 +11,36 @@
     </p>
 </h4>
 
-<div class="box">
-    <nav class="level">
-        <div class="level-item has-text-centered">
-            <div>
-                <p class="heading">Balance</p>
-                <p class="title">{{ $user->balance }}</p>
-            </div>
-        </div>
-        <div class="level-item has-text-centered">
-            <div>
-                <p class="heading">Total spent</p>
-                <p class="title">{{ $user->findSpent() }}</p>
-            </div>
-        </div>
-        <div class="level-item has-text-centered">
-            <div>
-                <p class="heading">Total returned</p>
-                <p class="title">{{ $user->findReturned() }}</p>
-            </div>
-        </div>
-        <div class="level-item has-text-centered">
-            <div>
-                <p class="heading">Total paid out</p>
-                <p class="title">{{ $user->findPaidOut() }}</p>
-            </div>
-        </div>
-        <div class="level-item has-text-centered">
-            <div>
-                <p class="heading">Total owing</p>
-                <a class="title" title="View PDF" style="text-decoration: underline;" href="{{ route('family_member_pdf', [$familyMember->family, $familyMember]) }}" target="_blank">{{ $user->findOwing() }}</a>
-            </div>
-        </div>
-    </nav>
-</div>
-
 <div class="columns">
     <div class="column">
-        <livewire:common.users.orders-list :user="$user" context="family" />
-        <div class="mt-5"></div>
-        <livewire:common.users.activity-registrations-list :user="$user" context="family" />
+        <div class="columns is-multiline">
+            <div class="column is-full">
+                <livewire:common.users.orders-list :user="$user" context="family" />
+            </div>
+            <div class="column is-full">
+                <livewire:common.users.activity-registrations-list :user="$user" context="family" />
+            </div>
+            <div class="column">
+                <livewire:common.users.payouts-list :user="$user" context="family" />
+            </div>
+        </div>
     </div>
-    <div class="column">
-        <livewire:common.users.category-limits-list :user="$user" />
-        <div class="mt-5"></div>
-        <livewire:common.users.payouts-list :user="$user" context="family" />
+
+    <div class="column is-two-fifths">
+        <x-detail-card-stack>
+            <x-detail-card title="Details">
+                <x-detail-card-item-list>
+                    <x-detail-card-item label="Name" :value="$user->full_name" />
+                    <x-detail-card-item label="Balance" :value="$user->balance" />
+                    <x-detail-card-item label="Total spent" :value="$user->findSpent()" />
+                    <x-detail-card-item label="Total returned" :value="$user->findReturned()" />
+                    <x-detail-card-item label="Total paid out" :value="$user->findPaidOut()" />
+                    <x-detail-card-item label="Total owing" :value="$user->findOwing()" />
+                </x-detail-card-item-list>
+            </x-detail-card>
+
+            <livewire:common.users.category-limits-list :user="$user" context="family"/>
+        </x-detail-card-stack>
     </div>
 </div>
 @endsection

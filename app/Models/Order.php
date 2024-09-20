@@ -150,15 +150,6 @@ class Order extends Model implements HasTimeline
         return $this->status === OrderStatus::FullyReturned;
     }
 
-    public function getStatusHtml(): string
-    {
-        return match ($this->status) {
-            OrderStatus::FullyReturned => '<span class="tag is-medium">🚨 Returned</span>',
-            OrderStatus::PartiallyReturned => '<span class="tag is-medium">⚠️ Partially Returned</span>',
-            OrderStatus::NotReturned => '<span class="tag is-medium">👌 Not Returned</span>',
-        };
-    }
-
     public function timeline(): array
     {
         $timeline = [

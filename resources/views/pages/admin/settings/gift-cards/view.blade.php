@@ -1,46 +1,31 @@
 @extends('layouts.default', ['page' => 'settings'])
 @section('content')
 <h2 class="title has-text-weight-bold">View Gift Card</h2>
-<h4 class="subtitle">
-    <code>{{ $giftCard->code() }}</code> {!! $giftCard->getStatusHtml() !!}
-</h4>
-
-@if($giftCard->expires_at)
-    <p><strong>{{ $giftCard->expired() ? "Expired" : "Expires" }} at:</strong> {{ $giftCard->expires_at->format('M jS Y') }}</p>
-@endif
 
 <div class="columns">
-    <div class="column">
-        <div class="box">
-            <nav class="level">
-                <div class="level-item has-text-centered">
-                    <div>
-                        <p class="heading">Amount Used</p>
-                        <p class="title">{{ $giftCard->amountUsed() }}</p>
-                    </div>
-                </div>
-                <div class="level-item has-text-centered">
-                    <div>
-                        <p class="heading">Remaining Balance</p>
-                        <p class="title">{{ $giftCard->remaining_balance }}</p>
-                    </div>
-                </div>
-                <div class="level-item has-text-centered">
-                    <div>
-                        <p class="heading">Original Balance</p>
-                        <p class="title">{{ $giftCard->original_balance }}</p>
-                    </div>
-                </div>
-            </nav>
-        </div>
-    </div>
-</div>
-<div class="columns">
-    <div class="column">
-        <x-entity-timeline :timeline="$giftCard->timeline()" />
-    </div>
     <div class="column">
         <livewire:admin.settings.gift-cards.users-list :gift-card="$giftCard" />
+    </div>
+
+    <div class="column is-one-third">
+        <x-detail-card-stack>
+            <x-detail-card title="Details">
+                <x-detail-card-item-list>
+                    <x-detail-card-item label="Code" :value="$giftCard->code()" />
+                    <x-detail-card-item label="Status">
+                        <x-gift-card-status-badge :gift-card="$giftCard" />
+                    </x-detail-card-item>
+                    <x-detail-card-item :label="$giftCard->expired() ? 'Expired at' : 'Expires at'" :value="$giftCard->expires_at ? $giftCard->expires_at->format('M jS Y') : '<i>Never</i>'" />
+                </x-detail-card-item-list>
+            </x-detail-card>
+            <x-detail-card title="Balance">
+                <x-detail-card-item-list>
+                    <x-detail-card-item label="Original Balance" :value="$giftCard->original_balance" />
+                    <x-detail-card-item label="Remaining Balance" :value="$giftCard->remaining_balance" />
+                </x-detail-card-item-list>
+            </x-detail-card>
+            <x-entity-timeline :timeline="$giftCard->timeline()" />
+        </x-detail-card-stack>
     </div>
 </div>
 

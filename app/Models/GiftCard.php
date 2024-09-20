@@ -12,6 +12,7 @@ use App\Concerns\Timeline\TimelineEntry;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Str;
 
 class GiftCard extends Model implements HasTimeline
 {
@@ -66,17 +67,12 @@ class GiftCard extends Model implements HasTimeline
 
     public function last4(): string
     {
-        return substr($this->code, -4);
+        return Str::take($this->code, -4);
     }
 
     public function fullyUsed(): bool
     {
         return $this->remaining_balance->isZero();
-    }
-
-    public function amountUsed(): Money
-    {
-        return $this->original_balance->subtract($this->remaining_balance);
     }
 
     public function canBeUsedBy(User $user): bool
@@ -87,15 +83,6 @@ class GiftCard extends Model implements HasTimeline
     public function usageBy(User $user): Money
     {
         return Money::sum(Money::parse(0), ...$user->orders()->where('gift_card_id', $this->id)->get()->map->gift_card_amount);
-    }
-
-    public function getStatusHtml(): string
-    {
-        if ($this->expired()) {
-            return '<span class="tag is-medium">🕐 Expired</span>';
-        }
-
-        return '<span class="tag is-medium">✅ Active</span>';
     }
 
     public function timeline(): array

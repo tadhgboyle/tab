@@ -17,8 +17,12 @@
         <x-detail-card-stack>
             <x-detail-card title="Details">
                 <x-detail-card-item-list>
-                    <x-detail-card-item label="Status" :value="$product->status->getWord()" />
-                    <x-detail-card-item label="Category" :value="$product->category->name" />
+                    <x-detail-card-item label="Status">
+                        <x-product-status-badge :product="$product" />
+                    </x-detail-card-item>
+                    <x-detail-card-item label="Category">
+                        <x-badge :value="$product->category->name" />
+                    </x-detail-card-item>
                     @if(!$product->hasVariants() && $product->sku)
                         <x-detail-card-item label="SKU" :value="$product->sku" />
                     @endif

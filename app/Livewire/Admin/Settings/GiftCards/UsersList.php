@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin\Settings\GiftCards;
 
+use App\Helpers\Permission;
 use Livewire\Component;
 use App\Models\GiftCard;
 use Filament\Tables\Table;
@@ -32,11 +33,19 @@ class UsersList extends Component implements HasTable, HasForms
             ])
             ->query($this->giftCard->assignments()->getQuery())
             ->columns([
-                TextColumn::make('user.full_name'),
+                TextColumn::make('user.full_name')->url(function (GiftCardAssignment $assignment) {
+                    if (hasPermission(Permission::USERS_VIEW)) {
+                        return route('users_view', $assignment->user);
+                    }
+                }),
                 TextColumn::make('total_use')->state(function (GiftCardAssignment $assignment) {
                     return $this->giftCard->usageBy($assignment->user); // TODO this is doing 3 queries per row, why?
                 }),
-                TextColumn::make('assigner.full_name')->label('Assigned by'),
+                TextColumn::make('assigner.full_name')->label('Assigned by')->url(function (GiftCardAssignment $assignment) {
+                    if (hasPermission(Permission::USERS_VIEW)) {
+                        return route('users_view', $assignment->assigner);
+                    }
+                }),
                 TextColumn::make('created_at')->label('Given at')->dateTime('M jS Y h:ia'),
             ])
             ->filters([

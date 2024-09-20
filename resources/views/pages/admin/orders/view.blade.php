@@ -3,11 +3,6 @@
 <h2 class="title has-text-weight-bold">View Order</h2>
 <div class="columns">
     <div class="column">
-        <h4 class="subtitle">
-            {{ $order->identifier }} {!! $order->getStatusHtml() !!}
-        </h4>
-    </div>
-    <div class="column">
         <div class="is-pulled-right">
             @if($order->status !== \App\Enums\OrderStatus::FullyReturned && hasPermission(\App\Helpers\Permission::ORDERS_RETURN))
                 <button class="button is-danger is-outlined" type="button" onclick="openModal();">
@@ -206,8 +201,14 @@
         <x-detail-card-stack>
             <x-detail-card title="Details">
                 <x-detail-card-item-list>
+                    <x-detail-card-item label="Identifier" :value="$order->identifier" />
+                    <x-detail-card-item label="Status">
+                        <x-order-status-badge :order="$order" />
+                    </x-detail-card-item>
                     <x-detail-card-item label="Date" :value="$order->created_at->format('M jS Y h:ia')" />
-                    <x-detail-card-item label="Rotation" :value="$order->rotation->name" />
+                    <x-detail-card-item label="Rotation">
+                        <x-badge :value="$order->rotation->name" />
+                    </x-detail-card-item>
                     <x-detail-card-item label="Purchaser">
                         @permission(\App\Helpers\Permission::USERS_VIEW)
                             <a href="{{ route('users_view', $order->purchaser_id) }}">{{ $order->purchaser->full_name }}</a>

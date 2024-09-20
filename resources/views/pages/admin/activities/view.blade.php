@@ -10,7 +10,9 @@
         <x-detail-card-stack>
             <x-detail-card title="Details">
                 <x-detail-card-item-list>
-                    <x-detail-card-item label="Category" :value="$activity->category->name" />
+                    <x-detail-card-item label="Category">
+                        <x-badge :value="$activity->category->name" />
+                    </x-detail-card-item>
                     @if($activity->description)
                         <x-detail-card-item label="Description" :value="$activity->description" />
                     @endif
@@ -18,7 +20,9 @@
                         <x-detail-card-item label="Location" :value="$activity->location" />
                     @endif
                     <x-detail-card-item label="Slots" :value="$activity->unlimited_slots ? '<i>Unlimited</i>' : $activity->slots . ' - ' . $activity->slotsAvailable() . ' available'" />
-                    <x-detail-card-item label="Status" :value="$activity->getStatusHtml()" />
+                    <x-detail-card-item label="Status">
+                        <x-activity-status-badge :activity="$activity" />
+                    </x-detail-card-item>
                 </x-detail-card-item-list>
             </x-detail-card>
 

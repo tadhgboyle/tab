@@ -15,83 +15,59 @@
     @endCanBeImpersonated
 @endCanImpersonate
 
-<div class="box">
-    <nav class="level">
-        <div class="level-item has-text-centered">
-            <div>
-                <p class="heading">Balance</p>
-                <p class="title">{{ $user->balance }}</p>
-            </div>
-        </div>
-        <div class="level-item has-text-centered">
-            <div>
-                <p class="heading">Total spent</p>
-                <p class="title">{{ $user->findSpent() }}</p>
-            </div>
-        </div>
-        <div class="level-item has-text-centered">
-            <div>
-                <p class="heading">Total returned</p>
-                <p class="title">{{ $user->findReturned() }}</p>
-            </div>
-        </div>
-        <div class="level-item has-text-centered">
-            <div>
-                <p class="heading">Total paid out</p>
-                <p class="title">{{ $user->findPaidOut() }}</p>
-            </div>
-        </div>
-        <div class="level-item has-text-centered">
-            <div>
-                <p class="heading">Total owing</p>
-                <a class="title" title="View PDF" style="text-decoration: underline;" href="{{ route('users_pdf', $user) }}" target="_blank">{{ $user->findOwing() }}</a>
-            </div>
-        </div>
-    </nav>
-</div>
-
 <div class="columns">
     <div class="column">
         <div class="columns is-multiline">
             <div class="column is-full">
-                <x-detail-card title="Details">
-                    <x-detail-card-item label="Name" :value="$user->full_name" />
-                </x-detail-card>
-            </div>
-            @if($user->family)
-                <div class="column is-full">
-                    <x-detail-card title="Family">
-                        <x-detail-card-item-list>
-                            <x-detail-card-item label="Name" :value="$user->family->name" />
-                            <x-detail-card-item label="Role" :value="ucfirst($user->familyRole()->value)" />
-                        </x-detail-card-item-list>
-                    </x-detail-card>
-                </div>
-            @endif
-            <div class="column">
                 <livewire:common.users.orders-list :user="$user" context="admin" />
             </div>
             <div class="column is-full">
                 <livewire:common.users.activity-registrations-list :user="$user" context="admin" />
             </div>
             <div class="column">
-                <x-entity-timeline :timeline="$user->timeline()" />
+                <livewire:common.users.payouts-list :user="$user" context="admin" />
             </div>
         </div>
     </div>
 
-    <div class="column">
-        <div class="columns is-multiline">
-            <div class="column">
-                <livewire:common.users.category-limits-list :user="$user" />
-            </div>
-            <div class="column">
-                <livewire:admin.users.rotations-list :user="$user" />
-            </div>
-            <div class="column is-full">
-                <livewire:common.users.payouts-list :user="$user" context="admin" />
-            </div>
-        </div>
+    <div class="column is-two-fifths">
+        <x-detail-card-stack>
+            <x-detail-card title="Details">
+                <x-detail-card-item-list>
+                    <x-detail-card-item label="Role">
+                        <x-badge :value="$user->role->name" />
+                    </x-detail-card-item>
+                    <x-detail-card-item label="Balance" :value="$user->balance" />
+                    <x-detail-card-item label="Total spent" :value="$user->findSpent()" />
+                    <x-detail-card-item label="Total returned" :value="$user->findReturned()" />
+                    <x-detail-card-item label="Total paid out" :value="$user->findPaidOut()" />
+                    <x-detail-card-item label="Total owing" :value="$user->findOwing()" />
+                </x-detail-card-item-list>
+            </x-detail-card>
+
+            @if($user->family)
+                <x-detail-card title="Family">
+                    <x-detail-card-item-list>
+                        <x-detail-card-item label="Name">
+                            @permission(\App\Helpers\Permission::FAMILIES_VIEW)
+                                <a href="{{ route('families_view', $user->family->id) }}">{{ $user->family->name }}</a>
+                            @else
+                                {{ $user->family->name }}
+                            @endpermission
+                        </x-detail-card-item>
+                        <x-detail-card-item label="Role">
+                            <x-badge :value="ucfirst($user->familyRole()->value)" />
+                        </x-detail-card-item>
+                    </x-detail-card-item-list>
+                </x-detail-card>
+            @endif
+
+            <livewire:common.users.category-limits-list :user="$user" />
+
+            <livewire:admin.users.rotations-list :user="$user" />
+
+            <x-entity-timeline :timeline="$user->timeline()" />
+        </x-detail-card-stack>
     </div>
 </div>
 @endsection
