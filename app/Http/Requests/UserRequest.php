@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Helpers\RoleHelper;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule as ValidationRule;
+use Illuminate\Validation\Rule;
 use App\Http\Requests\FormRequest as FormRequestContract;
+use Illuminate\Validation\Rules\Password;
 
 class UserRequest extends FormRequest implements FormRequestContract
 {
@@ -14,11 +14,11 @@ class UserRequest extends FormRequest implements FormRequestContract
         return [
             'full_name' => [
                 'required',
-                ValidationRule::unique('users')->ignore($this->get('user_id')),
+                Rule::unique('users')->ignore($this->get('user_id')),
             ],
             'username' => [
                 'nullable',
-                ValidationRule::unique('users')->ignore($this->get('user_id')),
+                Rule::unique('users')->ignore($this->get('user_id')),
             ],
             'balance' => [
                 'nullable',
@@ -32,25 +32,18 @@ class UserRequest extends FormRequest implements FormRequestContract
             ],
             'rotations.*' => [
                 'numeric',
-                ValidationRule::exists('rotations', 'id'),
+                Rule::exists('rotations', 'id'),
             ],
             'role_id' => [
                 'required',
                 'numeric',
-                ValidationRule::in(auth()->user()->role->getRolesAvailable()->pluck('id')),
+                Rule::in(auth()->user()->role->getRolesAvailable()->pluck('id')),
             ],
             'password' => [
+                Rule::requiredIf($this->get('user_id') === null),
                 'nullable',
                 'confirmed',
-                'min:6',
-                ValidationRule::requiredIf(function () {
-                    /** @phpstan-ignore-next-line  */
-                    return !(request()?->route()?->getName() === 'users_update')
-                        && resolve(RoleHelper::class)->isStaffRole(
-                            // jank stuff to make testing this request possible
-                            is_numeric($this->get('role_id')) ? $this->get('role_id') : 0
-                        );
-                }),
+                Password::min(8),
             ],
         ];
     }

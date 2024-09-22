@@ -2,8 +2,10 @@
 
 namespace App\Livewire\Common\Users;
 
+use App\Enums\PayoutStatus;
 use App\Models\User;
 use App\Models\Payout;
+use Filament\Tables\Filters\SelectFilter;
 use Livewire\Component;
 use Filament\Tables\Table;
 use App\Helpers\Permission;
@@ -30,25 +32,37 @@ class PayoutsList extends Component implements HasTable, HasForms
             ->query($this->user->payouts()->getQuery())
             ->headerActions([
                 Action::make('create')
-                    ->url(route('users_payout_create', $this->user))
-                    ->visible(hasPermission(Permission::USERS_PAYOUTS_CREATE))
+                    ->visible($this->context === 'family')
+                    ->url(fn() => route('family_member_payout', [$this->user->family, $this->user->familyMember]))
                     ->disabled($this->user->findOwing()->isZero())
-                    ->hidden($this->context === 'family'), // TODO allow family to create payouts
             ])
             ->columns([
-                TextColumn::make('identifier')->searchable()->fontFamily(FontFamily::Mono),
+                TextColumn::make('id')->label('ID'),
                 TextColumn::make('amount')->sortable(),
-                TextColumn::make('cashier.full_name')
+                TextColumn::make('status')->badge()->color(function (Payout $payout) {
+                    return match ($payout->status) {
+                        PayoutStatus::Cancelled => 'danger',
+                        PayoutStatus::Pending => 'warning',
+                        PayoutStatus::Paid => 'success',
+                    };
+                })->state(fn (Payout $payout) => ucfirst($payout->status->value)),
+                TextColumn::make('creator.full_name')
                     ->url(function (Payout $payout) {
-                        if (hasPermission(Permission::USERS_VIEW)) {
-                            return route('users_view', $payout->cashier);
+                        if ($this->context === 'admin' && hasPermission(Permission::USERS_VIEW)) {
+                            return route('users_view', $payout->creator);
+                        } else if ($this->context === 'family' && auth()->user()->isFamilyAdmin($this->user->family) && $payout->creator->family?->is($this->user->family)) {
+                            return route('families_member_view', [$this->user->family, $payout->creator->familyMember]);
                         }
-                    })
-                    ->hidden($this->context === 'family'),
+                    }),
                 TextColumn::make('created_at')->label('Date')->sortable(),
             ])
             ->filters([
-                // ...
+                SelectFilter::make('status')
+                    ->options([
+                        PayoutStatus::Cancelled->value => 'Cancelled',
+                        PayoutStatus::Pending->value => 'Pending',
+                        PayoutStatus::Paid->value => 'Paid',
+                    ])->default(PayoutStatus::Paid->value),
             ])
             ->actions([
                 // ...

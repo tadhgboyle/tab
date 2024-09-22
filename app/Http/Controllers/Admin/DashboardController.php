@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\PayoutStatus;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Payout;
@@ -148,10 +149,10 @@ class DashboardController extends Controller
         // Total revenue lost from activity cancellations
         $data['activityCancellationRevenue'] = Money::parse(ActivityRegistration::where('returned', true)->sum('total_price'));
         // Total paid out
-        $data['totalPayouts'] = Money::parse(Payout::sum('amount'));
+        $data['totalPayouts'] = Money::parse(Payout::where('status', PayoutStatus::Paid)->sum('amount'));
         // Recent payouts
         // TODO Allow selecting rotation
-        $data['recentPayouts'] = Payout::orderByDesc('created_at')->limit(10)->get();
+        $data['recentPayouts'] = Payout::orderByDesc('created_at')->where('status', PayoutStatus::Paid)->limit(10)->get();
 
         return $data;
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\PayoutStatus;
 use Cknow\Money\Money;
 use App\Enums\OrderStatus;
 use App\Enums\FamilyMemberRole;
@@ -19,9 +20,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Laravel\Cashier\Billable;
 
 class User extends Authenticatable implements HasTimeline
 {
+    use Billable;
+
     use HasFactory;
     use SoftDeletes;
     use Impersonate;
@@ -200,17 +204,12 @@ class User extends Authenticatable implements HasTimeline
 
     public function findPaidOut(): Money
     {
-        return Money::sum(Money::parse(0), ...$this->payouts->map->amount);
+        return Money::sum(Money::parse(0), ...$this->payouts->where('status', PayoutStatus::Paid)->map->amount);
     }
 
     public function canImpersonate()
     {
         return $this->role->superuser;
-    }
-
-    public function canBeImpersonated()
-    {
-        return $this->role->staff;
     }
 
     public function timeline(): array
@@ -234,7 +233,7 @@ class User extends Authenticatable implements HasTimeline
             );
         }
 
-        foreach ($this->activityRegistrations as $activityRegistration) {
+        foreach ($this->activityRegistrations()->with('activity', 'cashier')->get() as $activityRegistration) {
             $events[] = new TimelineEntry(
                 description: "Registered for {$activityRegistration->activity->name}",
                 emoji: '🎟️',
@@ -244,12 +243,12 @@ class User extends Authenticatable implements HasTimeline
             );
         }
 
-        foreach ($this->payouts as $payout) {
+        foreach ($this->payouts->where('status', PayoutStatus::Paid) as $payout) {
             $events[] = new TimelineEntry(
                 description: "Paid out {$payout->amount}",
                 emoji: '💸',
                 time: $payout->created_at,
-                actor: $payout->cashier,
+                actor: $payout->creator,
             );
         }
 

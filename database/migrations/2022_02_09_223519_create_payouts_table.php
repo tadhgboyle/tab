@@ -15,7 +15,6 @@ class CreatePayoutsTable extends Migration
     {
         Schema::create('payouts', function (Blueprint $table) {
             $table->id();
-            $table->string('identifier')->nullable();
             $table->foreignId('user_id')->constrained();
             $table->unsignedBigInteger('cashier_id');
             $table->foreign('cashier_id')->references('id')->on('users');

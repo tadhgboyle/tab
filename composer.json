@@ -11,6 +11,7 @@
         "filament/notifications": "^3.2",
         "filament/tables": "^3.2",
         "lab404/laravel-impersonate": "^1.7",
+        "laravel/cashier": "^15.4",
         "laravel/framework": "^11.0"
     },
     "require-dev": {

@@ -61,7 +61,7 @@
                         <div class="select is-fullwidth" id="role_id">
                             <select name="role_id" class="input" required>
                                 @foreach($available_roles as $role)
-                                    <option value="{{ $role->id }}" data-staff="{{ $role->staff ? 1 : 0 }}" {{ (isset($user->role) && $user->role->id === $role->id) || old('role') === $role->id ? "selected" : "" }}>
+                                    <option value="{{ $role->id }}" {{ (isset($user->role) && $user->role->id === $role->id) || old('role') === $role->id ? "selected" : "" }}>
                                         {{ $role->name }}
                                     </option>
                                 @endforeach
@@ -70,23 +70,21 @@
                     </div>
                 </div>
 
-                <div id="password_hideable" style="display: none;">
-                    <div class="field">
-                        <label class="label">{{ isset($user) ? 'Change ' : '' }}Password<sup style="color: red">*</sup></label>
-                        <div class="control has-icons-left">
-                            <span class="icon is-small is-left">
-                                <i class="fas fa-lock"></i>
-                            </span>
-                            <input type="password" name="password" class="input" placeholder="Password" autocomplete="new-password">
-                        </div>
+                <div class="field">
+                    <label class="label">{{ isset($user) ? 'Change ' : '' }}Password @unless(isset($user))<sup style="color: red">*</sup>@endunless</label>
+                    <div class="control has-icons-left">
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        <input type="password" name="password" class="input" placeholder="Password" autocomplete="new-password" @when(!isset($user), 'required') minlength="8">
                     </div>
-                    <div class="field">
-                        <div class="control has-icons-left">
-                            <span class="icon is-small is-left">
-                                <i class="fas fa-lock"></i>
-                            </span>
-                            <input type="password" name="password_confirmation" class="input" placeholder="Confirm Password" autocomplete="new-password">
-                        </div>
+                </div>
+                <div class="field">
+                    <div class="control has-icons-left">
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        <input type="password" name="password_confirmation" class="input" placeholder="Confirm Password" autocomplete="new-password" @when(!isset($user), 'required') minlength="8">
                     </div>
                 </div>
             </div>
@@ -147,25 +145,6 @@
 @endisset
 
 <script type="text/javascript">
-    $(document).ready(function() {
-        updatePassword($("option:selected", document.getElementById('role')).data('staff'));
-    });
-
-    $('select').on('change', function() {
-        updatePassword($("option:selected", this).data('staff'))
-    });
-
-    function updatePassword(staff) {
-        if (staff !== undefined) {
-            const div = $('#password_hideable');
-            if (staff) {
-                div.fadeIn(200);
-            } else {
-                div.fadeOut(200);
-            }
-        }
-    }
-
     @isset($user)
         const modal = document.querySelector('.modal');
 

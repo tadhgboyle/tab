@@ -146,48 +146,33 @@ class UserRequestTest extends FormRequestTestCase
         ]));
 
         // TODO: this throws an error even though the role id is valid
-//        $role = Role::factory()->create([
-//            'name' => 'cashier',
-//            'order' => 2,
-//            'staff' => true,
-//            'superuser' => false,
-//        ]);
-
-//        $this->assertNotHaveErrors('role_id', new UserRequest([
-//            'role_id' => $role->id,
-//        ]));
-    }
-
-    public function testPasswordIsRequiredUnderCertainConditionsAndHasMinAndIsConfirmed(): void
-    {
-        $staff_role = Role::factory()->create([
+        $role = Role::factory()->create([
             'name' => 'cashier',
             'order' => 2,
             'staff' => true,
             'superuser' => false,
         ]);
 
-        $normal_role = Role::factory()->create([
-            'name' => 'camper',
-            'order' => 3,
-            'staff' => false,
-            'superuser' => false,
-        ]);
+        $this->assertNotHaveErrors('role_id', new UserRequest([
+            'role_id' => $role->id,
+        ]));
+    }
 
+    public function testPasswordIsRequiredUnderCertainConditionsAndHasMinAndIsConfirmed(): void
+    {
         $this->assertHasErrors('password', new UserRequest([
             'password' => '',
-            'role_id' => $staff_role->id,
+            'user_id' => null,
         ]));
 
         $this->assertNotHaveErrors('password', new UserRequest([
             'password' => 'password',
             'password_confirmation' => 'password',
-            'role_id' => $staff_role->id,
         ]));
 
         $this->assertNotHaveErrors('password', new UserRequest([
             'password' => '',
-            'role_id' => $normal_role->id,
+            'user_id' => 1,
         ]));
 
         $this->assertHasErrors('password', new UserRequest([

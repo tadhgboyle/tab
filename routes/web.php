@@ -18,9 +18,9 @@ use App\Http\Middleware\RequiresOwnFamily;
 use App\Http\Middleware\RequiresFamilyAdmin;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\User\PayoutController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\User\FamilyController;
-use App\Http\Controllers\Admin\PayoutController;
 use App\Http\Controllers\Admin\CashierController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ActivityController;
@@ -60,23 +60,28 @@ Route::middleware('auth')->group(function () {
             return redirect()->route('family_view', auth()->user()->family);
         }
 
+        // TODO: some other page
         return abort(404);
     });
 
     /*
      * Family
      */
-    Route::group(['middleware' => RequiresOwnFamily::class, 'prefix' => '/families'], static function () {
-        Route::get('/{family}', [FamilyController::class, 'show'])->name('family_view');
+    Route::group(['middleware' => RequiresOwnFamily::class, 'prefix' => '/families/{family}'], static function () {
+        Route::get('/', [FamilyController::class, 'show'])->name('family_view');
 
         Route::group(['middleware' => RequiresFamilyAdmin::class], static function () {
-            Route::get('/{family}/pdf', [FamilyController::class, 'downloadPdf'])->name('family_pdf');
+            Route::get('/pdf', [FamilyController::class, 'downloadPdf'])->name('family_pdf');
         });
 
-        Route::group(['prefix' => '/{family}/members/{familyMember}'], static function () {
+        Route::group(['prefix' => '/members/{familyMember}'], static function () {
             Route::group(['middleware' => RequiresFamilyAdminOrSelf::class], static function () {
                 Route::get('/', [FamilyMemberController::class, 'show'])->name('families_member_view');
                 Route::get('/pdf', [FamilyMemberController::class, 'downloadPdf'])->name('family_member_pdf');
+                Route::get('/payout', [PayoutController::class, 'create'])->name('family_member_payout');
+                Route::post('/payout', [PayoutController::class, 'store'])->name('family_member_payout_store');
+                Route::get('/payout/success', [PayoutController::class, 'stripeSuccessCallback'])->name('family_member_payout_success');
+                Route::get('/payout/cancel', [PayoutController::class, 'stripeCancelCallback'])->name('family_member_payout_cancel');
             });
 
             Route::group(['middleware' => RequiresFamilyAdmin::class], static function () {
@@ -150,11 +155,6 @@ Route::middleware('auth')->group(function () {
                 Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users_edit');
                 Route::put('/{user}/edit', [UserController::class, 'update'])->name('users_update');
                 Route::delete('/{user}', [UserController::class, 'delete'])->name('users_delete');
-
-                Route::group(['middleware' => 'permission:' . Permission::USERS_PAYOUTS_CREATE], static function () {
-                    Route::get('/{user}/payout', [PayoutController::class, 'create'])->name('users_payout_create');
-                    Route::post('/{user}/payout', [PayoutController::class, 'store'])->name('users_payout_store');
-                });
             });
         });
 

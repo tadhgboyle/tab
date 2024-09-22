@@ -30,7 +30,6 @@ class PermissionHelper
             Permission::USERS_LIST => 'List all users',
             Permission::USERS_VIEW => 'View specific user information',
             Permission::USERS_MANAGE => 'Edit/Create/Delete users',
-            Permission::USERS_PAYOUTS_CREATE => 'Create payouts',
             Permission::USERS_LIST_SELECT_ROTATION => 'View users from other rotations',
         ]);
 

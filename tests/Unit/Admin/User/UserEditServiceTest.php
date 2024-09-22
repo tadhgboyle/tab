@@ -51,7 +51,7 @@ class UserEditServiceTest extends TestCase
         $this->assertSame(UserEditService::RESULT_CANT_MANAGE_THAT_ROLE, $userService->getResult());
     }
 
-    public function testUpdatesAttributesProperlyWhenRoleIsSameOrBothStaffRoles(): void
+    public function testUpdatesAttributesProperly(): void
     {
         $this->actingAs($this->_superadmin_user);
 
@@ -62,30 +62,31 @@ class UserEditServiceTest extends TestCase
                 username: $this->_cashier_user->username,
                 balance: 100,
                 role_id: $role->id,
-                password: 'should_be_ignored'
+                password: 'new_password!'
             ), $this->_cashier_user);
 
-            $this->assertSame(UserEditService::RESULT_SUCCESS_IGNORED_PASSWORD, $userService->getResult());
-            $this->assertTrue(Hash::check('password', $userService->getUser()->password));
+            $this->assertSame(UserEditService::RESULT_SUCCESS, $userService->getResult());
+            $this->assertTrue(Hash::check('new_password!', $userService->getUser()->password));
             $this->assertEquals('Ronan Boyle 1', $userService->getUser()->full_name);
             $this->assertEquals(Money::parse(100_00), $userService->getUser()->balance);
         }
     }
 
-    public function testPasswordRemovedIfNewRoleIsNotStaff(): void
+    public function testPasswordNotChangedIfPasswordNotPassed(): void
     {
         $this->actingAs($this->_superadmin_user);
+
+        $passwordBefore = $this->_cashier_user->password;
 
         $userService = new UserEditService($this->createRequest(
             user_id: $this->_cashier_user->id,
             full_name: $this->_cashier_user->full_name,
             username: $this->_cashier_user->username,
             role_id: $this->_camper_role->id,
-            password: 'should_be_ignored'
         ), $this->_cashier_user);
 
-        $this->assertSame(UserEditService::RESULT_SUCCESS_APPLIED_PASSWORD, $userService->getResult());
-        $this->assertNull($userService->getUser()->password);
+        $this->assertSame(UserEditService::RESULT_SUCCESS, $userService->getResult());
+        $this->assertEquals($passwordBefore, $userService->getUser()->password);
     }
 
     private function createRequest(int $user_id, ?string $full_name = null, ?string $username = null, float $balance = 0, ?int $role_id = null, ?string $password = null, array $limit = [], array $duration = []): UserRequest

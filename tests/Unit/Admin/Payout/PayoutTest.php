@@ -33,7 +33,7 @@ class PayoutTest extends TestCase
 
         $this->_payout = Payout::factory()->create([
             'user_id' => $this->_user->id,
-            'cashier_id' => $this->_cashier_user->id,
+            'creator_id' => $this->_cashier_user->id,
             'amount' => 10_00,
         ]);
     }
@@ -50,9 +50,9 @@ class PayoutTest extends TestCase
         $this->assertEquals($this->_user->id, $this->_payout->user->id);
     }
 
-    public function testBelongsToCashier(): void
+    public function testBelongsToCreator(): void
     {
-        $this->assertInstanceOf(User::class, $this->_payout->cashier);
-        $this->assertEquals($this->_cashier_user->id, $this->_payout->cashier->id);
+        $this->assertInstanceOf(User::class, $this->_payout->creator);
+        $this->assertEquals($this->_cashier_user->id, $this->_payout->creator->id);
     }
 }

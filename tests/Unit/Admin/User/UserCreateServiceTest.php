@@ -58,7 +58,7 @@ class UserCreateServiceTest extends TestCase
         $this->assertMatchesRegularExpression('/^tadhgboyle(?:[0-9]\d?|100)$/', $user->username);
     }
 
-    public function testHasPasswordWhenRoleIsStaff(): void
+    public function testHasPassword(): void
     {
         [$superadmin_role] = $this->createRoles();
 
@@ -72,19 +72,6 @@ class UserCreateServiceTest extends TestCase
         $this->assertSame(UserCreateService::RESULT_SUCCESS, $userService->getResult());
         $this->assertNotEmpty($user->password);
         $this->assertTrue(Hash::check('password', $user->password));
-    }
-
-    public function testDoesNotHavePasswordWhenRoleIsNotStaff(): void
-    {
-        [, $camper_role] = $this->createRoles();
-
-        $user = (new UserCreateService($this->createRequest(
-            full_name: 'Tadhg Boyle',
-            role_id: $camper_role->id,
-            password: 'password'
-        )))->getUser();
-
-        $this->assertEmpty($user->password);
     }
 
     public function testBalanceIsZeroIfNotSupplied(): void

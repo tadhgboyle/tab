@@ -34,6 +34,11 @@ class Family extends Model implements HasTimeline
         return Money::sum(Money::parse(0), ...$this->membersWithUserRelations->map->user->map->findSpentInCash());
     }
 
+    public function totalPaidOut(): Money
+    {
+        return Money::sum(Money::parse(0), ...$this->membersWithUserRelations->map->user->map->findPaidOut());
+    }
+
     public function totalOwing(): Money
     {
         return Money::sum(Money::parse(0), ...$this->membersWithUserRelations->map->user->map->findOwing());
@@ -41,7 +46,7 @@ class Family extends Model implements HasTimeline
 
     public function membersWithUserRelations(): HasMany
     {
-        return $this->members()->with('user', 'user.orders', 'user.activityRegistrations');
+        return $this->members()->with('user', 'user.orders', 'user.activityRegistrations', 'user.payouts');
     }
 
     public function timeline(): array

@@ -5,7 +5,6 @@ namespace App\Providers;
 use NumberFormatter;
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
-use App\Helpers\RoleHelper;
 use App\Helpers\CategoryHelper;
 use App\Helpers\RotationHelper;
 use App\Helpers\SettingsHelper;
@@ -57,7 +56,6 @@ class AppServiceProvider extends ServiceProvider
         foreach ([
             CategoryHelper::class,
             RotationHelper::class,
-            RoleHelper::class,
             SettingsHelper::class,
             TaxHelper::class,
         ] as $singleton) {

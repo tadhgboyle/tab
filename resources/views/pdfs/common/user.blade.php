@@ -38,9 +38,9 @@
                     <td class="has-text-italic">Total Returned (to cash)</td>
                     <td class="has-text-weight-bold">-{{ $user->findReturnedToCash() }}</td>
                 </tr>
-                @foreach ($user->payouts as $payout)
+                @foreach ($user->payouts->where('status', \App\Enums\PayoutStatus::Paid) as $payout)
                     <tr>
-                        <td>Payout: {{ $payout->identifier }}</td>
+                        <td>Payout: {{ $payout->id }}</td>
                         <td>-{{ $payout->amount }}</td>
                     </tr>
                 @endforeach
@@ -171,15 +171,15 @@
         <table>
             <thead>
                 <tr>
-                    <th>Identifier</th>
+                    <th>ID</th>
                     <th>Date</th>
                     <th>Amount</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($user->payouts as $payout)
+                @foreach($user->payouts->where('status', \App\Enums\PayoutStatus::Paid) as $payout)
                     <tr>
-                        <td >{{ $payout->identifier }}</td>
+                        <td >{{ $payout->id }}</td>
                         <td >{{ $payout->created_at->format('M jS Y h:ia') }}</td>
                         <td class="money-column">{{ $payout->amount }}</td>
                     </tr>

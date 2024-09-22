@@ -41,7 +41,9 @@
                     <x-detail-card-item label="Total spent" :value="$user->findSpent()" />
                     <x-detail-card-item label="Total returned" :value="$user->findReturned()" />
                     <x-detail-card-item label="Total paid out" :value="$user->findPaidOut()" />
-                    <x-detail-card-item label="Total owing" :value="$user->findOwing()" />
+                    <x-detail-card-item label="Total owing">
+                        <a href="{{ route('users_pdf', $user->id) }}">{{ $user->findOwing() }}</a>
+                    </x-detail-card-item>
                 </x-detail-card-item-list>
             </x-detail-card>
 

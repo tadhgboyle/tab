@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Helpers\RoleHelper;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -51,7 +50,7 @@ class Role extends Model
     public function getRolesAvailable(?Role $compare = null): Collection
     {
         $return = new Collection();
-        $roles = resolve(RoleHelper::class)->getRoles();
+        $roles = Role::query()->orderByDesc('order')->get();
         foreach ($roles as $role) {
             if (!$compare) {
                 if ($this->canInteract($role)) {

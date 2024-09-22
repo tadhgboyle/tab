@@ -22,7 +22,6 @@ class Permission
     public const USERS_VIEW = 'users_view';
     public const USERS_VIEW_DELETED = 'users_view_deleted'; // TODO
     public const USERS_MANAGE = 'users_manage';
-    public const USERS_PAYOUTS_CREATE = 'users_payouts_create';
     public const USERS_LIST_SELECT_ROTATION = 'users_list_select_rotation';
 
     public const FAMILIES = 'families';
