@@ -27,7 +27,7 @@ class OrdersList extends Component implements HasTable, HasForms
     {
         return $table
             ->heading('Orders')
-            ->query($this->user->orders()->getQuery())
+            ->query($this->user->orders()->orderByDesc('created_at')->getQuery())
             ->headerActions([
                 Action::make('create')
                     ->url(route('orders_create', $this->user))

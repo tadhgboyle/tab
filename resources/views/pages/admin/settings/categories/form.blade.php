@@ -26,13 +26,13 @@ use App\Enums\CategoryType;
                     <div class="select is-fullwidth" id="type">
                         <select name="type" class="input" required>
                             {!! !isset($category) ? "<option value=\"\" disabled selected>Select Type...</option>" : '' !!}
-                            <option value="1" {{ (isset($category) && $category->type === CategoryType::ProductsActivities) || old('type') === CategoryType::ProductsActivities->value ? "selected" : "" }}>
+                            <option value="{{ CategoryType::ProductsActivities->value }}" {{ (isset($category) && $category->type === CategoryType::ProductsActivities) || old('type') === CategoryType::ProductsActivities->value ? "selected" : "" }}>
                                 Products & Activities
                             </option>
-                            <option value="2" {{ (isset($category) && $category->type === CategoryType::Products) || old('type') === CategoryType::Products->value ? "selected" : "" }}>
+                            <option value="{{ CategoryType::Products->value }}" {{ (isset($category) && $category->type === CategoryType::Products) || old('type') === CategoryType::Products->value ? "selected" : "" }}>
                                 Products
                             </option>
-                            <option value="3" {{ (isset($category) && $category->type === CategoryType::Activities) || old('type') === CategoryType::Activities->value ? "selected" : "" }}>
+                            <option value="{{ CategoryType::Activities->value }}" {{ (isset($category) && $category->type === CategoryType::Activities) || old('type') === CategoryType::Activities->value ? "selected" : "" }}>
                                 Activities
                             </option>
                         </select>

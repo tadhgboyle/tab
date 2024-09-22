@@ -2,11 +2,11 @@
 
 namespace App\Enums;
 
-enum OrderStatus: int
+enum OrderStatus: string
 {
-    case NotReturned = 0;
-    case PartiallyReturned = 1;
-    case FullyReturned = 2;
+    case NotReturned = 'not_returned';
+    case PartiallyReturned = 'partially_returned';
+    case FullyReturned = 'fully_returned';
 
     public function getWord(): string
     {

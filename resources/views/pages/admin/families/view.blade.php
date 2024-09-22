@@ -14,6 +14,7 @@
             <x-detail-card title="Details">
                 <x-detail-card-item-list>
                     <x-detail-card-item label="Total spent" :value="$family->totalSpent()" />
+                    <x-detail-card-item label="Total paid out" :value="$family->totalPaidOut()" />
                     <x-detail-card-item label="Total owing" :value="$family->totalOwing()" />
                 </x-detail-card-item-list>
             </x-detail-card>

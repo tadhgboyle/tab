@@ -2,10 +2,10 @@
 
 namespace App\Enums;
 
-enum UserLimitDuration: int
+enum UserLimitDuration: string
 {
-    case Daily = 0;
-    case Weekly = 1;
+    case Daily = 'daily';
+    case Weekly = 'weekly';
 
     public function label(): string
     {

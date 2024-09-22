@@ -2,11 +2,11 @@
 
 namespace App\Enums;
 
-enum ProductStatus: int
+enum ProductStatus: string
 {
-    case Active = 1;
+    case Active = 'active';
 
-    case Draft = 0;
+    case Draft = 'draft';
 
     public function getWord(): string
     {

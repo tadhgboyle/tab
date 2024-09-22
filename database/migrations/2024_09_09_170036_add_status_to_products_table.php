@@ -11,7 +11,7 @@ return new class() extends Migration {
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->tinyInteger('status')->after('sku');
+            $table->string('status')->after('sku');
         });
     }
 

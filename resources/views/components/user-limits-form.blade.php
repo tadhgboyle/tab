@@ -19,10 +19,10 @@
                 <div class="control">
                     <div class="select is-fullwidth">
                         <select name="durations[{{ $category['id'] }}]">
-                            <option value="0" @if((isset($user) && $category['limit']->duration === \App\Enums\UserLimitDuration::Daily) || !isset($user)) selected @endif>
+                            <option value="{{ \App\Enums\UserLimitDuration::Daily->value }}" @if((isset($user) && $category['limit']->duration === \App\Enums\UserLimitDuration::Daily) || !isset($user)) selected @endif>
                                 Day
                             </option>
-                            <option value="1" @if(isset($user) && $category['limit']->duration === \App\Enums\UserLimitDuration::Weekly) selected @endif>
+                            <option value="{{ \App\Enums\UserLimitDuration::Weekly->value }}" @if(isset($user) && $category['limit']->duration === \App\Enums\UserLimitDuration::Weekly) selected @endif>
                                 Week
                             </option>
                         </select>

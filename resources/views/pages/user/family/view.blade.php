@@ -13,9 +13,9 @@
                     <x-detail-card-item label="Name" :value="$family->name" />
 
                     @if(auth()->user()->isFamilyAdmin())
-                        <x-detail-card-item label="Total Spent" :value="$family->totalSpent()" />
-                        <x-detail-card-item label="Total Paid Out" :value="$family->totalPaidOut()" />
-                        <x-detail-card-item label="Total Owing" :value="$family->totalOwing()" />
+                        <x-detail-card-item label="Total spent" :value="$family->totalSpent()" />
+                        <x-detail-card-item label="Total paid out" :value="$family->totalPaidOut()" />
+                        <x-detail-card-item label="Total owing" :value="$family->totalOwing()" />
                     @endif
                 </x-detail-card-item-list>
             </x-detail-card>

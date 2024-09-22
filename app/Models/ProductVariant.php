@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Helpers\TaxHelper;
 use App\Traits\InteractsWithStock;
+use Cknow\Money\Money;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Cknow\Money\Casts\MoneyIntegerCast;
@@ -32,6 +34,11 @@ class ProductVariant extends Model
     public function optionValueAssignments(): HasMany
     {
         return $this->hasMany(ProductVariantOptionValueAssignment::class);
+    }
+
+    public function getPriceAfterTax(): Money
+    {
+        return TaxHelper::calculateFor($this->price, 1, $this->product->pst);
     }
 
     public function description(): string

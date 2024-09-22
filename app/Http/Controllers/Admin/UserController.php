@@ -107,7 +107,7 @@ class UserController extends Controller
                     continue;
                 }
                 $variant = $product->variants()->find($variantId);
-                $tryingToSpend = $tryingToSpend->add($variant->price->multiply($quantity)); // ->getPriceAfterTax()?
+                $tryingToSpend = $tryingToSpend->add($variant->getPriceAfterTax()->multiply($quantity));
             }
         }
 
