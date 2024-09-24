@@ -34,8 +34,5 @@ jobs:
     - name: Execute tests via PHPUnit
       env:
         DB_CONNECTION: sqlite
-        DB_DATABASE: database/database.sqlite
-        CACHE_DRIVER: array
-        SESSION_DRIVER: array
-        QUEUE_DRIVER: sync
+        DB_DATABASE: :memory:
       run: vendor/bin/phpunit

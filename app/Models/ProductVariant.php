@@ -53,6 +53,7 @@ class ProductVariant extends Model
      */
     public function descriptions(bool $excludeTrashedOptions): Collection
     {
+        die(DB::select('SELECT sqlite_version();'));
         $results = DB::select("
             SELECT 
                 CONCAT(o.name, ': ', v.value) AS option_value_assignment
