@@ -1,19 +1,30 @@
 <?php
 
 namespace App\Enums;
+use Filament\Support\Contracts\HasColor;
+use Filament\Support\Contracts\HasLabel;
 
-enum OrderStatus: int
+enum OrderStatus: string implements HasLabel, HasColor
 {
-    case NotReturned = 0;
-    case PartiallyReturned = 1;
-    case FullyReturned = 2;
+    case NotReturned = 'not_returned';
+    case PartiallyReturned = 'partially_returned';
+    case FullyReturned = 'fully_returned';
 
-    public function getWord(): string
+    public function getLabel(): string
     {
         return match ($this) {
             self::NotReturned => 'Not Returned',
             self::PartiallyReturned => 'Partially Returned',
             self::FullyReturned => 'Fully Returned',
+        };
+    }
+
+    public function getColor(): string
+    {
+        return match ($this) {
+            self::NotReturned => 'gray',
+            self::PartiallyReturned => 'warning',
+            self::FullyReturned => 'danger',
         };
     }
 }

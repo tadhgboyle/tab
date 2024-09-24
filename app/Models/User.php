@@ -2,23 +2,30 @@
 
 namespace App\Models;
 
+use App\Enums\PayoutStatus;
 use Cknow\Money\Money;
 use App\Enums\OrderStatus;
+use App\Enums\FamilyMemberRole;
 use App\Enums\UserLimitDuration;
 use App\Concerns\Timeline\HasTimeline;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use App\Concerns\Timeline\TimelineEntry;
 use Lab404\Impersonate\Models\Impersonate;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Laravel\Cashier\Billable;
 
 class User extends Authenticatable implements HasTimeline
 {
+    use Billable;
+
     use HasFactory;
     use SoftDeletes;
     use Impersonate;
@@ -32,14 +39,32 @@ class User extends Authenticatable implements HasTimeline
     ];
 
     protected $casts = [
-        'full_name' => 'string',
-        'username' => 'string',
         'balance' => MoneyIntegerCast::class,
     ];
 
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function family(): HasOneThrough
+    {
+        return $this->hasOneThrough(Family::class, FamilyMember::class, null, 'id', null, 'family_id');
+    }
+
+    public function familyMember(): HasOne
+    {
+        return $this->hasOne(FamilyMember::class);
+    }
+
+    public function familyRole(): FamilyMemberRole
+    {
+        return $this->familyMember?->role;
+    }
+
+    public function isFamilyAdmin(?Family $family = null): bool
+    {
+        return $this->family?->is($family ?? $this->family) && $this->familyRole() === FamilyMemberRole::Admin;
     }
 
     public function orders(): HasMany
@@ -84,7 +109,7 @@ class User extends Authenticatable implements HasTimeline
 
     public function limitFor(Category $category): UserLimit
     {
-        return UserLimit::createOrFirst([
+        return UserLimit::firstOrCreate([
             'user_id' => $this->id,
             'category_id' => $category->id,
         ], [
@@ -124,7 +149,7 @@ class User extends Authenticatable implements HasTimeline
     {
         $returned = Money::parse(0);
 
-        $this->orders()->whereNot('status', OrderStatus::NotReturned)->get()->each(function (Order $order) use (&$returned) {
+        $this->orders->where('status', '!=', OrderStatus::NotReturned)->each(function (Order $order) use (&$returned) {
             if ($order->isReturned()) {
                 $returned = $returned->add($order->total_price);
                 return;
@@ -146,7 +171,7 @@ class User extends Authenticatable implements HasTimeline
     {
         $returned = Money::parse(0);
 
-        $this->orders()->whereNot('status', OrderStatus::NotReturned)->get()->each(function (Order $order) use (&$returned) {
+        $this->orders->where('status', '!=', OrderStatus::NotReturned)->each(function (Order $order) use (&$returned) {
             if ($order->isReturned()) {
                 $returned = $returned->add($order->purchaser_amount);
                 return;
@@ -177,17 +202,12 @@ class User extends Authenticatable implements HasTimeline
 
     public function findPaidOut(): Money
     {
-        return Money::sum(Money::parse(0), ...$this->payouts->map->amount);
+        return Money::sum(Money::parse(0), ...$this->payouts->where('status', PayoutStatus::Paid)->map->amount);
     }
 
     public function canImpersonate()
     {
         return $this->role->superuser;
-    }
-
-    public function canBeImpersonated()
-    {
-        return $this->role->staff;
     }
 
     public function timeline(): array
@@ -211,7 +231,7 @@ class User extends Authenticatable implements HasTimeline
             );
         }
 
-        foreach ($this->activityRegistrations as $activityRegistration) {
+        foreach ($this->activityRegistrations()->with('activity', 'cashier')->get() as $activityRegistration) {
             $events[] = new TimelineEntry(
                 description: "Registered for {$activityRegistration->activity->name}",
                 emoji: '🎟️',
@@ -221,12 +241,12 @@ class User extends Authenticatable implements HasTimeline
             );
         }
 
-        foreach ($this->payouts as $payout) {
+        foreach ($this->payouts->where('status', PayoutStatus::Paid) as $payout) {
             $events[] = new TimelineEntry(
                 description: "Paid out {$payout->amount}",
                 emoji: '💸',
                 time: $payout->created_at,
-                actor: $payout->cashier,
+                actor: $payout->creator,
             );
         }
 

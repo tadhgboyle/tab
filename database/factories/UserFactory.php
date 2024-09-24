@@ -14,12 +14,11 @@ class UserFactory extends Factory
     public function definition()
     {
         $full_name = $this->faker->unique()->firstName . ' ' . $this->faker->lastName;
-        $balance = $this->faker->numberBetween(0, 2500_00);
 
         return [
             'full_name' => $full_name,
             'username' => str($full_name)->lower()->replace(' ', '') . ($this->faker->boolean(25) ? $this->faker->numberBetween(1, 100) : ''),
-            'balance' => $balance,
+            'balance' =>  $this->faker->numberBetween(0, 2500_00),
         ];
     }
 }

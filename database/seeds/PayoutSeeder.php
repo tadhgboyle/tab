@@ -2,12 +2,10 @@
 
 namespace Database\Seeders;
 
-use Str;
+use App\Models\Payout;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use App\Http\Requests\PayoutRequest;
 use Illuminate\Support\Facades\Auth;
-use App\Services\Payouts\PayoutCreateService;
 
 class PayoutSeeder extends Seeder
 {
@@ -33,16 +31,11 @@ class PayoutSeeder extends Seeder
                 continue;
             }
 
-            if (random_int(0, 1) === 0) {
-                $identifier = '#' . random_int(101010, 202020);
-            } else {
-                $identifier = Str::random(10);
-            }
-
-            new PayoutCreateService(new PayoutRequest([
-                'identifier' => $identifier,
-                'amount' => random_int(1, $amount->getAmount()),
-            ]), $user);
+            Payout::factory()->create([
+                'user_id' => $user->id,
+                'creator_id' => $cashier->id,
+                'amount' => $amount->getAmount(),
+            ]);
         }
     }
 }

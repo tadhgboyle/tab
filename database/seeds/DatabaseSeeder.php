@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Database\Seeders\RoleSeeder;
 use Database\Seeders\UserSeeder;
 use Database\Seeders\OrderSeeder;
+use Database\Seeders\FamilySeeder;
 use Database\Seeders\PayoutSeeder;
 use Database\Seeders\ProductSeeder;
 use Illuminate\Support\Facades\App;
@@ -44,6 +45,9 @@ class DatabaseSeeder extends Seeder
 
         $this->command->info('Seeding Users...');
         $this->resolve(UserSeeder::class)->run($roles);
+
+        $this->command->info('Seeding Families...');
+        $this->resolve(FamilySeeder::class)->run();
 
         $this->command->info('Seeding Categories...');
         $categories = $this->resolve(CategorySeeder::class)->run();

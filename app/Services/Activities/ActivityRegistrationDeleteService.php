@@ -26,7 +26,7 @@ class ActivityRegistrationDeleteService extends HttpService
         $refundAmount = $activityRegistration->total_price;
 
         $activityRegistration->update(['returned' => true]);
-        $user->update(['balance' => $user->balance->add($refundAmount),]);
+        $user->update(['balance' => $user->balance->add($refundAmount)]);
 
         $this->_result = self::RESULT_SUCCESS;
         $this->_message = "{$user->full_name} has been removed from the activity and refunded {$refundAmount}.";

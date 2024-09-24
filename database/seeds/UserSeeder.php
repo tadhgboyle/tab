@@ -30,6 +30,13 @@ class UserSeeder extends Seeder
             'password' => bcrypt('123456')
         ])->create();
 
+        User::factory()->state([
+            'full_name' => 'Ronan Boyle',
+            'username' => 'ronan',
+            'role_id' => $camper_role->id,
+            'password' => bcrypt('123456')
+        ])->create();
+
         User::factory()->count(5)->state([
             'role_id' => $manager_role->id,
             'password' => bcrypt('123456')
@@ -46,7 +53,8 @@ class UserSeeder extends Seeder
         ])->create();
 
         User::factory()->count(200)->state([
-            'role_id' => $camper_role->id
+            'role_id' => $camper_role->id,
+            'password' => bcrypt('123456')
         ])->create();
     }
 }

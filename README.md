@@ -84,9 +84,6 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
 #### Activity Information Page
 ![Activity Information Page](https://i.imgur.com/QopdJEz.png)
 
-#### Statistics Page
-![Statistics Page](https://i.imgur.com/o4FJcdI.png)
-
 #### Stock Adjustment Page
 ![Stock Adjustment Page](https://i.imgur.com/VDWtJ6O.png)
 
@@ -107,7 +104,6 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
     - If repeating activity, add a column (nullable), for root activity, the ID of the original activity it is duplicating
 - Disable submit button when anything goes wrong *(Remaining: Stock, Categories)* 
     - Then on the backend, if they somehow bypass the disabled submit button: on errors during order, return back with their input + quantities
-    - Maybe add an ajax call before actually submitting the form to make it less jarring
 - Complete inventory features
     - "Set stock" in adjust page as well as add/subtract.
 - Change user list to display deleted users (with toggle) & implement un-deleting (for products as well).
@@ -120,22 +116,8 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
     - (Todo) Staff sales tracking (Charts).
     - (Todo) User's favorite items (Charts).
 - Add sales/discounts to item for period of time (automatic or button)
-- Add auditing/tracking of everything
-    - Role changes
-    - New users
-    - Price changes
-    - Stock changes
-    - Gift card balance changes
-        - These + stock could be done by using a ledger data structure; append new row when data changes
-    - Etc
 - Bulk change prices of items (Everything 10% *off* or everything 20% *more* etc)
-- Add PDF printing of all users orders
-    - In settings page, allow to upload a custom logo to be on invoice
-- Allow user to change light/dark mode
 - Staff Discount: check if purchaser is staff role and give % off (per item basis) 
-- Lazy loading of users/products (especially in cashier view).
-    - Use this https://github.com/yajra/laravel-datatables
-    - They should type a query first, or use some ajax to fetch data. or else it could take forever to load
 - Tax-free products / users
 - User tags (tax free tagged, limit of xyz tag, etc)
 - Allow categories to be PST and/or GST exempt
@@ -145,11 +127,8 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
     - Gift card given (would need to let gift cards optionally have an assigned user, but should prolly still be able to be used by anyone)
     - Admin emails: New user made, settings changed, etc
 - Store credit
-- Add check balance modal for gift card (under a "tools" dropdown?)
-- Add way to "hide used gift cards" in gift card list
 - Convert jquery ajax requests to use axios
 - Let orders use multiple gift cards
-- When editing entities, correctly return back to the list/show page the user was previously on upon success
 - Add "cost" to products and display margins
 - Create `Cart` model to represent an in-flight order, then use to implement cashier functionality with livewire and get rid of the fuckin item-sidebar.js
 - Ability to mark products as final sale/cannot be returned
@@ -158,5 +137,4 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
 
 ## Issues/Bugs
 - When cashier page refreshed with gift card, ensure it still has balance + update balance in table row
-- Make settings boxes/columns more fluid, so it doesn't look odd when people have subset of permissions
 - Make seeders only create past entities nothing in the future

@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Helpers\SettingsHelper;
 use Cknow\Money\Money;
 use App\Enums\OrderStatus;
+use App\Helpers\SettingsHelper;
 use App\Concerns\Timeline\HasTimeline;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
@@ -36,7 +36,7 @@ class Order extends Model implements HasTimeline
         static::created(function (Order $order) {
             $prefix = app(SettingsHelper::class)->getOrderPrefix();
             $suffix = app(SettingsHelper::class)->getOrderSuffix();
-    
+
             $order->identifier = "{$prefix}{$order->id}{$suffix}";
             $order->save();
         });
@@ -114,6 +114,11 @@ class Order extends Model implements HasTimeline
         return $this->total_price->subtract($this->getReturnedTotal());
     }
 
+    public function getPurchaserOwingTotal(): Money
+    {
+        return $this->purchaser_amount->subtract($this->getReturnedTotalToCash());
+    }
+
     public function getReturnedTotalToGiftCard(): Money
     {
         if ($this->isReturned()) {
@@ -143,15 +148,6 @@ class Order extends Model implements HasTimeline
     public function isReturned(): bool
     {
         return $this->status === OrderStatus::FullyReturned;
-    }
-
-    public function getStatusHtml(): string
-    {
-        return match ($this->status) {
-            OrderStatus::FullyReturned => '<span class="tag is-medium">🚨 Returned</span>',
-            OrderStatus::PartiallyReturned => '<span class="tag is-medium">⚠️ Partially Returned</span>',
-            OrderStatus::NotReturned => '<span class="tag is-medium">👌 Not Returned</span>',
-        };
     }
 
     public function timeline(): array

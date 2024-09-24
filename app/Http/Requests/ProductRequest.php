@@ -23,7 +23,7 @@ class ProductRequest extends FormRequest implements FormRequestContract
             ],
             'status' => [
                 'required',
-                ValidationRule::enum(ProductStatus::class),  
+                ValidationRule::enum(ProductStatus::class),
             ],
             'price' => [
                 'required',

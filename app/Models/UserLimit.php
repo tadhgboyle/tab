@@ -8,8 +8,9 @@ use App\Enums\OrderStatus;
 use App\Helpers\TaxHelper;
 use App\Enums\UserLimitDuration;
 use Cknow\Money\Casts\MoneyIntegerCast;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -71,15 +72,11 @@ class UserLimit extends Model
             return $this->_spent;
         }
 
-        // If they have unlimited money (no limit set) for this category,
-        // get all their orders, as they have no limit set we dont need to worry about
-        // when the order was created_at.
         $carbon_string = Carbon::now()->subDays($this->duration === UserLimitDuration::Daily ? 1 : 7)->toDateTimeString();
 
         $orders = $this->user->orders()
-            ->with('products')
             ->unless($this->isUnlimited(), fn (Builder $query) => $query->where('created_at', '>=', $carbon_string))
-            ->with('products', function ($query) {
+            ->with('products', function (HasMany $query) {
                 $query->where('category_id', $this->category->id);
             })
             ->where('status', '!=', OrderStatus::FullyReturned)

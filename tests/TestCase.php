@@ -27,4 +27,16 @@ abstract class TestCase extends BaseTestCase
             }
         });
     }
+
+    protected function expectMiddleware(array $middlewares): void
+    {
+        foreach ($middlewares as $middleware) {
+            $this->mock($middleware, function (MockInterface $mock) {
+                $mock->shouldReceive('handle')
+                    ->andReturnUsing(function ($request, $next) {
+                        return $next($request);
+                    })->once();
+            });
+        }
+    }
 }

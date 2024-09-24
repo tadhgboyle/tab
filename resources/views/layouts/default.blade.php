@@ -23,9 +23,21 @@
         @auth
             @impersonating
                 <div class="has-text-centered has-background-light py-2">
-                    <p>🕵 You are impersonating {{ auth()->user()->full_name }}, <a href="{{ route('impersonate.leave') }}">click here to exit</a></p>
+                    <p>🕵 You're impersonating {{ auth()->user()->full_name }}, <a href="{{ route('impersonate.leave') }}">click here to exit</a></p>
                 </div>
             @endImpersonating
+
+            @if(auth()->user()->role->staff && auth()->user()->family)
+                <div class="has-text-centered has-background-light py-2">
+                    <p>
+                        @if(\Str::contains(request()->url(), '/admin'))
+                            🏛 You're in an admin context, <a href="{{ route('family_view', auth()->user()->family) }}">click here to view your family</a>
+                        @else
+                            🧑‍💼️ You're in a family context
+                        @endif
+                    </p>
+                </div>
+            @endif
 
             @include('includes.navbar')
         @endauth

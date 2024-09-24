@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Enums\GiftCardStatus;
 use Cknow\Money\Money;
 use App\Helpers\Permission;
+use Illuminate\Support\Str;
 use App\Enums\GiftCardAdjustmentType;
 use App\Concerns\Timeline\HasTimeline;
 use Cknow\Money\Casts\MoneyIntegerCast;
@@ -66,17 +68,12 @@ class GiftCard extends Model implements HasTimeline
 
     public function last4(): string
     {
-        return substr($this->code, -4);
+        return Str::take($this->code, -4);
     }
 
     public function fullyUsed(): bool
     {
         return $this->remaining_balance->isZero();
-    }
-
-    public function amountUsed(): Money
-    {
-        return $this->original_balance->subtract($this->remaining_balance);
     }
 
     public function canBeUsedBy(User $user): bool
@@ -89,13 +86,13 @@ class GiftCard extends Model implements HasTimeline
         return Money::sum(Money::parse(0), ...$user->orders()->where('gift_card_id', $this->id)->get()->map->gift_card_amount);
     }
 
-    public function getStatusHtml(): string
+    public function getStatusAttribute(): GiftCardStatus
     {
         if ($this->expired()) {
-            return '<span class="tag is-medium">🕐 Expired</span>';
+            return GiftCardStatus::Expired;
         }
 
-        return '<span class="tag is-medium">✅ Active</span>';
+        return GiftCardStatus::Active;
     }
 
     public function timeline(): array

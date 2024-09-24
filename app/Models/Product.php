@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Enums\ProductStatus;
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
+use App\Enums\ProductStatus;
 use App\Traits\InteractsWithStock;
 use Illuminate\Support\Collection;
 use Cknow\Money\Casts\MoneyIntegerCast;
@@ -23,8 +23,6 @@ class Product extends Model
     use InteractsWithStock;
 
     protected $casts = [
-        'name' => 'string',
-        'sku' => 'string',
         'status' => ProductStatus::class,
         'price' => MoneyIntegerCast::class,
         'pst' => 'boolean',

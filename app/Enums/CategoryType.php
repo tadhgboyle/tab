@@ -2,11 +2,11 @@
 
 namespace App\Enums;
 
-enum CategoryType: int
+enum CategoryType: string
 {
-    case ProductsActivities = 1;
-    case Products = 2;
-    case Activities = 3;
+    case ProductsActivities = 'products_activities';
+    case Products = 'products';
+    case Activities = 'activities';
 
     public function getName(): string
     {

@@ -2,9 +2,15 @@
     <div class="container">
         <div class="navbar-menu">
             <div class="navbar-start">
+                @if(auth()->user()->family)
+                    <a class="navbar-item {{ page('family', @$page) }}" href="{{ route('family_view', auth()->user()->family) }}">
+                        🏠 Family
+                    </a>
+                @endif
+
                 @permission(\App\Helpers\Permission::DASHBOARD)
                     <a class="navbar-item {{ page('dashboard', @$page) }}" href="{{ route('dashboard') }}">
-                        🏠 Dashboard
+                        📊 Dashboard
                     </a>
                 @endpermission
 
@@ -25,6 +31,24 @@
                             @endpermission
                             @permission(\App\Helpers\Permission::USERS_MANAGE)
                                 <a class="navbar-item" href="{{ route('users_create') }}">
+                                    Create
+                                </a>
+                            @endpermission
+                        </div>
+                    </div>
+                @endpermission
+
+                @permission(\App\Helpers\Permission::FAMILIES)
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <p class="navbar-link is-arrowless {{ page('families', @$page) }}">👪 Families</p>
+                        <div class="navbar-dropdown is-boxed">
+                            @permission(\App\Helpers\Permission::FAMILIES_LIST)
+                                <a class="navbar-item" href="{{ route('families_list') }}">
+                                    List
+                                </a>
+                            @endpermission
+                            @permission(\App\Helpers\Permission::FAMILIES_MANAGE)
+                                <a class="navbar-item" href="{{ route('families_create') }}">
                                     Create
                                 </a>
                             @endpermission
