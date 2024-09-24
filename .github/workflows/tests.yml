@@ -20,7 +20,7 @@ jobs:
     - name: Update sqlite
       uses: ccorsi/setup-sqlite@v1.0.1
       with:
-        sqlite-version: 3.46.00
+        sqlite-version: 3.46.0
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
     - name: Install Dependencies
