@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Admin\User;
 
-use App\Enums\CategoryType;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
@@ -13,6 +12,7 @@ use App\Models\Activity;
 use App\Models\Category;
 use App\Models\Settings;
 use App\Models\UserLimit;
+use App\Enums\CategoryType;
 use App\Models\OrderProduct;
 use App\Helpers\RotationHelper;
 use App\Enums\UserLimitDuration;

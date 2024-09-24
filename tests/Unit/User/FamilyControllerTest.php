@@ -2,13 +2,13 @@
 
 namespace Tests\Unit\User;
 
-use App\Enums\FamilyMemberRole;
-use App\Http\Middleware\RequiresFamilyAdmin;
-use App\Http\Middleware\RequiresOwnFamily;
-use App\Models\Family;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Family;
+use App\Enums\FamilyMemberRole;
+use App\Http\Middleware\RequiresOwnFamily;
+use App\Http\Middleware\RequiresFamilyAdmin;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class FamilyControllerTest extends TestCase

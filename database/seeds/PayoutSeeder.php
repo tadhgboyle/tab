@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Payout;
 use App\Models\User;
+use App\Models\Payout;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Auth;
 

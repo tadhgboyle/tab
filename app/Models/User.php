@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use App\Enums\PayoutStatus;
 use Cknow\Money\Money;
 use App\Enums\OrderStatus;
+use App\Enums\PayoutStatus;
+use Laravel\Cashier\Billable;
 use App\Enums\FamilyMemberRole;
 use App\Enums\UserLimitDuration;
 use App\Concerns\Timeline\HasTimeline;
@@ -20,7 +21,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Laravel\Cashier\Billable;
 
 class User extends Authenticatable implements HasTimeline
 {

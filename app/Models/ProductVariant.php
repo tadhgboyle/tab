@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
 use App\Traits\InteractsWithStock;
-use Cknow\Money\Money;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Cknow\Money\Casts\MoneyIntegerCast;

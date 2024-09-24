@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\PayoutStatus;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Payout;
@@ -10,6 +9,7 @@ use Cknow\Money\Money;
 use App\Models\Product;
 use App\Models\Activity;
 use App\Models\GiftCard;
+use App\Enums\PayoutStatus;
 use App\Helpers\Permission;
 use App\Models\OrderReturn;
 use App\Models\OrderProduct;

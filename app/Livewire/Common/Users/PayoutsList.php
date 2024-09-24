@@ -2,17 +2,17 @@
 
 namespace App\Livewire\Common\Users;
 
-use App\Enums\PayoutStatus;
 use App\Models\User;
 use App\Models\Payout;
-use Filament\Tables\Filters\SelectFilter;
 use Livewire\Component;
 use Filament\Tables\Table;
+use App\Enums\PayoutStatus;
 use App\Helpers\Permission;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
@@ -32,7 +32,7 @@ class PayoutsList extends Component implements HasTable, HasForms
             ->headerActions([
                 Action::make('create')
                     ->visible($this->context === 'family')
-                    ->url(fn() => route('family_member_payout', [$this->user->family, $this->user->familyMember]))
+                    ->url(fn () => route('family_member_payout', [$this->user->family, $this->user->familyMember]))
                     ->disabled($this->user->findOwing()->isZero())
             ])
             ->columns([

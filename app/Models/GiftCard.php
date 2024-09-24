@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use App\Enums\GiftCardStatus;
 use Cknow\Money\Money;
 use App\Helpers\Permission;
 use Illuminate\Support\Str;
+use App\Enums\GiftCardStatus;
 use App\Enums\GiftCardAdjustmentType;
 use App\Concerns\Timeline\HasTimeline;
 use Cknow\Money\Casts\MoneyIntegerCast;

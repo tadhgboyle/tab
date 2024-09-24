@@ -5,7 +5,6 @@ namespace App\Livewire\Common\Users;
 use App\Models\User;
 use App\Models\Order;
 use Livewire\Component;
-use App\Enums\OrderStatus;
 use Filament\Tables\Table;
 use App\Helpers\Permission;
 use Filament\Tables\Actions\Action;

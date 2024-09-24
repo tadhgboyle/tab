@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use App\Enums\ActivityStatus;
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
 use Carbon\CarbonInterface;
+use App\Enums\ActivityStatus;
 use App\Concerns\Timeline\HasTimeline;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;

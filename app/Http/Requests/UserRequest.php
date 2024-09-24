@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use App\Http\Requests\FormRequest as FormRequestContract;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\FormRequest as FormRequestContract;
 
 class UserRequest extends FormRequest implements FormRequestContract
 {
