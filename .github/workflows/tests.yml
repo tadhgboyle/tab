@@ -32,7 +32,4 @@ jobs:
         mkdir -p database
         touch database/database.sqlite
     - name: Execute tests via PHPUnit
-      env:
-        DB_CONNECTION: sqlite
-        DB_DATABASE: :memory:
       run: vendor/bin/phpunit
