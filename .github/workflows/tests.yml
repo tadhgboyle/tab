@@ -18,7 +18,7 @@ jobs:
       with:
         php-version: '8.2'
     - name: Update sqlite
-      uses: actions/setup-sqlite@v1
+      uses: ccorsi/setup-sqlite@v1.0.1
       with:
         sqlite-version: 3.46.0
         sqlite-year: 2024
