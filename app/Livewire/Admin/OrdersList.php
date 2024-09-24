@@ -31,22 +31,10 @@ class OrdersList extends Component implements HasTable, HasForms
                 TextColumn::make('cashier.full_name')->searchable()->sortable()
                     ->url(fn (Order $order) => route('users_view', $order->cashier)),
                 TextColumn::make('total_price')->sortable(),
-                TextColumn::make('status')->badge()->state(function (Order $order) {
-                    return $order->status->getWord();
-                })->color(function (Order $order) {
-                    return match ($order->status) {
-                        OrderStatus::NotReturned => 'gray',
-                        OrderStatus::PartiallyReturned => 'primary',
-                        OrderStatus::FullyReturned => 'danger',
-                    };
-                }),
+                TextColumn::make('status')->badge(),
             ])
             ->filters([
-                SelectFilter::make('Status')->options([
-                    OrderStatus::NotReturned->value => OrderStatus::NotReturned->getWord(),
-                    OrderStatus::PartiallyReturned->value => OrderStatus::PartiallyReturned->getWord(),
-                    OrderStatus::FullyReturned->value => OrderStatus::FullyReturned->getWord(),
-                ])->multiple(),
+                SelectFilter::make('status')->options(OrderStatus::class)->multiple(),
             ])
             ->recordUrl(function (Order $order) {
                 if (hasPermission(Permission::ORDERS_VIEW)) {

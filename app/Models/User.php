@@ -39,8 +39,6 @@ class User extends Authenticatable implements HasTimeline
     ];
 
     protected $casts = [
-        'full_name' => 'string',
-        'username' => 'string',
         'balance' => MoneyIntegerCast::class,
     ];
 

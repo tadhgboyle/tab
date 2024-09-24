@@ -29,18 +29,7 @@ class RotationsList extends Component implements HasTable, HasForms
                 TextColumn::make('name')->badge()->color('gray'),
                 TextColumn::make('start')->dateTime('M jS Y h:ia')->sortable(),
                 TextColumn::make('end')->dateTime('M jS Y h:ia')->sortable(),
-                TextColumn::make('status')->badge()->state(function (Rotation $rotation) {
-                    return match ($rotation->getStatus()) {
-                        RotationStatus::Present => 'Present',
-                        RotationStatus::Future => 'Future',
-                        RotationStatus::Past => 'Past',
-                    };
-                })->color(function (Rotation $rotation) {
-                    return match ($rotation->getStatus()) {
-                        RotationStatus::Present => 'success',
-                        default => 'gray',
-                    };
-                }),
+                TextColumn::make('status')->badge(),
             ])
             ->filters([
                 // ...

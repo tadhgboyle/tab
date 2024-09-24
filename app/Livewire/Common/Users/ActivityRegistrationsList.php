@@ -38,19 +38,7 @@ class ActivityRegistrationsList extends Component implements HasTable, HasForms
                     })
                     ->hidden(fn () => $this->context === 'family'),
                 TextColumn::make('total_price')->sortable(),
-                TextColumn::make('status')->badge()->state(function (ActivityRegistration $activityRegistration) {
-                    return match (true) {
-                        $activityRegistration->activity->ended() => 'Ended',
-                        $activityRegistration->activity->inProgress() => 'In Progress',
-                        default => 'Upcoming',
-                    };
-                })->color(function (ActivityRegistration $activityRegistration) {
-                    return match (true) {
-                        $activityRegistration->activity->ended() => 'danger',
-                        $activityRegistration->activity->inProgress() => 'success',
-                        default => 'gray',
-                    };
-                }),
+                TextColumn::make('activity.status')->label('Status')->badge(),
                 BooleanColumn::make('returned')->trueColor('danger')->falseColor('success'),
             ])
             ->recordUrl(function (ActivityRegistration $activityRegistration) {

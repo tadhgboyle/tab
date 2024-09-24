@@ -32,21 +32,21 @@ class Rotation extends Model
 
     public function isPresent(): bool
     {
-        return $this->getStatus() === RotationStatus::Present;
+        return $this->start->isPast() && $this->end->isFuture();
     }
 
     public function isFuture(): bool
     {
-        return $this->getStatus() === RotationStatus::Future;
+        return $this->start->isFuture();
     }
 
-    public function getStatus(): RotationStatus
+    public function getStatusAttribute(): RotationStatus
     {
-        if (resolve(RotationHelper::class)->getCurrentRotation()?->id === $this->id) {
+        if ($this->isPresent()) {
             return RotationStatus::Present;
         }
 
-        if ($this->start->isFuture()) {
+        if ($this->isFuture()) {
             return RotationStatus::Future;
         }
 

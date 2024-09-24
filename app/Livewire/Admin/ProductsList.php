@@ -42,9 +42,7 @@ class ProductsList extends Component implements HasTable, HasForms
                     return $product->hasVariants();
                 }),
                 // TODO, hide if they cannot view draft products?
-                TextColumn::make('status')->badge()->state(fn (Product $product) => $product->status->getWord())->color(function (Product $product) {
-                    return $product->isActive() ? 'success' : 'gray';
-                }),
+                TextColumn::make('status')->badge(),
             ])
             ->recordUrl(function (Product $product) {
                 if (hasPermission(Permission::PRODUCTS_VIEW)) {
@@ -63,10 +61,7 @@ class ProductsList extends Component implements HasTable, HasForms
                         false: fn ($query) => $query->whereDoesntHave('variants'),
                     ),
                 SelectFilter::make('status')
-                    ->options([
-                        ProductStatus::Active->value => 'Active',
-                        ProductStatus::Draft->value => 'Draft',
-                    ])->visible(hasPermission(Permission::PRODUCTS_VIEW_DRAFT)),
+                    ->options(ProductStatus::class)->visible(hasPermission(Permission::PRODUCTS_VIEW_DRAFT)),
             ])
             ->actions([
                 // ...

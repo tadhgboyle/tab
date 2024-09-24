@@ -4,25 +4,25 @@ namespace App\Enums;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
-enum RotationStatus implements HasLabel, HasColor
+enum ActivityStatus implements HasLabel, HasColor
 {
-    case Past;
-    case Present;
-    case Future;
+    case InProgress;
+    case Ended;
+    case Upcoming;
 
     public function getLabel(): string
     {
         return match ($this) {
-            self::Past => 'Past',
-            self::Present => 'Present',
-            self::Future => 'Future',
+            self::InProgress => 'In Progress',
+            self::Ended => 'Ended',
+            self::Upcoming => 'Upcoming',
         };
     }
 
     public function getColor(): string
     {
         return match ($this) {
-            self::Present => 'success',
+            self::InProgress => 'success',
             default => 'gray',
         };
     }

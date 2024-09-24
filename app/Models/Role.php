@@ -23,7 +23,6 @@ class Role extends Model
     ];
 
     protected $casts = [
-        'name' => 'string',
         'superuser' => 'boolean',
         'order' => 'integer',
         'staff' => 'boolean',

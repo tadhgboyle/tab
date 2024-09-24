@@ -19,7 +19,6 @@ class UserFactory extends Factory
             'full_name' => $full_name,
             'username' => str($full_name)->lower()->replace(' ', '') . ($this->faker->boolean(25) ? $this->faker->numberBetween(1, 100) : ''),
             'balance' =>  $this->faker->numberBetween(0, 2500_00),
-            'password' => bcrypt('password'),
         ];
     }
 }

@@ -8,28 +8,20 @@
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    var calendarEl = document.getElementById('calendar');
-
-    var calendar = new FullCalendar.Calendar(calendarEl, {
+    new FullCalendar.Calendar(document.getElementById('calendar'), {
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
-        height: 650,
         events: {!! $activities !!},
-        dateClick: function(day) {
-            @permission(\App\Helpers\Permission::ACTIVITIES_MANAGE)
-                if (day.dateStr < new Date().toISOString().split('T')[0]) return;
-                let url = '{{ route('activities_create', ':id') }}';
-                url = url.replace(':id', day.dateStr);
-                location.href = url;
-            @endpermission
+        nowIndicator: true,
+        eventTimeFormat: {
+            hour: 'numeric',
+            minute: '2-digit',
         },
-        allDaySlot: false,
-    });
-
-    calendar.render();
+        initialView: 'timeGridWeek',
+    }).render();
 });
 </script>
 @endsection

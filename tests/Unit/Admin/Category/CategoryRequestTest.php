@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Admin\Category;
 
+use App\Enums\CategoryType;
 use App\Models\Category;
 use Tests\FormRequestTestCase;
 use App\Http\Requests\CategoryRequest;
@@ -48,7 +49,7 @@ class CategoryRequestTest extends FormRequestTestCase
         ]));
 
         $this->assertNotHaveErrors('type', new CategoryRequest([
-            'type' => 1,
+            'type' => CategoryType::ProductsActivities,
         ]));
     }
 }

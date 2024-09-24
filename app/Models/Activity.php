@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ActivityStatus;
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
 use Carbon\CarbonInterface;
@@ -34,9 +35,6 @@ class Activity extends Model implements HasTimeline
     ];
 
     protected $casts = [
-        'name' => 'string',
-        'location' => 'string',
-        'description' => 'string',
         'unlimited_slots' => 'boolean',
         'slots' => 'integer',
         'price' => MoneyIntegerCast::class,
@@ -84,9 +82,17 @@ class Activity extends Model implements HasTimeline
         return $this->registrations()->where('user_id', $user->id)->exists();
     }
 
-    public function inProgress(): bool
+    public function getStatusAttribute(): ActivityStatus
     {
-        return $this->started() && !$this->ended();
+        if ($this->ended()) {
+            return ActivityStatus::Ended;
+        }
+
+        if ($this->started()) {
+            return ActivityStatus::InProgress;
+        }
+
+        return ActivityStatus::Upcoming;
     }
 
     public function started(): bool
@@ -102,6 +108,11 @@ class Activity extends Model implements HasTimeline
     public function countdown(): string
     {
         return now()->diffForHumans($this->start, CarbonInterface::DIFF_ABSOLUTE, false, 2);
+    }
+
+    public function remaining(): string
+    {
+        return $this->end->diffForHumans(now(), CarbonInterface::DIFF_ABSOLUTE, false, 2);
     }
 
     public function duration(): string
@@ -141,13 +152,22 @@ class Activity extends Model implements HasTimeline
             );
         }
 
-        foreach ($this->registrations()->with('user', 'cashier')->get() as $registration) {
+        foreach ($this->registrations(false)->with('user', 'cashier')->get() as $registration) {
             $timeline[] = new TimelineEntry(
                 description: "Registered {$registration->user->full_name}",
                 emoji: '🎟️',
                 time: $registration->created_at,
                 actor: $registration->cashier,
             );
+
+            if ($registration->returned) {
+                $timeline[] = new TimelineEntry(
+                    description: "Removed {$registration->user->full_name}",
+                    emoji: '🔄',
+                    time: $registration->updated_at,
+                    actor: $registration->cashier,
+                );
+            }
         }
 
         usort($timeline, fn ($a, $b) => $a->time <=> $b->time);

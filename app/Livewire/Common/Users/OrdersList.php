@@ -47,15 +47,7 @@ class OrdersList extends Component implements HasTable, HasForms
                     })
                     ->hidden($this->context === 'family'),
                 TextColumn::make('total_price')->sortable(),
-                TextColumn::make('status')->badge()->state(function (Order $order) {
-                    return $order->status->getWord();
-                })->color(function (Order $order) {
-                    return match ($order->status) {
-                        OrderStatus::NotReturned => 'gray',
-                        OrderStatus::PartiallyReturned => 'primary',
-                        OrderStatus::FullyReturned => 'danger',
-                    };
-                }),
+                TextColumn::make('status')->badge(),
             ])
             ->recordUrl(function (Order $order) {
                 if ($this->context === 'family') {

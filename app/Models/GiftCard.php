@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\GiftCardStatus;
 use Cknow\Money\Money;
 use App\Helpers\Permission;
 use Illuminate\Support\Str;
@@ -83,6 +84,15 @@ class GiftCard extends Model implements HasTimeline
     public function usageBy(User $user): Money
     {
         return Money::sum(Money::parse(0), ...$user->orders()->where('gift_card_id', $this->id)->get()->map->gift_card_amount);
+    }
+
+    public function getStatusAttribute(): GiftCardStatus
+    {
+        if ($this->expired()) {
+            return GiftCardStatus::Expired;
+        }
+
+        return GiftCardStatus::Active;
     }
 
     public function timeline(): array

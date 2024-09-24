@@ -27,19 +27,7 @@ class ActivitiesList extends Component implements HasTable, HasForms
                 TextColumn::make('name')->sortable()->searchable(),
                 TextColumn::make('start')->sortable()->dateTime('M jS Y h:ia'),
                 TextColumn::make('end')->sortable()->dateTime('M jS Y h:ia'),
-                TextColumn::make('status')->badge()->state(function (Activity $activity) {
-                    return match (true) {
-                        $activity->ended() => 'Ended',
-                        $activity->inProgress() => 'In Progress',
-                        default => 'Upcoming',
-                    };
-                })->color(function (Activity $activity) {
-                    return match (true) {
-                        $activity->ended() => 'danger',
-                        $activity->inProgress() => 'success',
-                        default => 'gray',
-                    };
-                }),
+                TextColumn::make('status')->badge(),
                 TextColumn::make('duration')->state(function (Activity $activity) {
                     return $activity->duration();
                 }),

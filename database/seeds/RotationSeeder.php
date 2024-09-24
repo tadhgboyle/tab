@@ -19,22 +19,22 @@ class RotationSeeder extends Seeder
         // Past
         Rotation::factory()->create([
             'name' => 'Week #1',
-            'start' => Carbon::now()->subWeek(),
-            'end' => Carbon::now()
+            'start' => Carbon::now()->subWeek()->setHour(0)->setMinute(0)->setSecond(0),
+            'end' => Carbon::now()->setHour(0)->setMinute(0)->setSecond(0),
         ]);
 
         // Present
         Rotation::factory()->create([
             'name' => 'Week #2',
-            'start' => Carbon::now(),
-            'end' => Carbon::now()->addWeek()
+            'start' => Carbon::now()->setHour(0)->setMinute(0)->setSecond(0),
+            'end' => Carbon::now()->addWeek()->setHour(0)->setMinute(0)->setSecond(0),
         ]);
 
         // Future
         Rotation::factory()->create([
             'name' => 'Week #3',
-            'start' => Carbon::now()->addWeek(),
-            'end' => Carbon::now()->addWeeks(2)
+            'start' => Carbon::now()->addWeek()->setHour(0)->setMinute(0)->setSecond(0),
+            'end' => Carbon::now()->addWeeks(2)->setHour(0)->setMinute(0)->setSecond(0),
         ]);
 
         $users = User::all();

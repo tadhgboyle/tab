@@ -32,11 +32,7 @@ class GiftCardsList extends Component implements HasTable, HasForms
             ])
             ->columns([
                 TextColumn::make('code')->fontFamily(FontFamily::Mono)->searchable()->copyable(),
-                TextColumn::make('Status')->badge()->state(function (GiftCard $giftCard) {
-                    return $giftCard->expired() ? 'Expired' : 'Active';
-                })->color(function (GiftCard $giftCard) {
-                    return $giftCard->expired() ? 'danger' : 'gray';
-                }),
+                TextColumn::make('status')->badge(),
                 TextColumn::make('original_balance')->sortable(),
                 TextColumn::make('remaining_balance')->sortable(),
                 TextColumn::make('assignments_count')->label('Users')->counts('assignments')->numeric()->sortable(),

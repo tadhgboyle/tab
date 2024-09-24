@@ -11,7 +11,6 @@ use Filament\Tables\Table;
 use App\Helpers\Permission;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Support\Enums\FontFamily;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -39,13 +38,7 @@ class PayoutsList extends Component implements HasTable, HasForms
             ->columns([
                 TextColumn::make('id')->label('ID'),
                 TextColumn::make('amount')->sortable(),
-                TextColumn::make('status')->badge()->color(function (Payout $payout) {
-                    return match ($payout->status) {
-                        PayoutStatus::Cancelled => 'danger',
-                        PayoutStatus::Pending => 'warning',
-                        PayoutStatus::Paid => 'success',
-                    };
-                })->state(fn (Payout $payout) => ucfirst($payout->status->value)),
+                TextColumn::make('status')->badge(),
                 TextColumn::make('creator.full_name')
                     ->url(function (Payout $payout) {
                         if ($this->context === 'admin' && hasPermission(Permission::USERS_VIEW)) {
@@ -58,11 +51,7 @@ class PayoutsList extends Component implements HasTable, HasForms
             ])
             ->filters([
                 SelectFilter::make('status')
-                    ->options([
-                        PayoutStatus::Cancelled->value => 'Cancelled',
-                        PayoutStatus::Pending->value => 'Pending',
-                        PayoutStatus::Paid->value => 'Paid',
-                    ])->default(PayoutStatus::Paid->value),
+                    ->options(PayoutStatus::class)->default(PayoutStatus::Paid->value),
             ])
             ->actions([
                 // ...

@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Admin\User;
 
+use App\Enums\CategoryType;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
@@ -249,7 +250,7 @@ class UserLimitTest extends TestCase
 
         $activities_category = Category::factory()->create([
             'name' => 'Activities',
-            'type' => 3
+            'type' => CategoryType::Activities
         ]);
 
         $waterfront_category = Category::factory()->create([

@@ -4,17 +4,16 @@ namespace App\Enums;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
-enum ProductStatus: string implements HasLabel, HasColor
+enum GiftCardStatus implements HasLabel, HasColor
 {
-    case Active = 'active';
-
-    case Draft = 'draft';
+    case Active;
+    case Expired;
 
     public function getLabel(): string
     {
         return match ($this) {
             self::Active => 'Active',
-            self::Draft => 'Draft',
+            self::Expired => 'Expired',
         };
     }
 
@@ -22,7 +21,7 @@ enum ProductStatus: string implements HasLabel, HasColor
     {
         return match ($this) {
             self::Active => 'success',
-            self::Draft => 'gray',
+            self::Expired => 'danger',
         };
     }
 }

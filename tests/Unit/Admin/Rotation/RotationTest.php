@@ -53,33 +53,33 @@ class RotationTest extends TestCase
         $this->assertTrue($this->_rotation->isPresent());
     }
 
-    public function testGetStatusReturnsPresentIfPresent(): void
+    public function testStatusReturnsPresentIfPresent(): void
     {
         $this->_rotation->update([
             'start' => now()->subDay(),
             'end' => now()->addDays(2),
         ]);
 
-        $this->assertEquals(RotationStatus::Present, $this->_rotation->getStatus());
+        $this->assertEquals(RotationStatus::Present, $this->_rotation->status);
     }
 
-    public function testGetStatusReturnsFutureIfStartIsInFuture(): void
+    public function testStatusReturnsFutureIfStartIsInFuture(): void
     {
         $this->_rotation->update([
             'start' => now()->addWeek(),
             'end' => now()->addWeeks(2),
         ]);
 
-        $this->assertEquals(RotationStatus::Future, $this->_rotation->getStatus());
+        $this->assertEquals(RotationStatus::Future, $this->_rotation->status);
     }
 
-    public function testGetStatusReturnsPastIfEndIsInPast(): void
+    public function testStatusReturnsPastIfEndIsInPast(): void
     {
         $this->_rotation->update([
             'start' => now()->subWeeks(2),
             'end' => now()->subWeek(),
         ]);
 
-        $this->assertEquals(RotationStatus::Past, $this->_rotation->getStatus());
+        $this->assertEquals(RotationStatus::Past, $this->_rotation->status);
     }
 }

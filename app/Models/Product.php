@@ -23,8 +23,6 @@ class Product extends Model
     use InteractsWithStock;
 
     protected $casts = [
-        'name' => 'string',
-        'sku' => 'string',
         'status' => ProductStatus::class,
         'price' => MoneyIntegerCast::class,
         'pst' => 'boolean',

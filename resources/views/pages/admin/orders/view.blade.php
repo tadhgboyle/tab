@@ -20,7 +20,7 @@
     <div class="column is-two-thirds">
         <div class="card">
             <div class="card-content">
-                @foreach($order->products as $orderProduct)
+                @foreach($order->products()->with('product.category')->get() as $orderProduct)
                 <div class="content">
                     <div class="columns">
                         <div class="column">
@@ -41,6 +41,8 @@
                                 <br>
                                 <span class="is-size-7">SKU: {{ $orderProduct->productVariant ? $orderProduct->productVariant->sku : $orderProduct->product->sku }}</span>
                             @endif
+                            <br>
+                            <span class="is-size-7">Category: {{ $orderProduct->product->category->name }}</span>
                         </div>
                         <div class="column">
                             <div class="is-pulled-right">

@@ -28,10 +28,13 @@
 
             <x-detail-card title="Timing">
                 <x-detail-card-item-list>
-                    @unless($activity->ended())
+                    @unless($activity->started())
                         <x-detail-card-item label="Starts in" :value="$activity->countdown()" />
                     @endunless
                     <x-detail-card-item label="Starts at" :value="$activity->start->format('M jS Y h:ia')" />
+                    @unless($activity->ended())
+                        <x-detail-card-item label="Ends in" :value="$activity->remaining()" />
+                    @endunless
                     <x-detail-card-item label="Ends at" :value="$activity->end->format('M jS Y h:ia')" />
                     <x-detail-card-item label="Duration" :value="$activity->duration()" />
                 </x-detail-card-item-list>
@@ -39,7 +42,7 @@
 
             <x-detail-card title="Pricing">
                 <x-detail-card-item-list>
-                    <x-detail-card-item label="Price" :value="$activity->price->isZero() ? 'Free' : $activity->price" />
+                    <x-detail-card-item label="Price" :value="$activity->price->isZero() ? '<i>Free</i>' : $activity->price" />
                     <x-detail-card-item label="PST" :value="$activity->pst ? '✅' : '❌'" />
                 </x-detail-card-item-list>
             </x-detail-card>

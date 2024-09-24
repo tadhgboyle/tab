@@ -13,10 +13,13 @@ class RotationFactory extends Factory
      */
     public function definition()
     {
+        $start = now()->setMinute(0)->setSecond(0);
+        $end = $start->copy()->addDays(7);
+
         return [
             'name' => $this->faker->word,
-            'start' => now(),
-            'end' => now()->addDays(7),
+            'start' => $start,
+            'end' => $end,
         ];
     }
 }
