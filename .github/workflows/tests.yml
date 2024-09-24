@@ -12,11 +12,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.2'
+    - name: Update sqlite3
+      run: |
+        download_link="https://www.sqlite.org/2024/sqlite-tools-linux-x64-3460000.zip"
+        wget "$download_link" -P /tmp
+        unzip "/tmp/$(basename "$download_link")" -d /tmp
+        sudo install /tmp/sqlite3 /usr/local/bin/
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
     - name: Install Dependencies
