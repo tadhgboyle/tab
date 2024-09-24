@@ -3,8 +3,8 @@
 namespace Database\Factories;
 
 use App\Enums\PayoutStatus;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PayoutFactory extends Factory
 {

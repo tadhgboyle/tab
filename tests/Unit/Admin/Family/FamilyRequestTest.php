@@ -2,9 +2,9 @@
 
 namespace Tests\Unit\Admin\Family;
 
-use App\Http\Requests\FamilyRequest;
 use App\Models\Family;
 use Tests\FormRequestTestCase;
+use App\Http\Requests\FamilyRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class FamilyRequestTest extends FormRequestTestCase

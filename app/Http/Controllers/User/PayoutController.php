@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Enums\PayoutStatus;
-use App\Http\Requests\PayoutRequest;
 use App\Models\Family;
-use App\Models\FamilyMember;
-use App\Http\Controllers\Controller;
 use App\Models\Payout;
 use Cknow\Money\Money;
+use App\Enums\PayoutStatus;
+use App\Models\FamilyMember;
 use Illuminate\Http\Request;
 use Laravel\Cashier\Cashier;
 use Laravel\Cashier\Checkout;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\PayoutRequest;
 
 class PayoutController extends Controller
 {
@@ -54,7 +54,7 @@ class PayoutController extends Controller
     public function stripeSuccessCallback(Request $request, Family $family, FamilyMember $familyMember)
     {
         $sessionId = $request->get('session_id');
- 
+
         if ($sessionId === null) {
             return;
         }
@@ -78,7 +78,7 @@ class PayoutController extends Controller
     public function stripeCancelCallback(Request $request, Family $family, FamilyMember $familyMember)
     {
         $sessionId = $request->get('session_id');
- 
+
         if ($sessionId === null) {
             return;
         }

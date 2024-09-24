@@ -2,8 +2,8 @@
 
 namespace Tests\Unit\Admin\Category;
 
-use App\Enums\CategoryType;
 use App\Models\Category;
+use App\Enums\CategoryType;
 use Tests\FormRequestTestCase;
 use App\Http\Requests\CategoryRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;

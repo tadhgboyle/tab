@@ -1,12 +1,13 @@
 <?php
 
 namespace Tests\Unit\Admin\Family;
-use App\Helpers\Permission;
-use App\Models\Family;
+
+use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Family;
+use App\Helpers\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
 class FamilyControllerTest extends TestCase
 {

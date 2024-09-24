@@ -2,18 +2,18 @@
 
 namespace Tests\Unit\User;
 
-use App\Enums\FamilyMemberRole;
-use App\Enums\UserLimitDuration;
-use App\Http\Middleware\RequiresFamilyAdmin;
-use App\Http\Middleware\RequiresFamilyAdminOrSelf;
-use App\Http\Middleware\RequiresOwnFamily;
-use App\Models\Category;
-use App\Models\Family;
-use App\Models\FamilyMember;
-use Cknow\Money\Money;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Family;
+use Cknow\Money\Money;
+use App\Models\Category;
+use App\Models\FamilyMember;
+use App\Enums\FamilyMemberRole;
+use App\Enums\UserLimitDuration;
+use App\Http\Middleware\RequiresOwnFamily;
+use App\Http\Middleware\RequiresFamilyAdmin;
+use App\Http\Middleware\RequiresFamilyAdminOrSelf;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class FamilyMemberControllerTest extends TestCase
