@@ -17,12 +17,11 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.2'
-    - name: Update sqlite3
-      run: |
-        download_link="https://www.sqlite.org/2024/sqlite-tools-linux-x64-3460000.zip"
-        wget "$download_link" -P /tmp
-        unzip "/tmp/$(basename "$download_link")" -d /tmp
-        sudo install /tmp/sqlite3 /usr/local/bin/
+    - name: Update sqlite
+      uses: actions/setup-sqlite@v1
+      with:
+        sqlite-version: 3.46.0
+        sqlite-year: 2024
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
     - name: Install Dependencies
