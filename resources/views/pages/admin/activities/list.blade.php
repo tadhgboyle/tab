@@ -1,5 +1,11 @@
 @extends('layouts.default', ['page' => 'activities'])
 @section('content')
-<h2 class="title has-text-weight-bold">Activities</h2>
+<x-page-header title="Activities" :actions="[
+    [
+        'label' => 'Create',
+        'href' => route('activities_create'),
+        'can' => hasPermission(\App\Helpers\Permission::ACTIVITIES_MANAGE)
+    ],
+]" />
 <livewire:admin.activities-list />
 @endsection

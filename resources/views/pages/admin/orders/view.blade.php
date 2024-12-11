@@ -1,23 +1,16 @@
 @extends('layouts.default', ['page' => 'orders'])
 @section('content')
-<h2 class="title has-text-weight-bold">View Order</h2>
-<div class="columns">
-    <div class="column">
-        <div class="is-pulled-right">
-            @if($order->status !== \App\Enums\OrderStatus::FullyReturned && hasPermission(\App\Helpers\Permission::ORDERS_RETURN))
-                <button class="button is-danger is-outlined" type="button" onclick="openModal();">
-                    <span>Return</span>
-                    <span class="icon is-small">
-                        <i class="fas fa-undo"></i>
-                    </span>
-                </button>
-            @endif
-        </div>
-    </div>
-</div>
+<x-page-header title="Order {{ $order->identifier }}" :actions="[
+    [
+        'label' => 'Return',
+        'onclick' => 'openModal()',
+        'color' => 'danger',
+        'can' => $order->status !== \App\Enums\OrderStatus::FullyReturned && hasPermission(\App\Helpers\Permission::ORDERS_RETURN)
+    ],
+]" />
 
-<div class="columns">
-    <div class="column is-two-thirds">
+<div class="grid grid-cols-6 gap-5">
+    <div class="col-span-4">
         <div class="card">
             <div class="card-content">
                 @foreach($order->products()->with('product.category')->get() as $orderProduct)
@@ -199,11 +192,10 @@
             </div>
         </div>
     </div>
-    <div class="column">
+    <div class="col-span-2">
         <x-detail-card-stack>
             <x-detail-card title="Details">
                 <x-detail-card-item-list>
-                    <x-detail-card-item label="Identifier" :value="$order->identifier" />
                     <x-detail-card-item label="Status">
                         <x-order-status-badge :order="$order" />
                     </x-detail-card-item>

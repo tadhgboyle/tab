@@ -1,9 +1,12 @@
 @extends('layouts.default', ['page' => 'families'])
 @section('content')
-<h2 class="title has-text-weight-bold">Family</h2>
-<h4 class="subtitle">
-    {{ $family->name }} @permission(\App\Helpers\Permission::FAMILIES_MANAGE)<a href="{{ route('families_edit', $family) }}">(Edit)</a>@endpermission
-</h4>
+<x-page-header :title="$family->name" :actions="[
+    [
+        'label' => 'Edit',
+        'href' => route('families_edit', $family),
+        'can' => hasPermission(\App\Helpers\Permission::FAMILIES_MANAGE)
+    ],
+]" />
 
 <div class="columns">
     <div class="column is-two-thirds">

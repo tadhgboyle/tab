@@ -1,17 +1,18 @@
 <?php
 
 namespace App\Enums;
+use Filament\Support\Contracts\HasLabel;
 
-enum UserLimitDuration: string
+enum UserLimitDuration: string implements HasLabel
 {
     case Daily = 'daily';
     case Weekly = 'weekly';
 
-    public function label(): string
+    public function getLabel(): string
     {
         return match ($this) {
-            self::Daily => 'day',
-            self::Weekly => 'week',
+            self::Daily => 'Daily',
+            self::Weekly => 'Weekly',
         };
     }
 }

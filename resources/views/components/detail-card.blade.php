@@ -1,6 +1,6 @@
 <div class="bg-gray-50 border border-gray-200 rounded-lg shadow-sm">
-    <div class="px-3 py-4 border-b">
-        <div class="text-base font-semibold text-gray-950">
+    <div class="px-3 py-3 border-b">
+        <div class="text-sm font-semibold text-gray-950">
             {{ $title }}
         </div>
     </div>

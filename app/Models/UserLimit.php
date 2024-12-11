@@ -44,7 +44,7 @@ class UserLimit extends Model
 
     public function duration(): string
     {
-        return $this->duration->label();
+        return $this->duration->getLabel();
     }
 
     public function isUnlimited(): bool

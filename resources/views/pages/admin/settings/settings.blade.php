@@ -1,9 +1,10 @@
 @extends('layouts.default', ['page' => 'settings'])
 @section('content')
-<h2 class="title has-text-weight-bold">Settings</h2>
-<div class="columns">
+<x-page-header title="Settings" />
+
+<div class="grid grid-cols-2 gap-5 grid-flow-row">
     @permission(\App\Helpers\Permission::SETTINGS_GENERAL)
-    <div class="column">
+    <div>
         <div class="box">
             <h4 class="title has-text-weight-bold is-4">General</h4>
             <form action="{{ route('settings_edit') }}" id="settings" method="POST">
@@ -67,29 +68,19 @@
     @endpermission
 
     @permission(\App\Helpers\Permission::SETTINGS_CATEGORIES_MANAGE)
-    <div class="column">
         <livewire:admin.settings.categories-list />
-    </div>
     @endpermission
-</div>
 
-<div class="columns">
     @permission(\App\Helpers\Permission::SETTINGS_ROLES_MANAGE)
-    <div class="column is-6">
         <livewire:admin.settings.roles-list />
-    </div>
     @endpermission
 
     @permission(\App\Helpers\Permission::SETTINGS_ROTATIONS_MANAGE)
-    <div class="column is-6">
         <livewire:admin.settings.rotations-list />
-    </div>
     @endpermission
-</div>
 
-<div class="columns">
     @permission(\App\Helpers\Permission::SETTINGS_GIFT_CARDS_MANAGE)
-    <div class="column">
+    <div class="col-span-2">
         <livewire:admin.settings.gift-cards-list />
     </div>
     @endpermission

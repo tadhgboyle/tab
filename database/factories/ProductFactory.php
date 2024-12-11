@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use Illuminate\Support\Str;
 use App\Enums\ProductStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,7 +21,7 @@ class ProductFactory extends Factory
         $price = $price / 100;
         return [
             'name' => $this->faker->unique()->words($this->faker->numberBetween(1, 2), true),
-            'sku' => $this->faker->boolean ? \Illuminate\Support\Str::random(8) : null,
+            'sku' => $this->faker->boolean ? Str::upper(Str::random(8)) : null,
             'status' => ProductStatus::Active,
             'price' => $price,
             'pst' => $this->faker->boolean,

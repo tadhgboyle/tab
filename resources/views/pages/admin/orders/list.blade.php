@@ -1,5 +1,5 @@
 @extends('layouts.default', ['page' => 'orders'])
 @section('content')
-<h2 class="title has-text-weight-bold">Order List</h2>
+<x-page-header title="Orders" />
 <livewire:admin.orders-list />
 @endsection

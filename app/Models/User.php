@@ -210,6 +210,11 @@ class User extends Authenticatable implements HasTimeline
         return $this->role->superuser;
     }
 
+    public function canBeImpersonated()
+    {
+        return $this->role->staff || $this->family;
+    }
+
     public function timeline(): array
     {
         $timeline = [

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\Permission;
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
 use Carbon\CarbonInterface;
@@ -158,6 +159,7 @@ class Activity extends Model implements HasTimeline
                 emoji: '🎟️',
                 time: $registration->created_at,
                 actor: $registration->cashier,
+                link: hasPermission(Permission::USERS_VIEW) ? route('users_view', $registration->user) : null,
             );
 
             if ($registration->returned) {
@@ -166,6 +168,7 @@ class Activity extends Model implements HasTimeline
                     emoji: '🔄',
                     time: $registration->updated_at,
                     actor: $registration->cashier,
+                    link: hasPermission(Permission::USERS_VIEW) ? route('users_view', $registration->user) : null,
                 );
             }
         }

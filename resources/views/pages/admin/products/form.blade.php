@@ -1,7 +1,13 @@
 @extends('layouts.default', ['page' => 'products'])
 @section('content')
-<h2 class="title has-text-weight-bold">{{ isset($product) ? 'Edit' : 'Create' }} Product</h2>
-@if(isset($product)) <h4 class="subtitle"><strong>Product:</strong> {{ $product->name }} @permission(\App\Helpers\Permission::PRODUCTS_VIEW)<a href="{{ route('products_view', $product->id) }}">(View)</a>@endpermission</h4> @endif
+<x-page-header title="{{ isset($product) ? $product->name : 'Create Product' }}" :actions="isset($product) ? [
+    [
+        'label' => 'View',
+        'href' => route('products_view', $product),
+        'can' => hasPermission(\App\Helpers\Permission::PRODUCTS_VIEW)
+    ],
+] : []" />
+
 <form action="{{ isset($product) ? route('products_update', $product->id) : route('products_store') }}" id="product_form" method="POST" class="form-horizontal">
     @csrf
 

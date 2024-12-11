@@ -1,6 +1,6 @@
 @extends('layouts.default', ['page' => 'dashboard'])
 @section('content')
-<h1 class="title has-text-weight-bold">Dashboard</h1>
+<x-page-header title="Dashboard" />
 
 @permission(\App\Helpers\Permission::DASHBOARD_USERS)
 <div class="box">
@@ -338,7 +338,15 @@
 @permission(\App\Helpers\Permission::DASHBOARD_PRODUCTS)
 <div class="box">
     <h4 class="subtitle has-text-weight-bold">Products</h4>
-    <!-- {{ $products }} -->
+    <nav class="level">
+        <div class="level-item has-text-centered">
+            <div>
+                <p class="heading">Inventory value</p>
+                <p class="title">{{ $products['inventoryValue'] }}</p>
+            </div>
+        </div>
+    </nav>
+
     <div class="box">
         <table class="table">
             <thead>

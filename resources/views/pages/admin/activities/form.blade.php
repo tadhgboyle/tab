@@ -1,7 +1,12 @@
 @extends('layouts.default', ['page' => 'activities'])
 @section('content')
-<h2 class="title has-text-weight-bold">{{ isset($activity) ? 'Edit' : 'Create' }} Activity</h2>
-@isset($activity) <h4 class="subtitle"><strong>Activity:</strong> {{ $activity->name }} @permission(\App\Helpers\Permission::ACTIVITIES_VIEW)<a href="{{ route('activities_view', $activity->id) }}">(View)</a>@endpermission</h4> @endisset
+<x-page-header title="{{ isset($activity) ? $activity->name : 'Create Activity' }}" :actions="isset($activity) ? [
+    [
+        'label' => 'View',
+        'href' => route('activities_view', $activity),
+        'can' => hasPermission(\App\Helpers\Permission::ACTIVITIES_VIEW)
+    ],
+] : []" />
 
 <form action="{{ isset($activity) ? route('activities_update', $activity->id) : route('activities_store') }}" id="activity_form" method="POST" class="form-horizontal">
     @csrf

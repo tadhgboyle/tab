@@ -59,7 +59,7 @@ class ActivityRegistrationCreateService extends HttpService
         $registration->rotation_id = resolve(RotationHelper::class)->getCurrentRotation()->id;
         $registration->save();
 
-        $user->balance = $user->balance->subtract($activity->getPriceAfterTax());
+        $user->update(['balance' => $user->balance->subtract($activity->getPriceAfterTax())]);
 
         $this->_activity = $activity;
         $this->_activity_registration = $registration;

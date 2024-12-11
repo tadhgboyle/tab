@@ -1,12 +1,18 @@
 @extends('layouts.default', ['page' => 'activities'])
 @section('content')
-<h2 class="title has-text-weight-bold">View Activity</h2>
-<h4 class="subtitle"><strong>Activity:</strong> {{ $activity->name }} @permission(\App\Helpers\Permission::ACTIVITIES_MANAGE)<a href="{{ route('activities_edit', $activity->id) }}">(Edit)</a>@endpermission</h4>
-<div class="columns">
-    <div class="column is-two-thirds">
+<x-page-header :title="$activity->name" :actions="[
+    [
+        'label' => 'Edit',
+        'href' => route('activities_edit', $activity),
+        'can' => hasPermission(\App\Helpers\Permission::ACTIVITIES_MANAGE)
+    ],
+]" />
+
+<div class="grid grid-cols-6 gap-5">
+    <div class="col-span-4">
         <livewire:admin.activities.registrations-list :activity="$activity" />
     </div>
-    <div class="column">
+    <div class="col-span-2">
         <x-detail-card-stack>
             <x-detail-card title="Details">
                 <x-detail-card-item-list>

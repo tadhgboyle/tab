@@ -1,7 +1,13 @@
 @extends('layouts.default', ['page' => 'users'])
 @section('content')
-<h2 class="title has-text-weight-bold">{{ isset($user) ? 'Edit' : 'Create' }} User</h2>
-@isset($user)<h4 class="subtitle"><strong>User:</strong> {{ $user->full_name }} @permission(\App\Helpers\Permission::USERS_VIEW)<a href="{{ route('users_view', $user->id) }}">(View)</a>@endpermission</h4>@endisset
+<x-page-header title="{{ isset($user) ? $user->full_name : 'Create User' }}" :actions="isset($user) ? [
+    [
+        'label' => 'View',
+        'href' => route('users_view', $user),
+        'can' => hasPermission(\App\Helpers\Permission::USERS_VIEW)
+    ],
+] : []" />
+
 <form action="{{ isset($user) ? route('users_update', $user->id) : route('users_store') }}" id="user_form" method="POST">
     @csrf
 

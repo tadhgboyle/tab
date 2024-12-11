@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin\Settings;
 
+use App\Helpers\Permission;
 use Livewire\Component;
 use App\Models\GiftCard;
 use Filament\Tables\Table;
@@ -37,7 +38,11 @@ class GiftCardsList extends Component implements HasTable, HasForms
                 TextColumn::make('remaining_balance')->sortable(),
                 TextColumn::make('assignments_count')->label('Users')->counts('assignments')->numeric()->sortable(),
                 TextColumn::make('uses_count')->label('Uses')->counts('uses')->numeric()->sortable(),
-                TextColumn::make('issuer.full_name')->searchable()->sortable(),
+                TextColumn::make('issuer.full_name')->searchable()->sortable()->url(function (GiftCard $giftCard) {
+                    if (hasPermission(Permission::USERS_VIEW)) {
+                        return route('users_view', $giftCard->issuer);
+                    }
+                }),
                 TextColumn::make('created_at')->label('Created')->dateTime('M jS Y h:ia')->sortable(),
             ])
             ->recordUrl(fn (GiftCard $giftCard) => route('settings_gift-cards_view', $giftCard))

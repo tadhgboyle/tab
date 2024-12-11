@@ -137,7 +137,7 @@ class ActivityRegistrationCreateServiceTest extends TestCase
         $this->assertEquals($this->_activity->id, $registration->activity_id);
         $this->assertEquals(Money::parse(112_00), $registration->total_price);
         $this->assertEquals(Money::parse(100_00), $registration->activity_price);
-        $this->assertEquals($balance_before->subtract($registration->total_price), $this->_user->balance);
+        $this->assertEquals($balance_before->subtract($registration->total_price), $this->_user->refresh()->balance);
         $this->assertEquals(5.00, $registration->activity_gst);
         $this->assertEquals(7.00, $registration->activity_pst);
         $this->assertEquals($this->_rotation->id, $registration->rotation_id);

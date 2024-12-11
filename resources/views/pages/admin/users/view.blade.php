@@ -1,36 +1,28 @@
 @extends('layouts.default', ['page' => 'users'])
 @section('content')
-<h2 class="title has-text-weight-bold">View User</h2>
-<h4 class="subtitle">
-    {{ $user->full_name }} @if(hasPermission(\App\Helpers\Permission::USERS_MANAGE) && auth()->user()->role->canInteract($user->role))<a href="{{ route('users_edit', $user->id) }}">(Edit)</a>@endif
-</h4>
+<x-page-header :title="$user->full_name" :actions="[
+    [
+        'label' => 'Impersonate',
+        'href' => route('impersonate', $user),
+        'can' => auth()->user()->canImpersonate() && $user->canBeImpersonated(),
+    ],
+    [
+        'label' => 'Edit',
+        'href' => route('users_edit', $user->id),
+        'can' => hasPermission(\App\Helpers\Permission::USERS_MANAGE) && auth()->user()->role->canInteract($user->role),
+    ],
+]" />
 
-@canImpersonate
-    @canBeImpersonated($user)
-        <a href="{{ route('impersonate', $user) }}" class="button is-light">
-            🕵 Impersonate
-        </a>
-        <br />
-        <br />
-    @endCanBeImpersonated
-@endCanImpersonate
-
-<div class="columns">
-    <div class="column">
-        <div class="columns is-multiline">
-            <div class="column is-full">
-                <livewire:common.users.orders-list :user="$user" context="admin" />
-            </div>
-            <div class="column is-full">
-                <livewire:common.users.activity-registrations-list :user="$user" context="admin" />
-            </div>
-            <div class="column">
-                <livewire:common.users.payouts-list :user="$user" context="admin" />
-            </div>
-        </div>
+<div class="grid lg:grid-cols-5 grid-cols-1 gap-5">
+    <div class="lg:col-span-3">
+        <x-detail-card-stack>
+            <livewire:common.users.orders-list :user="$user" context="admin" />
+            <livewire:common.users.activity-registrations-list :user="$user" context="admin" />
+            <livewire:common.users.payouts-list :user="$user" context="admin" />
+        </x-detail-card-stack>
     </div>
 
-    <div class="column is-two-fifths">
+    <div class="lg:col-span-2">
         <x-detail-card-stack>
             <x-detail-card title="Details">
                 <x-detail-card-item-list>

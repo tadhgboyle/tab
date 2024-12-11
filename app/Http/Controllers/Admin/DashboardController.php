@@ -87,6 +87,8 @@ class DashboardController extends Controller
             ->withSum('brokeredOrders', 'total_price')
             ->withSum('brokeredActivityRegistrations', 'total_price')
             ->limit(10)
+            ->orderBy('brokered_orders_sum_total_price', 'desc')
+            ->orderBy('brokered_activity_registrations_sum_total_price', 'desc')
             ->get()
             ->map(function ($cashier) {
                 $cashier->brokered_orders_sum_total_price = Money::parse($cashier->brokered_orders_sum_total_price);
@@ -102,6 +104,8 @@ class DashboardController extends Controller
             ->orHaving('activity_registrations_count', '>', 0)
             ->withSum('orders', 'total_price')
             ->withSum('activityRegistrations', 'total_price')
+            ->orderBy('orders_sum_total_price', 'desc')
+            ->orderBy('activity_registrations_sum_total_price', 'desc')
             ->limit(10)
             ->get()
             ->map(function ($user) {
@@ -218,6 +222,10 @@ class DashboardController extends Controller
         // TODO store total_tax on OrderProduct and Order
 
         // Products with the most revenue lost from returns
+
+        // Product inventory value
+        $inventoryableProducts = Product::query()->where('unlimited_stock', false);
+        $data['inventoryValue'] = Money::parse($inventoryableProducts->sum('stock'))->multiply($inventoryableProducts->avg('price'));
 
         return $data;
     }

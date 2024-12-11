@@ -1,19 +1,21 @@
 @extends('layouts.default', ['page' => 'products'])
 @section('content')
-<h2 class="title has-text-weight-bold">View Product</h2>
-<h4 class="subtitle">
-    {{ $product->name }} @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)<a href="{{ route('products_edit', $product->id) }}">(Edit)</a>@endpermission
-</h4>
+<x-page-header :title="$product->name" :actions="[
+    [
+        'label' => 'Edit',
+        'href' => route('products_edit', $product->id),
+        'can' => hasPermission(\App\Helpers\Permission::PRODUCTS_MANAGE)
+    ],
+]" />
 
-<div class="columns">
-    <div class="column is-two-thirds">
-        <div class="mb-5">
+<div class="grid grid-cols-6 gap-5">
+    <div class="col-span-4">
+        <x-detail-card-stack>
             <livewire:admin.products.variants-list :product="$product" />
-        </div>
-
-        <livewire:admin.products.variant-options-list :product="$product" />
+            <livewire:admin.products.variant-options-list :product="$product" />
+        </x-detail-card-stack>
     </div>
-    <div class="column">
+    <div class="col-span-2">
         <x-detail-card-stack>
             <x-detail-card title="Details">
                 <x-detail-card-item-list>

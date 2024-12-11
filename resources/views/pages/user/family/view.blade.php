@@ -1,6 +1,6 @@
 @extends('layouts.default', ['page' => 'family'])
 @section('content')
-<h2 class="title has-text-weight-bold">Family</h2>
+<x-page-header title="Family" />
 
 <div class="columns">
     <div class="column is-two-thirds">

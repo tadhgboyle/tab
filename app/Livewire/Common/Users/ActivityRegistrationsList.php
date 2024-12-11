@@ -59,6 +59,7 @@ class ActivityRegistrationsList extends Component implements HasTable, HasForms
             ->bulkActions([
                 // ...
             ])
+            ->defaultSort('created_at', 'desc')
             ->paginated(false);
     }
 }

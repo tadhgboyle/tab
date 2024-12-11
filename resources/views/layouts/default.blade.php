@@ -48,8 +48,6 @@
             @yield('content')
 
             @livewire('notifications')
-
-            @include('includes.footer')
         </div>
 
         <script>

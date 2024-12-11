@@ -14,36 +14,6 @@ use Filament\Notifications\Livewire\Notifications;
 
 class AppServiceProvider extends ServiceProvider
 {
-    public const EMOJIS = [
-        '👋',
-        '😃',
-        '😺',
-        '💸',
-        '👀',
-        '👻',
-        '🎉',
-        '🎈',
-        '🎊',
-        '🎆',
-        '🎇',
-    ];
-
-    public const GREETINGS = [
-        'Welcome back',
-        'Greetings',
-        'Good day',
-        'Hello',
-        'Howdy',
-        'Bonjour',
-        'Hola',
-        'Long time no see',
-        'Salutations',
-        'Peek-a-boo',
-        'Ahoy',
-        'Top of the morning',
-        'G\'day',
-    ];
-
     /**
      * Register any application services.
      *

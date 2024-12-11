@@ -20,10 +20,10 @@
                     <div class="select is-fullwidth">
                         <select name="durations[{{ $category['id'] }}]">
                             <option value="{{ \App\Enums\UserLimitDuration::Daily->value }}" @if((isset($user) && $category['limit']->duration === \App\Enums\UserLimitDuration::Daily) || !isset($user)) selected @endif>
-                                Day
+                                Daily
                             </option>
                             <option value="{{ \App\Enums\UserLimitDuration::Weekly->value }}" @if(isset($user) && $category['limit']->duration === \App\Enums\UserLimitDuration::Weekly) selected @endif>
-                                Week
+                                Weekly
                             </option>
                         </select>
                     </div>

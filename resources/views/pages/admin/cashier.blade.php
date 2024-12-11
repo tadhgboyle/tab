@@ -1,6 +1,6 @@
 @extends('layouts.default', ['page' => 'cashier'])
 @section('content')
-<h2 class="title has-text-weight-bold">Cashier</h2>
+<x-page-header title="Cashier" />
 <livewire:admin.cashier-list />
 <script>
     @if (session()->has('last_purchaser_id'))

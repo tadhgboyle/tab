@@ -1,5 +1,11 @@
 @extends('layouts.default', ['page' => 'products'])
 @section('content')
-<h2 class="title has-text-weight-bold">Product List</h2>
+<x-page-header title="Products" :actions="[
+    [
+        'label' => 'Create',
+        'href' => route('products_create'),
+        'can' => hasPermission(\App\Helpers\Permission::PRODUCTS_MANAGE)
+    ],
+]" />
 <livewire:admin.products-list />
 @endsection
