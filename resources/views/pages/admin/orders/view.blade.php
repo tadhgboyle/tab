@@ -13,7 +13,7 @@
     <div class="col-span-4">
         <div class="border border-gray-200 rounded-lg shadow-sm">
             @foreach($order->products()->with('product.category')->get() as $orderProduct)
-                <div class="bg-gray-50 px-4 py-2 @if($loop->first) rounded-t-lg border-b @else border-y @endif font-semibold text-gray-950">
+                <div class="bg-gray-50 px-4 py-3 @if($loop->first) rounded-t-lg border-b @else border-y @endif font-semibold text-gray-950">
                     <div class="flex justify-between items-center">
                         <div class="flex items-center text-sm">
                             @permission(\App\Helpers\Permission::PRODUCTS_VIEW)
