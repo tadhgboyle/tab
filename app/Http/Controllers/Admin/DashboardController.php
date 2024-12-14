@@ -227,6 +227,8 @@ class DashboardController extends Controller
         $inventoryableProducts = Product::query()->where('unlimited_stock', false);
         $data['inventoryValue'] = Money::parse($inventoryableProducts->sum('stock'))->multiply($inventoryableProducts->avg('price'));
 
+        // TODO Margin over time
+
         return $data;
     }
 

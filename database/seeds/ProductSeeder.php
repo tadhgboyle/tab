@@ -43,7 +43,8 @@ class ProductSeeder extends Seeder
             'variants' => [
                 [
                     'price' => 30_00,
-                    'sku' => 'Hoodie-Small-Green',
+                    'cost' => 25_00,
+                    'sku' => 'HOODIE-S-G',
                     'option_value_assignments' => [
                         ['option' => 'Size', 'value' => 'Small'],
                         ['option' => 'Color', 'value' => 'Green'],
@@ -51,7 +52,8 @@ class ProductSeeder extends Seeder
                 ],
                 [
                     'price' => 30_00,
-                    'sku' => 'Hoodie-Small-Blue',
+                    'cost' => 25_00,
+                    'sku' => 'HOODIE-S-B',
                     'option_value_assignments' => [
                         ['option' => 'Size', 'value' => 'Small'],
                         ['option' => 'Color', 'value' => 'Blue'],
@@ -59,7 +61,8 @@ class ProductSeeder extends Seeder
                 ],
                 [
                     'price' => 35_00,
-                    'sku' => 'Hoodie-Medium-Green',
+                    'cost' => 30_00,
+                    'sku' => 'HOODIE-M-G',
                     'option_value_assignments' => [
                         ['option' => 'Size', 'value' => 'Medium'],
                         ['option' => 'Color', 'value' => 'Green'],
@@ -67,7 +70,8 @@ class ProductSeeder extends Seeder
                 ],
                 [
                     'price' => 35_00,
-                    'sku' => 'Hoodie-Medium-Blue',
+                    'cost' => 30_00,
+                    'sku' => 'HOODIE-M-B',
                     'option_value_assignments' => [
                         ['option' => 'Size', 'value' => 'Medium'],
                         ['option' => 'Color', 'value' => 'Blue'],
@@ -75,7 +79,8 @@ class ProductSeeder extends Seeder
                 ],
                 [
                     'price' => 40_00,
-                    'sku' => 'Hoodie-Large-Green',
+                    'cost' => 35_00,
+                    'sku' => 'HOODIE-L-G',
                     'option_value_assignments' => [
                         ['option' => 'Size', 'value' => 'Large'],
                         ['option' => 'Color', 'value' => 'Green'],
@@ -83,7 +88,8 @@ class ProductSeeder extends Seeder
                 ],
                 [
                     'price' => 40_00,
-                    'sku' => 'Hoodie-Large-Blue',
+                    'cost' => 35_00,
+                    'sku' => 'HOODIE-L-B',
                     'option_value_assignments' => [
                         ['option' => 'Size', 'value' => 'Large'],
                         ['option' => 'Color', 'value' => 'Blue'],
@@ -100,7 +106,8 @@ class ProductSeeder extends Seeder
             'variants' => [
                 [
                     'price' => 2_00,
-                    'sku' => 'Slurpee-Small-Cola',
+                    'cost' => 1_00,
+                    'sku' => 'SLURPEE-S-C',
                     'option_value_assignments' => [
                         ['option' => 'Size', 'value' => 'Small'],
                         ['option' => 'Flavour', 'value' => 'Cola'],
@@ -108,7 +115,8 @@ class ProductSeeder extends Seeder
                 ],
                 [
                     'price' => 2_00,
-                    'sku' => 'Slurpee-Small-Cherry',
+                    'cost' => 1_00,
+                    'sku' => 'SLURPEE-S-CH',
                     'option_value_assignments' => [
                         ['option' => 'Size', 'value' => 'Small'],
                         ['option' => 'Flavour', 'value' => 'Cherry'],
@@ -116,7 +124,8 @@ class ProductSeeder extends Seeder
                 ],
                 [
                     'price' => 3_00,
-                    'sku' => 'Slurpee-Large-Cola',
+                    'cost' => 1_50,
+                    'sku' => 'SLURPEE-L-C',
                     'option_value_assignments' => [
                         ['option' => 'Size', 'value' => 'Large'],
                         ['option' => 'Flavour', 'value' => 'Cola'],
@@ -124,7 +133,8 @@ class ProductSeeder extends Seeder
                 ],
                 [
                     'price' => 3_00,
-                    'sku' => 'Slurpee-Large-Blue Raspberry',
+                    'cost' => 1_50,
+                    'sku' => 'SLURPEE-L-BR',
                     'option_value_assignments' => [
                         ['option' => 'Size', 'value' => 'Large'],
                         ['option' => 'Flavour', 'value' => 'Blue Raspberry'],
@@ -141,7 +151,8 @@ class ProductSeeder extends Seeder
             'variants' => [
                 [
                     'price' => 3_00,
-                    'sku' => 'Ice Cream-1 scoop-Vanilla',
+                    'cost' => 1_00,
+                    'sku' => 'ICECREAM-1-V',
                     'option_value_assignments' => [
                         ['option' => 'Size', 'value' => '1 scoop'],
                         ['option' => 'Flavour', 'value' => 'Vanilla'],
@@ -149,7 +160,8 @@ class ProductSeeder extends Seeder
                 ],
                 [
                     'price' => 3_00,
-                    'sku' => 'Ice Cream-1 scoop-Chocolate',
+                    'cost' => 1_00,
+                    'sku' => 'ICECREAM-1-C',
                     'option_value_assignments' => [
                         ['option' => 'Size', 'value' => '1 scoop'],
                         ['option' => 'Flavour', 'value' => 'Chocolate'],
@@ -157,7 +169,8 @@ class ProductSeeder extends Seeder
                 ],
                 [
                     'price' => 3_00,
-                    'sku' => 'Ice Cream-1 scoop-Strawberry',
+                    'cost' => 1_00,
+                    'sku' => 'ICECREAM-1-S',
                     'option_value_assignments' => [
                         ['option' => 'Size', 'value' => '1 scoop'],
                         ['option' => 'Flavour', 'value' => 'Strawberry'],
@@ -165,7 +178,8 @@ class ProductSeeder extends Seeder
                 ],
                 [
                     'price' => 5_00,
-                    'sku' => 'Ice Cream-2 scoops-Vanilla',
+                    'cost' => 2_00,
+                    'sku' => 'ICECREAM-2-V',
                     'option_value_assignments' => [
                         ['option' => 'Size', 'value' => '2 scoops'],
                         ['option' => 'Flavour', 'value' => 'Vanilla'],
@@ -173,7 +187,8 @@ class ProductSeeder extends Seeder
                 ],
                 [
                     'price' => 5_00,
-                    'sku' => 'Ice Cream-2 scoops-Chocolate',
+                    'cost' => 2_00,
+                    'sku' => 'ICECREAM-2-C',
                     'option_value_assignments' => [
                         ['option' => 'Size', 'value' => '2 scoops'],
                         ['option' => 'Flavour', 'value' => 'Chocolate'],
@@ -181,7 +196,8 @@ class ProductSeeder extends Seeder
                 ],
                 [
                     'price' => 5_00,
-                    'sku' => 'Ice Cream-2 scoops-Strawberry',
+                    'cost' => 2_00,
+                    'sku' => 'ICECREAM-2-S',
                     'option_value_assignments' => [
                         ['option' => 'Size', 'value' => '2 scoops'],
                         ['option' => 'Flavour', 'value' => 'Strawberry'],
@@ -189,7 +205,8 @@ class ProductSeeder extends Seeder
                 ],
                 [
                     'price' => 7_00,
-                    'sku' => 'Ice Cream-3 scoops-Vanilla',
+                    'cost' => 3_00,
+                    'sku' => 'ICECREAM-3-V',
                     'option_value_assignments' => [
                         ['option' => 'Size', 'value' => '3 scoops'],
                         ['option' => 'Flavour', 'value' => 'Vanilla'],
@@ -205,21 +222,24 @@ class ProductSeeder extends Seeder
             'variants' => [
                 [
                     'price' => 20_00,
-                    'sku' => 'Wakeboard Rental-1 hour',
+                    'cost' => 4_00,
+                    'sku' => 'WAKEBOARD-1',
                     'option_value_assignments' => [
                         ['option' => 'Duration', 'value' => '1 hour'],
                     ],
                 ],
                 [
                     'price' => 35_00,
-                    'sku' => 'Wakeboard Rental-2 hours',
+                    'cost' => 7_00,
+                    'sku' => 'WAKEBOARD-2',
                     'option_value_assignments' => [
                         ['option' => 'Duration', 'value' => '2 hours'],
                     ],
                 ],
                 [
                     'price' => 50_00,
-                    'sku' => 'Wakeboard Rental-3 hours',
+                    'cost' => 10_00,
+                    'sku' => 'WAKEBOARD-3',
                     'option_value_assignments' => [
                         ['option' => 'Duration', 'value' => '3 hours'],
                     ],
@@ -236,7 +256,8 @@ class ProductSeeder extends Seeder
             'variants' => [
                 [
                     'price' => 10_00,
-                    'sku' => 'Candle-Small-White-Vanilla',
+                    'cost' => 5_00,
+                    'sku' => 'CANDLE-S-W-V',
                     'option_value_assignments' => [
                         ['option' => 'Size', 'value' => 'Small'],
                         ['option' => 'Colour', 'value' => 'White'],
@@ -245,7 +266,8 @@ class ProductSeeder extends Seeder
                 ],
                 [
                     'price' => 10_00,
-                    'sku' => 'Candle-Small-White-Lavender',
+                    'cost' => 5_00,
+                    'sku' => 'CANDLE-S-W-L',
                     'option_value_assignments' => [
                         ['option' => 'Size', 'value' => 'Small'],
                         ['option' => 'Colour', 'value' => 'White'],
@@ -254,7 +276,8 @@ class ProductSeeder extends Seeder
                 ],
                 [
                     'price' => 10_00,
-                    'sku' => 'Candle-Small-White-Pine',
+                    'cost' => 5_00,
+                    'sku' => 'CANDLE-S-W-P',
                     'option_value_assignments' => [
                         ['option' => 'Size', 'value' => 'Small'],
                         ['option' => 'Colour', 'value' => 'White'],
@@ -263,7 +286,8 @@ class ProductSeeder extends Seeder
                 ],
                 [
                     'price' => 15_00,
-                    'sku' => 'Candle-Medium-Blue-Vanilla',
+                    'cost' => 7_50,
+                    'sku' => 'CANDLE-M-B-V',
                     'option_value_assignments' => [
                         ['option' => 'Size', 'value' => 'Medium'],
                         ['option' => 'Colour', 'value' => 'Blue'],
@@ -272,7 +296,8 @@ class ProductSeeder extends Seeder
                 ],
                 [
                     'price' => 15_00,
-                    'sku' => 'Candle-Medium-Blue-Lavender',
+                    'cost' => 7_50,
+                    'sku' => 'CANDLE-M-B-L',
                     'option_value_assignments' => [
                         ['option' => 'Size', 'value' => 'Medium'],
                         ['option' => 'Colour', 'value' => 'Blue'],
@@ -281,7 +306,8 @@ class ProductSeeder extends Seeder
                 ],
                 [
                     'price' => 15_00,
-                    'sku' => 'Candle-Medium-Blue-Pine',
+                    'cost' => 7_50,
+                    'sku' => 'CANDLE-M-B-P',
                     'option_value_assignments' => [
                         ['option' => 'Size', 'value' => 'Medium'],
                         ['option' => 'Colour', 'value' => 'Blue'],
@@ -290,7 +316,8 @@ class ProductSeeder extends Seeder
                 ],
                 [
                     'price' => 20_00,
-                    'sku' => 'Candle-Large-Red-Vanilla',
+                    'cost' => 10_00,
+                    'sku' => 'CANDLE-L-R-V',
                     'option_value_assignments' => [
                         ['option' => 'Size', 'value' => 'Large'],
                         ['option' => 'Colour', 'value' => 'Red'],
@@ -299,7 +326,8 @@ class ProductSeeder extends Seeder
                 ],
                 [
                     'price' => 20_00,
-                    'sku' => 'Candle-Large-Red-Lavender',
+                    'cost' => 10_00,
+                    'sku' => 'CANDLE-L-R-L',
                     'option_value_assignments' => [
                         ['option' => 'Size', 'value' => 'Large'],
                         ['option' => 'Colour', 'value' => 'Red'],
@@ -308,7 +336,8 @@ class ProductSeeder extends Seeder
                 ],
                 [
                     'price' => 20_00,
-                    'sku' => 'Candle-Large-Red-Pine',
+                    'cost' => 10_00,
+                    'sku' => 'CANDLE-L-R-P',
                     'option_value_assignments' => [
                         ['option' => 'Size', 'value' => 'Large'],
                         ['option' => 'Colour', 'value' => 'Red'],
@@ -331,6 +360,7 @@ class ProductSeeder extends Seeder
         foreach (self::$foodNames as $name) {
             Product::factory()->state([
                 'name' => $name,
+                'sku' => $this->formatSku($name),
                 'category_id' => $food_category,
                 'status' => random_int(0, 3) === 1 ? ProductStatus::Draft : ProductStatus::Active,
             ])->create();
@@ -339,6 +369,7 @@ class ProductSeeder extends Seeder
         foreach (self::$merchNames as $name) {
             Product::factory()->state([
                 'name' => $name,
+                'sku' => $this->formatSku($name),
                 'category_id' => $merch_category,
                 'status' => random_int(0, 3) === 1 ? ProductStatus::Draft : ProductStatus::Active,
             ])->create();
@@ -347,6 +378,7 @@ class ProductSeeder extends Seeder
         foreach (self::$generalNames as $name) {
             Product::factory()->state([
                 'name' => $name,
+                'sku' => $this->formatSku($name),
                 'category_id' => $general_category,
                 'status' => random_int(0, 3) === 1 ? ProductStatus::Draft : ProductStatus::Active,
             ])->create();
@@ -355,6 +387,10 @@ class ProductSeeder extends Seeder
         foreach (self::$variantProducts as $name => $productData) {
             $product = Product::factory()->state([
                 'name' => $name,
+                'sku' => null,
+                // TODO should these be nullable at the database level?
+                'price' => 0,
+                'cost' => 0,
                 'category_id' => Category::firstWhere('name', $productData['category']),
             ])->create();
 
@@ -377,6 +413,7 @@ class ProductSeeder extends Seeder
             foreach ($productData['variants'] as $variantData) {
                 $variant = $product->variants()->create([
                     'price' => $variantData['price'],
+                    'cost' => random_int(0, 1) ? null : random_int(0, $variantData['price']),
                     'sku' => $variantData['sku'],
                     'stock' => random_int(0, 100),
                     'box_size' => random_int(1, 3) === 1 ? random_int(1, 10) : null,
@@ -393,5 +430,10 @@ class ProductSeeder extends Seeder
                 }
             }
         }
+    }
+
+    private function formatSku(string $name): string
+    {
+        return strtoupper(str_replace(' ', '-', $name));
     }
 }

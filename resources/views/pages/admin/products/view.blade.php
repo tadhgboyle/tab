@@ -34,6 +34,11 @@
             <x-detail-card title="Pricing">
                 <x-detail-card-item-list>
                     <x-detail-card-item label="Price" :value="$product->hasVariants() ? $product->getVariantPriceRange() : $product->price" />
+                    @if(hasPermission(\App\Helpers\Permission::PRODUCTS_VIEW_COST) && ($product->cost?->isPositive() || $product->getVariantCostRange()))
+                    <x-detail-card-item label="Cost">
+                        {{ $product->hasVariants() ? $product->getVariantCostRange() : $product->cost }} @if(!$product->hasVariants() && $product->cost?->isPositive()) ({{ $product->profitMargin() }}%) @endif
+                    </x-detail-card-item>
+                    @endif
                     <x-detail-card-item label="PST" :value="$product->pst ? '✅' : '❌'" />
                 </x-detail-card-item-list>
             </x-detail-card>
@@ -50,9 +55,11 @@
 
             <x-detail-card title="Recent Orders">
                 <x-detail-card-item-list>
-                        @foreach($product->recentOrders() as $order)
+                        @forelse($product->recentOrders() as $order)
                             <x-detail-card-item label="<a href='{{ route('orders_view', $order->id) }}'>{{ $order->identifier }}</a>" :value="$order->created_at->diffForHumans()" />
-                        @endforeach
+                        @empty
+                            <p class="py-2 text-sm text-gray-500">No recent orders</p>
+                        @endforelse
                 </x-detail-card-item-list>
             </x-detail-card>
         </x-detail-card-stack>

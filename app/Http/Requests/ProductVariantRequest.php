@@ -13,6 +13,7 @@ class ProductVariantRequest extends FormRequest implements FormRequestContract
         return [
             'sku' => ['required', 'string', Rule::unique('product_variants')->withoutTrashed()->ignore($this->get('product_variant_id'))],
             'price' => ['required', 'numeric'],
+            'cost' => ['nullable', 'numeric'],
             'stock' => ['required', 'integer', 'min:0'],
             'box_size' => ['nullable', 'integer', 'min:1'],
             // options validation:

@@ -25,6 +25,7 @@ class Product extends Model
     protected $casts = [
         'status' => ProductStatus::class,
         'price' => MoneyIntegerCast::class,
+        'cost' => MoneyIntegerCast::class,
         'pst' => 'boolean',
         'stock' => 'integer',
         'unlimited_stock' => 'boolean',
@@ -38,6 +39,7 @@ class Product extends Model
         'sku',
         'status',
         'price',
+        'cost',
         'category_id',
         'stock',
         'box_size',
@@ -96,6 +98,22 @@ class Product extends Model
         return $this->price;
     }
 
+    public function getVariantCostRange(): ?string
+    {
+        if ($this->hasVariants()) {
+            $min = $this->variants->min('cost');
+            $max = $this->variants->max('cost');
+
+            if ($min === $max) {
+                return $min;
+            }
+
+            return "{$min} - {$max}";
+        }
+
+        return $this->cost;
+    }
+
     public function isActive(): bool
     {
         return $this->status === ProductStatus::Active;
@@ -118,5 +136,18 @@ class Product extends Model
     public function recentOrders(): Collection
     {
         return $this->orders()->latest()->limit(10)->get();
+    }
+
+    public function profitMargin(): ?float
+    {
+        if ($this->cost->getAmount() === 0) {
+            return 100;
+        }
+
+        if ($this->hasVariants()) {
+            return null;
+        }
+
+        return round(($this->price->getAmount() - $this->cost->getAmount()) / $this->price->getAmount() * 100, 2);
     }
 }

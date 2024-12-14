@@ -21,9 +21,10 @@ class ProductFactory extends Factory
         $price = $price / 100;
         return [
             'name' => $this->faker->unique()->words($this->faker->numberBetween(1, 2), true),
-            'sku' => $this->faker->boolean ? Str::upper(Str::random(8)) : null,
+            'sku' => $this->faker->boolean ? Str::upper(Str::random(6)) : null,
             'status' => ProductStatus::Active,
             'price' => $price,
+            'cost' => $this->faker->boolean ? null : $this->faker->numberBetween(0, $price),
             'pst' => $this->faker->boolean,
             'stock' => $this->faker->numberBetween(10, 300),
             'unlimited_stock' => $this->faker->boolean,

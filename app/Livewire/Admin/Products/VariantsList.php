@@ -39,6 +39,7 @@ class VariantsList extends Component implements HasTable, HasForms
         $columns[] = TextColumn::make('stock')->sortable()->numeric();
         $columns[] = TextColumn::make('box_size')->sortable()->numeric();
         $columns[] = TextColumn::make('price')->sortable();
+        $columns[] = TextColumn::make('cost')->sortable();
 
         return $table
             ->heading('Variants')

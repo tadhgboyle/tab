@@ -108,6 +108,21 @@ class ProductRequestTest extends FormRequestTestCase
         ]));
     }
 
+    public function testCostIsNullableAndNumeric(): void
+    {
+        $this->assertNotHaveErrors('cost', new ProductRequest([
+            'price' => null
+        ]));
+
+        $this->assertHasErrors('cost', new ProductRequest([
+            'price' => 'string'
+        ]));
+
+        $this->assertNotHaveErrors('cost', new ProductRequest([
+            'price' => '1.00'
+        ]));
+    }
+
     public function testCategoryIdIsRequiredAndIntegerAndInValidValues(): void
     {
         $this->assertHasErrors('category_id', new ProductRequest([

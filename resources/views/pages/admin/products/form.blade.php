@@ -63,6 +63,16 @@
             </div>
 
             <div class="field">
+                <label class="label">Cost</label>
+                <div class="control has-icons-left">
+                    <span class="icon is-small is-left">
+                        <i class="fas fa-dollar-sign"></i>
+                    </span>
+                    <input type="number" step="0.01" name="cost" class="input money-input" required value="{{ (isset($product) ? $product->cost?->formatForInput() : null) ?? number_format(old('cost'), 2) }}">
+                </div>
+            </div>
+
+            <div class="field">
                 <div class="control">
                     <label class="checkbox label">
                         PST

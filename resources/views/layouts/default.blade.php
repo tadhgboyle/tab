@@ -48,6 +48,8 @@
             @yield('content')
 
             @livewire('notifications')
+
+            <br>
         </div>
 
         <script>

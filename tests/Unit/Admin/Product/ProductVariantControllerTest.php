@@ -208,6 +208,7 @@ class ProductVariantControllerTest extends TestCase
             ->put(route('products_variants_update', [$this->_product, $variant]), [
                 'sku' => 'SKU-2',
                 'price' => 200,
+                'cost' => 150,
                 'stock' => 20,
                 'option_values' => [
                     $option->id => $value->id,
@@ -219,6 +220,7 @@ class ProductVariantControllerTest extends TestCase
         $variant->refresh();
         $this->assertEquals('SKU-2', $variant->sku);
         $this->assertEquals(Money::parse(2_00), $variant->price);
+        $this->assertEquals(Money::parse(1_50), $variant->cost);
         $this->assertEquals(20, $variant->stock);
 
         $variantOptionValueAssignment = $variant->optionValueAssignments()->first();

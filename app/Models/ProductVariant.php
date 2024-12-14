@@ -22,9 +22,10 @@ class ProductVariant extends Model
         'stock' => 'integer',
         'box_size' => 'integer',
         'price' => MoneyIntegerCast::class,
+        'cost' => MoneyIntegerCast::class,
     ];
 
-    protected $fillable = ['sku', 'price', 'stock', 'box_size'];
+    protected $fillable = ['sku', 'price', 'cost', 'stock', 'box_size'];
 
     public function product(): BelongsTo
     {

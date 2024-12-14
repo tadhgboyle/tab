@@ -147,10 +147,12 @@ class OrderCreateServiceTest extends TestCase
         $this->assertEquals('Chips', $orderService->getOrder()->products->first()->product->name);
         $this->assertEquals($orderService->getOrder()->products->first()->order->id, $orderService->getOrder()->id);
         $this->assertEquals(1, Product::firstWhere('name', 'Chips')->stock);
+        $this->assertEquals($orderService->getOrder()->products->first()->cost, Product::firstWhere('name', 'Chips')->cost);
 
         $this->assertEquals('Sweater', $orderService->getOrder()->products->last()->product->name);
         $this->assertEquals(ProductVariant::first()->id, $orderService->getOrder()->products->last()->product_variant_id);
         $this->assertEquals(4, ProductVariant::first()->stock);
+        $this->assertEquals($orderService->getOrder()->products->last()->cost, ProductVariant::first()->cost);
 
         $this->assertEquals(null, $orderService->getOrder()->gift_card_id);
         $this->assertEquals(Money::parse(0), $orderService->getOrder()->gift_card_amount);
@@ -388,6 +390,7 @@ class OrderCreateServiceTest extends TestCase
     {
         $chips = Product::factory()->create([
             'name' => 'Chips',
+            'cost'  => 1_10,
             'price' => $over_balance ? 5999_99 : 1_50,
             'pst' => false,
             'category_id' => $food_category->id,
@@ -431,6 +434,7 @@ class OrderCreateServiceTest extends TestCase
         $variant = $sweater->variants()->create([
             'sku' => 'SWEATER_SMALL',
             'price' => 25_00,
+            'cost' => 10_00,
             'stock' => $with_no_variant_stock ? 0 : 5,
         ]);
 

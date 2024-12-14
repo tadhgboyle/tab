@@ -29,6 +29,7 @@ class ProductCreateService extends HttpService
         $product->sku = $request->sku;
         $product->status = $request->status;
         $product->price = $request->price;
+        $product->cost = $request->cost;
         $product->category_id = $request->category_id;
         $product->stock = $stock;
         $product->box_size = $request->box_size ?? -1;

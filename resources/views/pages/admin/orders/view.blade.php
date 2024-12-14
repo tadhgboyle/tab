@@ -11,184 +11,129 @@
 
 <div class="grid grid-cols-6 gap-5">
     <div class="col-span-4">
-        <div class="card">
-            <div class="card-content">
-                @foreach($order->products()->with('product.category')->get() as $orderProduct)
-                <div class="content">
-                    <div class="columns">
-                        <div class="column">
-                            <strong>
-                                @permission(\App\Helpers\Permission::PRODUCTS_VIEW)
-                                    <a href="{{ route('products_view', $orderProduct->product) }}">{{ $orderProduct->product->name }}</a>
-                                @else
+        <div class="border border-gray-200 rounded-lg shadow-sm">
+            @foreach($order->products()->with('product.category')->get() as $orderProduct)
+                <div class="bg-gray-50 px-4 py-2 @if($loop->first) rounded-t-lg border-b @else border-y @endif font-semibold text-gray-950">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center text-sm">
+                            @permission(\App\Helpers\Permission::PRODUCTS_VIEW)
+                                <a href="{{ route('products_view', $orderProduct->product) }}" class="hover:underline">
                                     {{ $orderProduct->product->name }}
-                                @endpermission
-                            </strong>
+                                </a>
+                            @else
+                                {{ $orderProduct->product->name }}
+                            @endpermission
+
                             @if($orderProduct->productVariant)
-                                <br>
-                                @foreach($orderProduct->productVariant->descriptions(false) as $description)
-                                    <span class="tag">{{ $description }}</span>
-                                @endforeach
-                            @endif
-                            @if($orderProduct->productVariant || $orderProduct->product->sku)
-                                <br>
-                                <span class="is-size-7">SKU: {{ $orderProduct->productVariant ? $orderProduct->productVariant->sku : $orderProduct->product->sku }}</span>
-                            @endif
-                            <br>
-                            <span class="is-size-7">Category: {{ $orderProduct->product->category->name }}</span>
-                        </div>
-                        <div class="column">
-                            <div class="is-pulled-right">
-                                <p>
-                                    {{ $orderProduct->price }}
-                                    x
-                                    @if($orderProduct->returned > 0)
-                                        <del>{{ $orderProduct->quantity }}</del> {{ $orderProduct->quantity - $orderProduct->returned }}
-                                    @else
-                                        {{ $orderProduct->quantity }}
-                                    @endif
-                                </p>
-                            </div>
-                        </div>
-                        <div class="column">
-                            <div class="is-pulled-right">
-                                {{ $orderProduct->price->multiply($orderProduct->quantity) }}
-                            </div>
-                        </div>
-                        @permission(\App\Helpers\Permission::ORDERS_RETURN)
-                            <div class="column">
-                                <div class="is-pulled-right">
-                                    @if(!$order->isReturned() && $orderProduct->returned < $orderProduct->quantity)
-                                        <button class="button is-danger is-small is-outlined"  onclick="openProductModal({{ $orderProduct->id }});">Return ({{ $orderProduct->quantity - $orderProduct->returned }})</button>
-                                    @else
-                                        <div><i>Returned</i></div>
-                                    @endif
+                                <div class="inline-flex items-center ml-2 space-x-1">
+                                    @foreach($orderProduct->productVariant->descriptions(false) as $description)
+                                        <x-badge :value="$description"  />
+                                    @endforeach
                                 </div>
-                            </div>
+                            @endif
+                        </div>
+
+                        @permission(\App\Helpers\Permission::ORDERS_RETURN)
+                            @if(!$order->isReturned() && $orderProduct->returned < $orderProduct->quantity)
+                                <x-filament::button onclick="openProductModal({{ $orderProduct->id }});" color="danger" size="xs">
+                                    Return ({{ $orderProduct->quantity - $orderProduct->returned }})
+                                </x-filament::button>  
+                            @endif
                         @endpermission
                     </div>
                 </div>
-                    @unless($loop->last)
-                        <hr />
-                    @endif
-                @endforeach
-            </div>
-        </div>
-        <br>
-        <div class="card">
-            <div class="card-content">
-                <div class="content">
-                    <div class="columns">
-                        <div class="column">
-                            Subtotal
-                        </div>
-                        <div class="column">
-                            <div class="is-pulled-right">
-                                @php
-                                    $products_count = $order->products()->sum('quantity');
-                                @endphp
-                                {{ $products_count }} {{ \Str::plural('item', $products_count) }}
+                <div class="bg-white px-4 rounded-lg py-3">
+                    <div class="grid grid-cols-3 gap-4 items-start">
+                        <div class="col-span-2">
+                            @if($orderProduct->productVariant || $orderProduct->product->sku)
+                                <div class="text-xs text-gray-950">
+                                    SKU: <span class="font-mono">{{ $orderProduct->productVariant ? $orderProduct->productVariant->sku : $orderProduct->product->sku }}</span>
+                                </div>
+                            @endif
+                            <div class="text-xs inline-flex items-center mt-1 space-x-1 text-gray-950">
+                                <p>Category:</p> <x-badge :value="$orderProduct->product->category->name" />
                             </div>
                         </div>
-                        <div class="column">
-                            <div class="is-pulled-right">
-                                {{ $order->subtotal() }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="columns">
-                        <div class="column is-two-thirds">
-                            Taxes
-                        </div>
-                        <div class="column">
-                            <div class="is-pulled-right">
-                                {{ $order->totalTax() }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="columns">
-                        <div class="column is-two-thirds">
-                            <strong>Total</strong>
-                        </div>
-                        <div class="column">
-                            <div class="is-pulled-right">
-                                <strong>{{ $order->total_price }}</strong>
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="columns">
-                        <div class="column is-two-thirds">
-                            Purchaser amount
-                        </div>
-                        <div class="column">
-                            <div class="is-pulled-right">
-                                {{ $order->purchaser_amount }}
-                            </div>
-                        </div>
-                    </div>
-                    @if($order->gift_card_amount->isPositive())
-                        <div class="columns">
-                            <div class="column is-two-thirds">
-                                @permission(\App\Helpers\Permission::SETTINGS_GIFT_CARDS_MANAGE)
-                                    <a href="{{ route('settings_gift-cards_view', $order->giftCard)}}">Gift card amount</a>
+
+                        <div class="text-right">
+                            <p class="text-xs">
+                                {{ $orderProduct->price }} x 
+                                @if($orderProduct->returned > 0)
+                                    <del>{{ $orderProduct->quantity }}</del> {{ $orderProduct->quantity - $orderProduct->returned }}
                                 @else
-                                    Gift card amount
-                                @endpermission
-                            </div>
-                            <div class="column">
-                                <div class="is-pulled-right">
-                                    {{ $order->gift_card_amount }}
-                                </div>
-                            </div>
+                                    {{ $orderProduct->quantity }}
+                                @endif
+                            </p>
+                            <p class="text-sm font-semibold text-gray-950 mt-1">
+                                {{ $orderProduct->price->multiply($orderProduct->quantity) }}
+                            </p>
                         </div>
-                    @endif
-                    @if($order->status !== \App\Enums\OrderStatus::NotReturned)
-                        <hr>
-                        <div class="columns">
-                            <div class="column is-two-thirds">
-                                Purchaser returned
-                            </div>
-                            <div class="column">
-                                <div class="is-pulled-right">
-                                    {{ $order->getReturnedTotalToCash() }}
-                                </div>
-                            </div>
-                        </div>
-                        @if($order->gift_card_amount->isPositive())
-                            <div class="columns">
-                                <div class="column is-two-thirds">
-                                    Gift card returned
-                                </div>
-                                <div class="column">
-                                    <div class="is-pulled-right">
-                                        {{ $order->getReturnedTotalToGiftCard() }}
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-                        <div class="columns">
-                            <div class="column is-two-thirds">
-                                <strong>Returned</strong>
-                            </div>
-                            <div class="column">
-                                <div class="is-pulled-right">
-                                    <strong>{{ $order->getReturnedTotal() }}</strong>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="columns">
-                            <div class="column is-two-thirds">
-                                Balance
-                            </div>
-                            <div class="column">
-                                <div class="is-pulled-right">
-                                    {{ $order->getOwingTotal() }}
-                                </div>
-                            </div>
-                        </div>
-                    @endif
+                    </div>
                 </div>
+            @endforeach
+        </div>
+
+        <div class="bg-gray-50 border border-gray-200 rounded-lg shadow-sm mt-5">
+            <div class="bg-white px-3 text-gray-950 rounded-lg">
+                <div class="pt-3 pb-1 flex justify-between items-center text-sm text-gray-950">
+                    <dt>
+                        @php $products_count = $order->products()->sum('quantity'); @endphp
+                        Subtotal - {{ $products_count }} {{ \Str::plural('item', $products_count) }}
+                    </dt>
+                    <dd class="text-right">{{ $order->subtotal() }}</dd>
+                </div>
+                <div class="pb-3 flex justify-between items-center text-sm text-gray-950">
+                    <dt>Taxes</dt>
+                    <dd class="text-right text-gray-800">{{ $order->totalTax() }}</dd>
+                </div>
+                <div class="pb-3">
+                    <div class="pt-3 flex justify-between items-center text-sm text-gray-950 border-t border-gray-200">
+                        <dt><strong>Total</strong></dt>
+                        <dd class="text-right text-gray-800"><strong>{{ $order->total_price }}</strong></dd>
+                    </div>
+                    <div class="pl-3">
+                        @if($order->purchaser_amount->isPositive())
+                        <div class="flex justify-between items-center text-sm text-gray-950">
+                            <dt>Paid with cash</dt>
+                            <dd class="text-right text-gray-800">{{ $order->purchaser_amount }}</dd>
+                        </div>
+                        @endif
+                        @if($order->gift_card_amount->isPositive())
+                        <div class="flex justify-between items-center text-sm text-gray-950">
+                            <dt>Paid with gift card</dt>
+                            <dd class="text-right text-gray-800">{{ $order->gift_card_amount }}</dd>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+
+                @if($order->status !== \App\Enums\OrderStatus::NotReturned)
+                    <div class="pb-3">
+                        <div class="pt-3 flex justify-between items-center text-sm text-gray-950 border-t border-gray-200">
+                            <dt>Returned</dt>
+                            <dd class="text-right text-gray-800">{{ $order->getReturnedTotal() }}</dd>
+                        </div>
+                        <div class="pl-3">
+                            @if($order->purchaser_amount->isPositive())
+                            <div class="flex justify-between items-center text-sm text-gray-950">
+                                <dt>Returned to cash</dt>
+                                <dd class="text-right text-gray-800">{{ $order->getReturnedTotalToCash() }}</dd>
+                            </div>
+                            @endif
+                            @if($order->gift_card_amount->isPositive())
+                                <div class="flex justify-between items-center text-sm text-gray-950">
+                                    <dt>Returned to gift card</dt>
+                                    <dd class="text-right text-gray-800">{{ $order->getReturnedTotalToGiftCard() }}</dd>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="py-3 flex justify-between items-center text-sm text-gray-950 border-t border-gray-200">
+                        <dt><strong>Balance</strong></dt>
+                        <dd class="text-right text-gray-800"><strong>{{ $order->getOwingTotal() }}</strong></dd>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
@@ -209,7 +154,6 @@
                         @else
                             {{ $order->purchaser->full_name }}
                         @endpermission
-                        - {{ $order->purchaser->orders()->count() }} orders
                     </x-detail-card-item>
                     <x-detail-card-item label="Cashier">
                         @permission(\App\Helpers\Permission::USERS_VIEW)

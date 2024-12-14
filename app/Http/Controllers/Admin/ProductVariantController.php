@@ -34,7 +34,7 @@ class ProductVariantController extends Controller
             return back()->with('error', "Product variant already exists for SKUs: {$existingVariants}.")->withInput();
         }
 
-        $productVariant = $product->variants()->create($request->only('sku', 'price', 'stock', 'box_size'));
+        $productVariant = $product->variants()->create($request->only('sku', 'price', 'cost', 'stock', 'box_size'));
 
         $productVariant->optionValueAssignments()->createMany(
             $optionValues->map(function ($optionValueId, $optionId) {
@@ -64,7 +64,7 @@ class ProductVariantController extends Controller
             return back()->with('error', "Product variant already exists for SKUs: {$existingVariants}.")->withInput();
         }
 
-        $productVariant->update($request->only('sku', 'price', 'stock', 'box_size'));
+        $productVariant->update($request->only('sku', 'price', 'cost', 'stock', 'box_size'));
 
         // delete any existing option value assignments that are not in the new list, then add new ones that are not in the existing list
         $productVariant->optionValueAssignments()->whereNotIn('product_variant_option_value_id', $optionValues->values())->delete();

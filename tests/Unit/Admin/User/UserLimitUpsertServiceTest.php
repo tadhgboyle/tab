@@ -139,9 +139,9 @@ class UserLimitUpsertServiceTest extends TestCase
 
         $this->assertSame(UserLimitUpsertService::RESULT_SUCCESS, $userLimitUpsertService->getResult());
         $this->assertSame(UserLimitDuration::Weekly, $user->limitFor($merch_category)->duration);
-        $this->assertSame('week', $user->limitFor($merch_category)->duration());
+        $this->assertSame('Weekly', $user->limitFor($merch_category)->duration());
         $this->assertSame(UserLimitDuration::Daily, $user->limitFor($candy_category)->duration);
-        $this->assertSame('day', $user->limitFor($candy_category)->duration());
+        $this->assertSame('Daily', $user->limitFor($candy_category)->duration());
     }
 
     /** @return Role[] */

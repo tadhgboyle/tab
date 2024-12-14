@@ -14,6 +14,7 @@ class OrderProduct extends Model
         'category_id',
         'quantity',
         'price',
+        'cost',
         'gst',
         'pst',
         'returned',
@@ -22,6 +23,7 @@ class OrderProduct extends Model
     protected $casts = [
         'quantity' => 'integer',
         'price' => MoneyIntegerCast::class,
+        'cost' => MoneyIntegerCast::class,
         'gst' => 'float',
         'pst' => 'float',
         'returned' => 'integer',
@@ -44,6 +46,7 @@ class OrderProduct extends Model
             'category_id' => $product->category_id,
             'quantity' => $quantity,
             'price' => $productVariant?->price ?? $product->price,
+            'cost' => $productVariant?->cost ?? $product->cost,
             'gst' => $gst,
             'pst' => $pst,
             'returned' => 0,
