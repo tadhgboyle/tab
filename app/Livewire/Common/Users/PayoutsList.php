@@ -57,7 +57,7 @@ class PayoutsList extends Component implements HasTable, HasForms
                 Action::make('view')
                     ->url(fn (Payout $payout) => "https://dashboard.stripe.com/test/payments/{$payout->stripe_payment_intent_id}")
                     ->openUrlInNewTab()
-                    ->visible($this->context === 'admin' && hasPermission(Permission::DASHBOARD_FINANCIAL)), // TODO: Add permission
+                    ->visible(fn (Payout $payout) => $payout->stripe_payment_intent_id && $this->context === 'admin' && hasPermission(Permission::DASHBOARD_FINANCIAL)), // TODO: Add permission
             ])
             ->bulkActions([
                 // ...

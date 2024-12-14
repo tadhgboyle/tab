@@ -19,12 +19,17 @@ class ProductFactory extends Factory
         // round to nearest $0.25
         $price = round($price / 25) * 25;
         $price = $price / 100;
+
+        $cost = $this->faker->boolean ? null : $this->faker->numberBetween(0, $price * 100);
+        $cost = round($cost / 25) * 25;
+        $cost = $cost / 100;
+
         return [
             'name' => $this->faker->unique()->words($this->faker->numberBetween(1, 2), true),
             'sku' => $this->faker->boolean ? Str::upper(Str::random(6)) : null,
             'status' => ProductStatus::Active,
             'price' => $price,
-            'cost' => $this->faker->boolean ? null : $this->faker->numberBetween(0, $price),
+            'cost' => $cost === 0 && random_int(0, 1) ? null : $cost,
             'pst' => $this->faker->boolean,
             'stock' => $this->faker->numberBetween(10, 300),
             'unlimited_stock' => $this->faker->boolean,

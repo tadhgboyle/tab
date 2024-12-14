@@ -74,6 +74,9 @@
         </div>
 
         <div class="bg-gray-50 border border-gray-200 rounded-lg shadow-sm mt-5">
+            <div class="bg-gray-50 text-sm px-4 py-3 rounded-t-lg border-b font-semibold text-gray-950">
+                Payment
+            </div>
             <div class="bg-white px-3 text-gray-950 rounded-lg">
                 <div class="pt-3 pb-1 flex justify-between items-center text-sm text-gray-950">
                     <dt>
