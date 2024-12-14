@@ -40,6 +40,16 @@
             </div>
 
             <div class="field">
+                <label class="label">Cost</label>
+                <div class="control has-icons-left">
+                    <span class="icon is-small is-left">
+                        <i class="fas fa-dollar-sign"></i>
+                    </span>
+                    <input type="number" step="0.01" name="cost" class="input money-input" placeholder="Cost" required value="{{ (isset($productVariant) ? $productVariant->cost?->formatForInput() : null) ?? number_format(old('cost'), 2) }}">
+                </div>
+            </div>
+
+            <div class="field">
                 <label class="label">Stock<sup style="color: red">*</sup></label>
                 <div class="control">
                     <input type="number" step="1" name="stock" class="input" placeholder="0" required value="{{ $productVariant->stock ?? old('stock', 0) }}">
@@ -123,7 +133,7 @@
 
         const sku = document.getElementById('sku');
         const optionValues = document.querySelectorAll('select[name^="option_values["]');
-        const skuParts = ["{{ $product->name }}"];
+        const skuParts = [];
 
         optionValues.forEach((optionValue) => {
             if (optionValue.value) {
@@ -131,7 +141,7 @@
             }
         });
 
-        sku.value = skuParts.join('-');
+        sku.value = ["{{ $product->name }}", ...skuParts.map(part => part.split('')[0])].map(part => part.toLocaleUpperCase()).join('-');
     }, false);
 
     @isset($productVariant)
