@@ -159,6 +159,12 @@
         </div>
         <div class="level-item has-text-centered">
             <div>
+                <p class="heading">Average order margin</p>
+                <p class="title">{{ $financial['averageMargin'] }}%</p>
+            </div>
+        </div>
+        <div class="level-item has-text-centered">
+            <div>
                 <p class="heading">Average order cash amount</p>
                 <p class="title">{{ $financial['averageCashPaymentValue'] }}</p>
             </div>
@@ -212,7 +218,7 @@
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Identifier</th>
+                    <th>Payment Intent</th>
                     <th>Amount</th>
                     <th>Date</th>
                 </tr>
@@ -224,7 +230,7 @@
                         <div>{{ $payout->user->full_name }}</div>
                     </td>
                     <td>
-                        <div>{{ $payout->identifier }}</div>
+                        <div>{{ $payout->stripe_payment_intent_id }}</div>
                     </td>
                     <td>
                         <div>{{ $payout->amount }}</div>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\ProductVariant;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Payout;
@@ -130,6 +131,10 @@ class DashboardController extends Controller
         $data['unspentGiftCardBalance'] = Money::parse(GiftCard::sum('remaining_balance'));
         // Total revenue from orders
         $data['orderRevenue'] = Money::parse(Order::sum('total_price'));
+        // Average margin across orders
+        $data['averageMargin'] = round(\Illuminate\Support\Facades\DB::select(
+            'SELECT AVG(price - cost) as average_margin FROM order_products'
+        )[0]->average_margin / 100, 2);
         // Total revenue from activities
         $data['activityRevenue'] = Money::parse(ActivityRegistration::sum('total_price'));
         // Total revenue across orders and activities
@@ -225,7 +230,10 @@ class DashboardController extends Controller
 
         // Product inventory value
         $inventoryableProducts = Product::query()->where('unlimited_stock', false);
-        $data['inventoryValue'] = Money::parse($inventoryableProducts->sum('stock'))->multiply($inventoryableProducts->avg('price'));
+        $productVariants = ProductVariant::query()->whereIn('product_id', $inventoryableProducts->pluck('id'));
+        $inventoryValue = Money::parse($inventoryableProducts->sum('stock'))->multiply($inventoryableProducts->avg('price'));
+        $inventoryValue = $inventoryValue->add(Money::parse($productVariants->sum('stock'))->multiply($productVariants->avg('cost')));
+        $data['inventoryValue'] = $inventoryValue;
 
         // TODO Margin over time
 
