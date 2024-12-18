@@ -64,8 +64,6 @@ class OrderCreateService extends HttpService
         /** @var Collection<OrderProduct> */
         $order_products = Collection::make();
 
-        $total_price = Money::parse(0);
-
         foreach ($order_products_from_request->all() as $product_meta) {
             $id = $product_meta->id;
             $variantId = isset($product_meta->variantId) ? $product_meta->variantId : null;
@@ -113,9 +111,9 @@ class OrderCreateService extends HttpService
                 $settingsHelper->getGst(),
                 $product->pst ? $settingsHelper->getPst() : null
             ));
-
-            $total_price = $total_price->add(TaxHelper::calculateFor($productVariant?->price ?? $product->price, $quantity, $product->pst));
         }
+
+        $total_price = $order_products->reduce(fn (Money $carry, OrderProduct $product) => $carry->add($product->total_price), Money::parse(0));
 
         $charge_user_amount = $total_price;
 
@@ -157,6 +155,7 @@ class OrderCreateService extends HttpService
             }
         }
 
+        // TODO can this be moved above?
         $remaining_balance = $purchaser->balance->subtract($charge_user_amount);
         if ($remaining_balance->isNegative()) {
             $this->_result = self::RESULT_NOT_ENOUGH_BALANCE;
@@ -173,11 +172,8 @@ class OrderCreateService extends HttpService
             // Loop all products in this order. If the product's category is the current one in the above loop, add its price to category spent
             foreach ($order_products->filter(fn (OrderProduct $orderProduct) => $orderProduct->category->id === $category->id) as $orderProduct) {
                 $category_spending = $category_spending->add(
-                    TaxHelper::calculateFor(
-                        $orderProduct->productVariant?->price ?? $orderProduct->product->price,
-                        $orderProduct->quantity,
-                        $orderProduct->pst !== null
-                    )
+                    // TODO use new method on OrderProduct?
+                    $orderProduct->total_price,
                 );
             }
 
@@ -201,6 +197,8 @@ class OrderCreateService extends HttpService
         $order->purchaser_id = $purchaser->id;
         $order->cashier_id = auth()->id();
         $order->total_price = $total_price;
+        $order->total_tax = $total_tax = $order_products->reduce(fn (Money $carry, OrderProduct $product) => $carry->add($product->total_tax), Money::parse(0));
+        $order->subtotal = $total_price->subtract($total_tax);
         $order->purchaser_amount = $charge_user_amount;
         $order->gift_card_amount = $gift_card_amount;
         $order->gift_card_id = isset($gift_card) ? $gift_card->id : null;

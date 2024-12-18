@@ -14,6 +14,12 @@
         <script src="https://code.jquery.com/ui/1.14.0/jquery-ui.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js"></script>
 
+        <style>
+            [x-cloak] {
+                display: none !important;
+            }
+        </style>
+
         @filamentStyles
         @filamentScripts
         @vite(['resources/css/app.css', 'resources/js/app.js'])

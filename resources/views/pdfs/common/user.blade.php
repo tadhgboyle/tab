@@ -101,7 +101,7 @@
                             <td>{{ number_format($orderProduct->pst, 2) }}</td>
                             <td>{{ number_format($orderProduct->gst, 2) }}</td>
                             <td class="money-column">
-                                {{ \App\Helpers\TaxHelper::forOrderProduct($orderProduct, $orderProduct->quantity) }}
+                                {{ $orderProduct->total_price }}
                             </td>
                             <td class="money-column">
                                 {{ \App\Helpers\TaxHelper::forOrderProduct($orderProduct, $orderProduct->quantity - $orderProduct->returned) }}

@@ -9,8 +9,7 @@ use App\Helpers\TaxHelper;
 use App\Enums\UserLimitDuration;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -74,26 +73,31 @@ class UserLimit extends Model
 
         $carbon_string = Carbon::now()->subDays($this->duration === UserLimitDuration::Daily ? 1 : 7)->toDateTimeString();
 
-        $orders = $this->user->orders()
-            ->unless($this->isUnlimited(), fn (Builder $query) => $query->where('created_at', '>=', $carbon_string))
-            ->with('products', function (HasMany $query) {
-                $query->where('category_id', $this->category->id);
-            })
-            ->where('status', '!=', OrderStatus::FullyReturned)
-            ->get();
+        $orders = OrderProduct::toBase()
+            ->unless($this->isUnlimited(), fn (Builder $query) => $query->where('orders.created_at', '>=', $carbon_string))
+            ->join('orders', 'order_products.order_id', '=', 'orders.id')
+            ->where('orders.purchaser_id', $this->user->id)
+            ->where('orders.status', '!=', OrderStatus::FullyReturned)
+            ->where('order_products.category_id', $this->category->id)
+            ->select('order_products.price', 'order_products.quantity', 'order_products.pst', 'order_products.gst', 'order_products.returned')
+            ->get()
+            ->map(fn ($orderProduct) => TaxHelper::calculateFor(
+                Money::parse($orderProduct->price),
+                $orderProduct->quantity - $orderProduct->returned,
+                $orderProduct->pst !== null,
+                [
+                    'pst' => $orderProduct->pst,
+                    'gst' => $orderProduct->gst,
+                ]
+            ));
 
-        $activity_registrations = $this->user->activityRegistrations()
+        $activity_registrations = ActivityRegistration::toBase()
             ->unless($this->isUnlimited(), fn (Builder $query) => $query->where('created_at', '>=', $carbon_string))
+            ->where('user_id', $this->user->id)
             ->where('category_id', $this->category->id)
             ->where('returned', false)
-            ->get();
+            ->sum('total_price');
 
-        $spent = $orders
-            ->flatMap(fn (Order $order) => $order->products)
-            ->reduce(fn (Money $carry, OrderProduct $product) => $carry->add(
-                TaxHelper::forOrderProduct($product, $product->quantity - $product->returned)
-            ), Money::parse(0));
-
-        return $this->_spent = $spent->add(...$activity_registrations->map->total_price);
+        return $this->_spent = Money::parse(0)->add(...$orders)->add(Money::parse($activity_registrations));
     }
 }

@@ -143,16 +143,33 @@ class OrderCreateServiceTest extends TestCase
         $this->assertEquals($staff_user->id, $orderService->getOrder()->cashier->id);
         $this->assertEquals(resolve(RotationHelper::class)->getCurrentRotation()->id, $orderService->getOrder()->rotation->id);
         $this->assertEquals($orderService->getOrder()->total_price, $camper_user->findSpent());
+        $this->assertEquals($orderService->getOrder()->total_price, Money::parse(63_80));
+        $this->assertEquals($orderService->getOrder()->subtotal, Money::parse(60_49));
+        $this->assertEquals($orderService->getOrder()->total_tax, Money::parse(3_31));
 
         $this->assertEquals('Chips', $orderService->getOrder()->products->first()->product->name);
         $this->assertEquals($orderService->getOrder()->products->first()->order->id, $orderService->getOrder()->id);
         $this->assertEquals(1, Product::firstWhere('name', 'Chips')->stock);
         $this->assertEquals($orderService->getOrder()->products->first()->cost, Product::firstWhere('name', 'Chips')->cost);
+        $this->assertEquals(1, $orderService->getOrder()->products->first()->quantity);
+        $this->assertEquals(Money::parse(1_50), $orderService->getOrder()->products->first()->price);
+        $this->assertEquals(Money::parse(8), $orderService->getOrder()->products->first()->total_tax);
+        $this->assertEquals(Money::parse(1_58), $orderService->getOrder()->products->first()->total_price);
+        $this->assertEquals(Money::parse(1_50), $orderService->getOrder()->products->first()->subtotal);
 
         $this->assertEquals('Sweater', $orderService->getOrder()->products->last()->product->name);
         $this->assertEquals(ProductVariant::first()->id, $orderService->getOrder()->products->last()->product_variant_id);
         $this->assertEquals(4, ProductVariant::first()->stock);
         $this->assertEquals($orderService->getOrder()->products->last()->cost, ProductVariant::first()->cost);
+        $this->assertEquals(1, $orderService->getOrder()->products->last()->quantity);
+        $this->assertEquals(Money::parse(25_00), $orderService->getOrder()->products->last()->price);
+        $this->assertEquals(Money::parse(1_25), $orderService->getOrder()->products->last()->total_tax);
+        $this->assertEquals(Money::parse(26_25), $orderService->getOrder()->products->last()->total_price);
+        $this->assertEquals(Money::parse(25_00), $orderService->getOrder()->products->last()->subtotal);
+
+        $this->assertEquals($orderService->getOrder()->subtotal, Money::parse(0)->add(...$orderService->getOrder()->products->map->subtotal));
+        $this->assertEquals($orderService->getOrder()->total_tax, Money::parse(0)->add(...$orderService->getOrder()->products->map->total_tax));
+        $this->assertEquals($orderService->getOrder()->total_price, Money::parse(0)->add(...$orderService->getOrder()->products->map->total_price));
 
         $this->assertEquals(null, $orderService->getOrder()->gift_card_id);
         $this->assertEquals(Money::parse(0), $orderService->getOrder()->gift_card_amount);

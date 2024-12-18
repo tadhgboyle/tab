@@ -5,7 +5,6 @@ namespace Tests\Unit\Admin\Product;
 use Tests\TestCase;
 use App\Models\Product;
 use App\Models\Category;
-use App\Services\Products\ProductEditService;
 use App\Services\Products\ProductDeleteService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -22,7 +21,7 @@ class ProductDeleteServiceTest extends TestCase
 
         $productService = new ProductDeleteService($product);
 
-        $this->assertSame(ProductEditService::RESULT_SUCCESS, $productService->getResult());
+        $this->assertSame(ProductDeleteService::RESULT_SUCCESS, $productService->getResult());
         $this->assertSoftDeleted($product);
     }
 }

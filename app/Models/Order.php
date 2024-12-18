@@ -25,6 +25,8 @@ class Order extends Model implements HasTimeline
     protected $casts = [
         'status' => OrderStatus::class,
         'total_price' => MoneyIntegerCast::class,
+        'total_tax' => MoneyIntegerCast::class,
+        'subtotal' => MoneyIntegerCast::class,
         'purchaser_amount' => MoneyIntegerCast::class,
         'gift_card_amount' => MoneyIntegerCast::class,
     ];
@@ -75,25 +77,6 @@ class Order extends Model implements HasTimeline
     public function productReturns(): HasMany
     {
         return $this->hasMany(OrderProductReturn::class);
-    }
-
-    // TODO: make this a column in the database along with total_tax = total_price
-    // TODO: test
-    public function subtotal(): Money
-    {
-        $subtotal = Money::parse(0);
-
-        foreach ($this->products as $product) {
-            $subtotal = $subtotal->add($product->price->multiply($product->quantity));
-        }
-
-        return $subtotal;
-    }
-
-    // TODO: test
-    public function totalTax(): Money
-    {
-        return $this->total_price->subtract($this->subtotal());
     }
 
     public function getReturnedTotal(): Money

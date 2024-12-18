@@ -111,15 +111,15 @@ class ProductRequestTest extends FormRequestTestCase
     public function testCostIsNullableAndNumeric(): void
     {
         $this->assertNotHaveErrors('cost', new ProductRequest([
-            'price' => null
+            'cost' => null
         ]));
 
         $this->assertHasErrors('cost', new ProductRequest([
-            'price' => 'string'
+            'cost' => 'string'
         ]));
 
         $this->assertNotHaveErrors('cost', new ProductRequest([
-            'price' => '1.00'
+            'cost' => '1.00'
         ]));
     }
 

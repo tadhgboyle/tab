@@ -28,6 +28,8 @@ class GiftCardAdjustmentServiceTest extends TestCase
             'cashier_id' => $user->id,
             'rotation_id' => Rotation::factory()->create()->id,
             'total_price' => Money::parse(100_00),
+            'total_tax' => Money::parse(0),
+            'subtotal' => Money::parse(100_00),
             'purchaser_amount' => Money::parse(90_00),
             'gift_card_amount' => Money::parse(10_00),
         ]);
@@ -57,6 +59,8 @@ class GiftCardAdjustmentServiceTest extends TestCase
             'cashier_id' => $user->id,
             'rotation_id' => Rotation::factory()->create()->id,
             'total_price' => Money::parse(100_00),
+            'total_tax' => Money::parse(0),
+            'subtotal' => Money::parse(100_00),
             'purchaser_amount' => Money::parse(90_00),
             'gift_card_amount' => Money::parse(10_00),
         ]);

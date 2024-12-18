@@ -36,6 +36,8 @@ class OrderTest extends TestCase
             'cashier_id' => $this->purchaser->id,
             'rotation_id' => $this->rotation->id,
             'total_price' => 5_00,
+            'subtotal' => 5_00,
+            'total_tax' => 0,
             'purchaser_amount' => 5_00,
         ]);
     }
@@ -84,6 +86,8 @@ class OrderTest extends TestCase
             'cashier_id' => $this->purchaser->id,
             'rotation_id' => $this->rotation->id,
             'total_price' => 5_00,
+            'subtotal' => 5_00,
+            'total_tax' => 0,
             'purchaser_amount' => 2_50,
             'gift_card_amount' => 2_50,
         ]);

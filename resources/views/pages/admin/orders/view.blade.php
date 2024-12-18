@@ -65,16 +65,13 @@
                                 @endif
                             </p>
                             <p class="text-sm font-semibold text-gray-950 mt-1">
-                                {{ $orderProduct->price->multiply($orderProduct->quantity) }}
+                                {{ $orderProduct->subtotal }}
                             </p>
                         </div>
                     </div>
                 </div>
             @endforeach
-        </div>
-
-        <div class="bg-gray-50 border border-gray-200 rounded-lg shadow-sm mt-5">
-            <div class="bg-gray-50 text-sm px-4 py-3 rounded-t-lg border-b font-semibold text-gray-950">
+            <div class="bg-gray-50 text-sm px-4 py-4 border-y font-semibold text-gray-950">
                 Payment
             </div>
             <div class="bg-white px-3 text-gray-950 rounded-lg">
@@ -83,11 +80,11 @@
                         @php $products_count = $order->products()->sum('quantity'); @endphp
                         Subtotal - {{ $products_count }} {{ \Str::plural('item', $products_count) }}
                     </dt>
-                    <dd class="text-right">{{ $order->subtotal() }}</dd>
+                    <dd class="text-right">{{ $order->subtotal }}</dd>
                 </div>
                 <div class="pb-3 flex justify-between items-center text-sm text-gray-950">
                     <dt>Taxes</dt>
-                    <dd class="text-right text-gray-800">{{ $order->totalTax() }}</dd>
+                    <dd class="text-right text-gray-800">{{ $order->total_tax }}</dd>
                 </div>
                 <div class="pb-3">
                     <div class="pt-3 flex justify-between items-center text-sm text-gray-950 border-t border-gray-200">
