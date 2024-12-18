@@ -133,6 +133,21 @@ class Order extends Model implements HasTimeline
         return $this->status === OrderStatus::FullyReturned;
     }
 
+    public function totalCost(): Money
+    {
+        return Money::sum(...$this->products->map(fn (OrderProduct $product) => $product->cost->multiply($product->quantity)));
+    }
+
+    public function totalMargin(): Money
+    {
+        return $this->subtotal->subtract($this->totalCost());
+    }
+    
+    public function marginPercentage(): float
+    {
+        return round($this->totalMargin()->getAmount() / $this->subtotal->getAmount() * 100, 2);
+    }
+
     public function timeline(): array
     {
         $timeline = [

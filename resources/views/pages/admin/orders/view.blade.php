@@ -53,6 +53,11 @@
                             <div class="text-xs inline-flex items-center mt-1 space-x-1 text-gray-950">
                                 <p>Category:</p> <x-badge :value="$orderProduct->product->category->name" />
                             </div>
+                            @permission(\App\Helpers\Permission::PRODUCTS_VIEW_COST)
+                                <div class="text-xs items-center mt-1 space-x-1 text-gray-950">
+                                    Cost: <span>{{ $orderProduct->cost }}</span>
+                                </div>
+                            @endpermission
                         </div>
 
                         <div class="text-right">
@@ -164,6 +169,17 @@
                     </x-detail-card-item>
                 </x-detail-card-item-list>
             </x-detail-card>
+            @permission(\App\Helpers\Permission::PRODUCTS_VIEW_COST)
+                <x-detail-card title="Profits" subtitle="Margin %: cost - margin / cost x 100">
+                    <x-detail-card-item-list>
+                        <x-detail-card-item label="Total cost" :value="$order->totalCost()" />
+                        <x-detail-card-item label="Total margin" :value="$order->totalMargin()" />
+                        <x-detail-card-item label="Margin">
+                            {{ $order->marginPercentage() }}%
+                        </x-detail-card-item>
+                    </x-detail-card-item-list>
+                </x-detail-card>
+            @endpermission
             <x-entity-timeline :timeline="$order->timeline()" />
         </x-detail-card-stack>
     </div>
