@@ -6,6 +6,8 @@ use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
 use App\Enums\ProductStatus;
 use App\Traits\InteractsWithStock;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
@@ -67,6 +69,11 @@ class Product extends Model
     public function orders(): HasManyThrough
     {
         return $this->hasManyThrough(Order::class, OrderProduct::class, null, 'id', 'id', 'order_id');
+    }
+
+    public function orderProducts(): HasMany
+    {
+        return $this->hasMany(OrderProduct::class);
     }
 
     public function hasVariants(): bool
@@ -136,6 +143,21 @@ class Product extends Model
     public function recentOrders(): Collection
     {
         return $this->orders()->latest()->limit(10)->get();
+    }
+
+    public function totalRecentOrders(): int
+    {
+        return $this->orders()->where('orders.created_at', '>=', Carbon::now()->subDays(30))->count();
+    }
+
+    public function totalRecentUnits(): int
+    {
+        return $this->orderProducts()->where('created_at', '>=', Carbon::now()->subDays(30))->sum('quantity');
+    }
+
+    public function totalRecentRevenue(): Money
+    {
+        return Money::parse($this->orderProducts()->where('created_at', '>=', Carbon::now()->subDays(30))->sum('total_price'));
     }
 
     public function profitMargin(): ?float

@@ -53,6 +53,14 @@
                 </x-detail-card-item-list>
             </x-detail-card>
 
+            <x-detail-card title="Insights" subtitle="Last 30 days">
+                <x-detail-card-item-list>
+                    <x-detail-card-item label="Total Orders" :value="$product->totalRecentOrders()" />
+                    <x-detail-card-item label="Total Units" :value="$product->totalRecentUnits()" />
+                    <x-detail-card-item label="Total Revenue" :value="$product->totalRecentRevenue()" />
+                </x-detail-card-item-list>
+            </x-detail-card>
+
             <x-detail-card title="Recent Orders">
                 <x-detail-card-item-list>
                         @forelse($product->recentOrders() as $order)

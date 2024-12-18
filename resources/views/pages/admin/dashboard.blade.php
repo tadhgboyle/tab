@@ -159,6 +159,12 @@
         </div>
         <div class="level-item has-text-centered">
             <div>
+                <p class="heading">Taxes collected</p>
+                <p class="title">{{ $financial['taxesCollected'] }}</p>
+            </div>
+        </div>
+        <div class="level-item has-text-centered">
+            <div>
                 <p class="heading">Average order margin</p>
                 <p class="title">{{ $financial['averageMargin'] }}%</p>
             </div>

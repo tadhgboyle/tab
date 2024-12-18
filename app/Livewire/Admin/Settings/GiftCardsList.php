@@ -53,7 +53,7 @@ class GiftCardsList extends Component implements HasTable, HasForms
                             ->options([
                                 'active' => 'Active',
                                 'expired' => 'Expired',
-                            ]),
+                            ])->default('active'),
                     ])
                     ->query(function (Builder $query, array $data) {
                         return $query->when($data['status'] === 'active', function (Builder $query) {

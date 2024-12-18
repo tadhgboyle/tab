@@ -144,6 +144,8 @@ class DashboardController extends Controller
         $data['giftCardRevenue'] = Money::parse(GiftCardAdjustment::where('type', GiftCardAdjustmentType::Charge)->sum('amount'));
         // Average order value
         $data['averageOrderValue'] = Money::parse(Order::avg('total_price'))->divide(100);
+        // Taxes collected
+        $data['taxesCollected'] = Money::parse(Order::sum('total_tax'));
         // Average cash payment value
         $data['averageCashPaymentValue'] = Money::parse(Order::avg('purchaser_amount'))->divide(100);
         // Average gift card value
