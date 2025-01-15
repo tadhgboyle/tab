@@ -1,90 +1,72 @@
 @auth
-<div class="bg-gray-50 border-y">
-    @impersonating
-    <div class="text-center text-sm py-2">
-        <p>🕵️ You're impersonating {{ auth()->user()->full_name }}, 
-            <a href="{{ route('impersonate.leave') }}" class="text-blue-600 hover:underline">click here to exit</a>
-        </p>
-    </div>
-    @endImpersonating
+<aside class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0">
+    <div class="h-full flex flex-col px-3 py-4 overflow-y-auto bg-gray-50 border-r border-gray-200">
+        <!-- Navigation -->
+        <div class="flex-1">
+            <div class="flex items-center ps-2.5 mb-5">
+                <span class="self-center text-xl font-semibold whitespace-nowrap">tab</span>
+            </div>
 
-    @if(auth()->user()->role->staff && auth()->user()->family)
-    <div class="text-center text-sm py-2">
-        <p>
-            @if(\Str::contains(request()->url(), '/admin'))
-                🏛 You're in an admin context, 
-                <a href="{{ route('family_view', auth()->user()->family) }}" class="text-blue-600 hover:underline">click here to view your family</a>
-            @else
-                🧑‍💼️ You're in a family context
-            @endif
-        </p>
-    </div>
-    @endif
-</div>
-
-<nav class="bg-white border-b mb-5 px-52">
-    <div class="container">
-        <div class="flex justify-between items-center">
-            <!-- Left Navigation Links -->
-            <div class="flex space-x-3">
+            <ul class="space-y-2 font-medium text-md">
                 @if(auth()->user()->family)
-                    <x-nav-link :route="route('family_view', auth()->user()->family)" :active="request()->routeIs('family_view')">
-                        🏠 Family
-                    </x-nav-link>
+                    <x-nav-link :routes="['family_view']" :icon="'🏠'" :name="'Family'" :url="route('family_view', auth()->user()->family)" />
                 @endif
 
                 @permission(\App\Helpers\Permission::DASHBOARD)
-                    <x-nav-link :route="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        📊 Dashboard
-                    </x-nav-link>
+                    <x-nav-link :routes="['dashboard']" :icon="'📊'" :name="'Dashboard'" :url="route('dashboard')" />
                 @endpermission
 
                 @permission(\App\Helpers\Permission::CASHIER_CREATE)
-                    <x-nav-link :route="route('cashier')" :active="request()->routeIs('cashier')">
-                        🛒 Cashier
-                    </x-nav-link>
+                    <x-nav-link :routes="['cashier']" :icon="'🛒'" :name="'Cashier'" :url="route('cashier')" />
                 @endpermission
 
                 @permission(\App\Helpers\Permission::ORDERS)
-                    <x-nav-link :route="route('orders_list')" :active="request()->routeIs('orders_list')">
-                        📦 Orders
-                    </x-nav-link>
+                    <x-nav-link :routes="['orders_list']" :icon="'📦'" :name="'Orders'" :url="route('orders_list')" />
                 @endpermission
 
                 @permission(\App\Helpers\Permission::PRODUCTS)
-                    <x-nav-link :route="route('products_list')" :active="request()->routeIs('products_list')">
-                        🏷  Products
-                    </x-nav-link>
+                    <x-nav-link :routes="['products_list']" :icon="'🏷'" :name="'Products'" :url="route('products_list')" :sublinks="[
+                        ['route' => 'products_ledger', 'name' => 'Ledger'],
+                    ]" />
                 @endpermission
 
-                @permission(\App\Helpers\Permission::ACTIVITIES)
-                    <x-nav-link :route="route('activities_calendar')" :active="request()->routeIs('activities_calendar')">
-                        🗓 Activities
-                    </x-nav-link>
+                @permission(\App\Helpers\Permission::PRODUCTS)
+                    <x-nav-link :routes="['activities_calendar']" :icon="'📅'" :name="'Activities'" :url="route('activities_calendar')" :sublinks="[
+                        ['route' => 'activities_list', 'name' => 'List'],
+                    ]" />
                 @endpermission
 
                 @permission(\App\Helpers\Permission::USERS)
-                    <x-nav-link :route="route('users_list')" :active="request()->routeIs('users_list')">
-                        👥 Users
-                    </x-nav-link>
+                    <x-nav-link :routes="['users_list']" :icon="'👥'" :name="'Users'" :url="route('users_list')"/>
                 @endpermission
 
                 @permission(\App\Helpers\Permission::FAMILIES)
-                    <x-nav-link :route="route('families_list')" :active="request()->routeIs('families_list') || request()->routeIs('families_create')">
-                        👪 Families
-                    </x-nav-link>
+                    <x-nav-link :routes="['families_list']" :icon="'👪'" :name="'Families'" :url="route('families_list')"/>
                 @endpermission
-            </div>
+            </ul>
+        </div>
 
-            <!-- Right Navigation Links -->
-            <div class="flex space-x-3">
-                @permission(\App\Helpers\Permission::SETTINGS)
-                    <x-nav-link :route="route('settings')" :active="request()->routeIs('settings')">
-                        ⚙️ Settings
-                    </x-nav-link>
-                @endpermission
+        <!-- Settings Section -->
+        @permission(\App\Helpers\Permission::SETTINGS)
+            <div class="mt-4 border-t border-gray-200 pt-4">
+                <ul class="space-y-2 font-medium text-md">
+                    <x-nav-link :routes="['settings']" :icon="'⚙️'" :name="'Settings'" :url="route('settings')"/>
+                </ul>
             </div>
+        @endpermission
+
+        <!-- User Info -->
+        <div class="border-t border-gray-200 pt-4 mt-4">
+            <div class="flex items-center">
+                <div class="ms-3">
+                    <p class="text-sm text-gray-900 font-medium">{{ auth()->user()->full_name }}</p>
+                    <p class="text-xs text-gray-600">{{ auth()->user()->role->name }}</p>
+                </div>
+            </div>
+            <a href="{{ route('logout') }}" class="flex items-center mt-3 py-2 text-red-600 rounded-lg hover:bg-gray-100 group">
+                <span class="ms-3 text-sm">Logout</span>
+            </a>
         </div>
     </div>
-</nav>
+</aside>
 @endauth

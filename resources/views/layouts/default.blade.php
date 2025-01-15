@@ -27,7 +27,7 @@
 
     <body class="antialiased">
         <div class="flex flex-col h-screen justify-between">
-            @include('includes.navbar-next')
+            @include('includes.navbar')
 
             <div class="sm:ml-64">
                 <div class="bg-gray-50 border-b">
