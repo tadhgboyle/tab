@@ -1,6 +1,7 @@
 @extends('layouts.default', ['page' => 'login'])
 @section('content')
-<h2 class="title has-text-weight-bold is-1">Login</h2>
+<x-page-header title="Login" />
+
 <div class="columns">
     <div class="column"></div>
     <div class="column box">
@@ -27,4 +28,4 @@
     </div>
     <div class="column"></div>
 </div>
-@stop
+@endsection

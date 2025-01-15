@@ -28,6 +28,7 @@ class CategoriesList extends Component implements HasTable, HasForms
             ])
             ->columns([
                 TextColumn::make('name'),
+                // TODO use enums on CategoryType
                 TextColumn::make('type')->badge()->state(function (Category $category) {
                     return $category->type->getName();
                 })->color('gray'),

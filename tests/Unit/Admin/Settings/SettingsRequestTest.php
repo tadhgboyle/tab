@@ -39,4 +39,26 @@ class SettingsRequestTest extends FormRequestTestCase
             'pst' => 1,
         ]));
     }
+
+    public function testOrderPrefixIsNullableAndIsString(): void
+    {
+        $this->assertNotHaveErrors('order_prefix', new SettingsRequest([
+            'order_prefix' => null,
+        ]));
+
+        $this->assertNotHaveErrors('order_prefix', new SettingsRequest([
+            'order_prefix' => 'string',
+        ]));
+    }
+
+    public function testOrderSuffixIsNullableAndIsString(): void
+    {
+        $this->assertNotHaveErrors('order_suffix', new SettingsRequest([
+            'order_suffix' => null,
+        ]));
+
+        $this->assertNotHaveErrors('order_suffix', new SettingsRequest([
+            'order_suffix' => 'string',
+        ]));
+    }
 }

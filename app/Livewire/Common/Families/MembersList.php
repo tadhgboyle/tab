@@ -30,6 +30,7 @@ class MembersList extends Component implements HasTable, HasForms
             ->query($this->family->members()->with(hasPermission(Permission::USERS_VIEW) || auth()->user()->isFamilyAdmin($this->family) ? ['user.orders', 'user.activityRegistrations'] : [])->getQuery())
             ->columns([
                 TextColumn::make('user.full_name')->sortable()->searchable(),
+                // TODO: use filament enum for role
                 TextColumn::make('role')->badge()->color('gray')->state(function (FamilyMember $familyMember) {
                     return ucfirst($familyMember->role->value);
                 }),

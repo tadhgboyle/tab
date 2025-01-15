@@ -1,13 +1,13 @@
 @extends('layouts.default', ['page' => 'settings'])
 @section('content')
-<h2 class="title has-text-weight-bold">View Gift Card</h2>
+<x-page-header title="View Gift Card" />
 
-<div class="columns">
-    <div class="column">
+<div class="grid lg:grid-cols-6 grid-cols-1 gap-5">
+    <div class="lg:col-span-4">
         <livewire:admin.settings.gift-cards.users-list :gift-card="$giftCard" />
     </div>
 
-    <div class="column is-one-third">
+    <div class="lg:col-span-2">
         <x-detail-card-stack>
             <x-detail-card title="Details">
                 <x-detail-card-item-list>

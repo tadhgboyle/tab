@@ -129,7 +129,6 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
 - Store credit
 - Convert jquery ajax requests to use axios
 - Let orders use multiple gift cards
-- Add "cost" to products and display margins
 - Create `Cart` model to represent an in-flight order, then use to implement cashier functionality with livewire and get rid of the fuckin item-sidebar.js
 - Ability to mark products as final sale/cannot be returned
 - Add returns to user timelines

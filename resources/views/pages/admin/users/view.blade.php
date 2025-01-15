@@ -1,6 +1,6 @@
 @extends('layouts.default', ['page' => 'users'])
 @section('content')
-<x-page-header :title="$user->full_name" :actions="[
+<x-page-header :entity="'User'" :title="$user->full_name" :actions="[
     [
         'label' => 'Impersonate',
         'href' => route('impersonate', $user),

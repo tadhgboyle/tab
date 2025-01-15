@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Family;
+use Filament\Tables\Actions\Action;
 use Livewire\Component;
 use Filament\Tables\Table;
 use App\Helpers\Permission;
@@ -21,6 +22,11 @@ class FamiliesList extends Component implements HasTable, HasForms
     {
         return $table
             ->query(Family::query())
+            ->heading('Families')
+            ->headerActions(
+                hasPermission(Permission::FAMILIES_MANAGE) ? [
+                    Action::make('create')->url(route('families_create'))
+                ] : [])
             ->columns([
                 TextColumn::make('created_at')->label('Created')->dateTime('M jS Y h:ia')->sortable(),
                 TextColumn::make('name')->sortable()->searchable(),

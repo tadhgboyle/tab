@@ -1,126 +1,90 @@
-<nav class="navbar has-shadow">
+@auth
+<div class="bg-gray-50 border-y">
+    @impersonating
+    <div class="text-center text-sm py-2">
+        <p>🕵️ You're impersonating {{ auth()->user()->full_name }}, 
+            <a href="{{ route('impersonate.leave') }}" class="text-blue-600 hover:underline">click here to exit</a>
+        </p>
+    </div>
+    @endImpersonating
+
+    @if(auth()->user()->role->staff && auth()->user()->family)
+    <div class="text-center text-sm py-2">
+        <p>
+            @if(\Str::contains(request()->url(), '/admin'))
+                🏛 You're in an admin context, 
+                <a href="{{ route('family_view', auth()->user()->family) }}" class="text-blue-600 hover:underline">click here to view your family</a>
+            @else
+                🧑‍💼️ You're in a family context
+            @endif
+        </p>
+    </div>
+    @endif
+</div>
+
+<nav class="bg-white border-b mb-5 px-52">
     <div class="container">
-        <div class="navbar-menu">
-            <div class="navbar-start">
+        <div class="flex justify-between items-center">
+            <!-- Left Navigation Links -->
+            <div class="flex space-x-3">
                 @if(auth()->user()->family)
-                    <a class="navbar-item {{ page('family', @$page) }}" href="{{ route('family_view', auth()->user()->family) }}">
+                    <x-nav-link :route="route('family_view', auth()->user()->family)" :active="request()->routeIs('family_view')">
                         🏠 Family
-                    </a>
+                    </x-nav-link>
                 @endif
 
                 @permission(\App\Helpers\Permission::DASHBOARD)
-                    <a class="navbar-item {{ page('dashboard', @$page) }}" href="{{ route('dashboard') }}">
+                    <x-nav-link :route="route('dashboard')" :active="request()->routeIs('dashboard')">
                         📊 Dashboard
-                    </a>
+                    </x-nav-link>
                 @endpermission
 
                 @permission(\App\Helpers\Permission::CASHIER_CREATE)
-                    <a class="navbar-item {{ page('cashier', @$page) }}" href="{{ route('cashier') }}">
+                    <x-nav-link :route="route('cashier')" :active="request()->routeIs('cashier')">
                         🛒 Cashier
-                    </a>
+                    </x-nav-link>
                 @endpermission
 
-                @permission(\App\Helpers\Permission::USERS)
-                    <div class="navbar-item has-dropdown is-hoverable">
-                        <p class="navbar-link is-arrowless {{ page('users', @$page) }}">👥 Users</p>
-                        <div class="navbar-dropdown is-boxed">
-                            @permission(\App\Helpers\Permission::USERS_LIST)
-                                <a class="navbar-item" href="{{ route('users_list') }}">
-                                    List
-                                </a>
-                            @endpermission
-                            @permission(\App\Helpers\Permission::USERS_MANAGE)
-                                <a class="navbar-item" href="{{ route('users_create') }}">
-                                    Create
-                                </a>
-                            @endpermission
-                        </div>
-                    </div>
-                @endpermission
-
-                @permission(\App\Helpers\Permission::FAMILIES)
-                    <div class="navbar-item has-dropdown is-hoverable">
-                        <p class="navbar-link is-arrowless {{ page('families', @$page) }}">👪 Families</p>
-                        <div class="navbar-dropdown is-boxed">
-                            @permission(\App\Helpers\Permission::FAMILIES_LIST)
-                                <a class="navbar-item" href="{{ route('families_list') }}">
-                                    List
-                                </a>
-                            @endpermission
-                            @permission(\App\Helpers\Permission::FAMILIES_MANAGE)
-                                <a class="navbar-item" href="{{ route('families_create') }}">
-                                    Create
-                                </a>
-                            @endpermission
-                        </div>
-                    </div>
+                @permission(\App\Helpers\Permission::ORDERS)
+                    <x-nav-link :route="route('orders_list')" :active="request()->routeIs('orders_list')">
+                        📦 Orders
+                    </x-nav-link>
                 @endpermission
 
                 @permission(\App\Helpers\Permission::PRODUCTS)
-                    <div class="navbar-item has-dropdown is-hoverable">
-                        <p class="navbar-link is-arrowless {{ page('products', @$page) }}">🏷 Products</p>
-                        <div class="navbar-dropdown is-boxed">
-                            @permission(\App\Helpers\Permission::PRODUCTS_LIST)
-                                <a class="navbar-item" href="{{ route('products_list') }}">
-                                    List
-                                </a>
-                            @endpermission
-                            @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)
-                                <a class="navbar-item" href="{{ route('products_create') }}">
-                                    Create
-                                </a>
-                            @endpermission
-                            @permission(\App\Helpers\Permission::PRODUCTS_LEDGER)
-                                <a class="navbar-item" href="{{ route('products_ledger') }}">
-                                    Ledger
-                                </a>
-                            @endpermission
-                        </div>
-                    </div>
+                    <x-nav-link :route="route('products_list')" :active="request()->routeIs('products_list')">
+                        🏷  Products
+                    </x-nav-link>
                 @endpermission
 
                 @permission(\App\Helpers\Permission::ACTIVITIES)
-                    <div class="navbar-item has-dropdown is-hoverable">
-                        <p class="navbar-link is-arrowless {{ page('activities', @$page) }}">🗓 Activities</p>
-                        <div class="navbar-dropdown is-boxed">
-                            @permission(\App\Helpers\Permission::ACTIVITIES_LIST)
-                                <a class="navbar-item" href="{{ route('activities_calendar') }}">
-                                    Calendar
-                                </a>
-                                <a class="navbar-item" href="{{ route('activities_list') }}">
-                                    List
-                                </a>
-                            @endpermission
-                            @permission(\App\Helpers\Permission::ACTIVITIES_MANAGE)
-                                <a class="navbar-item" href="{{ route('activities_create') }}">
-                                    Create
-                                </a>
-                            @endpermission
-                        </div>
-                    </div>
+                    <x-nav-link :route="route('activities_calendar')" :active="request()->routeIs('activities_calendar')">
+                        🗓 Activities
+                    </x-nav-link>
                 @endpermission
 
-                @permission(\App\Helpers\Permission::ORDERS_LIST)
-                    <a class="navbar-item {{ page('orders', @$page) }}" href="{{ route('orders_list') }}">
-                        🛍 Orders
-                    </a>
+                @permission(\App\Helpers\Permission::USERS)
+                    <x-nav-link :route="route('users_list')" :active="request()->routeIs('users_list')">
+                        👥 Users
+                    </x-nav-link>
+                @endpermission
+
+                @permission(\App\Helpers\Permission::FAMILIES)
+                    <x-nav-link :route="route('families_list')" :active="request()->routeIs('families_list') || request()->routeIs('families_create')">
+                        👪 Families
+                    </x-nav-link>
                 @endpermission
             </div>
 
-            <div class="navbar-end">
-                <div class="navbar-item">
-                    <div class="field is-grouped">
-                        @permission(\App\Helpers\Permission::SETTINGS)
-                        <a class="navbar-item {{ page('settings', @$page) }}" href="{{ route('settings') }}">
-                            ⚙️ Settings
-                        </a>
-                        @endpermission
-                        <a class="navbar-item" href="{{ route('logout') }}">
-                        🚪 Logout
-                    </a>
-                    </div>
-                </div>
+            <!-- Right Navigation Links -->
+            <div class="flex space-x-3">
+                @permission(\App\Helpers\Permission::SETTINGS)
+                    <x-nav-link :route="route('settings')" :active="request()->routeIs('settings')">
+                        ⚙️ Settings
+                    </x-nav-link>
+                @endpermission
             </div>
         </div>
     </div>
 </nav>
+@endauth

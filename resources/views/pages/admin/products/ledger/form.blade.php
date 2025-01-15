@@ -2,7 +2,7 @@
     <h4 class="title has-text-weight-bold is-4">Ledger</h4>
     <p><strong>Product:</strong> {{ $product->name }} @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)<a href="{{ route('products_edit', $product->id) }}">(Edit)</a>@endpermission</p>
     @isset($productVariant)
-        <p><strong>Variant:</strong> {{ $productVariant->sku }}</p>
+        <p><strong>Variant:</strong> {{ $productVariant->sku }} @permission(\App\Helpers\Permission::PRODUCTS_MANAGE)<a href="{{ route('products_variants_edit', [$product, $productVariant]) }}">(Edit)</a>@endpermission</p>
     @endisset
     <hr>
     @if($product->unlimited_stock)

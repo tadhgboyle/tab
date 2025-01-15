@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Order;
+use Filament\Tables\Actions\Action;
 use Livewire\Component;
 use App\Enums\OrderStatus;
 use Filament\Tables\Table;
@@ -23,6 +24,7 @@ class OrdersList extends Component implements HasTable, HasForms
     {
         return $table
             ->query(Order::query())
+            ->heading('Orders')
             ->columns([
                 TextColumn::make('identifier')->searchable()->sortable(),
                 TextColumn::make('created_at')->label('Time')->dateTime('M jS Y h:ia')->sortable(),

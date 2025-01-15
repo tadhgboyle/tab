@@ -1,36 +1,30 @@
 @extends('layouts.default', ['page' => 'family'])
 @section('content')
-<h2 class="title has-text-weight-bold">Family Member</h2>
-<h4 class="subtitle">
-    {{ $user->full_name }}
-    <p>
-        <strong>Role:</strong> {{ ucfirst($user->familyRole()->value) }}
-        @if(auth()->user()->isFamilyAdmin())
-            <a href="{{ route('families_member_edit', [$familyMember->family, $familyMember]) }}">(Edit)</a>
-        @endif
-    </p>
-</h4>
+<x-page-header title="{{ $user->full_name }}" :actions="[
+    [
+        'label' => 'Edit',
+        'href' => route('families_member_edit', [$familyMember->family, $familyMember]),
+        'can' => auth()->user()->isFamilyAdmin(),
+    ],
+]" />
 
-<div class="columns">
-    <div class="column">
-        <div class="columns is-multiline">
-            <div class="column is-full">
-                <livewire:common.users.orders-list :user="$user" context="family" />
-            </div>
-            <div class="column is-full">
-                <livewire:common.users.activity-registrations-list :user="$user" context="family" />
-            </div>
-            <div class="column">
-                <livewire:common.users.payouts-list :user="$user" context="family" />
-            </div>
-        </div>
+<div class="grid lg:grid-cols-6 grid-cols-1 gap-5">
+    <div class="lg:col-span-4">
+        <x-detail-card-stack>
+            <livewire:common.users.orders-list :user="$user" context="family" />
+            <livewire:common.users.activity-registrations-list :user="$user" context="family" />
+            <livewire:common.users.payouts-list :user="$user" context="family" />
+        </x-detail-card-stack>
     </div>
 
-    <div class="column is-two-fifths">
+    <div class="lg:col-span-2">
         <x-detail-card-stack>
             <x-detail-card title="Details">
                 <x-detail-card-item-list>
                     <x-detail-card-item label="Name" :value="$user->full_name" />
+                    <x-detail-card-item label="Role">
+                        <x-badge :value="ucfirst($familyMember->role->value)" />
+                    </x-detail-card-item>
                     <x-detail-card-item label="Balance" :value="$user->balance" />
                     <x-detail-card-item label="Total spent" :value="$user->findSpent()" />
                     <x-detail-card-item label="Total returned" :value="$user->findReturned()" />

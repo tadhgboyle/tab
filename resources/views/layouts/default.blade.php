@@ -26,37 +26,40 @@
     </head>
 
     <body class="antialiased">
-        @auth
-            @impersonating
-                <div class="has-text-centered has-background-light py-2">
-                    <p>🕵 You're impersonating {{ auth()->user()->full_name }}, <a href="{{ route('impersonate.leave') }}">click here to exit</a></p>
+        <div class="flex flex-col h-screen justify-between">
+            @include('includes.navbar-next')
+
+            <div class="sm:ml-64">
+                <div class="bg-gray-50 border-b">
+                    @impersonating
+                    <div class="text-center text-sm py-2">
+                        <p>🕵️ You're impersonating {{ auth()->user()->full_name }}, 
+                            <a href="{{ route('impersonate.leave') }}" class="text-blue-600 hover:underline">click here to exit</a>
+                        </p>
+                    </div>
+                    @endImpersonating
+                
+                    @if(auth()->user()->role->staff && auth()->user()->family)
+                    <div class="text-center text-sm py-2">
+                        <p>
+                            @if(\Str::contains(request()->url(), '/admin'))
+                                🏛 You're in an admin context, 
+                                <a href="{{ route('family_view', auth()->user()->family) }}" class="text-blue-600 hover:underline">click here to view your family</a>
+                            @else
+                                🧑‍💼️ You're in a family context
+                            @endif
+                        </p>
+                    </div>
+                    @endif
                 </div>
-            @endImpersonating
 
-            @if(auth()->user()->role->staff && auth()->user()->family)
-                <div class="has-text-centered has-background-light py-2">
-                    <p>
-                        @if(\Str::contains(request()->url(), '/admin'))
-                            🏛 You're in an admin context, <a href="{{ route('family_view', auth()->user()->family) }}">click here to view your family</a>
-                        @else
-                            🧑‍💼️ You're in a family context
-                        @endif
-                    </p>
+                <div class="p-4">
+                    @yield('content')
                 </div>
-            @endif
-
-            @include('includes.navbar')
-        @endauth
-
-        <div class="container">
-            <br>
-
-            @yield('content')
-
-            @livewire('notifications')
-
-            <br>
+            </div>
         </div>
+
+        @livewire('notifications')
 
         <script>
             // close modals on esc key press

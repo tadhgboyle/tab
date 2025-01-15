@@ -2,7 +2,9 @@
 
 namespace App\Livewire\Admin;
 
+use App\Helpers\RotationHelper;
 use App\Models\User;
+use Filament\Tables\Actions\Action;
 use Livewire\Component;
 use Filament\Tables\Table;
 use App\Helpers\Permission;
@@ -28,11 +30,16 @@ class UsersList extends Component implements HasTable, HasForms
                     hasPermission(Permission::USERS_LIST_SELECT_ROTATION),
                     function (Builder $query) {
                         $query->whereHas('rotations', function (Builder $query) {
-                            $query->whereIn('id', auth()->user()->rotations->pluck('id'));
+                            $query->where('id', app(RotationHelper::class)->getCurrentRotation()->id);
                         });
                     }
                 )
             )
+            ->heading('Users')
+            ->headerActions(
+                hasPermission(Permission::USERS_MANAGE) ? [
+                    Action::make('create')->url(route('users_create'))
+                ] : [])
             ->columns([
                 TextColumn::make('full_name')->label('Name')->sortable()->searchable(),
                 TextColumn::make('username')->sortable()->searchable(),

@@ -7,7 +7,6 @@ use App\Models\Order;
 use Cknow\Money\Money;
 use App\Models\Product;
 use App\Models\GiftCard;
-use App\Helpers\TaxHelper;
 use App\Helpers\Permission;
 use App\Models\OrderProduct;
 use Illuminate\Http\Request;

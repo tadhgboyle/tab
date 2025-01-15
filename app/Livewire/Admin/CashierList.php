@@ -22,13 +22,18 @@ class CashierList extends Component implements HasTable, HasForms
     public function table(Table $table): Table
     {
         return $table
-            ->query(
-                User::query()->unless(
+            ->query(User::query()
+                ->unless(
                     hasPermission(Permission::CASHIER_USERS_OTHER_ROTATIONS),
                     function (Builder $query) {
                         $query->whereHas('rotations', function (Builder $query) {
                             $query->whereIn('id', auth()->user()->rotations->pluck('id'));
                         });
+                    }
+                )->unless(
+                    hasPermission(Permission::CASHIER_SELF_PURCHASES),
+                    function (Builder $query) {
+                        $query->where('id', '!=', auth()->id());
                     }
                 )
             )

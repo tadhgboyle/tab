@@ -2,11 +2,12 @@
 @section('content')
 <x-page-header title="Family" />
 
-<div class="columns">
-    <div class="column is-two-thirds">
+<div class="grid lg:grid-cols-6 grid-cols-1 gap-5">
+    <div class="lg:col-span-4">
         <livewire:common.families.members-list :family="$family" context="family" />
     </div>
-    <div class="column">
+
+    <div class="lg:col-span-2">
         <x-detail-card-stack>
             <x-detail-card title="Details">
                 <x-detail-card-item-list>

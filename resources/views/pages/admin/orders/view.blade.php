@@ -105,7 +105,9 @@
                         @endif
                         @if($order->gift_card_amount->isPositive())
                         <div class="flex justify-between items-center text-sm text-gray-950">
-                            <dt>Paid with gift card</dt>
+                            <dt>
+                                <a href="{{ route('settings_gift-cards_view', [$order->giftCard]) }}">Paid with gift card</a>
+                            </dt>
                             <dd class="text-right text-gray-800">{{ $order->gift_card_amount }}</dd>
                         </div>
                         @endif

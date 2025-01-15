@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Product;
+use Filament\Tables\Actions\Action;
 use Livewire\Component;
 use Filament\Tables\Table;
 use App\Helpers\Permission;
@@ -29,6 +30,11 @@ class ProductsList extends Component implements HasTable, HasForms
                     ->with('variants')
                     ->unless(hasPermission(Permission::PRODUCTS_VIEW_DRAFT), fn ($query) => $query->where('status', ProductStatus::Active))
             )
+            ->heading('Products')
+            ->headerActions(
+                hasPermission(Permission::PRODUCTS_MANAGE) ? [
+                    Action::make('create')->url(route('products_create'))
+                ] : [])
             ->columns([
                 TextColumn::make('name')->sortable()->searchable(),
                 TextColumn::make('category.name')->searchable()->badge()->color('gray'),
@@ -41,8 +47,7 @@ class ProductsList extends Component implements HasTable, HasForms
                 BooleanColumn::make('has_variants')->label('Has Variants')->state(function (Product $product) {
                     return $product->hasVariants();
                 }),
-                // TODO, hide if they cannot view draft products?
-                TextColumn::make('status')->badge(),
+                TextColumn::make('status')->badge()->visible(hasPermission(Permission::PRODUCTS_VIEW_DRAFT)),
             ])
             ->recordUrl(function (Product $product) {
                 if (hasPermission(Permission::PRODUCTS_VIEW)) {

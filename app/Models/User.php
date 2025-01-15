@@ -150,11 +150,6 @@ class User extends Authenticatable implements HasTimeline
         $returned = Money::parse(0);
 
         $this->orders->where('status', '!=', OrderStatus::NotReturned)->each(function (Order $order) use (&$returned) {
-            if ($order->isReturned()) {
-                $returned = $returned->add($order->total_price);
-                return;
-            }
-
             $returned = $returned->add($order->getReturnedTotal());
         });
 
@@ -172,11 +167,6 @@ class User extends Authenticatable implements HasTimeline
         $returned = Money::parse(0);
 
         $this->orders->where('status', '!=', OrderStatus::NotReturned)->each(function (Order $order) use (&$returned) {
-            if ($order->isReturned()) {
-                $returned = $returned->add($order->purchaser_amount);
-                return;
-            }
-
             $returned = $returned->add($order->getReturnedTotalToCash());
         });
 
@@ -212,7 +202,7 @@ class User extends Authenticatable implements HasTimeline
 
     public function canBeImpersonated()
     {
-        return $this->role->staff || $this->family;
+        return $this->id !== auth()->id() && ($this->role->staff || $this->family);
     }
 
     public function timeline(): array

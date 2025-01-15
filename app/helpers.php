@@ -21,10 +21,10 @@ if (!function_exists('page')) {
      * @param string $current_page
      * @param string $page
      *
-     * @return string
+     * @return bool
      */
-    function page(string $current_page, string $page): string
+    function page(string $current_page, string $page): bool
     {
-        return $page === $current_page ? ' is-active ' : '';
+        return $page === $current_page;
     }
 }
