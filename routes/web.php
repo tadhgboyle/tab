@@ -222,12 +222,6 @@ Route::middleware('auth')->group(function () {
                 Route::put('/{product}/variant-options/{productVariantOption}/values/{productVariantOptionValue}', [ProductVariantOptionValueController::class, 'update'])->name('products_variant-options_values_update');
                 Route::delete('/{product}/variant-options/{productVariantOption}/values/{productVariantOptionValue}', [ProductVariantOptionValueController::class, 'destroy'])->name('products_variant-options_values_delete');
             });
-
-            Route::group(['middleware' => 'permission:' . Permission::PRODUCTS_LEDGER], static function () {
-                Route::get('/ledger', [ProductController::class, 'adjustList'])->name('products_ledger');
-                Route::get('/ledger/{product}', [ProductController::class, 'ajaxGetPage'])->name('products_ledger_ajax');
-                Route::patch('/ledger/{product}/{productVariant?}', [ProductController::class, 'adjustStock'])->name('products_ledger_form');
-            });
         });
 
         /*

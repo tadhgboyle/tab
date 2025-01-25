@@ -41,7 +41,6 @@ class ProductControllerTest extends TestCase
                 Permission::PRODUCTS_LIST,
                 Permission::PRODUCTS_VIEW,
                 Permission::PRODUCTS_MANAGE,
-                Permission::PRODUCTS_LEDGER,
             ],
         ]);
 
@@ -134,20 +133,6 @@ class ProductControllerTest extends TestCase
             ->assertViewHas('categories');
     }
 
-    public function testCanViewAdjustListPage(): void
-    {
-        $this->expectPermissionChecks([
-            Permission::PRODUCTS,
-            Permission::PRODUCTS_LEDGER,
-        ]);
-
-        $this
-            ->get(route('products_ledger'))
-            ->assertOk()
-            ->assertViewIs('pages.admin.products.ledger.list')
-            ->assertViewHas('products');
-    }
-
     public function testAjaxGetInfoForNonVariantProduct(): void
     {
         $this->expectPermissionChecks([
@@ -190,53 +175,5 @@ class ProductControllerTest extends TestCase
                 'pst' => true,
                 'gst' => true,
             ]);
-    }
-
-    public function testCanViewStockAdjustmentListPage(): void
-    {
-        $this->expectPermissionChecks([
-            Permission::PRODUCTS,
-            Permission::PRODUCTS_LEDGER,
-        ]);
-
-        $this
-            ->get(route('products_ledger'))
-            ->assertOk()
-            ->assertViewIs('pages.admin.products.ledger.list')
-            ->assertViewHas('products');
-    }
-
-    public function testCanViewAdjustStockForm(): void
-    {
-        $this->expectPermissionChecks([
-            Permission::PRODUCTS,
-            Permission::PRODUCTS_LEDGER,
-        ]);
-
-        $this
-            ->get(route('products_ledger_ajax', $this->_product))
-            ->assertOk()
-            ->assertViewIs('pages.admin.products.ledger.form')
-            ->assertViewHas('product')
-            ->assertViewMissing('productVariant');
-    }
-
-    public function testCanViewAdjustStockFormForVariant(): void
-    {
-        $this->expectPermissionChecks([
-            Permission::PRODUCTS,
-            Permission::PRODUCTS_LEDGER,
-        ]);
-
-        $this
-            ->get(route('products_ledger_ajax', ['product' => $this->_product, 'variantId' => $this->_product->variants()->create([
-                'sku' => 'SKU-1',
-                'price' => 25_00,
-                'stock' => 10,
-            ])]))
-            ->assertOk()
-            ->assertViewIs('pages.admin.products.ledger.form')
-            ->assertViewHas('product')
-            ->assertViewHas('productVariant');
     }
 }

@@ -9,7 +9,6 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
         - Some permissions include: 
             - `users_list`: This role can view the user list.
             - `users_manage`: This role can edit/create users (but only edit users which have a role lower than theirs in terms of hierarchy).
-            - `products_ledger`: This role can adjust product stock, but they will need `products_list` and `products_manage` in order to list or create products.
             - `settings_categories_manage`: This role can create/edit product categories in the Settings page.
             - And many more! I try to add as much customizability as possible for permissions.
     - Users can be edited anytime, with an easy-to-use interface.
@@ -34,8 +33,6 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
     - Each product has some settings:
         - "Stock" / "Unlimited Stock" -> Set stock count for this product, or set it to be unlimited.
         - "Override Stock" -> Override the stock count for this item.
-    - Fast and easy to use stock adjustment page.
-        - Uses AJAX to snappily load all available adjustments for the selected product.
 - Live preview of price (with taxes, quantities, etc) on sidebar during every purchase. If the user does not have enough money the submit button will be disabled (Backend check as well though!)
 - Flexible return system
     - Either return a whole order, or:
