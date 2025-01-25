@@ -46,10 +46,25 @@
             <x-detail-card title="Inventory">
                 <x-detail-card-item-list>
                     <x-detail-card-item label="Stock" :value="$product->getStock()" />
+                    @if($incomingStock = $product->incomingStock())
+                        <x-detail-card-item label="Incoming" :value="$incomingStock" />
+                    @endif
                     @unless($product->unlimited_stock)
                         <x-detail-card-item label="Stock override" :value="$product->stock_override ? '✅' : '❌'" />
                     @endunless
                     <x-detail-card-item label="Restore stock on return" :value="$product->restore_stock_on_return ? '✅' : '❌'" />
+                </x-detail-card-item-list>
+            </x-detail-card>
+
+            <x-detail-card title="Pending Purchase Orders">
+                <x-detail-card-item-list>
+                        @forelse($product->pendingPurchaseOrders() as $purchaseOrder)
+                            <x-detail-card-item label="<a href='{{ route('purchase_orders_view', $purchaseOrder->id) }}'>{{ $purchaseOrder->reference }}</a>">
+                                {{ $purchaseOrder->products->where('product_id', $product->id)->first()->quantity }} units
+                            </x-detail-card-item>
+                        @empty
+                            <p class="py-2 text-sm text-gray-500">No pending purchase orders</p>
+                        @endforelse
                 </x-detail-card-item-list>
             </x-detail-card>
 

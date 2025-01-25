@@ -1,7 +1,6 @@
 @auth
 <aside class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0">
     <div class="h-full flex flex-col px-3 py-4 overflow-y-auto bg-gray-50 border-r border-gray-200">
-        <!-- Navigation -->
         <div class="flex-1">
             <div class="flex items-center ps-2.5 mb-5">
                 <span class="self-center text-xl font-semibold whitespace-nowrap">tab</span>
@@ -25,28 +24,26 @@
                 @endpermission
 
                 @permission(\App\Helpers\Permission::PRODUCTS)
-                    <x-nav-link :routes="['products_list']" :icon="'🏷'" :name="'Products'" :url="route('products_list')" :sublinks="[
+                    <x-nav-link :routes="['products_list', 'purchase_orders_view']" :icon="'🏷'" :name="'Products'" :url="route('products_list')" :sublinks="[
                         ['route' => 'products_ledger', 'name' => 'Ledger'],
+                        ['route' => 'purchase_orders_list', 'name' => 'Purchase Orders', 'sub_routes' => ['purchase_orders_view']],
                     ]" />
                 @endpermission
 
-                @permission(\App\Helpers\Permission::PRODUCTS)
+                @permission(\App\Helpers\Permission::ACTIVITIES)
                     <x-nav-link :routes="['activities_calendar']" :icon="'📅'" :name="'Activities'" :url="route('activities_calendar')" :sublinks="[
                         ['route' => 'activities_list', 'name' => 'List'],
                     ]" />
                 @endpermission
 
                 @permission(\App\Helpers\Permission::USERS)
-                    <x-nav-link :routes="['users_list']" :icon="'👥'" :name="'Users'" :url="route('users_list')"/>
-                @endpermission
-
-                @permission(\App\Helpers\Permission::FAMILIES)
-                    <x-nav-link :routes="['families_list']" :icon="'👪'" :name="'Families'" :url="route('families_list')"/>
+                    <x-nav-link :routes="['users_list']" :icon="'👥'" :name="'Users'" :url="route('users_list')" :sublinks="[
+                        hasPermission(\App\Helpers\Permission::FAMILIES) ? ['route' => 'families_list', 'name' => 'Families'] : null,
+                    ]" />
                 @endpermission
             </ul>
         </div>
 
-        <!-- Settings Section -->
         @permission(\App\Helpers\Permission::SETTINGS)
             <div class="mt-2 pt-2">
                 <ul class="space-y-2 font-medium text-md">
@@ -55,7 +52,6 @@
             </div>
         @endpermission
 
-        <!-- User Info -->
         <div class="border-t border-gray-200 pt-4 mt-2">
             <div class="flex items-center">
                 <div class="ms-3">

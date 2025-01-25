@@ -133,6 +133,7 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
 - Ability to mark products as final sale/cannot be returned
 - Add returns to user timelines
 - Dedicated returns page for orders where they can return n of each product at once or the whole thing
+- Move Categories to Products subnav (and gift cards??)
 
 ## Issues/Bugs
 - When cashier page refreshed with gift card, ensure it still has balance + update balance in table row

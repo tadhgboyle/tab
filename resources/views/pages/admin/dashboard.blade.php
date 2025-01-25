@@ -357,6 +357,13 @@
                 <p class="title">{{ $products['inventoryValue'] }}</p>
             </div>
         </div>
+
+        <div class="level-item has-text-centered">
+            <div>
+                <p class="heading">Incoming inventory value</p>
+                <p class="title">{{ $products['incomingInventoryValue'] }}</p>
+            </div>
+        </div>
     </nav>
 
     <div class="box">

@@ -145,6 +145,10 @@ class Order extends Model implements HasTimeline
     
     public function marginPercentage(): float
     {
+        if ($this->subtotal->isZero()) {
+            return 0;
+        }
+
         return round($this->totalMargin()->getAmount() / $this->subtotal->getAmount() * 100, 2);
     }
 

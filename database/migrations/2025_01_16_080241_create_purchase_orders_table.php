@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('reference');
             $table->foreignId('supplier_id')->constrained();
             $table->date('expected_delivery_date');
+            $table->date('delivery_date')->nullable();
             $table->string('status')->default('draft');
             $table->timestamps();
         });

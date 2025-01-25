@@ -23,10 +23,14 @@ class PurchaseOrderProductFactory extends Factory
         $cost = round($cost / 25) * 25;
         $cost = $cost / 100;
 
+        $quantity = $this->faker->numberBetween(1, 25);
+        $receivedQuantity = $this->faker->boolean(30) ? $this->faker->numberBetween(0, $quantity) : 0;
+
         return [
             'product_id' => $product->id,
             'product_variant_id' => $product->hasVariants() ? $product->variants->random()->id : null,
-            'quantity' => random_int(1, 25),
+            'quantity' => $quantity,
+            'received_quantity' => $receivedQuantity,
             'cost' => $cost,
         ];
     }

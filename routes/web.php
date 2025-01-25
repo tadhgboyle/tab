@@ -12,6 +12,8 @@
 */
 
 use App\Helpers\Permission;
+use App\Http\Controllers\Admin\PurchaseOrdersController;
+use App\Http\Controllers\SuppliersController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Middleware\RequiresOwnFamily;
@@ -225,6 +227,28 @@ Route::middleware('auth')->group(function () {
                 Route::get('/ledger', [ProductController::class, 'adjustList'])->name('products_ledger');
                 Route::get('/ledger/{product}', [ProductController::class, 'ajaxGetPage'])->name('products_ledger_ajax');
                 Route::patch('/ledger/{product}/{productVariant?}', [ProductController::class, 'adjustStock'])->name('products_ledger_form');
+            });
+        });
+
+        /*
+        * Purchase Orders
+        */
+        Route::group(['middleware' => 'permission:' . Permission::PURCHASE_ORDERS, 'prefix' => '/purchase-orders'], static function () {
+            Route::group(['middleware' => 'permission:' . Permission::PURCHASE_ORDERS_LIST], static function () {
+                Route::get('/', [PurchaseOrdersController::class, 'index'])->name('purchase_orders_list');
+            });
+
+            Route::group(['middleware' => 'permission:' . Permission::PURCHASE_ORDERS_VIEW], static function () {
+                Route::get('/{purchaseOrder}', [PurchaseOrdersController::class, 'show'])->whereNumber('purchaseOrder')->name('purchase_orders_view');
+            });
+
+            Route::group(['middleware' => 'permission:' . Permission::PURCHASE_ORDERS_MANAGE], static function () {
+                Route::get('/create', [PurchaseOrdersController::class, 'create'])->name('purchase_orders_create');
+                Route::post('/create', [PurchaseOrdersController::class, 'store'])->name('purchase_orders_store');
+
+                Route::get('/{purchaseOrder}/edit', [PurchaseOrdersController::class, 'edit'])->name('purchase_orders_edit');
+                Route::put('/{purchaseOrder}/edit', [PurchaseOrdersController::class, 'update'])->name('purchase_orders_update');
+                Route::put('/{purchaseOrder}/cancel', [PurchaseOrdersController::class, 'cancel'])->name('purchase_orders_cancel');
             });
         });
 

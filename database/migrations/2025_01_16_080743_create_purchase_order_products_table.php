@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained();
             $table->foreignId('product_variant_id')->nullable()->constrained();
             $table->integer('quantity');
+            $table->integer('received_quantity')->default(0);
             $table->integer('cost');
             $table->timestamps();
         });

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\PurchaseOrderStatus;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderProduct;
 use App\Models\Supplier;
@@ -20,10 +21,16 @@ class PurchaseOrderSeeder extends Seeder
                     'supplier_id' => $supplier->id,
                 ])->create();
 
+                $state = [
+                    'purchase_order_id' => $purchaseOrder->id,
+                ];
+
+                if (collect([PurchaseOrderStatus::Cancelled, PurchaseOrderStatus::Draft, PurchaseOrderStatus::Pending])->contains($purchaseOrder->status)) {
+                    $state['received_quantity'] = 0;
+                }
+
                 $purchaseOrder->products()->saveMany(
-                    PurchaseOrderProduct::factory()->state([
-                        'purchase_order_id' => $purchaseOrder->id,
-                    ])->count(random_int(1, 10))->create()
+                    PurchaseOrderProduct::factory()->state($state)->count(random_int(1, 10))->create()
                 );
             }
         });

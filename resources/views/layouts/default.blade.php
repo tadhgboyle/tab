@@ -30,6 +30,7 @@
             @include('includes.navbar')
 
             <div class="sm:ml-64">
+                @auth
                 <div class="bg-gray-50 border-b">
                     @impersonating
                     <div class="text-center text-sm py-2">
@@ -52,6 +53,7 @@
                     </div>
                     @endif
                 </div>
+                @endauth
 
                 <div class="p-4">
                     @yield('content')

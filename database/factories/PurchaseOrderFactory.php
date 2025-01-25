@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\PurchaseOrderStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,10 +17,16 @@ class PurchaseOrderFactory extends Factory
      */
     public function definition(): array
     {
+        $status = $this->faker->randomElement(PurchaseOrderStatus::cases());
+
+        $expectedDeliveryDate = $this->faker->dateTimeBetween('now', '+1 year');
+        $actualDeliveryDate = $status === PurchaseOrderStatus::Completed ? $this->faker->dateTimeBetween('now', $expectedDeliveryDate) : null;
+
         return [
             'reference' => $this->faker->unique()->numerify('PO#####'),
-            'expected_delivery_date' => $this->faker->dateTimeBetween('now', '+1 year'),
-            'status' => $this->faker->randomElement(['draft', 'pending', 'completed', 'cancelled']),
+            'expected_delivery_date' => $expectedDeliveryDate,
+            'delivery_date' => $actualDeliveryDate,
+            'status' => $status,
         ];
     }
 }

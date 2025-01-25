@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\PurchaseOrderStatus;
 use App\Models\ProductVariant;
+use App\Models\PurchaseOrder;
+use App\Models\PurchaseOrderProduct;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Payout;
@@ -236,6 +239,12 @@ class DashboardController extends Controller
         $inventoryValue = Money::parse($inventoryableProducts->sum('stock'))->multiply($inventoryableProducts->avg('price'));
         $inventoryValue = $inventoryValue->add(Money::parse($productVariants->sum('stock'))->multiply($productVariants->avg('cost')));
         $data['inventoryValue'] = $inventoryValue;
+
+        // Incoming inventory value
+        $pendingPurchaseOrders = PurchaseOrder::query()->where('status', PurchaseOrderStatus::Pending);
+        $pendingPurchaseOrderProducts = PurchaseOrderProduct::query()->whereIn('purchase_order_id', $pendingPurchaseOrders->pluck('id'));
+        $incomingInventoryValue = Money::parse($pendingPurchaseOrderProducts->sum('quantity'))->multiply($pendingPurchaseOrderProducts->avg('cost'));
+        $data['incomingInventoryValue'] = $incomingInventoryValue;
 
         // TODO Margin over time
 

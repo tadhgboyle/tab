@@ -38,6 +38,11 @@ class Permission
     public const PRODUCTS_MANAGE = 'products_manage';
     public const PRODUCTS_LEDGER = 'products_ledger';
 
+    public const PURCHASE_ORDERS = 'purchase_orders';
+    public const PURCHASE_ORDERS_LIST = 'purchase_orders_list';
+    public const PURCHASE_ORDERS_VIEW = 'purchase_orders_view';
+    public const PURCHASE_ORDERS_MANAGE = 'purchase_orders_manage';
+
     public const ACTIVITIES = 'activities';
     public const ACTIVITIES_LIST = 'activities_list';
     public const ACTIVITIES_VIEW = 'activities_view';

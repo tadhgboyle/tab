@@ -26,7 +26,7 @@ enum PurchaseOrderStatus: string implements HasLabel, HasColor
     {
         return match ($this) {
             self::Draft => 'gray',
-            self::Pending => 'gray',
+            self::Pending => 'warning',
             self::Completed => 'success',
             self::Cancelled => 'danger',
         };
