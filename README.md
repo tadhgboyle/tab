@@ -33,8 +33,6 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
     - Depending on each product's settings (See next point), during an order, stock will be automatically removed as per quantity.
     - Each product has some settings:
         - "Stock" / "Unlimited Stock" -> Set stock count for this product, or set it to be unlimited.
-        - "Box Size" -> When receiving, instead of counting/multiplying all the boxes received, set this and receive using boxes.
-            - Example: A box of Skittles might have 16 Skittle packs in it. If 4 boxes arrived, instead of calculating 16*4, add 4 boxes.
         - "Override Stock" -> Override the stock count for this item.
     - Fast and easy to use stock adjustment page.
         - Uses AJAX to snappily load all available adjustments for the selected product.

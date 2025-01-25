@@ -39,7 +39,6 @@ class ProductsVariantsProxy extends Model
                         'category_name' => $product->category->name,
                         'stock' => $variant->stock,
                         'stock_override' => $product->stock_override,
-                        'box_size' => $variant->box_size ?: 'N/A',
                     ];
                 });
             }
@@ -54,7 +53,6 @@ class ProductsVariantsProxy extends Model
                     'category_name' => $product->category->name,
                     'stock' => $product->stock,
                     'stock_override' => $product->stock_override,
-                    'box_size' => $product->box_size === -1 ? 'N/A' : $product->box_size,
                 ]
             ];
         })->toArray();

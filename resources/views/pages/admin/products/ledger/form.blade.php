@@ -22,18 +22,6 @@
                 </div>
             </div>
 
-            @if(isset($productVariant) ? $productVariant->box_size !== null : $product->box_size !== -1)
-            <div class="field">
-                <label class="label">Add/Subtract Box</label>
-                <div class="control has-icons-left">
-                    <span class="icon is-small is-left">
-                        <i class="fas fa-hashtag"></i>
-                    </span>
-                    <input type="number" step="1" name="adjust_box" class="input" value="0">
-                </div>
-            </div>
-            @endif
-
             <div class="control">
                 <button class="button is-light" type="submit">
                     💾 Save

@@ -23,7 +23,6 @@ class ProductCreateServiceTest extends TestCase
             'status' => ProductStatus::Active,
             'price' => 10_50,
             'category_id' => $category->id,
-            'box_size' => 22,
             'stock' => 10,
             'pst' => true,
             'restore_stock_on_return' => true,
@@ -39,7 +38,6 @@ class ProductCreateServiceTest extends TestCase
         $this->assertEquals(Money::parse(10_50), $product->price);
         $this->assertSame($category->id, $product->category->id);
         $this->assertSame(10, $product->stock);
-        $this->assertSame(22, $product->box_size);
         $this->assertFalse($product->unlimited_stock);
         $this->assertFalse($product->stock_override);
         $this->assertTrue($product->pst);
@@ -53,7 +51,6 @@ class ProductCreateServiceTest extends TestCase
             'status' => ProductStatus::Active,
             'price' => 10_50,
             'category_id' => $category->id,
-            'box_size' => 22,
             'stock' => 10,
             'restore_stock_on_return' => true,
         ]));
@@ -66,7 +63,6 @@ class ProductCreateServiceTest extends TestCase
         $this->assertEquals(Money::parse(10_50), $product->price);
         $this->assertSame($category->id, $product->category->id);
         $this->assertSame(10, $product->stock);
-        $this->assertSame(22, $product->box_size);
         $this->assertFalse($product->unlimited_stock);
         $this->assertFalse($product->stock_override);
         $this->assertFalse($product->pst);
@@ -89,22 +85,5 @@ class ProductCreateServiceTest extends TestCase
         $this->assertModelExists($product);
         $this->assertTrue($product->unlimited_stock);
         $this->assertSame(0, $product->stock);
-    }
-
-    public function testCanCreateProductWithoutBoxSize(): void
-    {
-        $productService = new ProductCreateService(new ProductRequest([
-            'name' => 'Test Product',
-            'price' => 10_50,
-            'status' => ProductStatus::Active,
-            'category_id' => Category::factory()->create()->id,
-            'restore_stock_on_return' => true,
-        ]));
-
-        $this->assertSame(ProductCreateService::RESULT_SUCCESS, $productService->getResult());
-
-        $product = $productService->getProduct();
-        $this->assertModelExists($product);
-        $this->assertSame(-1, $product->box_size);
     }
 }

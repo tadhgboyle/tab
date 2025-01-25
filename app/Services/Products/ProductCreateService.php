@@ -32,7 +32,6 @@ class ProductCreateService extends HttpService
         $product->cost = $request->cost;
         $product->category_id = $request->category_id;
         $product->stock = $stock;
-        $product->box_size = $request->box_size ?? -1;
         $product->unlimited_stock = $unlimited_stock;
         $product->stock_override = $request->has('stock_override');
         $product->pst = $request->has('pst');

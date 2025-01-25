@@ -207,19 +207,4 @@ class ProductTest extends TestCase
         $product->adjustStock(-10);
         $this->assertSame(5, $product->stock);
     }
-
-    public function testAddBox(): void
-    {
-        $product = Product::factory()->create([
-            'stock' => 10,
-            'box_size' => 2,
-            'category_id' => Category::factory()->create()->id,
-        ]);
-
-        $product->addBox(2);
-        $this->assertSame(14, $product->stock);
-
-        $product->addBox(-4);
-        $this->assertSame(6, $product->stock);
-    }
 }

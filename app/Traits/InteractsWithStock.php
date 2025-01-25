@@ -44,9 +44,4 @@ trait InteractsWithStock
     {
         return $this->increment('stock', $new_stock);
     }
-
-    public function addBox(int $box_count): bool|int
-    {
-        return $this->adjustStock($box_count * $this->box_size);
-    }
 }

@@ -15,7 +15,6 @@ class ProductVariantRequest extends FormRequest implements FormRequestContract
             'price' => ['required', 'numeric'],
             'cost' => ['nullable', 'numeric'],
             'stock' => ['required', 'integer', 'min:0'],
-            'box_size' => ['nullable', 'integer', 'min:1'],
             // options validation:
             // - at least one option selected
             // - all selected options are valid for the product

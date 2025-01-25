@@ -16,7 +16,6 @@
                     <th>Category</th>
                     <th>Stock</th>
                     <th>Stock Override</th>
-                    <th>Box Size</th>
                 </tr>
             </thead>
             <tbody>
@@ -39,9 +38,6 @@
                             <td>
                                 <div>{{ $variant->stock_override ? "✅" : "❌" }}</div>
                             </td>
-                            <td>
-                                <div>{!! $variant->box_size === null ? '<i>N/A</i>' : $variant->box_size !!}</div>
-                            </td>
                         </tr>
                         @endforeach
                     @else
@@ -60,9 +56,6 @@
                         </td>
                         <td>
                             <div>{{ $product->stock_override ? "✅" : "❌" }}</div>
-                        </td>
-                        <td>
-                            <div>{!! $product->box_size === -1 ? '<i>N/A</i>' : $product->box_size !!}</div>
                         </td>
                     </tr>
                     @endif

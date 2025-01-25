@@ -33,7 +33,6 @@ class Product extends Model
         'stock' => 'integer',
         'unlimited_stock' => 'boolean',
         'stock_override' => 'boolean',
-        'box_size' => 'integer',
         'restore_stock_on_return' => 'boolean',
     ];
 
@@ -45,7 +44,6 @@ class Product extends Model
         'cost',
         'category_id',
         'stock',
-        'box_size',
         'unlimited_stock',
         'stock_override',
         'pst',

@@ -28,7 +28,6 @@ class ProductEditTest extends TestCase
             'status' => ProductStatus::Draft,
             'price' => 10_50,
             'category_id' => $category->id,
-            'box_size' => 22,
             'stock' => 10,
             'pst' => true,
         ]), $product);
@@ -44,7 +43,6 @@ class ProductEditTest extends TestCase
         $this->assertEquals(Money::parse(10_50), $product->price);
         $this->assertSame($category->id, $product->category_id);
         $this->assertSame(10, $product->stock);
-        $this->assertSame(22, $product->box_size);
         $this->assertFalse($product->unlimited_stock);
         $this->assertFalse($product->stock_override);
         $this->assertTrue($product->pst);
@@ -72,26 +70,5 @@ class ProductEditTest extends TestCase
         $this->assertTrue($product->unlimited_stock);
         $this->assertSame(0, $product->stock);
         $this->assertSame($product->category_id, $category2->id);
-    }
-
-    public function testCanCreateProductWithoutBoxSize(): void
-    {
-        $category = Category::factory()->create();
-        $product = Product::factory()->create([
-            'category_id' => $category->id,
-        ]);
-        $productService = new ProductEditService(new ProductRequest([
-            'product_id' => $product->id,
-            'name' => 'Test Product',
-            'status' => ProductStatus::Active,
-            'price' => 10_50,
-            'category_id' => $product->category_id,
-        ]), $product);
-
-        $this->assertSame(ProductEditService::RESULT_SUCCESS, $productService->getResult());
-
-        $product = $productService->getProduct();
-        $this->assertModelExists($product);
-        $this->assertSame(-1, $product->box_size);
     }
 }

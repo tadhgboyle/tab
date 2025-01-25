@@ -136,16 +136,6 @@
                     <input type="number" step="1" name="stock" required class="input" placeholder="Stock" value="{{ $product->stock ?? old('stock') }}">
                 </div>
             </div>
-
-            <div class="field">
-                <label class="label">Box Size</label>
-                <div class="control has-icons-left">
-                    <span class="icon is-small is-left">
-                        <i class="fas fa-hashtag"></i>
-                    </span>
-                    <input type="number" step="1" name="box_size" class="input" placeholder="Box Size" value="{{ $product->box_size ?? old('stock') }}">
-                </div>
-            </div>
         </div>
         <div class="column is-2">
             <form>

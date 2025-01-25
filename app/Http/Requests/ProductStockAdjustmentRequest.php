@@ -11,7 +11,6 @@ class ProductStockAdjustmentRequest extends FormRequest implements FormRequestCo
     {
         return [
             'adjust_stock' => 'integer',
-            'adjust_box' => 'integer',
         ];
     }
 }

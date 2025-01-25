@@ -39,7 +39,6 @@ class LedgerProductList extends Component implements HasTable, HasForms
                 TextColumn::make('category_id')->hidden(),
                 TextColumn::make('stock')->numeric()->sortable(),
                 BooleanColumn::make('stock_override'),
-                TextColumn::make('box_size')->numeric()->sortable(),
             ])
             ->recordAction(
                 'setStockAdjustingProduct',
