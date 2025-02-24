@@ -256,8 +256,8 @@ class DashboardController extends Controller
             ->get();
         // Gift cards with the most revenue
         // Gift cards with the most revenue lost from refunds
-        // Percent of gift cards used
-        $data['percentUsed'] = GiftCard::where('remaining_balance', '>', 0)->count() / GiftCard::count() * 100;
+        // Percent of total gift card value used
+        $data['percentUsed'] = GiftCard::count() === 0 ? 0 : GiftCard::where('remaining_balance', '>', 0)->count() / GiftCard::count() * 100;
 
         return $data;
     }
