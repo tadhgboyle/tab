@@ -57,7 +57,7 @@ class GiftCardsList extends Component implements HasTable, HasForms
                     ])
                     ->query(function (Builder $query, array $data) {
                         return $query->when($data['status'] === 'active', function (Builder $query) {
-                            return $query->where('expires_at', '>', now());
+                            return $query->where('expires_at', '>', now())->orWhere('expires_at', null);
                         })->when($data['status'] === 'expired', function (Builder $query) {
                             return $query->where('expires_at', '<=', now());
                         });
