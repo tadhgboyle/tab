@@ -39,7 +39,7 @@
                     </div>
                     @endImpersonating
                 
-                    @if(auth()->user()->role->staff && auth()->user()->family)
+                    @if(auth()->user()?->role?->staff && auth()->user()?->family)
                     <div class="text-center text-sm py-2">
                         <p>
                             @if(\Str::contains(request()->url(), '/admin'))
