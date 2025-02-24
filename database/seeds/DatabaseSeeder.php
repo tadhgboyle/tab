@@ -30,6 +30,11 @@ class DatabaseSeeder extends Seeder
         if (App::isProduction()) {
             $this->command->info('Production environment detected, only seeding admin user...');
 
+            if (User::where('username', 'admin')->exists()) {
+                $this->command->info('Admin user already exists, skipping...');
+                return;
+            }
+
             User::factory()->state([
                 'full_name' => 'admin',
                 'username' => 'admin',
