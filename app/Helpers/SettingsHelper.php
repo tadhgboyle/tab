@@ -16,12 +16,18 @@ class SettingsHelper
     // TODO use firstOrCreate so tests dont need to set them?
     public function getGst(): float
     {
-        return $this->gst ??= Settings::firstWhere('setting', 'gst')->value;
+        return $this->gst ??= Settings::firstOrCreate([
+            'setting' => 'gst',
+            'value' => 5
+        ])->value;
     }
 
     public function getPst(): float
     {
-        return $this->pst ??= Settings::firstWhere('setting', 'pst')->value;
+        return $this->pst ??= Settings::firstOrCreate([
+            'setting' => 'pst',
+            'value' => 7
+        ])->value;
     }
 
     public function getOrderPrefix(): string
