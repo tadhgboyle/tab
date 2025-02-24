@@ -30,6 +30,7 @@
             @include('includes.navbar')
 
             <div class="sm:ml-64">
+                @if(is_impersonating() || (auth()->user()?->role?->staff && auth()->user()?->family))
                 <div class="bg-gray-50 border-b">
                     @impersonating
                     <div class="text-center text-sm py-2">
@@ -38,7 +39,7 @@
                         </p>
                     </div>
                     @endImpersonating
-                
+
                     @if(auth()->user()?->role?->staff && auth()->user()?->family)
                     <div class="text-center text-sm py-2">
                         <p>
@@ -52,6 +53,7 @@
                     </div>
                     @endif
                 </div>
+                @endif
 
                 <div class="p-4">
                     @yield('content')
