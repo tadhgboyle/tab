@@ -80,6 +80,13 @@ class Product extends Model
         return $this->hasManyThrough(PurchaseOrder::class, PurchaseOrderProduct::class, null, 'id', 'id', 'purchase_order_id');
     }
 
+    public function pendingPurchaseOrders(): HasManyThrough
+    {
+        return $this->purchaseOrders()
+            ->where('status', PurchaseOrderStatus::Pending)
+            ->whereColumn('received_quantity', '<', 'quantity');
+    }
+
     public function purchaseOrderProducts(): HasMany
     {
         return $this->hasMany(PurchaseOrderProduct::class);
@@ -154,14 +161,6 @@ class Product extends Model
         return $this->orders()->latest()->limit(10)->get();
     }
 
-    public function pendingPurchaseOrders(): Collection
-    {
-        return $this->purchaseOrders()
-            ->where('status', PurchaseOrderStatus::Pending)
-            ->whereColumn('received_quantity', '<', 'quantity')
-            ->latest()->limit(10)->get();
-    }
-
     public function totalRecentOrders(): int
     {
         return $this->orders()->where('orders.created_at', '>=', Carbon::now()->subDays(30))->count();
@@ -192,9 +191,6 @@ class Product extends Model
 
     public function incomingStock(): ?int
     {
-        return $this->purchaseOrders()
-            ->where('status', PurchaseOrderStatus::Pending)
-            ->whereColumn('received_quantity', '<', 'quantity')
-            ->sum('quantity');
+        return $this->pendingPurchaseOrders()->sum('quantity');
     }
 }

@@ -13,9 +13,21 @@ class PurchaseOrdersController extends Controller
         return view('pages.admin.products.purchase-orders.list');
     }
 
+    public function create()
+    {
+        return view('pages.admin.products.purchase-orders.form');
+    }
+
     public function show(PurchaseOrder $purchaseOrder)
     {
         return view('pages.admin.products.purchase-orders.view', [
+            'purchaseOrder' => $purchaseOrder,
+        ]);
+    }
+
+    public function edit(PurchaseOrder $purchaseOrder)
+    {
+        return view('pages.admin.products.purchase-orders.form', [
             'purchaseOrder' => $purchaseOrder,
         ]);
     }

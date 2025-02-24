@@ -8,6 +8,7 @@
         "barryvdh/laravel-dompdf": "^3.0",
         "calebporzio/sushi": "^2.5",
         "cknow/laravel-money": "^8.1",
+        "filament/forms": "^3.2",
         "filament/notifications": "^3.2",
         "filament/tables": "^3.2",
         "lab404/laravel-impersonate": "^1.7",

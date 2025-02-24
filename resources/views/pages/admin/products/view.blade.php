@@ -58,7 +58,7 @@
 
             <x-detail-card title="Pending Purchase Orders">
                 <x-detail-card-item-list>
-                        @forelse($product->pendingPurchaseOrders() as $purchaseOrder)
+                        @forelse($product->pendingPurchaseOrders as $purchaseOrder)
                             <x-detail-card-item label="<a href='{{ route('purchase_orders_view', $purchaseOrder->id) }}'>{{ $purchaseOrder->reference }}</a>">
                                 {{ $purchaseOrder->products->where('product_id', $product->id)->first()->quantity }} units
                             </x-detail-card-item>

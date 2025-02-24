@@ -24,8 +24,8 @@
                 @endpermission
 
                 @permission(\App\Helpers\Permission::PRODUCTS)
-                    <x-nav-link :routes="['products_list', 'purchase_orders_view']" :icon="'🏷'" :name="'Products'" :url="route('products_list')" :sublinks="[
-                        ['route' => 'purchase_orders_list', 'name' => 'Purchase Orders', 'sub_routes' => ['purchase_orders_view']],
+                    <x-nav-link :routes="['products_list', 'purchase_orders_view', 'purchase_orders_create', 'purchase_orders_edit']" :icon="'🏷'" :name="'Products'" :url="route('products_list')" :sublinks="[
+                        ['route' => 'purchase_orders_list', 'name' => 'Purchase Orders', 'sub_routes' => ['purchase_orders_view', 'purchase_orders_create', 'purchase_orders_edit']],
                     ]" />
                 @endpermission
 
