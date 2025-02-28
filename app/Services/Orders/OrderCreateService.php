@@ -68,7 +68,9 @@ class OrderCreateService extends HttpService
             $variantId = isset($product_meta->variantId) ? $product_meta->variantId : null;
             $quantity = $product_meta->quantity;
 
+            /** @var Product */
             $product = Product::find($id);
+            /** @var ?\App\Models\ProductVariant */
             $productVariant = $variantId ? $product->variants->find($variantId) : null;
             if ($product->hasVariants() && !$productVariant) {
                 $this->_result = self::RESULT_MUST_SELECT_VARIANT;

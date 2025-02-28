@@ -30,14 +30,16 @@
                     ]" />
                 @endpermission
 
-                @permission(\App\Helpers\Permission::PRODUCTS)
+                @permission(\App\Helpers\Permission::ACTIVITIES)
                     <x-nav-link :routes="['activities_calendar']" :icon="'📅'" :name="'Activities'" :url="route('activities_calendar')" :sublinks="[
                         ['route' => 'activities_list', 'name' => 'List'],
                     ]" />
                 @endpermission
 
                 @permission(\App\Helpers\Permission::USERS)
-                    <x-nav-link :routes="['users_list']" :icon="'👥'" :name="'Users'" :url="route('users_list')"/>
+                    <x-nav-link :routes="['users_list']" :icon="'👥'" :name="'Users'" :url="route('users_list')" :sublinks="[
+                        hasPermission(\App\Helpers\Permission::FAMILIES) ? ['route' => 'families_list', 'name' => 'Families'] : null,
+                    ]" />
                 @endpermission
 
                 @permission(\App\Helpers\Permission::FAMILIES)
@@ -46,17 +48,15 @@
             </ul>
         </div>
 
-        <!-- Settings Section -->
         @permission(\App\Helpers\Permission::SETTINGS)
-            <div class="mt-4 border-t border-gray-200 pt-4">
+            <div class="mt-2 pt-2">
                 <ul class="space-y-2 font-medium text-md">
                     <x-nav-link :routes="['settings']" :icon="'⚙️'" :name="'Settings'" :url="route('settings')"/>
                 </ul>
             </div>
         @endpermission
 
-        <!-- User Info -->
-        <div class="border-t border-gray-200 pt-4 mt-4">
+        <div class="border-t border-gray-200 pt-4 mt-2">
             <div class="flex items-center">
                 <div class="ms-3">
                     <p class="text-sm text-gray-900 font-medium">{{ auth()->user()->full_name }}</p>
