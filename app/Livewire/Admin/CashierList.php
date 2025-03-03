@@ -22,7 +22,8 @@ class CashierList extends Component implements HasTable, HasForms
     public function table(Table $table): Table
     {
         return $table
-            ->query(User::query()
+            ->query(
+                User::query()
                 ->unless(
                     hasPermission(Permission::CASHIER_USERS_OTHER_ROTATIONS),
                     function (Builder $query) {
