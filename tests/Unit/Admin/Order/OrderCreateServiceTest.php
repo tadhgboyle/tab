@@ -407,7 +407,7 @@ class OrderCreateServiceTest extends TestCase
     {
         $chips = Product::factory()->create([
             'name' => 'Chips',
-            'cost'  => 1_10,
+            'cost' => 1_10,
             'price' => $over_balance ? 5999_99 : 1_50,
             'pst' => false,
             'category_id' => $food_category->id,
