@@ -2,11 +2,11 @@
 
 namespace App\Livewire\Admin;
 
-use App\Helpers\Permission;
-use Filament\Tables\Actions\Action;
 use Livewire\Component;
 use App\Models\Activity;
 use Filament\Tables\Table;
+use App\Helpers\Permission;
+use Filament\Tables\Actions\Action;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
@@ -29,7 +29,8 @@ class ActivitiesList extends Component implements HasTable, HasForms
             ->headerActions(
                 hasPermission(Permission::ACTIVITIES_MANAGE) ? [
                     Action::make('create')->url(route('activities_create'))
-                ] : [])
+                ] : []
+            )
             ->columns([
                 TextColumn::make('name')->sortable()->searchable(),
                 TextColumn::make('start')->sortable()->dateTime('M jS Y h:ia'),

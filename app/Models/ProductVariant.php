@@ -54,14 +54,13 @@ class ProductVariant extends Model
      */
     public function descriptions(bool $excludeTrashedOptions): Collection
     {
-        // Requires sqlite 3.46.0 or higher
         $results = DB::select("
-            SELECT 
+            SELECT
                 CONCAT(o.name, ': ', v.value) AS option_value_assignment
             FROM product_variant_option_value_assignments a
             JOIN product_variant_options o ON a.product_variant_option_id = o.id
             JOIN product_variant_option_values v ON a.product_variant_option_value_id = v.id
-            WHERE 
+            WHERE
                 (:exclude_trashed_options = 0 OR (o.deleted_at IS NULL AND v.deleted_at IS NULL))
                 AND a.product_variant_id = :product_variant_id
             ", [

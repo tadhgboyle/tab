@@ -8,7 +8,7 @@ use App\Models\OrderProduct;
 class TaxHelper
 {
     // TODO add test
-    public static function forOrderProduct(OrderProduct $orderProduct, int $quantity = null): Money
+    public static function forOrderProduct(OrderProduct $orderProduct, ?int $quantity = null): Money
     {
         return self::calculateFor(
             $orderProduct->price,

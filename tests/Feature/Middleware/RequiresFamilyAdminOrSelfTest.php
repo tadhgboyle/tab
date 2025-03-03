@@ -46,7 +46,7 @@ class RequiresFamilyAdminOrSelfTest extends TestCase
     public function test403PageIsRenderedIfNotFamilyAdminAndNotSelf(): void
     {
         $this->actingAs($this->_user)
-            ->get(route('family_member_pdf', ['family' => $this->_family, 'familyMember' => $this->_user2]))
+            ->get(route('family_member_pdf', ['family' => $this->_family, 'familyMember' => $this->_user2->familyMember]))
             ->assertForbidden();
     }
 
@@ -57,14 +57,14 @@ class RequiresFamilyAdminOrSelfTest extends TestCase
         ]);
 
         $this->actingAs($this->_user)
-        ->get(route('family_member_pdf', ['family' => $this->_family, 'familyMember' => $this->_user2]))
+        ->get(route('family_member_pdf', ['family' => $this->_family, 'familyMember' => $this->_user2->familyMember]))
         ->assertOk();
     }
 
     public function testNextIsCalledIfSelf(): void
     {
         $this->actingAs($this->_user)
-        ->get(route('family_member_pdf', ['family' => $this->_family, 'familyMember' => $this->_user]))
+        ->get(route('family_member_pdf', ['family' => $this->_family, 'familyMember' => $this->_user->familyMember]))
         ->assertOk();
     }
 }

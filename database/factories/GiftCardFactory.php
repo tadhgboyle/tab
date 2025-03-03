@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -14,7 +15,7 @@ class GiftCardFactory extends Factory
         // round to nearest $5
         $original_balance = round($original_balance / 5) * 5;
         $users = User::all();
-        $issuer = $users->shuffle()->whereIn('role_id', [1, 3])->first();
+        $issuer = $users->shuffle()->whereIn('role_id', Role::query()->where('staff', true)->pluck('id'))->first();
 
         $created_at = $this->faker->dateTimeBetween($issuer->created_at);
 

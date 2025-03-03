@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\ProductVariant;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Payout;
@@ -15,6 +14,7 @@ use App\Helpers\Permission;
 use App\Models\OrderReturn;
 use App\Models\OrderProduct;
 use Illuminate\Http\Request;
+use App\Models\ProductVariant;
 use App\Models\GiftCardAdjustment;
 use App\Models\OrderProductReturn;
 use Illuminate\Support\Collection;

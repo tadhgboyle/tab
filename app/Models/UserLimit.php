@@ -7,9 +7,9 @@ use Cknow\Money\Money;
 use App\Enums\OrderStatus;
 use App\Helpers\TaxHelper;
 use App\Enums\UserLimitDuration;
+use Illuminate\Database\Query\Builder;
 use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 

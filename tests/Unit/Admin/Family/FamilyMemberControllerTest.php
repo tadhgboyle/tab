@@ -77,7 +77,7 @@ class FamilyMemberControllerTest extends TestCase
         $this->assertFalse($this->_user->isFamilyAdmin());
 
         $this
-            ->patch(route('families_user_update', [$this->_family->id, $this->_user->id]), [
+            ->patch(route('families_user_update', [$this->_family, $this->_user->familyMember]), [
                 'role' => FamilyMemberRole::Admin->value,
             ])
             ->assertSessionHas('success', "{$this->_user->full_name} role updated to Admin.");
@@ -96,7 +96,7 @@ class FamilyMemberControllerTest extends TestCase
         ]);
 
         $this
-            ->delete(route('families_user_remove', [$this->_family->id, $this->_user->id]))
+            ->delete(route('families_user_remove', [$this->_family, $this->_user->familyMember]))
             ->assertSessionHas('success', "{$this->_user->full_name} removed from {$this->_family->name}.");
 
         $this->assertNull($this->_user->refresh()->family);
