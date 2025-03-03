@@ -135,7 +135,7 @@ class OrderCreateServiceTest extends TestCase
         $orderService = new OrderCreateService($this->createFakeRequest($camper_user, with_variant_selected: true), $camper_user);
 
         $this->assertSame(OrderCreateService::RESULT_SUCCESS, $orderService->getResult());
-        $this->assertEquals('#1', $orderService->getOrder()->identifier);
+        $this->assertEquals("#{$orderService->getOrder()->id}", $orderService->getOrder()->identifier);
         $this->assertStringContainsString('now has $936.19', $orderService->getMessage());
         $this->assertCount(1, Order::all());
         $this->assertCount(1, $camper_user->refresh()->orders);

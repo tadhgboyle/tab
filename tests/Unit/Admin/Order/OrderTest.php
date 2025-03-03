@@ -44,8 +44,7 @@ class OrderTest extends TestCase
 
     public function testSetsIdentifierOnCreate(): void
     {
-        $this->assertNotNull($this->order->identifier);
-        $this->assertEquals('#1', $this->order->identifier);
+        $this->assertEquals("#{$this->order->id}", $this->order->identifier);
     }
 
     public function testTotalPriceCastedToMoneyObject(): void
