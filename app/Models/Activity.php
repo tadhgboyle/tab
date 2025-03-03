@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Helpers\Permission;
 use Cknow\Money\Money;
 use App\Helpers\TaxHelper;
+use App\Helpers\Permission;
 use Carbon\CarbonInterface;
 use App\Enums\ActivityStatus;
 use App\Concerns\Timeline\HasTimeline;

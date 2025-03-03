@@ -3,11 +3,11 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Product;
-use Filament\Tables\Actions\Action;
 use Livewire\Component;
 use Filament\Tables\Table;
 use App\Helpers\Permission;
 use App\Enums\ProductStatus;
+use Filament\Tables\Actions\Action;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
@@ -34,7 +34,8 @@ class ProductsList extends Component implements HasTable, HasForms
             ->headerActions(
                 hasPermission(Permission::PRODUCTS_MANAGE) ? [
                     Action::make('create')->url(route('products_create'))
-                ] : [])
+                ] : []
+            )
             ->columns([
                 TextColumn::make('name')->sortable()->searchable(),
                 TextColumn::make('category.name')->searchable()->badge()->color('gray'),

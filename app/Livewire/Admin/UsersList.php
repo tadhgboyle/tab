@@ -2,12 +2,12 @@
 
 namespace App\Livewire\Admin;
 
-use App\Helpers\RotationHelper;
 use App\Models\User;
-use Filament\Tables\Actions\Action;
 use Livewire\Component;
 use Filament\Tables\Table;
 use App\Helpers\Permission;
+use App\Helpers\RotationHelper;
+use Filament\Tables\Actions\Action;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
@@ -39,7 +39,8 @@ class UsersList extends Component implements HasTable, HasForms
             ->headerActions(
                 hasPermission(Permission::USERS_MANAGE) ? [
                     Action::make('create')->url(route('users_create'))
-                ] : [])
+                ] : []
+            )
             ->columns([
                 TextColumn::make('full_name')->label('Name')->sortable()->searchable(),
                 TextColumn::make('username')->sortable()->searchable(),

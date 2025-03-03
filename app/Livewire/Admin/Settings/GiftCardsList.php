@@ -2,10 +2,10 @@
 
 namespace App\Livewire\Admin\Settings;
 
-use App\Helpers\Permission;
 use Livewire\Component;
 use App\Models\GiftCard;
 use Filament\Tables\Table;
+use App\Helpers\Permission;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Select;
