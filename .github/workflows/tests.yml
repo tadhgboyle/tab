@@ -29,7 +29,7 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.2'
+        php-version: '8.4'
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
     - name: Install Dependencies
@@ -41,11 +41,8 @@ jobs:
     - name: Directory Permissions
       run: chmod -R 777 storage bootstrap/cache
     - name: Migrate test database
-      # env:
-      #   DB_DATABASE: tab_test
-      #   DB_PORT: ${{ job.services.mysql.ports['3306'] }}
-      #   DB_USERNAME: root
-      #   DB_PASSWORD:
+      env:
+        DB_PORT: ${{ job.services.mysql.ports['3306'] }}
       run: php artisan migrate
     - name: Execute tests
       env:
