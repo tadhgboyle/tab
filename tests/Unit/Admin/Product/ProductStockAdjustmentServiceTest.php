@@ -15,15 +15,17 @@ class ProductStockAdjustmentServiceTest extends TestCase
 {
     use RefreshDatabase;
 
+    private User $_user;
+
     public function setUp(): void
     {
         parent::setUp();
 
         $role = Role::factory()->create();
-        $user = User::factory()->create([
+        $this->_user = User::factory()->create([
             'role_id' => $role->id,
         ]);
-        $this->actingAs($user);
+        $this->actingAs($this->_user);
     }
 
     public function testCannotAdjustStockWithoutBoxInputWhenRequired(): void
@@ -76,7 +78,9 @@ class ProductStockAdjustmentServiceTest extends TestCase
 
         $inventoryAdjustment = $product->inventoryAdjustments->last();
         $this->assertSame(7, $inventoryAdjustment->adjustment);
-        $this->assertSame(7, $product->stock);
+        $this->assertSame(7, $inventoryAdjustment->new_quantity);
+        $this->assertSame($this->_user->id, $inventoryAdjustment->causer_id);
+        $this->assertSame(get_class($this->_user), $inventoryAdjustment->causer_type);
     }
 
     public function testCanAdjustStockWithBoxSize(): void
@@ -100,7 +104,9 @@ class ProductStockAdjustmentServiceTest extends TestCase
 
         $inventoryAdjustment = $product->inventoryAdjustments->last();
         $this->assertSame(25, $inventoryAdjustment->adjustment);
-        $this->assertSame(25, $product->stock);
+        $this->assertSame(25, $inventoryAdjustment->new_quantity);
+        $this->assertSame($this->_user->id, $inventoryAdjustment->causer_id);
+        $this->assertSame(get_class($this->_user), $inventoryAdjustment->causer_type);
     }
 
     public function testCanAdjustStockWithStockCountAndBoxSize(): void
@@ -120,11 +126,13 @@ class ProductStockAdjustmentServiceTest extends TestCase
         $this->assertSame(ProductStockAdjustmentService::RESULT_SUCCESS, $productService->getResult());
 
         $product->refresh();
-        $this->assertsame(26, $product->stock);
+        $this->assertSame(26, $product->stock);
         $this->assertSame($product->id, session()->get('last_product')->id);
 
         $inventoryAdjustment = $product->inventoryAdjustments->last();
         $this->assertSame(26, $inventoryAdjustment->adjustment);
-        $this->assertSame(26, $product->stock);
+        $this->assertSame(26, $inventoryAdjustment->new_quantity);
+        $this->assertSame($this->_user->id, $inventoryAdjustment->causer_id);
+        $this->assertSame(get_class($this->_user), $inventoryAdjustment->causer_type);
     }
 }

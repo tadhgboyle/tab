@@ -128,7 +128,7 @@ class OrderReturnProductService extends HttpService
                     'product_id' => $this->_orderProduct->product->id,
                     'adjustment' => 1,
                     'new_quantity' => $this->_orderProduct->productVariant->stock,
-                    'reason' => "Partial from order {$this->_order->identifier}",
+                    'reason' => "Partial from Order {$this->_order->identifier}",
                     'causer_id' => auth()->id(),
                     'causer_type' => get_class(auth()->user()),
                 ]);
@@ -137,7 +137,7 @@ class OrderReturnProductService extends HttpService
                 $this->_orderProduct->product->inventoryAdjustments()->create([
                     'adjustment' => 1,
                     'new_quantity' => $this->_orderProduct->product->stock,
-                    'reason' => "Partial from order {$this->_order->identifier}",
+                    'reason' => "Partial from Order {$this->_order->identifier}",
                     'causer_id' => auth()->id(),
                     'causer_type' => get_class(auth()->user()),
                 ]);

@@ -71,7 +71,7 @@ class InventoryAdjustmentsList extends Component implements HasTable, HasForms
             ->bulkActions([
                 // ...
             ])
-            ->paginated(false)
+            ->paginated(true)
             ->defaultSort('created_at', 'desc');
     }
 }
