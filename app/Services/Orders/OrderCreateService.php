@@ -186,14 +186,6 @@ class OrderCreateService extends HttpService
             }
         }
 
-        $order_products->each(function (OrderProduct $orderProduct) {
-            if ($orderProduct->productVariant) {
-                $orderProduct->productVariant->removeStock($orderProduct->quantity);
-            } else {
-                $orderProduct->product->removeStock($orderProduct->quantity);
-            }
-        });
-
         $order = new Order();
         $order->purchaser_id = $purchaser->id;
         $order->cashier_id = auth()->id();
@@ -218,6 +210,29 @@ class OrderCreateService extends HttpService
         $order_products->each(function (OrderProduct $product) use ($order) {
             $product->order_id = $order->id;
             $product->save();
+        });
+
+        $order_products->each(function (OrderProduct $orderProduct) use ($order) {
+            if ($orderProduct->productVariant) {
+                $orderProduct->productVariant->removeStock($orderProduct->quantity);
+                $orderProduct->productVariant->inventoryAdjustments()->create([
+                    'product_id' => $orderProduct->product_id,
+                    'adjustment' => -$orderProduct->quantity,
+                    'new_quantity' => $orderProduct->productVariant->stock,
+                    'reason' => "Order {$order->identifier}",
+                    'causer_id' => $order->id,
+                    'causer_type' => get_class($order),
+                ]);
+            } else {
+                $orderProduct->product->removeStock($orderProduct->quantity);
+                $orderProduct->product->inventoryAdjustments()->create([
+                    'adjustment' => -$orderProduct->quantity,
+                    'new_quantity' => $orderProduct->product->stock,
+                    'reason' => "Order {$order->identifier}",
+                    'causer_id' => $order->id,
+                    'causer_type' => get_class($order),
+                ]);
+            }
         });
 
         $purchaser->update(['balance' => $remaining_balance]);

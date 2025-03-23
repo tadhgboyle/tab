@@ -41,10 +41,6 @@
                         hasPermission(\App\Helpers\Permission::FAMILIES) ? ['route' => 'families_list', 'name' => 'Families'] : null,
                     ]" />
                 @endpermission
-
-                @permission(\App\Helpers\Permission::FAMILIES)
-                    <x-nav-link :routes="['families_list']" :icon="'👪'" :name="'Families'" :url="route('families_list')"/>
-                @endpermission
             </ul>
         </div>
 

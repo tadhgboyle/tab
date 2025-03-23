@@ -32,6 +32,11 @@ class ProductVariant extends Model
         return $this->belongsTo(Product::class);
     }
 
+    public function inventoryAdjustments(): HasMany
+    {
+        return $this->hasMany(ProductInventoryAdjustment::class);
+    }
+
     public function optionValueAssignments(): HasMany
     {
         return $this->hasMany(ProductVariantOptionValueAssignment::class);

@@ -37,7 +37,7 @@
                             @if(!$order->isReturned() && $orderProduct->returned < $orderProduct->quantity)
                                 <x-filament::button onclick="openProductModal({{ $orderProduct->id }});" color="danger" size="xs">
                                     Return ({{ $orderProduct->quantity - $orderProduct->returned }})
-                                </x-filament::button>  
+                                </x-filament::button>
                             @endif
                         @endpermission
                     </div>
@@ -62,7 +62,7 @@
 
                         <div class="text-right">
                             <p class="text-xs">
-                                {{ $orderProduct->price }} x 
+                                {{ $orderProduct->price }} x
                                 @if($orderProduct->returned > 0)
                                     <del>{{ $orderProduct->quantity }}</del> {{ $orderProduct->quantity - $orderProduct->returned }}
                                 @else
@@ -106,7 +106,7 @@
                         @if($order->gift_card_amount->isPositive())
                         <div class="flex justify-between items-center text-sm text-gray-950">
                             <dt>
-                                <a href="{{ route('settings_gift-cards_view', [$order->giftCard]) }}">Paid with gift card</a>
+                                Paid with gift card • <a href="{{ route('settings_gift-cards_view', [$order->giftCard]) }}">{{ $order->giftCard->code() }}</a>
                             </dt>
                             <dd class="text-right text-gray-800">{{ $order->gift_card_amount }}</dd>
                         </div>
