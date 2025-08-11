@@ -46,27 +46,12 @@ class OrderReturnService extends HttpService
                 $amountToRestore = $orderProduct->quantity - $returned;
                 if ($orderProduct->productVariant) {
                     $orderProduct->productVariant->adjustStock(
-                        $amountToRestore
+                        $amountToRestore, "Full return of Order {$this->_order->identifier}", auth()->user()
                     );
-                    $orderProduct->productVariant->inventoryAdjustments()->create([
-                        'product_id' => $orderProduct->product_id,
-                        'adjustment' => $amountToRestore,
-                        'new_quantity' => $orderProduct->productVariant->stock,
-                        'reason' => "Full return of Order {$this->_order->identifier}",
-                        'causer_id' => auth()->id(),
-                        'causer_type' => get_class(auth()->user()),
-                    ]);
                 } else {
                     $orderProduct->product->adjustStock(
-                        $amountToRestore
+                        $amountToRestore, "Full return of Order {$this->_order->identifier}", auth()->user()
                     );
-                    $orderProduct->product->inventoryAdjustments()->create([
-                        'adjustment' => $amountToRestore,
-                        'new_quantity' => $orderProduct->product->stock,
-                        'reason' => "Full return of Order {$this->_order->identifier}",
-                        'causer_id' => auth()->id(),
-                        'causer_type' => get_class(auth()->user()),
-                    ]);
                 }
             }
         });

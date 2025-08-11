@@ -49,26 +49,18 @@ class ProductStockAdjustmentService extends HttpService
         }
 
         if ($productVariant?->exists) {
-            $productVariant->adjustStock($adjust_stock);
+            $productVariant->adjustStock($adjust_stock, null, auth()->user());
 
             if ($request->has('adjust_box')) {
-                $productVariant->addBox($adjust_box);
+                $productVariant->addBox($adjust_box, null, auth()->user());
             }
         } else {
-            $product->adjustStock($adjust_stock);
+            $product->adjustStock($adjust_stock, null, auth()->user());
 
             if ($request->has('adjust_box')) {
-                $product->addBox($adjust_box);
+                $product->addBox($adjust_box, null, auth()->user());
             }
         }
-
-        ($productVariant ?? $product)->inventoryAdjustments()->create([
-            'product_id' => $product->id,
-            'adjustment' => $adjust_stock + ($adjust_box * $product->box_size),
-            'new_quantity' => $product->stock,
-            'causer_id' => auth()->id(),
-            'causer_type' => get_class(auth()->user()),
-        ]);
 
         $this->_result = self::RESULT_SUCCESS;
         $this->_message = 'Successfully added ' . $adjust_stock . ' stock and ' . $adjust_box . ' boxes to ' . $name . '.';

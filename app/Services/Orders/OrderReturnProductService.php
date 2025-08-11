@@ -123,24 +123,9 @@ class OrderReturnProductService extends HttpService
     {
         if ($this->_orderProduct->product->restore_stock_on_return) {
             if ($this->_orderProduct->productVariant) {
-                $this->_orderProduct->productVariant->adjustStock(1);
-                $this->_orderProduct->productVariant->inventoryAdjustments()->create([
-                    'product_id' => $this->_orderProduct->product->id,
-                    'adjustment' => 1,
-                    'new_quantity' => $this->_orderProduct->productVariant->stock,
-                    'reason' => "Partial from Order {$this->_order->identifier}",
-                    'causer_id' => auth()->id(),
-                    'causer_type' => get_class(auth()->user()),
-                ]);
+                $this->_orderProduct->productVariant->adjustStock(1, "Partial from Order {$this->_order->identifier}", auth()->user());
             } else {
-                $this->_orderProduct->product->adjustStock(1);
-                $this->_orderProduct->product->inventoryAdjustments()->create([
-                    'adjustment' => 1,
-                    'new_quantity' => $this->_orderProduct->product->stock,
-                    'reason' => "Partial from Order {$this->_order->identifier}",
-                    'causer_id' => auth()->id(),
-                    'causer_type' => get_class(auth()->user()),
-                ]);
+                $this->_orderProduct->product->adjustStock(1, "Partial from Order {$this->_order->identifier}", auth()->user());
             }
         }
     }

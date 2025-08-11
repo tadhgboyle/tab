@@ -2,6 +2,9 @@
 
 namespace App\Traits;
 
+use App\Models\Order;
+use App\Models\ProductVariant;
+
 trait InteractsWithStock
 {
     public function hasStock(int $quantity): bool
@@ -26,27 +29,40 @@ trait InteractsWithStock
         return $this->stock;
     }
 
-    public function removeStock(int $remove_stock): bool
+    public function removeStock(int $remove_stock, ?string $reason, $causer): void
     {
         if ($this->unlimited_stock) {
-            return true;
+            $this->createInventoryAdjustment(-$remove_stock, $reason, $causer);
+            return;
         }
 
-        if ($this->stock_override || ($this->getStock() >= $remove_stock)) {
+        if ($this->stock_override || ($this->stock >= $remove_stock)) {
             $this->decrement('stock', $remove_stock);
-            return true;
+            $this->createInventoryAdjustment(-$remove_stock, $reason, $causer);
+            return;
         }
-
-        return false;
     }
 
-    public function adjustStock(int $new_stock): false|int
+    public function adjustStock(int $new_stock, ?string $reason, $causer): void
     {
-        return $this->increment('stock', $new_stock);
+        $this->increment('stock', $new_stock);
+        $this->createInventoryAdjustment($new_stock, $reason, $causer);
     }
 
-    public function addBox(int $box_count): bool|int
+    public function addBox(int $box_count, ?string $reason, $causer): void
     {
-        return $this->adjustStock($box_count * $this->box_size);
+        $this->adjustStock($box_count * $this->box_size, $reason, $causer);
+    }
+
+    private function createInventoryAdjustment(int $adjustment, ?string $reason, $causer): void
+    {
+        $this->inventoryAdjustments()->create([
+            'product_id' => $this instanceof ProductVariant ? $this->product_id : $this->id,
+            'adjustment' => $adjustment,
+            'new_quantity' => $this->stock,
+            'reason' => $reason,
+            'causer_id' => $causer->id,
+            'causer_type' => $causer::class,
+        ]);
     }
 }

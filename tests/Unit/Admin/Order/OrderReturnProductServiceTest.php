@@ -203,7 +203,7 @@ class OrderReturnProductServiceTest extends TestCase
         $inventoryAdjustment = $hat->inventoryAdjustments->last();
         $this->assertEquals(1, $inventoryAdjustment->adjustment);
         $this->assertEquals($hat->stock, $inventoryAdjustment->new_quantity);
-        $this->assertEquals("Partial from order {$order->identifier}", $inventoryAdjustment->reason);
+        $this->assertEquals("Partial from Order {$order->identifier}", $inventoryAdjustment->reason);
         $this->assertEquals(auth()->id(), $inventoryAdjustment->causer_id);
         $this->assertEquals(get_class(auth()->user()), $inventoryAdjustment->causer_type);
     }
