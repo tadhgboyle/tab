@@ -2,11 +2,13 @@
 
 namespace App\Livewire\Admin;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Action;
 use Livewire\Component;
 use App\Models\Activity;
 use Filament\Tables\Table;
 use App\Helpers\Permission;
-use Filament\Tables\Actions\Action;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
@@ -16,8 +18,9 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Filters\QueryBuilder\Constraints\DateConstraint;
 
-class ActivitiesList extends Component implements HasTable, HasForms
+class ActivitiesList extends Component implements HasTable, HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithTable;
     use InteractsWithForms;
 
@@ -55,10 +58,10 @@ class ActivitiesList extends Component implements HasTable, HasForms
                     ]),
             ])
             ->filtersFormColumns(2)
-            ->actions([
+            ->recordActions([
                 // ...
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 // ...
             ])
             ->defaultSort('start', 'desc');

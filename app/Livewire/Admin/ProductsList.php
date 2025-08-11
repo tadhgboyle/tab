@@ -2,12 +2,14 @@
 
 namespace App\Livewire\Admin;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Action;
 use App\Models\Product;
 use Livewire\Component;
 use Filament\Tables\Table;
 use App\Helpers\Permission;
 use App\Enums\ProductStatus;
-use Filament\Tables\Actions\Action;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
@@ -17,8 +19,9 @@ use Filament\Tables\Filters\TernaryFilter;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
-class ProductsList extends Component implements HasTable, HasForms
+class ProductsList extends Component implements HasTable, HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithTable;
     use InteractsWithForms;
 
@@ -69,10 +72,10 @@ class ProductsList extends Component implements HasTable, HasForms
                 SelectFilter::make('status')
                     ->options(ProductStatus::class)->visible(hasPermission(Permission::PRODUCTS_VIEW_DRAFT)),
             ])
-            ->actions([
+            ->recordActions([
                 // ...
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 // ...
             ])
             ->defaultSort('name');

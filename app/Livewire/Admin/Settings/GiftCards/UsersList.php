@@ -2,20 +2,23 @@
 
 namespace App\Livewire\Admin\Settings\GiftCards;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Action;
 use Livewire\Component;
 use App\Models\GiftCard;
 use Filament\Tables\Table;
 use App\Helpers\Permission;
 use App\Models\GiftCardAssignment;
-use Filament\Tables\Actions\Action;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
-class UsersList extends Component implements HasTable, HasForms
+class UsersList extends Component implements HasTable, HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithTable;
     use InteractsWithForms;
 
@@ -51,13 +54,13 @@ class UsersList extends Component implements HasTable, HasForms
             ->filters([
                 // ...
             ])
-            ->actions([
+            ->recordActions([
                 Action::make('revoke')
                     ->alpineClickHandler(function (GiftCardAssignment $giftCardAssignment) {
                         return "openRemoveUserModal('{$giftCardAssignment->user->id}', '{$giftCardAssignment->user->full_name}')";
                     })
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 // ...
             ])
             ->defaultSort('created_at', 'desc')

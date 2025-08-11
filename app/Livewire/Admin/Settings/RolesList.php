@@ -2,10 +2,12 @@
 
 namespace App\Livewire\Admin\Settings;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Action;
 use App\Models\Role;
 use Livewire\Component;
 use Filament\Tables\Table;
-use Filament\Tables\Actions\Action;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
@@ -13,8 +15,9 @@ use Filament\Tables\Columns\BooleanColumn;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
-class RolesList extends Component implements HasTable, HasForms
+class RolesList extends Component implements HasTable, HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithTable;
     use InteractsWithForms;
 
@@ -35,11 +38,11 @@ class RolesList extends Component implements HasTable, HasForms
             ->filters([
                 // ...
             ])
-            ->actions([
+            ->recordActions([
                 Action::make('edit')
                     ->url(fn (Role $role) => route('settings_roles_edit', $role)),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 // ...
             ])
             ->reorderable('order')

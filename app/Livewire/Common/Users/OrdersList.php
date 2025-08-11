@@ -2,20 +2,23 @@
 
 namespace App\Livewire\Common\Users;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Action;
 use App\Models\User;
 use App\Models\Order;
 use Livewire\Component;
 use Filament\Tables\Table;
 use App\Helpers\Permission;
-use Filament\Tables\Actions\Action;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
-class OrdersList extends Component implements HasTable, HasForms
+class OrdersList extends Component implements HasTable, HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithTable;
     use InteractsWithForms;
 
@@ -60,10 +63,10 @@ class OrdersList extends Component implements HasTable, HasForms
             ->filters([
                 // ...
             ])
-            ->actions([
+            ->recordActions([
                 // ...
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 // ...
             ])
             ->paginated(false);

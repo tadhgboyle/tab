@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Admin;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
 use App\Models\Order;
 use Livewire\Component;
 use App\Enums\OrderStatus;
@@ -14,8 +16,9 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
-class OrdersList extends Component implements HasTable, HasForms
+class OrdersList extends Component implements HasTable, HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithTable;
     use InteractsWithForms;
 
@@ -42,10 +45,10 @@ class OrdersList extends Component implements HasTable, HasForms
                     return route('orders_view', $order);
                 }
             })
-            ->actions([
+            ->recordActions([
                 // ...
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 // ...
             ])
             ->defaultSort('created_at', 'desc');

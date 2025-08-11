@@ -2,13 +2,15 @@
 
 namespace App\Livewire\Common\Users;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Action;
 use App\Models\User;
 use App\Models\Payout;
 use Livewire\Component;
 use Filament\Tables\Table;
 use App\Enums\PayoutStatus;
 use App\Helpers\Permission;
-use Filament\Tables\Actions\Action;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
@@ -16,8 +18,9 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
-class PayoutsList extends Component implements HasTable, HasForms
+class PayoutsList extends Component implements HasTable, HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithTable;
     use InteractsWithForms;
 
@@ -53,13 +56,13 @@ class PayoutsList extends Component implements HasTable, HasForms
                 SelectFilter::make('status')
                     ->options(PayoutStatus::class)->default(PayoutStatus::Paid->value),
             ])
-            ->actions([
+            ->recordActions([
                 Action::make('view')
                     ->url(fn (Payout $payout) => "https://dashboard.stripe.com/test/payments/{$payout->stripe_payment_intent_id}")
                     ->openUrlInNewTab()
                     ->visible(fn (Payout $payout) => $payout->stripe_payment_intent_id && $this->context === 'admin' && hasPermission(Permission::DASHBOARD_FINANCIAL)), // TODO: Add permission
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 // ...
             ])
             ->defaultSort('created_at', 'desc')

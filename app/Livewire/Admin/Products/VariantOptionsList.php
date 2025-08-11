@@ -2,11 +2,13 @@
 
 namespace App\Livewire\Admin\Products;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Action;
 use App\Models\Product;
 use Livewire\Component;
 use Filament\Tables\Table;
 use App\Helpers\Permission;
-use Filament\Tables\Actions\Action;
 use App\Models\ProductVariantOption;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
@@ -14,8 +16,9 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
-class VariantOptionsList extends Component implements HasTable, HasForms
+class VariantOptionsList extends Component implements HasTable, HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithTable;
     use InteractsWithForms;
 
@@ -38,12 +41,12 @@ class VariantOptionsList extends Component implements HasTable, HasForms
             ->filters([
                 // ...
             ])
-            ->actions([
+            ->recordActions([
                 Action::make('edit')
                     ->url(fn (ProductVariantOption $variantOption) => route('products_variant-options_edit', [$this->product, $variantOption]))
                     ->visible(hasPermission(Permission::PRODUCTS_MANAGE)),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 // ...
             ])
             ->paginated(false);

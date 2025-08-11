@@ -2,18 +2,21 @@
 
 namespace App\Livewire\Admin\Settings;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Action;
 use Livewire\Component;
 use App\Models\Rotation;
 use Filament\Tables\Table;
-use Filament\Tables\Actions\Action;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
-class RotationsList extends Component implements HasTable, HasForms
+class RotationsList extends Component implements HasTable, HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithTable;
     use InteractsWithForms;
 
@@ -36,11 +39,11 @@ class RotationsList extends Component implements HasTable, HasForms
             ->filters([
                 // ...
             ])
-            ->actions([
+            ->recordActions([
                 Action::make('edit')
                     ->url(fn (Rotation $rotation) => route('settings_rotations_edit', $rotation)),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 // ...
             ])
             ->defaultSort('start')

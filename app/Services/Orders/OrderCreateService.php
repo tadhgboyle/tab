@@ -2,6 +2,7 @@
 
 namespace App\Services\Orders;
 
+use App\Models\ProductVariant;
 use App\Models\User;
 use App\Models\Order;
 use Cknow\Money\Money;
@@ -70,7 +71,7 @@ class OrderCreateService extends HttpService
 
             /** @var Product */
             $product = Product::find($id);
-            /** @var ?\App\Models\ProductVariant */
+            /** @var ?ProductVariant */
             $productVariant = $variantId ? $product->variants->find($variantId) : null;
             if ($product->hasVariants() && !$productVariant) {
                 $this->_result = self::RESULT_MUST_SELECT_VARIANT;

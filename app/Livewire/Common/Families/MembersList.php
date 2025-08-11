@@ -2,12 +2,14 @@
 
 namespace App\Livewire\Common\Families;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Action;
 use App\Models\Family;
 use Livewire\Component;
 use Filament\Tables\Table;
 use App\Helpers\Permission;
 use App\Models\FamilyMember;
-use Filament\Tables\Actions\Action;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
@@ -15,8 +17,9 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
-class MembersList extends Component implements HasTable, HasForms
+class MembersList extends Component implements HasTable, HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithTable;
     use InteractsWithForms;
 
@@ -80,7 +83,7 @@ class MembersList extends Component implements HasTable, HasForms
                     ->openUrlInNewTab()
                     ->visible($this->context === 'admin' || ($this->context === 'family' && auth()->user()->isFamilyAdmin($this->family))),
             ])
-            ->actions([
+            ->recordActions([
                 Action::make('edit')
                     ->alpineClickHandler(function (FamilyMember $familyMember) {
                         return "openEditUserModal('{$familyMember->id}', '{$familyMember->user->full_name}', '{$familyMember->role->value}');";
@@ -101,7 +104,7 @@ class MembersList extends Component implements HasTable, HasForms
                         return $this->context === 'family' && (auth()->user()->isFamilyAdmin($this->family) || auth()->user()->id === $familyMember->user_id);
                     }),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 // ...
             ])
             ->paginated(false);

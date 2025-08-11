@@ -2,9 +2,11 @@
 
 namespace App\Livewire\Admin\Products\VariantOptions;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Action;
 use Livewire\Component;
 use Filament\Tables\Table;
-use Filament\Tables\Actions\Action;
 use App\Models\ProductVariantOption;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
@@ -13,8 +15,9 @@ use App\Models\ProductVariantOptionValue;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
-class ValuesList extends Component implements HasTable, HasForms
+class ValuesList extends Component implements HasTable, HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithTable;
     use InteractsWithForms;
 
@@ -35,13 +38,13 @@ class ValuesList extends Component implements HasTable, HasForms
             ->filters([
                 // ...
             ])
-            ->actions([
+            ->recordActions([
                 Action::make('edit')
                     ->alpineClickHandler(function (ProductVariantOptionValue $productVariantOptionValue) {
                         return "openEditValueModal('{$productVariantOptionValue->id}', '{$productVariantOptionValue->value}')";
                     }),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 // ...
             ])
             ->paginated(false);

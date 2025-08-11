@@ -2,11 +2,13 @@
 
 namespace App\Livewire\Admin\Activities;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Action;
 use Livewire\Component;
 use App\Models\Activity;
 use Filament\Tables\Table;
 use App\Helpers\Permission;
-use Filament\Tables\Actions\Action;
 use App\Models\ActivityRegistration;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
@@ -16,8 +18,9 @@ use Filament\Tables\Filters\TernaryFilter;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
-class RegistrationsList extends Component implements HasTable, HasForms
+class RegistrationsList extends Component implements HasTable, HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithTable;
     use InteractsWithForms;
 
@@ -58,7 +61,7 @@ class RegistrationsList extends Component implements HasTable, HasForms
                         false => 'Not Returned',
                     ])->default(false),
             ])
-            ->actions([
+            ->recordActions([
                 Action::make('remove')
                     ->alpineClickHandler(function (ActivityRegistration $activityRegistration) {
                         return "openRemoveUserModal({$this->activity->id}, {$activityRegistration->id})";
@@ -66,7 +69,7 @@ class RegistrationsList extends Component implements HasTable, HasForms
                         return hasPermission(Permission::ACTIVITIES_MANAGE_REGISTRATIONS) && !$this->activity->started() && !$activityRegistration->returned;
                     }),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 // ...
             ])
             ->defaultSort('created_at', 'desc')

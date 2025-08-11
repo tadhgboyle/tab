@@ -2,11 +2,13 @@
 
 namespace App\Livewire\Admin\Settings;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Action;
 use Livewire\Component;
 use App\Models\GiftCard;
 use Filament\Tables\Table;
 use App\Helpers\Permission;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Contracts\HasForms;
@@ -17,8 +19,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
-class GiftCardsList extends Component implements HasTable, HasForms
+class GiftCardsList extends Component implements HasTable, HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithTable;
     use InteractsWithForms;
 
@@ -48,7 +51,7 @@ class GiftCardsList extends Component implements HasTable, HasForms
             ->recordUrl(fn (GiftCard $giftCard) => route('settings_gift-cards_view', $giftCard))
             ->filters([
                 Filter::make('status')
-                    ->form([
+                    ->schema([
                         Select::make('status')
                             ->options([
                                 'active' => 'Active',
@@ -63,10 +66,10 @@ class GiftCardsList extends Component implements HasTable, HasForms
                         });
                     }),
             ])
-            ->actions([
+            ->recordActions([
                 // ...
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 // ...
             ])
             ->defaultSort('created_at', 'desc');

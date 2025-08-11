@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Admin\Products;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
 use Livewire\Component;
 use App\Models\Category;
 use Filament\Tables\Table;
@@ -16,8 +18,9 @@ use App\Models\Proxies\ProductsVariantsProxy;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
-class LedgerProductList extends Component implements HasTable, HasForms
+class LedgerProductList extends Component implements HasTable, HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithTable;
     use InteractsWithForms;
 
@@ -50,10 +53,10 @@ class LedgerProductList extends Component implements HasTable, HasForms
                     ->multiple()
                     ->options(Category::query()->whereNot('type', CategoryType::Activities)->pluck('name', 'id')->toArray())
             ])
-            ->actions([
+            ->recordActions([
                 // ...
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 // ...
             ])
             ->defaultSort('name');

@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Admin;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
 use App\Models\User;
 use Livewire\Component;
 use Filament\Tables\Table;
@@ -14,8 +16,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
-class CashierList extends Component implements HasTable, HasForms
+class CashierList extends Component implements HasTable, HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithTable;
     use InteractsWithForms;
 
@@ -51,10 +54,10 @@ class CashierList extends Component implements HasTable, HasForms
                     ->label('Rotations')
                     ->visible(hasPermission(Permission::CASHIER_USERS_OTHER_ROTATIONS)),
             ])
-            ->actions([
+            ->recordActions([
                 // ...
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 // ...
             ])
             ->defaultSort('full_name')

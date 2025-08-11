@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Payout;
@@ -132,7 +133,7 @@ class DashboardController extends Controller
         // Total revenue from orders
         $data['orderRevenue'] = Money::parse(Order::sum('total_price'));
         // Average margin across orders
-        $data['averageMargin'] = round(\Illuminate\Support\Facades\DB::select(
+        $data['averageMargin'] = round(DB::select(
             'SELECT AVG(price - cost) as average_margin FROM order_products'
         )[0]->average_margin / 100, 2);
         // Total revenue from activities
