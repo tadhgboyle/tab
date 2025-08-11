@@ -22,7 +22,7 @@
             <x-detail-card title="Details">
                 <x-detail-card-item-list>
                     <x-detail-card-item label="Name" :value="$user->full_name" />
-                    <x-detail-card-item label="Role">
+                    <x-detail-card-item label="Family role">
                         <x-badge :value="ucfirst($familyMember->role->value)" />
                     </x-detail-card-item>
                     <x-detail-card-item label="Balance" :value="$user->balance" />

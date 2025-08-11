@@ -19,6 +19,8 @@ use App\Services\Orders\OrderReturnService;
 use App\Services\Orders\OrderReturnProductService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+// TODO: test for variants?
+
 class OrderReturnServiceTest extends TestCase
 {
     use RefreshDatabase;
@@ -160,6 +162,8 @@ class OrderReturnServiceTest extends TestCase
     {
         [, $order, $hat] = $this->createFakeRecords(5);
 
+        $hat->inventoryAdjustments()->delete();
+
         $hat->update([
             'restore_stock_on_return' => false,
             'stock' => $start_stock = 12,
@@ -168,6 +172,7 @@ class OrderReturnServiceTest extends TestCase
         new OrderReturnService($order);
 
         $this->assertSame($start_stock, $hat->refresh()->stock);
+        $this->assertEmpty($hat->inventoryAdjustments);
     }
 
     public function testProductStockIsRestoredIfSettingEnabled(): void
@@ -182,6 +187,13 @@ class OrderReturnServiceTest extends TestCase
         new OrderReturnService($order);
 
         $this->assertSame($start_stock + $hat_count, $hat->refresh()->stock);
+
+        $inventoryAdjustment = $hat->inventoryAdjustments->last();
+        $this->assertSame($hat_count, $inventoryAdjustment->adjustment);
+        $this->assertSame($start_stock + $hat_count, $inventoryAdjustment->new_quantity);
+        $this->assertSame("Full return of Order {$order->identifier}", $inventoryAdjustment->reason);
+        $this->assertSame(auth()->id(), $inventoryAdjustment->causer_id);
+        $this->assertSame(get_class(auth()->user()), $inventoryAdjustment->causer_type);
     }
 
     /**

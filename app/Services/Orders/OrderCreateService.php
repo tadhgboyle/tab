@@ -186,14 +186,6 @@ class OrderCreateService extends HttpService
             }
         }
 
-        $order_products->each(function (OrderProduct $orderProduct) {
-            if ($orderProduct->productVariant) {
-                $orderProduct->productVariant->removeStock($orderProduct->quantity);
-            } else {
-                $orderProduct->product->removeStock($orderProduct->quantity);
-            }
-        });
-
         $order = new Order();
         $order->purchaser_id = $purchaser->id;
         $order->cashier_id = auth()->id();
@@ -218,6 +210,14 @@ class OrderCreateService extends HttpService
         $order_products->each(function (OrderProduct $product) use ($order) {
             $product->order_id = $order->id;
             $product->save();
+        });
+
+        $order_products->each(function (OrderProduct $orderProduct) use ($order) {
+            if ($orderProduct->productVariant) {
+                $orderProduct->productVariant->removeStock($orderProduct->quantity, "Order {$order->identifier}", $order);
+            } else {
+                $orderProduct->product->removeStock($orderProduct->quantity, "Order {$order->identifier}", $order);
+            }
         });
 
         $purchaser->update(['balance' => $remaining_balance]);

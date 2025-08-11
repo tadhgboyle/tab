@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('full_name');
             $table->string('username')->unique();
             $table->integer('balance');
-            $table->integer('role_id');
+            $table->foreignId('role_id')->constrained();
             $table->string('password')->nullable();
             $table->rememberToken();
             $table->timestamps();

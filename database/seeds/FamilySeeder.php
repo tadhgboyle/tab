@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Family;
 use App\Enums\FamilyMemberRole;
 use Illuminate\Database\Seeder;
+use Str;
 
 class FamilySeeder extends Seeder
 {
@@ -52,7 +53,10 @@ class FamilySeeder extends Seeder
             ]);
 
             $family->members()->createMany(
-                $users->random(random_int(1, 5))->map(function (User $user) {
+                $users->random(random_int(1, 5))->map(function (User $user) use ($family) {
+                    $user->update([
+                        'full_name' => explode(' ', $user->full_name)[0] . ' ' . Str::singular($family->name),
+                    ]);
                     return [
                         'user_id' => $user->id,
                         'role' => FamilyMemberRole::Member,

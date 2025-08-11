@@ -46,11 +46,11 @@ class OrderReturnService extends HttpService
                 $amountToRestore = $orderProduct->quantity - $returned;
                 if ($orderProduct->productVariant) {
                     $orderProduct->productVariant->adjustStock(
-                        $amountToRestore
+                        $amountToRestore, "Full return of Order {$this->_order->identifier}", auth()->user()
                     );
                 } else {
                     $orderProduct->product->adjustStock(
-                        $amountToRestore
+                        $amountToRestore, "Full return of Order {$this->_order->identifier}", auth()->user()
                     );
                 }
             }

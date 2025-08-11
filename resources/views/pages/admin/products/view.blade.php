@@ -13,6 +13,10 @@
         <x-detail-card-stack>
             <livewire:admin.products.variants-list :product="$product" />
             <livewire:admin.products.variant-options-list :product="$product" />
+
+            @unless($product->hasVariants())
+                <livewire:admin.products.inventory-adjustments-list :product="$product" />
+            @endunless
         </x-detail-card-stack>
     </div>
     <div class="col-span-2">

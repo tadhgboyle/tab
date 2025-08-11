@@ -49,16 +49,16 @@ class ProductStockAdjustmentService extends HttpService
         }
 
         if ($productVariant?->exists) {
-            $productVariant->adjustStock($adjust_stock);
+            $productVariant->adjustStock($adjust_stock, null, auth()->user());
 
             if ($request->has('adjust_box')) {
-                $productVariant->addBox($adjust_box);
+                $productVariant->addBox($adjust_box, null, auth()->user());
             }
         } else {
-            $product->adjustStock($adjust_stock);
+            $product->adjustStock($adjust_stock, null, auth()->user());
 
             if ($request->has('adjust_box')) {
-                $product->addBox($adjust_box);
+                $product->addBox($adjust_box, null, auth()->user());
             }
         }
 

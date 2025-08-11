@@ -123,9 +123,9 @@ class OrderReturnProductService extends HttpService
     {
         if ($this->_orderProduct->product->restore_stock_on_return) {
             if ($this->_orderProduct->productVariant) {
-                $this->_orderProduct->productVariant->adjustStock(1);
+                $this->_orderProduct->productVariant->adjustStock(1, "Partial from Order {$this->_order->identifier}", auth()->user());
             } else {
-                $this->_orderProduct->product->adjustStock(1);
+                $this->_orderProduct->product->adjustStock(1, "Partial from Order {$this->_order->identifier}", auth()->user());
             }
         }
     }

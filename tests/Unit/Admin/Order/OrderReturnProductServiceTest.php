@@ -18,6 +18,8 @@ use App\Services\Orders\OrderCreateService;
 use App\Services\Orders\OrderReturnProductService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+// TODO: test for variants?
+
 class OrderReturnProductServiceTest extends TestCase
 {
     use RefreshDatabase;
@@ -170,6 +172,8 @@ class OrderReturnProductServiceTest extends TestCase
     {
         [, $order, $hat] = $this->createFakeRecords(5);
 
+        $hat->inventoryAdjustments()->delete();
+
         $hat->update([
             'restore_stock_on_return' => false,
             'stock' => $start_stock = 12,
@@ -179,6 +183,7 @@ class OrderReturnProductServiceTest extends TestCase
         new OrderReturnProductService($hatOrderProduct);
 
         $this->assertSame($start_stock, $hat->refresh()->stock);
+        $this->assertEmpty($hat->inventoryAdjustments);
     }
 
     public function testProductStockIsRestoredIfSettingEnabled(): void
@@ -194,6 +199,13 @@ class OrderReturnProductServiceTest extends TestCase
         new OrderReturnProductService($hatOrderProduct);
 
         $this->assertEquals($start_stock + 1, $hat->refresh()->stock);
+
+        $inventoryAdjustment = $hat->inventoryAdjustments->last();
+        $this->assertEquals(1, $inventoryAdjustment->adjustment);
+        $this->assertEquals($hat->stock, $inventoryAdjustment->new_quantity);
+        $this->assertEquals("Partial from Order {$order->identifier}", $inventoryAdjustment->reason);
+        $this->assertEquals(auth()->id(), $inventoryAdjustment->causer_id);
+        $this->assertEquals(get_class(auth()->user()), $inventoryAdjustment->causer_type);
     }
 
     /**

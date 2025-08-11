@@ -55,6 +55,11 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function inventoryAdjustments(): HasMany
+    {
+        return $this->hasMany(ProductInventoryAdjustment::class);
+    }
+
     public function variants(): HasMany
     {
         return $this->hasMany(ProductVariant::class);

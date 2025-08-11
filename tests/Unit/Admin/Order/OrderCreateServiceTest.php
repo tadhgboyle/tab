@@ -152,6 +152,14 @@ class OrderCreateServiceTest extends TestCase
         $this->assertEquals(1, Product::firstWhere('name', 'Chips')->stock);
         $this->assertEquals($orderService->getOrder()->products->first()->cost, Product::firstWhere('name', 'Chips')->cost);
         $this->assertEquals(1, $orderService->getOrder()->products->first()->quantity);
+
+        $inventoryAdjustment = Product::firstWhere('name', 'Chips')->inventoryAdjustments->last();
+        $this->assertEquals(-1, $inventoryAdjustment->adjustment);
+        $this->assertEquals(1, $inventoryAdjustment->new_quantity);
+        $this->assertEquals('Order ' . $orderService->getOrder()->identifier, $inventoryAdjustment->reason);
+        $this->assertEquals($orderService->getOrder()->id, $inventoryAdjustment->causer_id);
+        $this->assertEquals(get_class($orderService->getOrder()), $inventoryAdjustment->causer_type);
+
         $this->assertEquals(Money::parse(1_50), $orderService->getOrder()->products->first()->price);
         $this->assertEquals(Money::parse(8), $orderService->getOrder()->products->first()->total_tax);
         $this->assertEquals(Money::parse(1_58), $orderService->getOrder()->products->first()->total_price);
@@ -162,6 +170,14 @@ class OrderCreateServiceTest extends TestCase
         $this->assertEquals(4, ProductVariant::first()->stock);
         $this->assertEquals($orderService->getOrder()->products->last()->cost, ProductVariant::first()->cost);
         $this->assertEquals(1, $orderService->getOrder()->products->last()->quantity);
+
+        $inventoryAdjustment = ProductVariant::first()->inventoryAdjustments->last();
+        $this->assertEquals(-1, $inventoryAdjustment->adjustment);
+        $this->assertEquals(4, $inventoryAdjustment->new_quantity);
+        $this->assertEquals('Order ' . $orderService->getOrder()->identifier, $inventoryAdjustment->reason);
+        $this->assertEquals($orderService->getOrder()->id, $inventoryAdjustment->causer_id);
+        $this->assertEquals(get_class($orderService->getOrder()), $inventoryAdjustment->causer_type);
+
         $this->assertEquals(Money::parse(25_00), $orderService->getOrder()->products->last()->price);
         $this->assertEquals(Money::parse(1_25), $orderService->getOrder()->products->last()->total_tax);
         $this->assertEquals(Money::parse(26_25), $orderService->getOrder()->products->last()->total_price);
