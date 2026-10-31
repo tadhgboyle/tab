@@ -18,4 +18,3 @@ disabled:
 enabled:
 - length_ordered_imports
 - concat_with_spaces
-- nullable_type_declarations
