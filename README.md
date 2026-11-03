@@ -6,10 +6,9 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
 
 - User control
     - Superusers can create as many roles as they want, and grant them specific permissions as well as hierarchy.
-        - Some permissions include: 
+        - Some permissions include:
             - `users_list`: This role can view the user list.
             - `users_manage`: This role can edit/create users (but only edit users which have a role lower than theirs in terms of hierarchy).
-            - `products_ledger`: This role can adjust product stock, but they will need `products_list` and `products_manage` in order to list or create products.
             - `settings_categories_manage`: This role can create/edit product categories in the Settings page.
             - And many more! I try to add as much customizability as possible for permissions.
     - Users can be edited anytime, with an easy-to-use interface.
@@ -33,8 +32,6 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
     - Depending on each product's settings (See next point), during an order, stock will be automatically removed as per quantity.
     - Each product has some settings:
         - "Stock" / "Unlimited Stock" -> Set stock count for this product, or set it to be unlimited.
-        - "Box Size" -> When receiving, instead of counting/multiplying all the boxes received, set this and receive using boxes.
-            - Example: A box of Skittles might have 16 Skittle packs in it. If 4 boxes arrived, instead of calculating 16*4, add 4 boxes.
         - "Override Stock" -> Override the stock count for this item.
     - Fast and easy to use stock adjustment page.
         - Uses AJAX to snappily load all available adjustments for the selected product.
@@ -102,7 +99,7 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
     - Will require a boolean attribute in users table "parent"
 - Repeating activities. When they create activity, ask if repeated daily, weekly, monthly. Create more Activity rows for each day in the duration
     - If repeating activity, add a column (nullable), for root activity, the ID of the original activity it is duplicating
-- Disable submit button when anything goes wrong *(Remaining: Stock, Categories)* 
+- Disable submit button when anything goes wrong *(Remaining: Stock, Categories)*
     - Then on the backend, if they somehow bypass the disabled submit button: on errors during order, return back with their input + quantities
 - Complete inventory features
     - "Set stock" in adjust page as well as add/subtract.
@@ -117,7 +114,7 @@ A lightweight, selfhosted web app that camps, resorts and schools can use as a P
     - (Todo) User's favorite items (Charts).
 - Add sales/discounts to item for period of time (automatic or button)
 - Bulk change prices of items (Everything 10% *off* or everything 20% *more* etc)
-- Staff Discount: check if purchaser is staff role and give % off (per item basis) 
+- Staff Discount: check if purchaser is staff role and give % off (per item basis)
 - Tax-free products / users
 - User tags (tax free tagged, limit of xyz tag, etc)
 - Allow categories to be PST and/or GST exempt

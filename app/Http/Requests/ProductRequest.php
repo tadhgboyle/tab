@@ -42,10 +42,6 @@ class ProductRequest extends FormRequest implements FormRequestContract
                 'required',
                 'integer',
             ],
-            'box_size' => [
-                // TODO: gte -1 (use new Rule::when())
-                ValidationRule::notIn([0]),
-            ],
         ];
     }
 }

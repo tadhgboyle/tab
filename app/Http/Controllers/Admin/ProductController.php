@@ -13,8 +13,6 @@ use Illuminate\Http\RedirectResponse;
 use App\Services\Products\ProductEditService;
 use App\Services\Products\ProductCreateService;
 use App\Services\Products\ProductDeleteService;
-use App\Http\Requests\ProductStockAdjustmentRequest;
-use App\Services\Products\ProductStockAdjustmentService;
 
 class ProductController extends Controller
 {
@@ -64,17 +62,6 @@ class ProductController extends Controller
         return (new ProductDeleteService($product))->redirect();
     }
 
-    public function adjustList()
-    {
-        return view('pages.admin.products.ledger.list', [
-            'products' => Product::with('category', 'variants', 'variants.product')->get(),
-        ]);
-    }
-
-    public function adjustStock(ProductStockAdjustmentRequest $request, Product $product, ?ProductVariant $productVariant): RedirectResponse
-    {
-        return (new ProductStockAdjustmentService($request, $product, $productVariant))->redirect();
-    }
 
     public function ajaxGetInfo(Product $product): JsonResponse
     {
@@ -95,19 +82,5 @@ class ProductController extends Controller
             'pst' => $product->pst,
             'gst' => true, // taxes suck
         ]);
-    }
-
-    public function ajaxGetPage(Product $product)
-    {
-        $data = [
-            'product' => $product,
-        ];
-
-        if (request()->query('variantId')) {
-            $data['productVariant'] = $product->variants()->find(request()->query('variantId'));
-        }
-
-        // TODO: Load same product back when adjust page is reloaded
-        return view('pages.admin.products.ledger.form', $data);
     }
 }

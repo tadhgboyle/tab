@@ -160,15 +160,4 @@ class ProductRequestTest extends FormRequestTestCase
             'stock' => 123
         ]));
     }
-
-    public function testBoxSizeIsInValidValues(): void
-    {
-        $this->assertHasErrors('box_size', new ProductRequest([
-            'box_size' => '0'
-        ]));
-
-        $this->assertNotHaveErrors('box_size', new ProductRequest([
-            'box_size' => '1'
-        ]));
-    }
 }

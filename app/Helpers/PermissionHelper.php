@@ -39,7 +39,6 @@ class PermissionHelper
             Permission::PRODUCTS_VIEW_COST => 'View product cost',
             Permission::PRODUCTS_LIST => 'List all products',
             Permission::PRODUCTS_MANAGE => 'Edit/Create/Delete products',
-            Permission::PRODUCTS_LEDGER => 'Adjust stock for products',
         ]);
 
         $this->register('Activity Management', Permission::ACTIVITIES, [

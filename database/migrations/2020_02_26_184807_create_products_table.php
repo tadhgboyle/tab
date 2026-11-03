@@ -23,7 +23,6 @@ class CreateProductsTable extends Migration
             // true/false if this product has unlimited stock (since -1 could be a valid inventory count)
             // This will override any stock count
             $table->boolean('unlimited_stock');
-            $table->integer('box_size');
             // Allow to bypass the stock count
             $table->boolean('stock_override');
             $table->timestamps();

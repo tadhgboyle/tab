@@ -31,12 +31,10 @@ class ProductVariantTest extends TestCase
             'sku' => 'SKU-1',
             'stock' => 10,
             'price' => 10_00,
-            'box_size' => 4,
         ]);
 
         $this->assertEquals(Money::parse(10_00), $variant->price);
         $this->assertEquals(10, $variant->stock);
-        $this->assertEquals(4, $variant->box_size);
     }
 
     public function testDescription(): void
@@ -55,7 +53,6 @@ class ProductVariantTest extends TestCase
             'sku' => 'SKU-1',
             'stock' => 10,
             'price' => 10_00,
-            'box_size' => 4,
         ]);
 
         $variant->optionValueAssignments()->createMany([
@@ -88,7 +85,6 @@ class ProductVariantTest extends TestCase
             'sku' => 'SKU-1',
             'stock' => 10,
             'price' => 10_00,
-            'box_size' => 4,
         ]);
 
         $variant->optionValueAssignments()->createMany([
@@ -123,7 +119,6 @@ class ProductVariantTest extends TestCase
             'sku' => 'SKU-1',
             'stock' => 10,
             'price' => 10_00,
-            'box_size' => 4,
         ]);
 
         $variant->optionValueAssignments()->createMany([
@@ -155,7 +150,6 @@ class ProductVariantTest extends TestCase
             'sku' => 'SKU-1',
             'stock' => 10,
             'price' => 10_00,
-            'box_size' => 4,
         ]);
 
         $this->assertNull($variant->optionValueFor($colourOption));
@@ -177,7 +171,6 @@ class ProductVariantTest extends TestCase
             'sku' => 'SKU-1',
             'stock' => 10,
             'price' => 10_00,
-            'box_size' => 4,
         ]);
 
         $variant->optionValueAssignments()->createMany([
@@ -211,7 +204,6 @@ class ProductVariantTest extends TestCase
             'sku' => 'SKU-1',
             'stock' => 10,
             'price' => 10_00,
-            'box_size' => 4,
         ]);
 
         $variant->optionValueAssignments()->createMany([
@@ -245,7 +237,6 @@ class ProductVariantTest extends TestCase
             'sku' => 'SKU-1',
             'stock' => 10,
             'price' => 10_00,
-            'box_size' => 4,
         ]);
 
         $variant->optionValueAssignments()->createMany([
@@ -273,7 +264,6 @@ class ProductVariantTest extends TestCase
             'sku' => 'SKU-1',
             'stock' => 10,
             'price' => 10_00,
-            'box_size' => 4,
         ]);
 
         $this->assertTrue($variant->stock_override);
@@ -289,7 +279,6 @@ class ProductVariantTest extends TestCase
             'sku' => 'SKU-1',
             'stock' => 10,
             'price' => 10_00,
-            'box_size' => 4,
         ]);
 
         $this->assertTrue($variant->unlimited_stock);
